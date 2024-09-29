@@ -6,7 +6,6 @@ pnpm-debug.log*
 # Runtime data
 node_modules
 dist
-dist-ssr
 *.local
 
 # Editor directories and files
@@ -14,8 +13,3 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
