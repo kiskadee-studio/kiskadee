@@ -1,0 +1,13 @@
+{
+  "name": "kiskadee",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rodrigo José Carvalho de Mello",
+  "license": "ISC",
+  "dependencies": {
+    "@biomejs/biome": "^1.9.2"
+  }
+}
