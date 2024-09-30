@@ -1,0 +1,33 @@
+{
+  "button": {
+    "size": {
+      "xxxl": [0, "x"],
+      "xxl": [1, "x"],
+      "xl": [2, "x"],
+      "l": [3, "x"],
+      "md": [4, "x"],
+      "sm": [5, "x"],
+      "xs": [6, "x"],
+      "xxs": [7, "x"],
+      "xxxs": [8, "x"]
+    },
+    "state": {
+      "rest": {
+        "p-1": {
+          "backgroundColor": "#f5f5f5"
+        },
+        "p-2": {
+          "backgroundColor": "#333"
+        }
+      },
+      "hover": {
+        "light": {
+          "backgroundColor": "#e0e0e0"
+        },
+        "dark": {
+          "backgroundColor": "#444"
+        }
+      }
+    }
+  }
+}
