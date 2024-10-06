@@ -11,4 +11,10 @@
 - The only exception to the above rule is the properties related to shadow. However, the shadow 
   properties are within the "appearance" structure and not "dimensions", meaning it is possible 
   to increase the size of a shadow of an element when interacting with it, but it is not 
-  possible to change the color of the shadow, as it is assumed that a shadow will always be black.   
+  possible to change the color of the shadow, as it is assumed that a shadow will always be black.  
+- The only unit of measurement and thus the standard for properties related to dimensions is the 
+  pixel.
+- The color variant "danger" is called "error" by the Microsoft Fluent 2 design system, but this 
+  makes sense in the context of that design system, as the "red" color is only used in error 
+  messages and error inputs. However, the "danger" color variant can be used in buttons and 
+  other elements, and that is why it is called "danger" in the Kiskadee design system.      
