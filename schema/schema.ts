@@ -1,9 +1,10 @@
-type SizeKeys = 'xxs' | 'xxxs' | 'xl' | 'md' | 'sm' | 'xs' | 'xxxl' | 'l' | 'xxl';
-type SizeValues = [number, 'px' | 'rem' | '%'] | number;
+// TODO: fazer estrutura para estado de interação de elementos filhos específicos
+
+import { SizeKeys } from './schema.types';
 
 type Schema = {
   button: {
-    size: Record<SizeKeys, SizeValues>;
+    // size: Record<SizeKeys, DimensionValue>;
     state: {
       rest: { light: { backgroundColor: string }; dark: { backgroundColor: string } };
       hover: { light: { backgroundColor: string }; dark: { backgroundColor: string } };
@@ -150,21 +151,6 @@ const x = {
   },
   components: {
     button: {
-      responsive: {
-        all: 'md',
-        lg: 'sm'
-      },
-      size: {
-        xxxl: [0, 'px'],
-        xxl: [1, 'px'],
-        xl: [2, 'px'],
-        lg: [3, 'px'],
-        md: [4, 'px'],
-        sm: [5, 'px'],
-        xs: [6, 'px'],
-        xxs: [7, 'px'],
-        xxxs: [8, 'px']
-      },
       elements: {
         e1: {
           appearance: {
@@ -199,32 +185,47 @@ const x = {
           },
           dimensions: {
             fontSize: {
-              all: [16, 'px'], // Default
-              lg: [14, 'px']
+              all: 16, // Default
+              lg1: 14
             },
-            paddingTop: [8, 'px'],
-            paddingRight: [16, 'px'],
-            paddingBottom: [8, 'px'],
-            paddingLeft: [16, 'px'],
-            marginTop: [8, 'px'],
-            marginRight: [16, 'px'],
-            marginBottom: [8, 'px'],
-            marginLeft: [16, 'px'],
+            paddingTop: 8,
+            paddingRight: 8,
+            paddingBottom: 8,
+            paddingLeft: 8,
+            marginTop: 8,
+            marginRight: 16,
+            marginBottom: 8,
+            marginLeft: 16,
             height: {
-              all: [40, 'px'], // Default
-              lg: [32, 'px']
+              all: 40, // Default
+              lg: 32
             },
-            width: [120, 'px'],
-            borderWidth: [1, 'px'],
-            borderRadius: [4, 'px'],
-            lineHeight: [24, 'px']
+            width: 120,
+            borderWidth: 1,
+            borderRadius: 4,
+            lineHeight: 24
           },
           palettes: {
             p1: {
-              color: ['#000000', 100],
-              borderColor: ['#f5f5f5', 100],
+              fontColor: '#000000',
+              borderColor: ['#f5f5f5', 5],
               backgroundColor: {
-                rest: ['#f5f5f5', 100],
+                primary: {
+                  rest: ['#f5f5f5', 100],
+                  hover: ['#e0e0e0', 100],
+                  active: ['#d5d5d5', 100]
+                },
+                danger: {
+                  rest: ['#f5f5f5', 100],
+                  hover: ['#e0e0e0', 0],
+                  active: ['#d5d5d5', 100]
+                },
+                instagram: {
+                  rest: ['#f5f5f5', 100],
+                  hover: ['#e0e0e0', 100],
+                  active: ['#d5d5d5', 100]
+                },
+                rest: [45, ['#333333', 0, 0], ['#666666', 0, 100]],
                 hover: ['#e0e0e0', 100],
                 active: ['#d5d5d5', 100]
               }
@@ -232,6 +233,17 @@ const x = {
             p2: {
               borderColor: 'p1',
               backgroundColor: ['#f5f5f5', 100]
+            }
+          }
+        },
+        el2: {
+          palettes: {
+            p1: {
+              fontColor: {
+                parent: {
+                  hover: '#000000'
+                }
+              }
             }
           }
         }
