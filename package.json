@@ -8,6 +8,6 @@
   "author": "Rodrigo José Carvalho de Mello",
   "license": "ISC",
   "dependencies": {
-    "@biomejs/biome": "^1.9.2"
+    "@biomejs/biome": "^1.9.3"
   }
 }
