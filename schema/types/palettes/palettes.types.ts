@@ -8,7 +8,7 @@ type Alpha = number; // 0 - 1 (e.g. 0.02)
 
 type HLSA = [hue: Hue, lightness: Lightness, saturation: Saturation, alpha: Alpha];
 
-type SingleColor = HLSA;
+export type SingleColor = HLSA;
 
 type Position = number; // 0 - 100
 

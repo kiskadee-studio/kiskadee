@@ -1,18 +1,21 @@
 // TODO: fazer estrutura para estado de interação de elementos filhos específicos
 
-import { SizeKeys } from './schema.types';
+import type { Dimensions } from './types/dimensions/dimensions.types';
+import type { Palettes } from './types/palettes/palettes.types';
 
-type Schema = {
-  button: {
-    // size: Record<SizeKeys, DimensionValue>;
-    state: {
-      rest: { light: { backgroundColor: string }; dark: { backgroundColor: string } };
-      hover: { light: { backgroundColor: string }; dark: { backgroundColor: string } };
-    };
-  };
+type ComponentProps = 'button';
+
+type Style = {
+  appearance: any;
+  dimensions: Dimensions;
+  palettes: Palettes;
 };
 
-const x = {
+type Elements = { name: string; version: string; style: Style };
+
+type Schema = Record<ComponentProps, any>;
+
+const schema: Schema = {
   breakpoint: {
     /*
      * @link https://gs.statcounter.com/screen-resolution-stats
@@ -153,7 +156,7 @@ const x = {
     button: {
       elements: {
         e1: {
-          appearance: {
+          appearance: <Appearance>{
             fontItalic: true,
             fontWeight: 'bold',
             textDecoration: 'underline',
@@ -164,16 +167,16 @@ const x = {
             shadowColor: ['#000000', 20],
             shadowBlur: {
               // TODO: setting rest makes sense for shadow?
-              rest: [0, 'px'],
-              hover: [4, 'px']
+              rest: 0,
+              hover: 4
             },
             shadowY: {
-              rest: [0, 'px'],
-              hover: [4, 'px']
+              rest: 0,
+              hover: 4
             },
             shadowX: {
-              rest: [0, 'px'],
-              hover: [4, 'px']
+              rest: 0,
+              hover: 4
             }
 
             // TODO: maybe
@@ -185,11 +188,18 @@ const x = {
           },
           dimensions: {
             fontSize: {
-              all: 16, // Default
-              lg1: 14
+              sm: 12, // minimum is 10,
+              md: {
+                all: 16,
+                lg1: 14
+              },
+              lg: {
+                all: 20,
+                lg1: 18
+              }
             },
-            paddingTop: 8,
-            paddingRight: 8,
+            paddingTop: 10,
+            paddingRight: 8, // size "medium" for "all" breakpoints
             paddingBottom: 8,
             paddingLeft: 8,
             marginTop: 8,
@@ -211,9 +221,9 @@ const x = {
               borderColor: ['#f5f5f5', 5],
               backgroundColor: {
                 primary: {
-                  rest: ['#f5f5f5', 100],
-                  hover: ['#e0e0e0', 100],
-                  active: ['#d5d5d5', 100]
+                  rest: [10, 35, 100, 0],
+                  hover: ['#e0e0e0', 0],
+                  active: ['#d5d5d5', 0]
                 },
                 danger: {
                   rest: ['#f5f5f5', 100],
@@ -221,13 +231,10 @@ const x = {
                   active: ['#d5d5d5', 100]
                 },
                 instagram: {
-                  rest: ['#f5f5f5', 100],
+                  rest: ['#f5f5f5', 0],
                   hover: ['#e0e0e0', 100],
                   active: ['#d5d5d5', 100]
-                },
-                rest: [45, ['#333333', 0, 0], ['#666666', 0, 100]],
-                hover: ['#e0e0e0', 100],
-                active: ['#d5d5d5', 100]
+                }
               }
             },
             p2: {
