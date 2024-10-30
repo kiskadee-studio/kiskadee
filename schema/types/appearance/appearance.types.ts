@@ -1,4 +1,4 @@
-import { SingleColor } from '../palettes/palettes.types';
+import { InteractionStatesProperties, SingleColor } from '../palettes/palettes.types';
 
 type FontItalic = boolean;
 
@@ -30,6 +30,7 @@ type TextAlign =
   | 'center'
   | 'right';
 
+// TODO: Is it really necessary?
 type Cursor =
   | 'auto'
   | 'default'
@@ -74,7 +75,9 @@ type BorderStyle =
   | 'dashed'
   | 'solid';
 
-interface Appearance {
+type ShadowStyle = Partial<Record<InteractionStatesProperties, number>>;
+
+export interface Appearance {
   fontItalic: FontItalic;
   fontWeight: FontWeight;
   textDecoration: FontDecoration;
@@ -83,7 +86,7 @@ interface Appearance {
   cursor: Cursor;
   borderStyle: BorderStyle;
   shadowColor: SingleColor;
-  shadowBlur: { rest: number; hover: number };
-  shadowY: { rest: number; hover: number };
-  shadowX: { rest: number; hover: number };
+  shadowBlur: ShadowStyle;
+  shadowY: ShadowStyle;
+  shadowX: ShadowStyle;
 }

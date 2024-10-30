@@ -1,5 +1,5 @@
 type BreakpointProperties =
-  | 'all' //     0px - Must have
+  | 'all' //     0px - Must have / Mobile first
   | 'sm1' //   320px
   | 'sm2' //   360px
   | 'sm3' //   400px

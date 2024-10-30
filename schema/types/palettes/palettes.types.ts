@@ -40,7 +40,7 @@ type ColorVariantProperties =
   // "info" is the color used to indicate information or neutral actions
   | 'info';
 
-type InteractionStatesProperties =
+export type InteractionStatesProperties =
   // "rest" is the default state without any interaction
   | 'rest'
 
