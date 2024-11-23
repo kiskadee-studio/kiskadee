@@ -6,11 +6,11 @@ import type { Palettes } from './types/palettes/palettes.types';
 
 type ComponentProps = 'button';
 
-type Style = {
+type Style = Partial<{
   appearance: Appearance;
   dimensions: Dimensions;
   palettes: Record<string, Palettes>;
-};
+}>;
 
 type Elements = Record<string, Style>;
 
@@ -243,8 +243,9 @@ const schema: Schema = {
               }
             },
             p2: {
-              ref: 'e1',
-              backgroundColor: ['#f5f5f5', 100]
+              // TODO: implement reference to another element
+              // ref: 'e1',
+              bgColor: [0, 0, 0, 0.5]
             }
           }
         },
