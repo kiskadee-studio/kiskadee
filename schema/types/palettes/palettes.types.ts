@@ -68,4 +68,8 @@ type InteractionStates = Partial<Record<InteractionStatesProperties, Color>>;
 
 type Variants = Partial<Record<ColorVariantProperties, Color | InteractionStates>>;
 
-export type Palettes = Partial<Record<ColorProperties, Color | Variants>>;
+type ParentVariants = {
+  parent: Variants;
+};
+
+export type Palettes = Partial<Record<ColorProperties, Color | Variants | ParentVariants>>;

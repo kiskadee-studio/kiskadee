@@ -1,4 +1,4 @@
-import type { Appearance } from './Appearance.types';
+import type { Appearance } from './appearance.types';
 
 const buttonAppearance: Appearance = {
   fontItalic: false,

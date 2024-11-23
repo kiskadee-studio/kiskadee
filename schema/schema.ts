@@ -1,19 +1,23 @@
 // TODO: fazer estrutura para estado de interação de elementos filhos específicos
 
+import type { Appearance } from './types/appearance/appearance.types';
 import type { Dimensions } from './types/dimensions/dimensions.types';
 import type { Palettes } from './types/palettes/palettes.types';
 
 type ComponentProps = 'button';
 
 type Style = {
-  appearance: any;
+  appearance: Appearance;
   dimensions: Dimensions;
-  palettes: Palettes;
+  palettes: Record<string, Palettes>;
 };
 
-type Elements = { name: string; version: string; style: Style };
+type Elements = Record<string, Style>;
 
-type Schema = Record<ComponentProps, any>;
+type Schema = {
+  breakpoint: Record<string, number>;
+  components: Record<ComponentProps, { elements: Elements }>;
+};
 
 const schema: Schema = {
   breakpoint: {
@@ -156,7 +160,7 @@ const schema: Schema = {
     button: {
       elements: {
         e1: {
-          appearance: <Appearance>{
+          appearance: {
             fontItalic: true,
             fontWeight: 'bold',
             textDecoration: 'underline',
@@ -164,7 +168,7 @@ const schema: Schema = {
             textAlign: 'center',
             cursor: 'pointer',
             borderStyle: 'solid',
-            shadowColor: ['#000000', 20],
+            shadowColor: [0, 0, 0, 0.5],
             shadowBlur: {
               // TODO: setting rest makes sense for shadow?
               rest: 0,
@@ -207,8 +211,11 @@ const schema: Schema = {
             marginBottom: 8,
             marginLeft: 16,
             height: {
-              all: 40, // Default
-              lg: 32
+              md: 40, // Default
+              lg: {
+                all: 48,
+                lg1: 44
+              }
             },
             width: 120,
             borderWidth: 1,
@@ -217,38 +224,38 @@ const schema: Schema = {
           },
           palettes: {
             p1: {
-              fontColor: '#000000',
-              borderColor: ['#f5f5f5', 5],
-              backgroundColor: {
+              fontColor: [0, 0, 0, 0.5],
+              borderColor: [0, 0, 0, 0.5],
+              bgColor: {
                 primary: {
                   rest: [10, 35, 100, 0],
-                  hover: ['#e0e0e0', 0],
-                  active: ['#d5d5d5', 0]
+                  hover: [10, 35, 100, 0]
                 },
                 danger: {
-                  rest: ['#f5f5f5', 100],
-                  hover: ['#e0e0e0', 0],
-                  active: ['#d5d5d5', 100]
-                },
-                instagram: {
-                  rest: ['#f5f5f5', 0],
-                  hover: ['#e0e0e0', 100],
-                  active: ['#d5d5d5', 100]
+                  rest: [10, 35, 100, 0],
+                  hover: [10, 35, 100, 0]
                 }
+                // instagram: {
+                //   rest: [10, 35, 100, 0],
+                //   hover: [10, 35, 100, 0],
+                //   active: [10, 35, 100, 0]
+                // }
               }
             },
             p2: {
-              borderColor: 'p1',
+              ref: 'e1',
               backgroundColor: ['#f5f5f5', 100]
             }
           }
         },
-        el2: {
+        e2: {
           palettes: {
             p1: {
               fontColor: {
                 parent: {
-                  hover: '#000000'
+                  primary: [0, 0, 0, 0.5]
+                  // rest: [0, 0, 0, 0.5]
+                  // hover: [0, 0, 0, 0.5]
                 }
               }
             }

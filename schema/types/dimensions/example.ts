@@ -14,3 +14,5 @@ const dimensions: Dimensions = {
   },
   paddingTop: 10
 };
+
+console.log({ dimensions });

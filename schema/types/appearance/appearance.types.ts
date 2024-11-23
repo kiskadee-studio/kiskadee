@@ -1,6 +1,8 @@
-import { InteractionStatesProperties, SingleColor } from '../palettes/palettes.types';
+import type { InteractionStatesProperties, SingleColor } from '../palettes/palettes.types';
 
 type FontItalic = boolean;
+
+// type BackgroundColor = SingleColor;
 
 type FontWeight =
   | 'thin' // 100
