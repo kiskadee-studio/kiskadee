@@ -9,6 +9,6 @@
   "license": "ISC",
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@vitejs/plugin-react-swc": "^3.7.1"
+    "@vitejs/plugin-react-swc": "^3.7.2"
   }
 }
