@@ -19,7 +19,7 @@ type Schema = {
   components: Record<ComponentProps, { elements: Elements }>;
 };
 
-const schema: Schema = {
+export const schema: Schema = {
   breakpoint: {
     /*
      * @link https://gs.statcounter.com/screen-resolution-stats

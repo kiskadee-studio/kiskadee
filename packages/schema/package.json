@@ -1,0 +1,17 @@
+{
+  "name": "@kiskadee/schema",
+  "version": "1.0.0",
+  "description": "Schemas and types used in the Kiskadee monorepo.",
+  "main": "dist/schema.js",
+  "types": "dist/schema.d.ts",
+  "files": ["dist"],
+  "author": "Rodrigo J C Mello",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
