@@ -2,14 +2,10 @@
   "name": "kiskadee",
   "version": "0.0.0",
   "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Rodrigo J C Mello",
   "license": "ISC",
   "workspaces": ["./packages/*"],
   "dependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@vitejs/plugin-react-swc": "^3.7.2"
+    "@biomejs/biome": "^1.9.4"
   }
 }
