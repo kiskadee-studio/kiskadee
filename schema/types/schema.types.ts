@@ -1,4 +1,6 @@
-type ButtonStyleVariantKeys = 'filled' | 'outlined' | 'flat';
+// TODO: delete it?
+
+//type ButtonStyleVariantKeys = 'filled' | 'outlined' | 'flat';
 
 // | 'indeterminate'
 // | 'valid'
