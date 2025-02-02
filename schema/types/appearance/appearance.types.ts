@@ -77,9 +77,11 @@ type BorderStyle =
   | 'dashed'
   | 'solid';
 
-type ShadowStyle = Partial<Record<InteractionStatesProperties, number>>;
+export type ShadowStyle = Partial<Record<InteractionStatesProperties, number>>;
 
-export interface Appearance {
+export type Shadow = Record<'shadowBlur' | 'shadowY' | 'shadowX', ShadowStyle>;
+
+export interface Appearance extends Shadow {
   fontItalic: FontItalic;
   fontWeight: FontWeight;
   textDecoration: FontDecoration;
@@ -88,7 +90,4 @@ export interface Appearance {
   cursor: Cursor;
   borderStyle: BorderStyle;
   shadowColor: SingleColor;
-  shadowBlur: ShadowStyle;
-  shadowY: ShadowStyle;
-  shadowX: ShadowStyle;
 }
