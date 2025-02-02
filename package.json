@@ -4,8 +4,16 @@
   "description": "",
   "author": "Rodrigo J C Mello",
   "license": "ISC",
-  "workspaces": ["./packages/*"],
-  "dependencies": {
-    "@biomejs/biome": "^1.9.4"
+  "scripts": {
+    "commitlint": "commitlint --edit"
+  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "husky": "^9.1.7"
   }
 }
