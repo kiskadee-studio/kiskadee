@@ -1,20 +1,16 @@
 import type { Appearance } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { styleUsageMap } from './utils';
 import { processAppearance } from './web-builder';
 
-// Mocking styleUsageMap for each test
 vi.mock('./utils', () => ({
   styleUsageMap: {}
 }));
-
-// Import styleUsageMap mock to be used in tests
-import { styleUsageMap } from './utils';
 
 describe('processAppearance', () => {
   let styleUsageMapMock: Record<string, number>;
 
   beforeEach(() => {
-    // Reset the styleUsageMap mock before each test
     for (const key of Object.keys(styleUsageMap)) {
       delete styleUsageMap[key];
     }

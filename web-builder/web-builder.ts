@@ -46,7 +46,7 @@ export function processAppearance(appearance: Appearance) {
     const hoverShadowParts: string[] = [];
 
     // Properties that compose the shadow
-    const shadowProps: Array<keyof Shadow> = ['shadowBlur', 'shadowX', 'shadowY'];
+    const shadowProps: Array<keyof Shadow> = ['shadowX', 'shadowY', 'shadowBlur'];
 
     const shadow = appearance as Shadow;
 
