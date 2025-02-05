@@ -1,10 +1,11 @@
-import type { Appearance, Shadow } from '@kiskadee/schema';
+import type { Appearance, InteractionStatesProperties, ShadowStyle } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
 export function processAppearance(appearance: Appearance) {
-  const shadowStates: Record<string, string[]> = {};
-
-  const processState = (key: string, value: any) => {
+  const processState = (
+    key: string,
+    value: Partial<Record<InteractionStatesProperties, string | number>>
+  ) => {
     if (typeof value === 'object' && value !== null) {
       for (const [state, stateValue] of Object.entries(value)) {
         const prefixedKey =
@@ -18,7 +19,6 @@ export function processAppearance(appearance: Appearance) {
     }
   };
 
-  // Process general properties
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {
       if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
@@ -30,7 +30,6 @@ export function processAppearance(appearance: Appearance) {
     }
   }
 
-  // Process shadows only if at least one shadow property is defined
   const hasShadowProperty =
     'shadowColor' in appearance ||
     'shadowX' in appearance ||
@@ -38,9 +37,9 @@ export function processAppearance(appearance: Appearance) {
     'shadowBlur' in appearance;
 
   if (hasShadowProperty) {
-    const shadowX = appearance.shadowX || {};
-    const shadowY = appearance.shadowY || {};
-    const shadowBlur = appearance.shadowBlur || {};
+    const shadowX: ShadowStyle = appearance.shadowX || {};
+    const shadowY: ShadowStyle = appearance.shadowY || {};
+    const shadowBlur: ShadowStyle = appearance.shadowBlur || {};
     const shadowColor = appearance.shadowColor || {};
 
     // Only include "rest" state if rest values are explicitly defined
@@ -53,11 +52,11 @@ export function processAppearance(appearance: Appearance) {
       ...Object.keys(shadowY),
       ...Object.keys(shadowBlur),
       ...Object.keys(shadowColor)
-    ]);
+    ] as InteractionStatesProperties[]);
 
     for (const state of states) {
-      const color = shadowColor[state] || [0, 0, 0, 1]; // Default to black HLSA: [h, l, s, alpha]
-      const hlsa = `hlsa-${color.join('-')}`; // Properly formatted HLSA string
+      const color = shadowColor[state] || [0, 0, 0, 1]; // Default to black HLSA
+      const hlsa = `hlsa-${color.join('-')}`;
 
       const shadowParts = [
         `${shadowX[state] || 0}px`,
