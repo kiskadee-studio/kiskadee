@@ -1,10 +1,10 @@
 import type { InteractionStatesProperties, SingleColor } from '../palettes/palettes.types';
 
-type FontItalic = boolean;
+export type FontItalic = boolean;
 
 // type BackgroundColor = SingleColor;
 
-type FontWeight =
+export type FontWeight =
   | 'thin' // 100
   | 'extra-light' // 200
   | 'light' // 300
@@ -15,25 +15,25 @@ type FontWeight =
   | 'extra-bold' // 800
   | 'black'; // 900
 
-type FontDecoration =
+export type FontDecoration =
   | 'none' // default
   | 'underline'
   | 'line-through';
 
 // TODO: Is it really necessary?
-type TextTransform =
+export type TextTransform =
   | 'none' // default
   | 'uppercase'
   | 'lowercase'
   | 'capitalize';
 
-type TextAlign =
+export type TextAlign =
   | 'left' // default
   | 'center'
   | 'right';
 
 // TODO: Is it really necessary?
-type Cursor =
+export type Cursor =
   | 'auto'
   | 'default'
   | 'none'
@@ -71,7 +71,7 @@ type Cursor =
   | 'zoom-in'
   | 'zoom-out';
 
-type BorderStyle =
+export type BorderStyle =
   | 'none' // default
   | 'dotted'
   | 'dashed'

@@ -1,76 +1,71 @@
 import type { Appearance, Shadow } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
-// Function to process the entire Appearance structure
 export function processAppearance(appearance: Appearance) {
-  // Auxiliary variables to unify shadow
-  let shadowDefault = '';
-  let shadowHover = '';
+  // Auxiliary variables to store shadow states
+  const shadowStates: Record<string, string[]> = {};
 
-  // Process all other properties first
+  const processState = (key: string, value: any) => {
+    if (typeof value === 'object' && value !== null) {
+      for (const [state, stateValue] of Object.entries(value)) {
+        const prefixedKey =
+          state === 'rest'
+            ? `${key}__${stateValue}` // "rest" prefix removed
+            : `${key}::${state}__${stateValue}`;
+        if (typeof stateValue === 'number' || typeof stateValue === 'string') {
+          styleUsageMap[prefixedKey] = (styleUsageMap[prefixedKey] || 0) + 1;
+        }
+      }
+    }
+  };
+
+  // Process general appearance properties
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {
       if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
-        // Simple property (e.g.: fontItalic, fontWeight)
         const keyValue = `${key}__${value}`;
         styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
-      } else if (typeof value === 'object' && value !== null) {
-        // Object property (e.g.: values with rest/hover states)
-        for (const [state, stateValue] of Object.entries(value)) {
-          const prefixedKey =
-            state === 'rest' // Remove the "rest" prefix
-              ? `${key}__${stateValue}`
-              : `${key}::${state}__${stateValue}`;
-          if (typeof stateValue === 'number') {
-            styleUsageMap[prefixedKey] = (styleUsageMap[prefixedKey] || 0) + 1;
-          }
-        }
+      } else {
+        processState(key, value);
       }
     }
   }
 
-  // Check if any shadow property is present
-  const shadowProvided = ['shadowColor', 'shadowX', 'shadowY', 'shadowBlur'].some(
-    (prop) => prop in appearance
-  );
+  // Validate and process shadows
+  const shadowProvided = 'shadowColor' in appearance;
+  const hasShadowNumbers = appearance.shadowX || appearance.shadowY || appearance.shadowBlur;
 
-  // Process shadows only if any shadow-related property is provided
-  if (shadowProvided) {
-    // Generate shadowColor string with a single "-" after "rgba"
+  if (shadowProvided && hasShadowNumbers) {
     const shadowColor = Array.isArray(appearance.shadowColor)
-      ? `rgba-${appearance.shadowColor.join('-')}` // Replace commas with hyphens
-      : 'rgba-0-0-0-0'; // Default value
+      ? `rgba-${appearance.shadowColor.join('-')}`
+      : 'rgba-0-0-0-0';
 
-    // Variables to build shadow parts
-    const defaultShadowParts: string[] = [];
-    const hoverShadowParts: string[] = [];
+    const shadowX = appearance.shadowX || { rest: 0 };
+    const shadowY = appearance.shadowY || { rest: 0 };
+    const shadowBlur = appearance.shadowBlur || { rest: 0 };
 
-    // Properties that compose the shadow
-    const shadowProps: Array<keyof Shadow> = ['shadowX', 'shadowY', 'shadowBlur'];
+    const shadow = { shadowX, shadowY, shadowBlur };
 
-    const shadow = appearance as Shadow;
-
-    for (const prop of shadowProps) {
-      const value = shadow[prop];
-      if (typeof value === 'object' && value !== null) {
-        // Process rest and hover states
-        defaultShadowParts.push(`${value.rest ?? 0}px`);
-        hoverShadowParts.push(`${value.hover ?? value.rest ?? 0}px`);
-      } else {
-        // Add default values if missing
-        defaultShadowParts.push('0px');
-        hoverShadowParts.push('0px');
+    for (const [property, stateValues] of Object.entries(shadow)) {
+      if (
+        ['shadowX', 'shadowY', 'shadowBlur'].includes(property) &&
+        typeof stateValues === 'object' &&
+        stateValues !== null
+      ) {
+        for (const state of Object.keys(stateValues)) {
+          shadowStates[state] = shadowStates[state] || [];
+          const stateValue = stateValues[state as keyof typeof stateValues];
+          shadowStates[state].push(`${stateValue ?? 0}px`);
+        }
       }
     }
 
-    // Build unified shadow properties using "--"
-    shadowDefault = `${defaultShadowParts.join('--')}--${shadowColor}`;
-    shadowHover = `${hoverShadowParts.join('--')}--${shadowColor}`;
-
-    // Add the unified shadow states to the counter
-    const shadowRestKey = `shadow__${shadowDefault}`;
-    const shadowHoverKey = `shadow::hover__${shadowHover}`;
-    styleUsageMap[shadowRestKey] = (styleUsageMap[shadowRestKey] || 0) + 1;
-    styleUsageMap[shadowHoverKey] = (styleUsageMap[shadowHoverKey] || 0) + 1;
+    // Build shadow strings for each state
+    for (const [state, shadowParts] of Object.entries(shadowStates)) {
+      const shadowKey = `shadow${state === 'rest' ? '' : `::${state}`}__${shadowParts.join(
+        '--'
+      )}--${shadowColor}`;
+      styleUsageMap[shadowKey] = (styleUsageMap[shadowKey] || 0) + 1;
+    }
   }
 }
