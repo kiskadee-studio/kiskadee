@@ -18,6 +18,7 @@ export function processAppearance(appearance: Appearance) {
     }
   };
 
+  // Process general properties
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {
       if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
@@ -37,24 +38,27 @@ export function processAppearance(appearance: Appearance) {
     'shadowBlur' in appearance;
 
   if (hasShadowProperty) {
-    const shadowColor = Array.isArray(appearance.shadowColor)
-      ? `rgba-${appearance.shadowColor.join('-')}`
-      : 'rgba-0-0-0-1'; // Default to visible black
-
-    // Ensure all states are processed, even with missing dimensions
-    const states = new Set([
-      ...Object.keys(appearance.shadowX || {}),
-      ...Object.keys(appearance.shadowY || {}),
-      ...Object.keys(appearance.shadowBlur || {})
-    ]);
-
-    states.add('rest'); // Ensure the default state is always included
-
     const shadowX = appearance.shadowX || {};
     const shadowY = appearance.shadowY || {};
     const shadowBlur = appearance.shadowBlur || {};
+    const shadowColor = appearance.shadowColor || {};
+
+    // Only include "rest" state if rest values are explicitly defined
+    const hasRestState =
+      'rest' in shadowX || 'rest' in shadowY || 'rest' in shadowBlur || 'rest' in shadowColor;
+
+    const states = new Set([
+      ...(hasRestState ? ['rest'] : []),
+      ...Object.keys(shadowX),
+      ...Object.keys(shadowY),
+      ...Object.keys(shadowBlur),
+      ...Object.keys(shadowColor)
+    ]);
 
     for (const state of states) {
+      const color = shadowColor[state] || [0, 0, 0, 1]; // Default to black HLSA: [h, l, s, alpha]
+      const hlsa = `hlsa-${color.join('-')}`; // Properly formatted HLSA string
+
       const shadowParts = [
         `${shadowX[state] || 0}px`,
         `${shadowY[state] || 0}px`,
@@ -63,7 +67,7 @@ export function processAppearance(appearance: Appearance) {
 
       const shadowKey = `shadow${state === 'rest' ? '' : `::${state}`}__${shadowParts.join(
         '--'
-      )}--${shadowColor}`;
+      )}--${hlsa}`;
 
       styleUsageMap[shadowKey] = (styleUsageMap[shadowKey] || 0) + 1;
     }

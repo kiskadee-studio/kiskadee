@@ -31,9 +31,7 @@ describe('processAppearance', () => {
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({
-        fontItalic__true: 1
-      });
+      expect(styleUsageMapMock).toEqual({ fontItalic__true: 1 });
     });
 
     it('should process fontItalic property set to false', () => {
@@ -41,9 +39,7 @@ describe('processAppearance', () => {
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({
-        fontItalic__false: 1
-      });
+      expect(styleUsageMapMock).toEqual({ fontItalic__false: 1 });
     });
   });
 
@@ -66,9 +62,7 @@ describe('processAppearance', () => {
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({
-          [`fontWeight__${weight}`]: 1
-        });
+        expect(styleUsageMapMock).toEqual({ [`fontWeight__${weight}`]: 1 });
       });
     }
   });
@@ -82,9 +76,7 @@ describe('processAppearance', () => {
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({
-          [`textDecoration__${decoration}`]: 1
-        });
+        expect(styleUsageMapMock).toEqual({ [`textDecoration__${decoration}`]: 1 });
       });
     }
   });
@@ -98,9 +90,7 @@ describe('processAppearance', () => {
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({
-          [`textTransform__${transform}`]: 1
-        });
+        expect(styleUsageMapMock).toEqual({ [`textTransform__${transform}`]: 1 });
       });
     }
   });
@@ -114,9 +104,7 @@ describe('processAppearance', () => {
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({
-          [`textAlign__${align}`]: 1
-        });
+        expect(styleUsageMapMock).toEqual({ [`textAlign__${align}`]: 1 });
       });
     }
   });
@@ -167,33 +155,28 @@ describe('processAppearance', () => {
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({
-          [`cursor__${cursor}`]: 1
-        });
+        expect(styleUsageMapMock).toEqual({ [`cursor__${cursor}`]: 1 });
       });
     }
   });
 
   describe('borderStyle', () => {
     const borders: BorderStyle[] = ['none', 'dotted', 'dashed', 'solid'];
-
     for (const border of borders) {
       it(`should process borderStyle property with "${border}"`, () => {
         const appearance: Appearance = { borderStyle: border };
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({
-          [`borderStyle__${border}`]: 1
-        });
+        expect(styleUsageMapMock).toEqual({ [`borderStyle__${border}`]: 1 });
       });
     }
   });
 
   describe('shadow', () => {
-    it('should process shadow-related properties when all are provided', () => {
+    it('should process shadow-related properties with state-based SingleColor and dimensions', () => {
       const appearance: Appearance = {
-        shadowColor: [255, 0, 0, 0.5],
+        shadowColor: { rest: [200, 40, 70, 0.8], hover: [10, 90, 50, 0.3] },
         shadowBlur: { rest: 5, hover: 10 },
         shadowX: { rest: 2, hover: 4 },
         shadowY: { rest: 3, hover: 6 }
@@ -202,81 +185,54 @@ describe('processAppearance', () => {
       processAppearance(appearance);
 
       expect(styleUsageMapMock).toEqual({
-        'shadow__2px--3px--5px--rgba-255-0-0-0.5': 1,
-        'shadow::hover__4px--6px--10px--rgba-255-0-0-0.5': 1
+        'shadow__2px--3px--5px--hlsa-200-40-70-0.8': 1,
+        'shadow::hover__4px--6px--10px--hlsa-10-90-50-0.3': 1
       });
     });
 
-    it('should not generate shadow output when no shadow properties are provided', () => {
-      const appearance: Appearance = {};
-
-      processAppearance(appearance);
-
-      expect(styleUsageMapMock).toEqual({});
-    });
-
-    it('should generate a valid shadow when only shadowColor is provided', () => {
+    it('should process shadow-related properties with a default SingleColor when no state-based color is defined', () => {
       const appearance: Appearance = {
-        shadowColor: [0, 0, 0, 0.5]
+        shadowBlur: { rest: 5, hover: 10 },
+        shadowX: { rest: 2, hover: 4 },
+        shadowY: { rest: 3, hover: 6 }
       };
 
       processAppearance(appearance);
 
       expect(styleUsageMapMock).toEqual({
-        'shadow__0px--0px--0px--rgba-0-0-0-0.5': 1
+        'shadow__2px--3px--5px--hlsa-0-0-0-1': 1,
+        'shadow::hover__4px--6px--10px--hlsa-0-0-0-1': 1
       });
     });
 
-    it('should generate a valid shadow when only shadowX is provided', () => {
+    it('should handle shadowColor only in the hover state', () => {
       const appearance: Appearance = {
-        shadowX: { rest: 4 }
+        shadowColor: { hover: [0, 50, 100, 0.5] },
+        shadowX: { hover: 4 }
       };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({
-        'shadow__4px--0px--0px--rgba-0-0-0-1': 1
-      });
+      expect(styleUsageMapMock).toEqual({ 'shadow::hover__4px--0px--0px--hlsa-0-50-100-0.5': 1 });
     });
 
-    it('should generate a valid shadow with hover state and defaults for missing values', () => {
+    it('should handle shadow dimensions with no shadowColor and use the default HLSA', () => {
+      const appearance: Appearance = { shadowBlur: { rest: 4 }, shadowX: { rest: 3 } };
+      processAppearance(appearance);
+      expect(styleUsageMapMock).toEqual({ 'shadow__3px--0px--4px--hlsa-0-0-0-1': 1 });
+    });
+
+    it('should handle shadowColor and dimensions with minimal state values', () => {
       const appearance: Appearance = {
-        shadowColor: [50, 150, 200, 0.8],
-        shadowY: { rest: 3, hover: 7 },
-        shadowBlur: { rest: 4 }
+        shadowColor: { rest: [240, 60, 80, 1] },
+        shadowX: { rest: 0 },
+        shadowY: { rest: 0 },
+        shadowBlur: { rest: 0 }
       };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({
-        'shadow__0px--3px--4px--rgba-50-150-200-0.8': 1,
-        'shadow::hover__0px--7px--0px--rgba-50-150-200-0.8': 1
-      });
-    });
-
-    it('should generate a valid shadow when only shadowBlur is provided', () => {
-      const appearance: Appearance = {
-        shadowBlur: { rest: 5 }
-      };
-
-      processAppearance(appearance);
-
-      expect(styleUsageMapMock).toEqual({
-        'shadow__0px--0px--5px--rgba-0-0-0-1': 1
-      });
-    });
-
-    it('should generate a valid shadow when multiple shadow properties are provided', () => {
-      const appearance: Appearance = {
-        shadowX: { rest: 3 },
-        shadowY: { rest: 5 }
-      };
-
-      processAppearance(appearance);
-
-      expect(styleUsageMapMock).toEqual({
-        'shadow__3px--5px--0px--rgba-0-0-0-1': 1
-      });
+      expect(styleUsageMapMock).toEqual({ 'shadow__0px--0px--0px--hlsa-240-60-80-1': 1 });
     });
   });
 });
