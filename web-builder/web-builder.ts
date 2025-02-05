@@ -2,30 +2,11 @@ import type { Appearance, InteractionStatesProperties, ShadowStyle } from '@kisk
 import { styleUsageMap } from './utils';
 
 export function processAppearance(appearance: Appearance) {
-  const processState = (
-    key: string,
-    value: Partial<Record<InteractionStatesProperties, string | number>>
-  ) => {
-    if (typeof value === 'object' && value !== null) {
-      for (const [state, stateValue] of Object.entries(value)) {
-        const prefixedKey =
-          state === 'rest'
-            ? `${key}__${stateValue}` // "rest" prefix removed
-            : `${key}::${state}__${stateValue}`;
-        if (typeof stateValue === 'number' || typeof stateValue === 'string') {
-          styleUsageMap[prefixedKey] = (styleUsageMap[prefixedKey] || 0) + 1;
-        }
-      }
-    }
-  };
-
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {
       if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
         const keyValue = `${key}__${value}`;
         styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
-      } else {
-        processState(key, value);
       }
     }
   }
@@ -43,7 +24,7 @@ export function processAppearance(appearance: Appearance) {
     const hasRestState =
       'rest' in shadowX || 'rest' in shadowY || 'rest' in shadowBlur || 'rest' in shadowColor;
 
-    const states = new Set([
+    const interactionStates = new Set([
       ...(hasRestState ? ['rest'] : []),
       ...Object.keys(shadowX),
       ...Object.keys(shadowY),
@@ -51,17 +32,17 @@ export function processAppearance(appearance: Appearance) {
       ...Object.keys(shadowColor)
     ] as InteractionStatesProperties[]);
 
-    for (const state of states) {
-      const color = shadowColor[state] || [0, 0, 0, 1]; // Default to black HLSA
+    for (const interactionState of interactionStates) {
+      const color = shadowColor[interactionState] || [0, 0, 0, 1]; // Default to black HLSA
       const hlsa = `hlsa-${color.join('-')}`;
 
       const shadowParts = [
-        `${shadowX[state] || 0}px`,
-        `${shadowY[state] || 0}px`,
-        `${shadowBlur[state] || 0}px`
+        `${shadowX[interactionState] || 0}px`,
+        `${shadowY[interactionState] || 0}px`,
+        `${shadowBlur[interactionState] || 0}px`
       ];
 
-      const shadowKey = `shadow${state === 'rest' ? '' : `::${state}`}__${shadowParts.join(
+      const shadowKey = `shadow${interactionState === 'rest' ? '' : `::${interactionState}`}__${shadowParts.join(
         '--'
       )}--${hlsa}`;
 
