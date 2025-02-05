@@ -191,7 +191,7 @@ describe('processAppearance', () => {
   });
 
   describe('shadow', () => {
-    it('should process shadow-related properties with random values', () => {
+    it('should process shadow-related properties when all are provided', () => {
       const appearance: Appearance = {
         shadowColor: [255, 0, 0, 0.5],
         shadowBlur: { rest: 5, hover: 10 },
@@ -207,53 +207,75 @@ describe('processAppearance', () => {
       });
     });
 
-    it('should return empty when shadowColor is missing', () => {
-      const shadow: Appearance = {
-        shadowBlur: { rest: 7 },
-        shadowY: { rest: 5 }
-      };
+    it('should not generate shadow output when no shadow properties are provided', () => {
+      const appearance: Appearance = {};
 
-      processAppearance(shadow as Appearance);
+      processAppearance(appearance);
 
       expect(styleUsageMapMock).toEqual({});
     });
 
-    it('should return empty when shadow numbers are missing', () => {
-      const shadow: Appearance = {
+    it('should generate a valid shadow when only shadowColor is provided', () => {
+      const appearance: Appearance = {
         shadowColor: [0, 0, 0, 0.5]
       };
 
-      processAppearance(shadow as Appearance);
+      processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({});
+      expect(styleUsageMapMock).toEqual({
+        'shadow__0px--0px--0px--rgba-0-0-0-0.5': 1
+      });
     });
 
-    it('should generate a valid shadow when shadowColor and one number are provided', () => {
+    it('should generate a valid shadow when only shadowX is provided', () => {
       const appearance: Appearance = {
-        shadowColor: [0, 0, 0, 0.5],
         shadowX: { rest: 4 }
       };
 
       processAppearance(appearance);
 
       expect(styleUsageMapMock).toEqual({
-        'shadow__4px--0px--0px--rgba-0-0-0-0.5': 1
+        'shadow__4px--0px--0px--rgba-0-0-0-1': 1
       });
     });
 
-    it('should generate combined shadows for multiple states', () => {
+    it('should generate a valid shadow with hover state and defaults for missing values', () => {
       const appearance: Appearance = {
-        shadowColor: [50, 150, 200, 0.5],
-        shadowBlur: { rest: 4, hover: 8 },
-        shadowX: { rest: 2, hover: 6 },
-        shadowY: { rest: 3, hover: 7 }
+        shadowColor: [50, 150, 200, 0.8],
+        shadowY: { rest: 3, hover: 7 },
+        shadowBlur: { rest: 4 }
       };
 
       processAppearance(appearance);
 
       expect(styleUsageMapMock).toEqual({
-        'shadow__2px--3px--4px--rgba-50-150-200-0.5': 1,
-        'shadow::hover__6px--7px--8px--rgba-50-150-200-0.5': 1
+        'shadow__0px--3px--4px--rgba-50-150-200-0.8': 1,
+        'shadow::hover__0px--7px--0px--rgba-50-150-200-0.8': 1
+      });
+    });
+
+    it('should generate a valid shadow when only shadowBlur is provided', () => {
+      const appearance: Appearance = {
+        shadowBlur: { rest: 5 }
+      };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({
+        'shadow__0px--0px--5px--rgba-0-0-0-1': 1
+      });
+    });
+
+    it('should generate a valid shadow when multiple shadow properties are provided', () => {
+      const appearance: Appearance = {
+        shadowX: { rest: 3 },
+        shadowY: { rest: 5 }
+      };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({
+        'shadow__3px--5px--0px--rgba-0-0-0-1': 1
       });
     });
   });

@@ -2,7 +2,6 @@ import type { Appearance, Shadow } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
 export function processAppearance(appearance: Appearance) {
-  // Auxiliary variables to store shadow states
   const shadowStates: Record<string, string[]> = {};
 
   const processState = (key: string, value: any) => {
@@ -19,7 +18,6 @@ export function processAppearance(appearance: Appearance) {
     }
   };
 
-  // Process general appearance properties
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {
       if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
@@ -31,40 +29,42 @@ export function processAppearance(appearance: Appearance) {
     }
   }
 
-  // Validate and process shadows
-  const shadowProvided = 'shadowColor' in appearance;
-  const hasShadowNumbers = appearance.shadowX || appearance.shadowY || appearance.shadowBlur;
+  // Process shadows only if at least one shadow property is defined
+  const hasShadowProperty =
+    'shadowColor' in appearance ||
+    'shadowX' in appearance ||
+    'shadowY' in appearance ||
+    'shadowBlur' in appearance;
 
-  if (shadowProvided && hasShadowNumbers) {
+  if (hasShadowProperty) {
     const shadowColor = Array.isArray(appearance.shadowColor)
       ? `rgba-${appearance.shadowColor.join('-')}`
-      : 'rgba-0-0-0-0';
+      : 'rgba-0-0-0-1'; // Default to visible black
 
-    const shadowX = appearance.shadowX || { rest: 0 };
-    const shadowY = appearance.shadowY || { rest: 0 };
-    const shadowBlur = appearance.shadowBlur || { rest: 0 };
+    // Ensure all states are processed, even with missing dimensions
+    const states = new Set([
+      ...Object.keys(appearance.shadowX || {}),
+      ...Object.keys(appearance.shadowY || {}),
+      ...Object.keys(appearance.shadowBlur || {})
+    ]);
 
-    const shadow = { shadowX, shadowY, shadowBlur };
+    states.add('rest'); // Ensure the default state is always included
 
-    for (const [property, stateValues] of Object.entries(shadow)) {
-      if (
-        ['shadowX', 'shadowY', 'shadowBlur'].includes(property) &&
-        typeof stateValues === 'object' &&
-        stateValues !== null
-      ) {
-        for (const state of Object.keys(stateValues)) {
-          shadowStates[state] = shadowStates[state] || [];
-          const stateValue = stateValues[state as keyof typeof stateValues];
-          shadowStates[state].push(`${stateValue ?? 0}px`);
-        }
-      }
-    }
+    const shadowX = appearance.shadowX || {};
+    const shadowY = appearance.shadowY || {};
+    const shadowBlur = appearance.shadowBlur || {};
 
-    // Build shadow strings for each state
-    for (const [state, shadowParts] of Object.entries(shadowStates)) {
+    for (const state of states) {
+      const shadowParts = [
+        `${shadowX[state] || 0}px`,
+        `${shadowY[state] || 0}px`,
+        `${shadowBlur[state] || 0}px`
+      ];
+
       const shadowKey = `shadow${state === 'rest' ? '' : `::${state}`}__${shadowParts.join(
         '--'
       )}--${shadowColor}`;
+
       styleUsageMap[shadowKey] = (styleUsageMap[shadowKey] || 0) + 1;
     }
   }
