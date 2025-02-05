@@ -37,10 +37,7 @@ export function processAppearance(appearance: Appearance) {
     'shadowBlur' in appearance;
 
   if (hasShadowProperty) {
-    const shadowX: ShadowStyle = appearance.shadowX || {};
-    const shadowY: ShadowStyle = appearance.shadowY || {};
-    const shadowBlur: ShadowStyle = appearance.shadowBlur || {};
-    const shadowColor = appearance.shadowColor || {};
+    const { shadowX = {}, shadowY = {}, shadowBlur = {}, shadowColor = {} } = appearance;
 
     // Only include "rest" state if rest values are explicitly defined
     const hasRestState =
