@@ -8,7 +8,7 @@ const buttonAppearance: Appearance = {
   textAlign: 'center',
   cursor: 'pointer',
   borderStyle: 'solid',
-  shadowColor: [0, 0, 0, 0.5],
+  shadowColor: { rest: [0, 0, 0, 0.5] },
   shadowBlur: { rest: 5, hover: 10 },
   shadowY: { rest: 2, hover: 4 },
   shadowX: { rest: 2, hover: 4 }
