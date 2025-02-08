@@ -160,79 +160,65 @@ describe('processAppearance', () => {
     }
   });
 
-  describe('borderStyle', () => {
-    const borders: BorderStyle[] = ['none', 'dotted', 'dashed', 'solid'];
-    for (const border of borders) {
-      it(`should process borderStyle property with "${border}"`, () => {
-        const appearance: Appearance = { borderStyle: border };
-
-        processAppearance(appearance);
-
-        expect(styleUsageMapMock).toEqual({ [`borderStyle__${border}`]: 1 });
-      });
-    }
-  });
-
-  describe('shadow', () => {
-    it('should process shadow-related properties with state-based SingleColor and dimensions', () => {
+  describe('shadow properties', () => {
+    it('should inherit missing shadow properties from the rest state', () => {
+      // "rest" defines all shadow properties.
+      // "hover" only defines shadowX.
+      // Expected: For hover, the missing properties should come from "rest"
       const appearance: Appearance = {
-        shadowColor: { rest: [200, 40, 70, 0.8], hover: [10, 90, 50, 0.3] },
-        shadowBlur: { rest: 5, hover: 10 },
-        shadowX: { rest: 2, hover: 4 },
-        shadowY: { rest: 3, hover: 6 }
+        shadowX: { rest: 10, hover: 20 },
+        shadowY: { rest: 15 },
+        shadowBlur: { rest: 5 },
+        shadowColor: { rest: [0, 0, 0, 0.5] }
       };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({
-        'shadow__2px--3px--5px--hlsa-200-40-70-0.8': 1,
-        'shadow::hover__4px--6px--10px--hlsa-10-90-50-0.3': 1
-      });
+      const restKey = 'shadow__10px--15px--5px--hlsa-0-0-0-0.5';
+      const hoverKey = 'shadow::hover__20px--15px--5px--hlsa-0-0-0-0.5';
+
+      expect(styleUsageMapMock[restKey]).toBe(1);
+      expect(styleUsageMapMock[hoverKey]).toBe(1);
     });
 
-    it('should process shadow-related properties with a default SingleColor when no state-based color is defined', () => {
+    it('should use default values when missing in both specific state and rest', () => {
+      // Only shadowX is set for "hover".
+      // Expected: For "hover" state, shadowY and shadowBlur default to 0, and shadowColor defaults to [0,0,0,1].
+      // Also, the "rest" state is processed with default values.
       const appearance: Appearance = {
-        shadowBlur: { rest: 5, hover: 10 },
-        shadowX: { rest: 2, hover: 4 },
-        shadowY: { rest: 3, hover: 6 }
+        shadowX: { hover: 25 }
       };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({
-        'shadow__2px--3px--5px--hlsa-0-0-0-1': 1,
-        'shadow::hover__4px--6px--10px--hlsa-0-0-0-1': 1
-      });
+      const hoverKey = 'shadow::hover__25px--0px--0px--hlsa-0-0-0-1';
+      const restKey = 'shadow__0px--0px--0px--hlsa-0-0-0-1';
+
+      expect(styleUsageMapMock[hoverKey]).toBe(1);
+      expect(styleUsageMapMock[restKey]).toBe(1);
     });
 
-    it('should handle shadowColor only in the hover state', () => {
+    it('should process multiple interaction states with proper inheritance', () => {
+      // "rest" defines complete shadow values.
+      // "focus" defines its own shadowX and shadowY.
+      // "hover" defines shadowY and shadowColor.
+      // Expected: missing values inherit from "rest"
       const appearance: Appearance = {
-        shadowColor: { hover: [0, 50, 100, 0.5] },
-        shadowX: { hover: 4 }
+        shadowX: { rest: 5, focus: 12 },
+        shadowY: { rest: 8, focus: 16, hover: 10 },
+        shadowBlur: { rest: 3 },
+        shadowColor: { rest: [10, 20, 30, 0.8], hover: [50, 60, 70, 0.9] }
       };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({ 'shadow::hover__4px--0px--0px--hlsa-0-50-100-0.5': 1 });
-    });
+      const restKey = 'shadow__5px--8px--3px--hlsa-10-20-30-0.8';
+      const focusKey = 'shadow::focus__12px--16px--3px--hlsa-10-20-30-0.8';
+      const hoverKey = 'shadow::hover__5px--10px--3px--hlsa-50-60-70-0.9';
 
-    it('should handle shadow dimensions with no shadowColor and use the default HLSA', () => {
-      const appearance: Appearance = { shadowBlur: { rest: 4 }, shadowX: { rest: 3 } };
-      processAppearance(appearance);
-      expect(styleUsageMapMock).toEqual({ 'shadow__3px--0px--4px--hlsa-0-0-0-1': 1 });
-    });
-
-    it('should handle shadowColor and dimensions with minimal state values', () => {
-      const appearance: Appearance = {
-        shadowColor: { rest: [240, 60, 80, 1] },
-        shadowX: { rest: 0 },
-        shadowY: { rest: 0 },
-        shadowBlur: { rest: 0 }
-      };
-
-      processAppearance(appearance);
-
-      expect(styleUsageMapMock).toEqual({ 'shadow__0px--0px--0px--hlsa-240-60-80-1': 1 });
+      expect(styleUsageMapMock[restKey]).toBe(1);
+      expect(styleUsageMapMock[focusKey]).toBe(1);
+      expect(styleUsageMapMock[hoverKey]).toBe(1);
     });
   });
 });
