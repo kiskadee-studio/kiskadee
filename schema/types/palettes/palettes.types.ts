@@ -1,29 +1,38 @@
-type Hue = number; // 0 - 360
-type Lightness = number; // 0 - 100
-type Saturation = number; // 0 - 100
-type Alpha = number; // 0 - 1 (e.g. 0.02)
+/** Represents a hue value in degrees ranging from 0 to 360. */
+type Hue = number;
+
+/** Represents a lightness percentage ranging from 0 to 100. */
+type Lightness = number;
+
+/** Represents a saturation percentage ranging from 0 to 100. */
+type Saturation = number;
+
+/** Represents an alpha value (opacity) ranging from 0 to 1 (e.g., 0.02). */
+type Alpha = number;
+
+/** Represents a color in HLSA format: [hue, lightness, saturation, alpha]. */
 type HLSA = [hue: Hue, lightness: Lightness, saturation: Saturation, alpha: Alpha];
 
+/** Represents a single color in HLSA format. */
 export type SingleColor = HLSA;
 
-type Position = number; // 0 - 100
-type Degree = number; // 0 - 360
-type Gradient = [Degree, [...SingleColor[], Position][]];
+/** Represents a position value as a percentage ranging from 0 to 100. */
+type Position = number;
 
+/** Represents a degree value ranging from 0 to 360. */
+type Degree = number;
+
+/** Represents a gradient consisting of a degree and an array of color/position pairs. */
+type Gradient = [Degree, [...SingleColor, Position][]];
+
+/** Represents a color, which can either be a single color or a gradient. */
 export type Color = SingleColor | Gradient;
 
-// Utility type to require at least one property from a given set of keys
-type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Omit<T, Keys> &
-  {
-    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
-  }[Keys];
-
 /**
- * Instead of allowing a simplified version, a color must now be defined
- * in an object containing at least one interaction state property.
- * It is common to use the "rest" state, but it is not mandatory.
+ * A color is defined as an object that can include any interaction state property.
+ * Although it's common to use the "rest" state, its presence is optional.
  */
-export type FullColor = RequireAtLeastOne<Record<InteractionStatesProperties, Color>>;
+export type FullColor = Partial<Record<InteractionStatesProperties, Color>>;
 
 /**
  * Interaction states.
