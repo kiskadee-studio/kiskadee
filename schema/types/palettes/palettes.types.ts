@@ -29,10 +29,15 @@ type Gradient = [Degree, [...SingleColor, Position][]];
 export type Color = SingleColor | Gradient;
 
 /**
- * A color is defined as an object that can include any interaction state property.
- * Although it's common to use the "rest" state, its presence is optional.
+ * Defines a state color that can be directly a Color
+ * or an object with a "ref" property that holds a Color, excluding "rest".
  */
-export type FullColor = Partial<Record<InteractionStatesProperties, Color>>;
+export type StateColor = Color | { ref: Omit<Color, 'rest'> };
+
+/**
+ * Each interaction state (such as "rest", "hover", etc.) can be defined as a StateColor.
+ */
+export type FullColor = Partial<Record<InteractionStatesProperties, StateColor>>;
 
 /**
  * Interaction states.
@@ -82,22 +87,15 @@ export type ColorVariantProperties =
   | 'neutral';
 
 /**
- * Each variant is defined as a FullColor (an object with at least one
- * interaction state property).
+ * Each variant is defined as a FullColor (an object with at least one interaction state).
  */
 export type Variants = {
   [K in ColorVariantProperties]?: FullColor;
 };
 
-export type ParentVariants = {
-  parent: Variants;
-};
-
+/**
+ * The color properties used in the design system.
+ */
 export type ColorProperties = 'fontColor' | 'bgColor' | 'borderColor';
 
-/**
- * The palettes now do not allow a simplified version.
- * Each color property must be defined as an object that contains at least
- * one interaction state (e.g. "rest", "hover", etc.).
- */
-export type Palettes = Partial<Record<ColorProperties, FullColor | Variants | ParentVariants>>;
+export type Palettes = Partial<Record<ColorProperties, FullColor | Variants>>;
