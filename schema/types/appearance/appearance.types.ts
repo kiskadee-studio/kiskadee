@@ -1,10 +1,10 @@
 import type { InteractionStatesProperties, SingleColor } from '../palettes/palettes.types';
 
-export type FontItalic = boolean;
+export type TextItalic = boolean;
 
 // type BackgroundColor = SingleColor;
 
-export type FontWeight =
+export type TextWeight =
   | 'thin' // 100
   | 'extra-light' // 200
   | 'light' // 300
@@ -15,7 +15,7 @@ export type FontWeight =
   | 'extra-bold' // 800
   | 'black'; // 900
 
-export type FontDecoration =
+export type TextDecoration =
   | 'none' // default
   | 'underline'
   | 'line-through';
@@ -86,9 +86,9 @@ export type Shadow = Partial<
 >;
 
 export interface Appearance extends Shadow {
-  fontItalic?: FontItalic;
-  fontWeight?: FontWeight;
-  textDecoration?: FontDecoration;
+  textItalic?: TextItalic;
+  textWeight?: TextWeight;
+  textDecoration?: TextDecoration;
   textTransform?: TextTransform;
   textAlign?: TextAlign;
   cursor?: Cursor;

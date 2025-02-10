@@ -1,8 +1,8 @@
 import type { Appearance } from './appearance.types';
 
 const buttonAppearance: Appearance = {
-  fontItalic: false,
-  fontWeight: 'bold',
+  textItalic: false,
+  textWeight: 'bold',
   textDecoration: 'none',
   textTransform: 'uppercase',
   textAlign: 'center',

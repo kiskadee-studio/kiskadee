@@ -161,8 +161,8 @@ export const schema: Schema = {
       elements: {
         e1: {
           appearance: {
-            fontItalic: true,
-            fontWeight: 'bold',
+            textItalic: true,
+            textWeight: 'bold',
             textDecoration: 'underline',
             textTransform: 'uppercase',
             textAlign: 'center',
@@ -224,7 +224,7 @@ export const schema: Schema = {
           },
           palettes: {
             p1: {
-              fontColor: [0, 0, 0, 0.5],
+              textColor: [0, 0, 0, 0.5],
               borderColor: [0, 0, 0, 0.5],
               bgColor: {
                 primary: {
@@ -252,7 +252,7 @@ export const schema: Schema = {
         e2: {
           palettes: {
             p1: {
-              fontColor: {
+              textColor: {
                 parent: {
                   primary: [0, 0, 0, 0.5]
                   // rest: [0, 0, 0, 0.5]

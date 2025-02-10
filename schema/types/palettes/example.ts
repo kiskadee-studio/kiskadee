@@ -21,7 +21,7 @@ const palettes: Palettes = {
       hover: [0, 0, 0, 0.02]
     }
   },
-  fontColor: {
+  textColor: {
     primary: {
       rest: [120, 50, 50, 1],
       hover: {

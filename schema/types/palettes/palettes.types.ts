@@ -96,6 +96,6 @@ export type Variants = {
 /**
  * The color properties used in the design system.
  */
-export type ColorProperties = 'fontColor' | 'bgColor' | 'borderColor';
+export type ColorProperties = 'textColor' | 'bgColor' | 'borderColor';
 
 export type Palettes = Partial<Record<ColorProperties, FullColor | Variants>>;

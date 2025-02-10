@@ -1,11 +1,10 @@
 import type {
   Appearance,
-  BorderStyle,
   Cursor,
-  FontDecoration,
-  FontWeight,
   TextAlign,
-  TextTransform
+  TextDecoration,
+  TextTransform,
+  TextWeight
 } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { styleUsageMap } from './utils';
@@ -25,26 +24,26 @@ describe('processAppearance', () => {
     styleUsageMapMock = styleUsageMap;
   });
 
-  describe('fontItalic', () => {
-    it('should process fontItalic property set to true', () => {
-      const appearance: Appearance = { fontItalic: true };
+  describe('textItalic', () => {
+    it('should process textItalic property set to true', () => {
+      const appearance: Appearance = { textItalic: true };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({ fontItalic__true: 1 });
+      expect(styleUsageMapMock).toEqual({ textItalic__true: 1 });
     });
 
-    it('should process fontItalic property set to false', () => {
-      const appearance: Appearance = { fontItalic: false };
+    it('should process textItalic property set to false', () => {
+      const appearance: Appearance = { textItalic: false };
 
       processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({ fontItalic__false: 1 });
+      expect(styleUsageMapMock).toEqual({ textItalic__false: 1 });
     });
   });
 
-  describe('fontWeight', () => {
-    const fontWeights: FontWeight[] = [
+  describe('textWeight', () => {
+    const textWeights: TextWeight[] = [
       'thin',
       'extra-light',
       'light',
@@ -56,19 +55,19 @@ describe('processAppearance', () => {
       'black'
     ];
 
-    for (const weight of fontWeights) {
-      it(`should process fontWeight property with "${weight}"`, () => {
-        const appearance: Appearance = { fontWeight: weight };
+    for (const weight of textWeights) {
+      it(`should process textWeight property with "${weight}"`, () => {
+        const appearance: Appearance = { textWeight: weight };
 
         processAppearance(appearance);
 
-        expect(styleUsageMapMock).toEqual({ [`fontWeight__${weight}`]: 1 });
+        expect(styleUsageMapMock).toEqual({ [`textWeight__${weight}`]: 1 });
       });
     }
   });
 
   describe('textDecoration', () => {
-    const decorations: FontDecoration[] = ['none', 'underline', 'line-through'];
+    const decorations: TextDecoration[] = ['none', 'underline', 'line-through'];
 
     for (const decoration of decorations) {
       it(`should process textDecoration property with "${decoration}"`, () => {
