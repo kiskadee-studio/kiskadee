@@ -79,18 +79,36 @@ export type BorderStyle =
 
 export type ShadowStyle = Partial<Record<InteractionStatesProperties, number>>;
 
-export type Shadow = Partial<
-  Record<'shadowBlur' | 'shadowY' | 'shadowX', ShadowStyle> & {
-    shadowColor: Partial<Record<InteractionStatesProperties, SingleColor>>;
-  }
->;
-
-export interface Appearance extends Shadow {
+/**
+ * Appearance represents style properties that are solid in nature – meaning they do not vary with
+ * interaction state (rest, hover, active) nor are they influenced by responsive size or media-query
+ * adjustments.
+ *
+ * This category includes text settings (italic, weight, decoration, transform, align), cursor
+ * styles, border styles, and other properties that define the overall look rather than behavior.
+ *
+ * Note: Shadow properties are included in Appearance even though they may change on interaction
+ * state (for example, more pronounced on hover) because a shadow doesn't necessarily represent a
+ * color. Shadows are often defined by simple numeric values (blur, offset) and sometimes a color;
+ * however, their dynamic behavior is specific to rendering.
+ */
+export interface Appearance {
+  // Text
   textItalic?: TextItalic;
   textWeight?: TextWeight;
   textDecoration?: TextDecoration;
   textTransform?: TextTransform;
   textAlign?: TextAlign;
+
+  // Cursor
   cursor?: Cursor;
+
+  // Border
   borderStyle?: BorderStyle;
+
+  // Shadow
+  shadowBlur?: ShadowStyle;
+  shadowY?: ShadowStyle;
+  shadowX?: ShadowStyle;
+  shadowColor?: Partial<Record<InteractionStatesProperties, SingleColor>>;
 }
