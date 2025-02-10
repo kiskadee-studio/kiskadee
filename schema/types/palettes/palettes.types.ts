@@ -30,27 +30,23 @@ export type Color = SingleColor | Gradient;
 
 /**
  * Defines a state color that can be directly a Color
- * or an object with a "ref" property that holds a Color, excluding "rest".
+ * or an object with a "ref" property that holds a Color.
+ * (Note: The "rest" interaction state is handled separately.)
  */
 export type StateColor = Color | { ref: Omit<Color, 'rest'> };
-
-/**
- * Each interaction state (such as "rest", "hover", etc.) can be defined as a StateColor.
- */
-export type FullColor = Partial<Record<InteractionStatesProperties, StateColor>>;
 
 /**
  * Interaction states.
  * The keys describe the various interaction states available:
  *
- *  - "rest" is the default state without any interaction
- *  - "hover" is when the user's cursor is over the element
- *  - "pressed" is when the user presses (clicks or taps) the element
- *  - "selected" is when the element is selected, checked, or activated
- *  - "focus" is when the element is focused
- *  - "disabled" is when the user can't interact with the element
- *  - "pseudo-disabled" is when the element appears disabled but still responds to interactions (e.g., to trigger a validation)
- *  - "read-only" is when the user can't modify the element's value
+ *  - "rest" is the default state without any interaction.
+ *  - "hover" is when the user's cursor is over the element.
+ *  - "pressed" is when the user presses (clicks or taps) the element.
+ *  - "selected" is when the element is selected, checked, or activated.
+ *  - "focus" is when the element is focused.
+ *  - "disabled" is when the user can't interact with the element.
+ *  - "pseudo-disabled" is when the element appears disabled but still responds to interactions (e.g., to trigger a validation).
+ *  - "read-only" is when the user can't modify the element's value.
  */
 export type InteractionStatesProperties =
   | 'rest'
@@ -63,9 +59,17 @@ export type InteractionStatesProperties =
   | 'read-only';
 
 /**
+ * A FullColor defines the set of colors for different interaction states.
+ * The "rest" state is required and must be defined directly as a Color (not as an object with "ref").
+ * The remaining interaction states are optional and can be defined as a StateColor.
+ */
+export type FullColor = {
+  rest: Color;
+} & Partial<Record<Exclude<InteractionStatesProperties, 'rest'>, StateColor>>;
+
+/**
  * Color variant properties.
  * These keys describe the different visual usages for colors within the design system.
- * They are intended to cover various contexts, whether it's for a product, service, or application interface.
  *
  *  - "primary" represents the main color used for prominent elements.
  *  - "secondary" serves as a supporting color that complements the primary.
@@ -87,7 +91,7 @@ export type ColorVariantProperties =
   | 'neutral';
 
 /**
- * Each variant is defined as a FullColor (an object with at least one interaction state).
+ * Each variant is defined as a FullColor (an object with at least the "rest" interaction state).
  */
 export type Variants = {
   [K in ColorVariantProperties]?: FullColor;
