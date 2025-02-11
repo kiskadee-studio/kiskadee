@@ -17,4 +17,5 @@
 - The color variant "danger" is called "error" by the Microsoft Fluent 2 design system, but this 
   makes sense in the context of that design system, as the "red" color is only used in error 
   messages and error inputs. However, the "danger" color variant can be used in buttons and 
-  other elements, and that is why it is called "danger" in the Kiskadee design system.      
+  other elements, and that is why it is called "danger" in the Kiskadee design system.
+- The "rest" interaction state is mandatory for color properties but optional for shadows, as a shadow's state can be independent. For example, it is acceptable for a shadow to appear only on hover even if it is absent in the rest state. In contrast, a hover state for a background color implies that a default (rest) color is already defined. 
