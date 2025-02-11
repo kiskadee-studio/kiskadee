@@ -1,9 +1,4 @@
-import type {
-  Appearance,
-  InteractionStatesProperties,
-  ShadowStyle,
-  SingleColor
-} from '@kiskadee/schema';
+import type { Appearance, InteractionStatesProperties, SingleColor } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
 function getShadowValue<T>(
