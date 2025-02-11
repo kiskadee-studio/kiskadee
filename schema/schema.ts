@@ -168,7 +168,7 @@ export const schema: Schema = {
             textAlign: 'center',
             cursor: 'pointer',
             borderStyle: 'solid',
-            shadowColor: [0, 0, 0, 0.5],
+            shadowColor: { rest: [0, 0, 0, 0.5] },
             shadowBlur: {
               // TODO: setting rest makes sense for shadow?
               rest: 0,
@@ -224,8 +224,8 @@ export const schema: Schema = {
           },
           palettes: {
             p1: {
-              textColor: [0, 0, 0, 0.5],
-              borderColor: [0, 0, 0, 0.5],
+              textColor: { rest: [0, 0, 0, 0.5] },
+              borderColor: { rest: [0, 0, 0, 0.5] },
               bgColor: {
                 primary: {
                   rest: [10, 35, 100, 0],
@@ -245,7 +245,7 @@ export const schema: Schema = {
             p2: {
               // TODO: implement reference to another element
               // ref: 'e1',
-              bgColor: [0, 0, 0, 0.5]
+              bgColor: { rest: [0, 0, 0, 0.5] }
             }
           }
         },
@@ -253,10 +253,9 @@ export const schema: Schema = {
           palettes: {
             p1: {
               textColor: {
-                parent: {
-                  primary: [0, 0, 0, 0.5]
-                  // rest: [0, 0, 0, 0.5]
-                  // hover: [0, 0, 0, 0.5]
+                primary: {
+                  rest: [0, 0, 0, 0.5],
+                  hover: { ref: [0, 0, 0, 0.5] }
                 }
               }
             }
