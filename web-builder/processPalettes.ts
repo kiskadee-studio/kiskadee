@@ -2,20 +2,20 @@ import type { Palettes } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
 /**
- * Processes an object of type Palettes and registers the usage of each style property
- * in the style usage map (styleUsageMap).
+ * Processes a Palettes object and records the usage of each style property
+ * in the styleUsageMap.
  *
  * For each palette property (e.g., bgColor, borderColor, textColor), if the value is defined
- * as a FullColor (which has a defined "rest" at its top level) then the keys generated are:
- *    {property}__{value}  (if state is "rest")
+ * as FullColor (has the "rest" key), the keys are generated as follows:
+ *   {property}__{value} (when the state is "rest")
  * or
- *    {property}__{state}__{value} (for other interaction states)
+ *   {property}--{state}::{ref (if present)}__{value} (for other states)
  *
- * If the palette property is defined as Variants (e.g. with keys like primary, secondary, etc.),
- * each variant's FullColor is processed but the variant key is omitted from the final key.
+ * If the palette property is defined as Variants (e.g., with keys like primary, secondary, etc.),
+ * each variant's FullColor is processed, but the variant key is omitted in the final key.
  *
- * In addition, if the value is wrapped in an object with a "ref" property, the string "ref::"
- * is prefixed before the JSON string of the value.
+ * Additionally, if the value is wrapped in an object with a "ref" property, the "ref"
+ * indicator is included in the key pattern.
  *
  * @param palettes Object containing the palette definitions
  */
@@ -24,29 +24,27 @@ export function processPalettes(palettes: Palettes) {
   for (const paletteProp in palettes) {
     const paletteValue = palettes[paletteProp];
     if (!paletteValue) continue;
-    // Determine whether the entry is a FullColor (has "rest" key) or Variants.
+    // Check if the entry is FullColor (has the "rest" key) or Variants.
     const isFullColor = 'rest' in paletteValue;
-    // If FullColor, wrap it into a pseudo group for uniformity.
+    // If the entry is FullColor, wrap it in a pseudo-group for unified processing.
     const groups = isFullColor ? { default: paletteValue } : paletteValue;
-    // Process each group (if variants, group keys such as "primary" are ignored)
+    // Process each group (for variants, the group key is omitted in the final key)
     for (const _group in groups) {
       const stateObject = groups[_group];
       // Iterate over each state (e.g., rest, hover, etc.)
       for (const state in stateObject) {
-        let value = stateObject[state];
-        let valueStr: string;
-        // If the value is an object with a "ref" property, get the ref value and prefix accordingly
-        if (value !== null && typeof value === 'object' && 'ref' in value) {
-          value = value.ref;
-          valueStr = 'ref::' + JSON.stringify(value);
+        let rawValue = stateObject[state];
+        const hasRef = rawValue !== null && typeof rawValue === 'object' && 'ref' in rawValue;
+        // If there is a "ref", extract the actual value
+        const actualValue = hasRef ? rawValue.ref : rawValue;
+        const jsonValue = JSON.stringify(actualValue);
+
+        let key: string;
+        if (state === 'rest') {
+          key = `${paletteProp}__${hasRef ? 'ref::' : ''}${jsonValue}`;
         } else {
-          valueStr = JSON.stringify(value);
+          key = `${paletteProp}--${state}${hasRef ? '::ref' : ''}__${jsonValue}`;
         }
-        // For "rest", do not include the state in the key.
-        const key =
-          state === 'rest'
-            ? `${paletteProp}__${valueStr}`
-            : `${paletteProp}__${state}__${valueStr}`;
         styleUsageMap[key] = (styleUsageMap[key] || 0) + 1;
       }
     }

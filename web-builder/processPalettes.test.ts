@@ -12,14 +12,14 @@ describe('processPalettes', () => {
   let styleUsageMapMock: Record<string, number>;
 
   beforeEach(() => {
-    // Clear the map object before each test
+    // Clear the map before each test
     for (const key of Object.keys(styleUsageMap)) {
       delete styleUsageMap[key];
     }
     styleUsageMapMock = styleUsageMap;
   });
 
-  it('should process a palette property without a ref', () => {
+  it('should process a palette property without ref', () => {
     const palettes: Palettes = {
       bgColor: {
         primary: {
@@ -30,8 +30,8 @@ describe('processPalettes', () => {
 
     processPalettes(palettes);
 
-    // For "rest", the key omits the state name.
-    const expectedKey = `bgColor__${JSON.stringify([45, 100, 50, 1])}`;
+    // For "rest", the key uses the pattern: property + "__" + value
+    const expectedKey = 'bgColor__[45,100,50,1]';
     expect(styleUsageMapMock).toEqual({
       [expectedKey]: 1
     });
@@ -49,8 +49,10 @@ describe('processPalettes', () => {
 
     processPalettes(palettes);
 
-    const expectedRestKey = `borderColor__${JSON.stringify([255, 255, 255, 1])}`;
-    const expectedHoverKey = `borderColor__hover__ref::${JSON.stringify([255, 255, 255, 0.1])}`;
+    // For "rest", the key should not include "ref::", even if the value is referenced.
+    const expectedRestKey = 'borderColor__[255,255,255,1]';
+    // For "hover", the pattern is: property--state::ref__value
+    const expectedHoverKey = 'borderColor--hover::ref__[255,255,255,0.1]';
     expect(styleUsageMapMock).toEqual({
       [expectedRestKey]: 1,
       [expectedHoverKey]: 1
@@ -79,12 +81,13 @@ describe('processPalettes', () => {
     processPalettes(palettes);
 
     const expected = {
-      // "rest" state omits its key name.
-      [`textColor__${JSON.stringify([120, 50, 50, 1])}`]: 1,
-      [`textColor__hover__ref::${JSON.stringify([240, 50, 50, 0.5])}`]: 1,
-      [`textColor__${JSON.stringify([240, 50, 50, 0.5])}`]: 1,
-      [`borderColor__${JSON.stringify([0, 0, 0, 0.02])}`]: 1,
-      [`borderColor__focus__ref::${JSON.stringify([10, 20, 30, 0.1])}`]: 1
+      // For textColor - "rest" does not include the state; "hover" uses the pattern with ref.
+      'textColor__[120,50,50,1]': 1,
+      'textColor--hover::ref__[240,50,50,0.5]': 1,
+      'textColor__[240,50,50,0.5]': 1,
+      // For borderColor - "rest" and "focus" (focus includes ref)
+      'borderColor__[0,0,0,0.02]': 1,
+      'borderColor--focus::ref__[10,20,30,0.1]': 1
     };
 
     expect(styleUsageMapMock).toEqual(expected);
