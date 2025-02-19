@@ -1,4 +1,4 @@
-import type { Palettes } from '@kiskadee/schema';
+import type { InteractionStatesKeys, PaletteKeys, Palettes, VariantKeys } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
 /**
@@ -22,21 +22,28 @@ import { styleUsageMap } from './utils';
 export function processPalettes(palettes: Palettes) {
   // Iterate over each palette property (e.g., bgColor, borderColor, textColor)
   for (const paletteProp in palettes) {
-    const paletteValue = palettes[paletteProp];
+    const paletteValue = palettes[paletteProp as PaletteKeys];
     if (!paletteValue) continue;
+
     // Check if the entry is FullColor (has the "rest" key) or Variants.
     const isFullColor = 'rest' in paletteValue;
+
     // If the entry is FullColor, wrap it in a pseudo-group for unified processing.
-    const groups = isFullColor ? { default: paletteValue } : paletteValue;
+    const variants = isFullColor ? { primary: paletteValue } : paletteValue;
+
     // Process each group (for variants, the group key is omitted in the final key)
-    for (const _group in groups) {
-      const stateObject = groups[_group];
+    for (const variant in variants) {
+      const states = variants[variant as VariantKeys];
+
       // Iterate over each state (e.g., rest, hover, etc.)
-      for (const state in stateObject) {
-        let rawValue = stateObject[state];
+      for (const _state in states) {
+        const state = _state as InteractionStatesKeys;
+
+        const rawValue = states[state];
         const hasRef = rawValue !== null && typeof rawValue === 'object' && 'ref' in rawValue;
+
         // If there is a "ref", extract the actual value
-        const actualValue = hasRef ? rawValue.ref : rawValue;
+        const actualValue = hasRef ? rawValue?.ref : rawValue;
         const jsonValue = JSON.stringify(actualValue);
 
         let key: string;

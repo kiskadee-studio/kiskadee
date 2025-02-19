@@ -48,7 +48,7 @@ export type StateColor = Color | { ref: Omit<Color, 'rest'> };
  *  - "pseudo-disabled" is when the element appears disabled but still responds to interactions (e.g., to trigger a validation).
  *  - "read-only" is when the user can't modify the element's value.
  */
-export type InteractionStatesProperties =
+export type InteractionStatesKeys =
   | 'rest'
   | 'hover'
   | 'pressed'
@@ -65,7 +65,7 @@ export type InteractionStatesProperties =
  */
 export type FullColor = {
   rest: Color;
-} & Partial<Record<Exclude<InteractionStatesProperties, 'rest'>, StateColor>>;
+} & Partial<Record<Exclude<InteractionStatesKeys, 'rest'>, StateColor>>;
 
 /**
  * Color variant properties.
@@ -80,7 +80,7 @@ export type FullColor = {
  *  - "info" is employed to give feedback or highlight neutral actions, often using lighter tones.
  *  - "neutral" is intended for elements with less emphasis, such as less prominent text, borders, dividers, or backgrounds.
  */
-export type ColorVariantProperties =
+export type VariantKeys =
   | 'primary'
   | 'secondary'
   | 'tertiary'
@@ -94,7 +94,7 @@ export type ColorVariantProperties =
  * Each variant is defined as a FullColor (an object with at least the "rest" interaction state).
  */
 export type Variants = {
-  [K in ColorVariantProperties]?: FullColor;
+  [K in VariantKeys]?: FullColor;
 };
 
 /**
@@ -103,3 +103,4 @@ export type Variants = {
 export type ColorProperties = 'textColor' | 'bgColor' | 'borderColor';
 
 export type Palettes = Partial<Record<ColorProperties, FullColor | Variants>>;
+export type PaletteKeys = keyof Palettes;

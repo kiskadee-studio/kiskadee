@@ -1,4 +1,4 @@
-import type { InteractionStatesProperties, SingleColor } from '../palettes/palettes.types';
+import type { InteractionStatesKeys, SingleColor } from '../palettes/palettes.types';
 
 export type TextItalic = boolean;
 
@@ -77,7 +77,7 @@ export type BorderStyle =
   | 'dashed'
   | 'solid';
 
-export type ShadowStyle = Partial<Record<InteractionStatesProperties, number>>;
+export type ShadowStyle = Partial<Record<InteractionStatesKeys, number>>;
 
 /**
  * Appearance represents style properties that are solid in nature – meaning they do not vary with
@@ -110,5 +110,5 @@ export interface Appearance {
   shadowBlur?: ShadowStyle;
   shadowY?: ShadowStyle;
   shadowX?: ShadowStyle;
-  shadowColor?: Partial<Record<InteractionStatesProperties, SingleColor>>;
+  shadowColor?: Partial<Record<InteractionStatesKeys, SingleColor>>;
 }

@@ -1,9 +1,9 @@
-import type { Appearance, InteractionStatesProperties, SingleColor } from '@kiskadee/schema';
+import type { Appearance, InteractionStatesKeys, SingleColor } from '@kiskadee/schema';
 import { styleUsageMap } from './utils';
 
 function getShadowValue<T>(
-  property: Partial<Record<InteractionStatesProperties, T>>,
-  state: InteractionStatesProperties,
+  property: Partial<Record<InteractionStatesKeys, T>>,
+  state: InteractionStatesKeys,
   defaultValue: T
 ): T {
   // Use the value for the given state, or fallback to the "rest" state, or finally the default
@@ -41,12 +41,12 @@ export function processAppearance(appearance: Appearance) {
     const { shadowX = {}, shadowY = {}, shadowBlur = {}, shadowColor = {} } = appearance;
 
     // Create a set of all interaction states defined in any shadow-related property
-    const allStates = new Set<InteractionStatesProperties>([
+    const allStates = new Set<InteractionStatesKeys>([
       ...Object.keys(shadowX),
       ...Object.keys(shadowY),
       ...Object.keys(shadowBlur),
       ...Object.keys(shadowColor)
-    ] as InteractionStatesProperties[]);
+    ] as InteractionStatesKeys[]);
 
     // Optional: Always process the "rest" state when any shadow is defined.
     allStates.add('rest');
