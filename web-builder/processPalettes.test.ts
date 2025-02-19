@@ -30,7 +30,8 @@ describe('processPalettes', () => {
 
     processPalettes(palettes);
 
-    const expectedKey = `bgColor__primary__rest__${JSON.stringify([45, 100, 50, 1])}`;
+    // For "rest", the key omits the state name.
+    const expectedKey = `bgColor__${JSON.stringify([45, 100, 50, 1])}`;
     expect(styleUsageMapMock).toEqual({
       [expectedKey]: 1
     });
@@ -48,8 +49,8 @@ describe('processPalettes', () => {
 
     processPalettes(palettes);
 
-    const expectedRestKey = `borderColor__primary__rest__${JSON.stringify([255, 255, 255, 1])}`;
-    const expectedHoverKey = `borderColor__primary__hover__ref::${JSON.stringify([255, 255, 255, 0.1])}`;
+    const expectedRestKey = `borderColor__${JSON.stringify([255, 255, 255, 1])}`;
+    const expectedHoverKey = `borderColor__hover__ref::${JSON.stringify([255, 255, 255, 0.1])}`;
     expect(styleUsageMapMock).toEqual({
       [expectedRestKey]: 1,
       [expectedHoverKey]: 1
@@ -78,11 +79,12 @@ describe('processPalettes', () => {
     processPalettes(palettes);
 
     const expected = {
-      [`textColor__primary__rest__${JSON.stringify([120, 50, 50, 1])}`]: 1,
-      [`textColor__primary__hover__ref::${JSON.stringify([240, 50, 50, 0.5])}`]: 1,
-      [`textColor__secondary__rest__${JSON.stringify([240, 50, 50, 0.5])}`]: 1,
-      [`borderColor__danger__rest__${JSON.stringify([0, 0, 0, 0.02])}`]: 1,
-      [`borderColor__danger__focus__ref::${JSON.stringify([10, 20, 30, 0.1])}`]: 1
+      // "rest" state omits its key name.
+      [`textColor__${JSON.stringify([120, 50, 50, 1])}`]: 1,
+      [`textColor__hover__ref::${JSON.stringify([240, 50, 50, 0.5])}`]: 1,
+      [`textColor__${JSON.stringify([240, 50, 50, 0.5])}`]: 1,
+      [`borderColor__${JSON.stringify([0, 0, 0, 0.02])}`]: 1,
+      [`borderColor__focus__ref::${JSON.stringify([10, 20, 30, 0.1])}`]: 1
     };
 
     expect(styleUsageMapMock).toEqual(expected);
