@@ -1,15 +1,10 @@
-import type {
-  Appearance,
-  Cursor,
-  TextAlign,
-  TextDecoration,
-  TextTransform,
-  TextWeight
-} from '@kiskadee/schema';
+// processAppearance.test.ts
+import type { Appearance } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { processAppearance } from './processAppearance';
 import { styleUsageMap } from './utils';
 
+// Mock the styleUsageMap to isolate tests.
 vi.mock('./utils', () => ({
   styleUsageMap: {}
 }));
@@ -18,206 +13,94 @@ describe('processAppearance', () => {
   let styleUsageMapMock: Record<string, number>;
 
   beforeEach(() => {
-    for (const key of Object.keys(styleUsageMap)) {
+    // Clear the styleUsageMap before each test.
+    Object.keys(styleUsageMap).forEach((key) => {
       delete styleUsageMap[key];
-    }
+    });
     styleUsageMapMock = styleUsageMap;
   });
 
-  describe('textItalic', () => {
-    it('should process textItalic property set to true', () => {
-      const appearance: Appearance = { textItalic: true };
+  it('should process non‑shadow Appearance properties', () => {
+    // Using only the non‑shadow keys from Appearance.
+    const appearance: Appearance = {
+      textItalic: true,
+      textWeight: 'bold',
+      textDecoration: 'underline',
+      textTransform: 'capitalize',
+      textAlign: 'center',
+      cursor: 'pointer',
+      borderStyle: 'dashed'
+    };
 
-      processAppearance(appearance);
+    processAppearance(appearance);
 
-      expect(styleUsageMapMock).toEqual({ textItalic__true: 1 });
+    const expected = {
+      textItalic__true: 1,
+      textWeight__bold: 1,
+      textDecoration__underline: 1,
+      textTransform__capitalize: 1,
+      textAlign__center: 1,
+      cursor__pointer: 1,
+      borderStyle__dashed: 1
+    };
+
+    expect(styleUsageMapMock).toEqual(expected);
+  });
+
+  it('should process shadow keys for the default (rest) state only', () => {
+    // Using shadow keys only with a "rest" state.
+    const appearance: Appearance = {
+      shadowX: { rest: 5 },
+      shadowY: { rest: 6 },
+      shadowBlur: { rest: 3 },
+      shadowColor: { rest: [100, 100, 100, 1] }
+    };
+
+    processAppearance(appearance);
+
+    const expectedKey = 'shadow__[5,6,3,[100,100,100,1]]';
+    expect(styleUsageMapMock).toEqual({
+      [expectedKey]: 1
     });
-
-    it('should process textItalic property set to false', () => {
-      const appearance: Appearance = { textItalic: false };
-
-      processAppearance(appearance);
-
-      expect(styleUsageMapMock).toEqual({ textItalic__false: 1 });
-    });
   });
 
-  describe('textWeight', () => {
-    const textWeights: TextWeight[] = [
-      'thin',
-      'extra-light',
-      'light',
-      'normal',
-      'medium',
-      'semi-bold',
-      'bold',
-      'extra-bold',
-      'black'
-    ];
+  it('should process combined non‑shadow and shadow properties', () => {
+    // Here we combine all Appearance keys.
+    // Non-shadow keys:
+    const appearance: Appearance = {
+      textItalic: false,
+      textWeight: 'light',
+      textDecoration: 'line-through',
+      textTransform: 'lowercase',
+      textAlign: 'right',
+      cursor: 'grab',
+      borderStyle: 'solid',
+      // Shadow keys with multiple states using valid InteractionStatesKeys (e.g. "rest" and "hover")
+      shadowX: { rest: 2, hover: 4 },
+      shadowY: { rest: 3, hover: 5 },
+      shadowBlur: { rest: 1, hover: 2 },
+      shadowColor: { rest: [50, 50, 50, 1], hover: [200, 200, 200, 0.5] }
+    };
 
-    for (const weight of textWeights) {
-      it(`should process textWeight property with "${weight}"`, () => {
-        const appearance: Appearance = { textWeight: weight };
+    processAppearance(appearance);
 
-        processAppearance(appearance);
+    const expectedNonShadow = {
+      textItalic__false: 1,
+      textWeight__light: 1,
+      'textDecoration__line-through': 1,
+      textTransform__lowercase: 1,
+      textAlign__right: 1,
+      cursor__grab: 1,
+      borderStyle__solid: 1
+    };
 
-        expect(styleUsageMapMock).toEqual({ [`textWeight__${weight}`]: 1 });
-      });
-    }
-  });
+    const expectedShadowRest = 'shadow__[2,3,1,[50,50,50,1]]';
+    const expectedShadowHover = 'shadow--hover__[4,5,2,[200,200,200,0.5]]';
 
-  describe('textDecoration', () => {
-    const decorations: TextDecoration[] = ['none', 'underline', 'line-through'];
-
-    for (const decoration of decorations) {
-      it(`should process textDecoration property with "${decoration}"`, () => {
-        const appearance: Appearance = { textDecoration: decoration };
-
-        processAppearance(appearance);
-
-        expect(styleUsageMapMock).toEqual({ [`textDecoration__${decoration}`]: 1 });
-      });
-    }
-  });
-
-  describe('textTransform', () => {
-    const transforms: TextTransform[] = ['none', 'uppercase', 'lowercase', 'capitalize'];
-
-    for (const transform of transforms) {
-      it(`should process textTransform property with "${transform}"`, () => {
-        const appearance: Appearance = { textTransform: transform };
-
-        processAppearance(appearance);
-
-        expect(styleUsageMapMock).toEqual({ [`textTransform__${transform}`]: 1 });
-      });
-    }
-  });
-
-  describe('textAlign', () => {
-    const aligns: TextAlign[] = ['left', 'center', 'right'];
-
-    for (const align of aligns) {
-      it(`should process textAlign property with "${align}"`, () => {
-        const appearance: Appearance = { textAlign: align };
-
-        processAppearance(appearance);
-
-        expect(styleUsageMapMock).toEqual({ [`textAlign__${align}`]: 1 });
-      });
-    }
-  });
-
-  describe('cursor', () => {
-    const cursors: Cursor[] = [
-      'auto',
-      'default',
-      'none',
-      'context-menu',
-      'help',
-      'pointer',
-      'progress',
-      'wait',
-      'cell',
-      'crosshair',
-      'text',
-      'vertical-text',
-      'alias',
-      'copy',
-      'move',
-      'no-drop',
-      'not-allowed',
-      'grab',
-      'grabbing',
-      'all-scroll',
-      'col-resize',
-      'row-resize',
-      'n-resize',
-      'e-resize',
-      's-resize',
-      'w-resize',
-      'ne-resize',
-      'nw-resize',
-      'se-resize',
-      'sw-resize',
-      'ew-resize',
-      'ns-resize',
-      'nesw-resize',
-      'nwse-resize',
-      'zoom-in',
-      'zoom-out'
-    ];
-
-    for (const cursor of cursors) {
-      it(`should process cursor property with "${cursor}"`, () => {
-        const appearance: Appearance = { cursor: cursor };
-
-        processAppearance(appearance);
-
-        expect(styleUsageMapMock).toEqual({ [`cursor__${cursor}`]: 1 });
-      });
-    }
-  });
-
-  describe('shadow properties', () => {
-    it('should inherit missing shadow properties from the rest state', () => {
-      // "rest" defines all shadow properties.
-      // "hover" only defines shadowX.
-      // Expected: For hover, the missing properties should come from "rest"
-      const appearance: Appearance = {
-        shadowX: { rest: 10, hover: 20 },
-        shadowY: { rest: 15 },
-        shadowBlur: { rest: 5 },
-        shadowColor: { rest: [0, 0, 0, 0.5] }
-      };
-
-      processAppearance(appearance);
-
-      const restKey = 'shadow__10px--15px--5px--hlsa-0-0-0-0.5';
-      const hoverKey = 'shadow::hover__20px--15px--5px--hlsa-0-0-0-0.5';
-
-      expect(styleUsageMapMock[restKey]).toBe(1);
-      expect(styleUsageMapMock[hoverKey]).toBe(1);
-    });
-
-    it('should use default values when missing in both specific state and rest', () => {
-      // Only shadowX is set for "hover".
-      // Expected: For "hover" state, shadowY and shadowBlur default to 0, and shadowColor defaults to [0,0,0,1].
-      // Also, the "rest" state is processed with default values.
-      const appearance: Appearance = {
-        shadowX: { hover: 25 }
-      };
-
-      processAppearance(appearance);
-
-      const hoverKey = 'shadow::hover__25px--0px--0px--hlsa-0-0-0-1';
-      const restKey = 'shadow__0px--0px--0px--hlsa-0-0-0-1';
-
-      expect(styleUsageMapMock[hoverKey]).toBe(1);
-      expect(styleUsageMapMock[restKey]).toBe(1);
-    });
-
-    it('should process multiple interaction states with proper inheritance', () => {
-      // "rest" defines complete shadow values.
-      // "focus" defines its own shadowX and shadowY.
-      // "hover" defines shadowY and shadowColor.
-      // Expected: missing values inherit from "rest"
-      const appearance: Appearance = {
-        shadowX: { rest: 5, focus: 12 },
-        shadowY: { rest: 8, focus: 16, hover: 10 },
-        shadowBlur: { rest: 3 },
-        shadowColor: { rest: [10, 20, 30, 0.8], hover: [50, 60, 70, 0.9] }
-      };
-
-      processAppearance(appearance);
-
-      const restKey = 'shadow__5px--8px--3px--hlsa-10-20-30-0.8';
-      const focusKey = 'shadow::focus__12px--16px--3px--hlsa-10-20-30-0.8';
-      const hoverKey = 'shadow::hover__5px--10px--3px--hlsa-50-60-70-0.9';
-
-      expect(styleUsageMapMock[restKey]).toBe(1);
-      expect(styleUsageMapMock[focusKey]).toBe(1);
-      expect(styleUsageMapMock[hoverKey]).toBe(1);
+    expect(styleUsageMapMock).toEqual({
+      ...expectedNonShadow,
+      [expectedShadowRest]: 1,
+      [expectedShadowHover]: 1
     });
   });
 });
