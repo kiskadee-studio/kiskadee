@@ -7,8 +7,8 @@ import type {
   TextWeight
 } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { processAppearance } from './processAppearance';
 import { styleUsageMap } from './utils';
-import { processAppearance } from './web-builder';
 
 vi.mock('./utils', () => ({
   styleUsageMap: {}
