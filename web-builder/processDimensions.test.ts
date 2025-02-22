@@ -55,7 +55,7 @@ describe('processDimensions', () => {
     processDimensions(dimensions);
 
     expect(styleUsageMap).toEqual({
-      'fontSize--md::all__16': 1,
+      'fontSize--md__16': 1, // updated key for "all" breakpoint
       'fontSize--md::lg2__10': 1
     });
   });
