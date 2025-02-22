@@ -1,6 +1,7 @@
 {
   "name": "@kiskadee/schema",
   "version": "1.0.0",
+  "type": "module",
   "description": "Schemas and types used in the Kiskadee monorepo.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
