@@ -1,10 +1,8 @@
-// processAppearance.test.ts
-import type { Appearance } from '@kiskadee/schema';
+import type { Appearance, Cursor } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { processAppearance } from './processAppearance';
 import { styleUsageMap } from './utils';
 
-// Mock the styleUsageMap to isolate tests.
 vi.mock('./utils', () => ({
   styleUsageMap: {}
 }));
@@ -13,94 +11,300 @@ describe('processAppearance', () => {
   let styleUsageMapMock: Record<string, number>;
 
   beforeEach(() => {
-    // Clear the styleUsageMap before each test.
-    Object.keys(styleUsageMap).forEach((key) => {
+    for (const key of Object.keys(styleUsageMap)) {
       delete styleUsageMap[key];
-    });
+    }
     styleUsageMapMock = styleUsageMap;
   });
 
-  it('should process non‑shadow Appearance properties', () => {
-    // Using only the non‑shadow keys from Appearance.
-    const appearance: Appearance = {
-      textItalic: true,
-      textWeight: 'bold',
-      textDecoration: 'underline',
-      textTransform: 'capitalize',
-      textAlign: 'center',
-      cursor: 'pointer',
-      borderStyle: 'dashed'
-    };
+  describe('textItalic', () => {
+    it('should process textItalic property set to true', () => {
+      const appearance: Appearance = { textItalic: true };
 
-    processAppearance(appearance);
+      processAppearance(appearance);
 
-    const expected = {
-      textItalic__true: 1,
-      textWeight__bold: 1,
-      textDecoration__underline: 1,
-      textTransform__capitalize: 1,
-      textAlign__center: 1,
-      cursor__pointer: 1,
-      borderStyle__dashed: 1
-    };
+      expect(styleUsageMapMock).toEqual({ textItalic__true: 1 });
+    });
 
-    expect(styleUsageMapMock).toEqual(expected);
-  });
+    it('should process textItalic property set to false', () => {
+      const appearance: Appearance = { textItalic: false };
 
-  it('should process shadow keys for the default (rest) state only', () => {
-    // Using shadow keys only with a "rest" state.
-    const appearance: Appearance = {
-      shadowX: { rest: 5 },
-      shadowY: { rest: 6 },
-      shadowBlur: { rest: 3 },
-      shadowColor: { rest: [100, 100, 100, 1] }
-    };
+      processAppearance(appearance);
 
-    processAppearance(appearance);
-
-    const expectedKey = 'shadow__[5,6,3,[100,100,100,1]]';
-    expect(styleUsageMapMock).toEqual({
-      [expectedKey]: 1
+      expect(styleUsageMapMock).toEqual({ textItalic__false: 1 });
     });
   });
 
-  it('should process combined non‑shadow and shadow properties', () => {
-    // Here we combine all Appearance keys.
-    // Non-shadow keys:
-    const appearance: Appearance = {
-      textItalic: false,
-      textWeight: 'light',
-      textDecoration: 'line-through',
-      textTransform: 'lowercase',
-      textAlign: 'right',
-      cursor: 'grab',
-      borderStyle: 'solid',
-      // Shadow keys with multiple states using valid InteractionStatesKeys (e.g. "rest" and "hover")
-      shadowX: { rest: 2, hover: 4 },
-      shadowY: { rest: 3, hover: 5 },
-      shadowBlur: { rest: 1, hover: 2 },
-      shadowColor: { rest: [50, 50, 50, 1], hover: [200, 200, 200, 0.5] }
-    };
+  describe('textWeight', () => {
+    it('should process textWeight property with "thin"', () => {
+      const appearance: Appearance = { textWeight: 'thin' };
 
-    processAppearance(appearance);
+      processAppearance(appearance);
 
-    const expectedNonShadow = {
-      textItalic__false: 1,
-      textWeight__light: 1,
-      'textDecoration__line-through': 1,
-      textTransform__lowercase: 1,
-      textAlign__right: 1,
-      cursor__grab: 1,
-      borderStyle__solid: 1
-    };
+      expect(styleUsageMapMock).toEqual({ textWeight__thin: 1 });
+    });
 
-    const expectedShadowRest = 'shadow__[2,3,1,[50,50,50,1]]';
-    const expectedShadowHover = 'shadow--hover__[4,5,2,[200,200,200,0.5]]';
+    it('should process textWeight property with "extra-light"', () => {
+      const appearance: Appearance = { textWeight: 'extra-light' };
 
-    expect(styleUsageMapMock).toEqual({
-      ...expectedNonShadow,
-      [expectedShadowRest]: 1,
-      [expectedShadowHover]: 1
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ 'textWeight__extra-light': 1 });
+    });
+
+    it('should process textWeight property with "light"', () => {
+      const appearance: Appearance = { textWeight: 'light' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textWeight__light: 1 });
+    });
+
+    it('should process textWeight property with "normal"', () => {
+      const appearance: Appearance = { textWeight: 'normal' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textWeight__normal: 1 });
+    });
+
+    it('should process textWeight property with "medium"', () => {
+      const appearance: Appearance = { textWeight: 'medium' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textWeight__medium: 1 });
+    });
+
+    it('should process textWeight property with "semi-bold"', () => {
+      const appearance: Appearance = { textWeight: 'semi-bold' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ 'textWeight__semi-bold': 1 });
+    });
+
+    it('should process textWeight property with "bold"', () => {
+      const appearance: Appearance = { textWeight: 'bold' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textWeight__bold: 1 });
+    });
+
+    it('should process textWeight property with "extra-bold"', () => {
+      const appearance: Appearance = { textWeight: 'extra-bold' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ 'textWeight__extra-bold': 1 });
+    });
+
+    it('should process textWeight property with "black"', () => {
+      const appearance: Appearance = { textWeight: 'black' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textWeight__black: 1 });
+    });
+  });
+
+  describe('textDecoration', () => {
+    it('should process textDecoration property with "none"', () => {
+      const appearance: Appearance = { textDecoration: 'none' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textDecoration__none: 1 });
+    });
+
+    it('should process textDecoration property with "underline"', () => {
+      const appearance: Appearance = { textDecoration: 'underline' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textDecoration__underline: 1 });
+    });
+
+    it('should process textDecoration property with "line-through"', () => {
+      const appearance: Appearance = { textDecoration: 'line-through' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ 'textDecoration__line-through': 1 });
+    });
+  });
+
+  describe('textTransform', () => {
+    it('should process textTransform property with "none"', () => {
+      const appearance: Appearance = { textTransform: 'none' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textTransform__none: 1 });
+    });
+
+    it('should process textTransform property with "uppercase"', () => {
+      const appearance: Appearance = { textTransform: 'uppercase' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textTransform__uppercase: 1 });
+    });
+
+    it('should process textTransform property with "lowercase"', () => {
+      const appearance: Appearance = { textTransform: 'lowercase' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textTransform__lowercase: 1 });
+    });
+
+    it('should process textTransform property with "capitalize"', () => {
+      const appearance: Appearance = { textTransform: 'capitalize' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textTransform__capitalize: 1 });
+    });
+  });
+
+  describe('textAlign', () => {
+    it('should process textAlign property with "left"', () => {
+      const appearance: Appearance = { textAlign: 'left' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textAlign__left: 1 });
+    });
+
+    it('should process textAlign property with "center"', () => {
+      const appearance: Appearance = { textAlign: 'center' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textAlign__center: 1 });
+    });
+
+    it('should process textAlign property with "right"', () => {
+      const appearance: Appearance = { textAlign: 'right' };
+
+      processAppearance(appearance);
+
+      expect(styleUsageMapMock).toEqual({ textAlign__right: 1 });
+    });
+  });
+
+  describe('cursor', () => {
+    const cursors: Cursor[] = [
+      'auto',
+      'default',
+      'none',
+      'context-menu',
+      'help',
+      'pointer',
+      'progress',
+      'wait',
+      'cell',
+      'crosshair',
+      'text',
+      'vertical-text',
+      'alias',
+      'copy',
+      'move',
+      'no-drop',
+      'not-allowed',
+      'grab',
+      'grabbing',
+      'all-scroll',
+      'col-resize',
+      'row-resize',
+      'n-resize',
+      'e-resize',
+      's-resize',
+      'w-resize',
+      'ne-resize',
+      'nw-resize',
+      'se-resize',
+      'sw-resize',
+      'ew-resize',
+      'ns-resize',
+      'nesw-resize',
+      'nwse-resize',
+      'zoom-in',
+      'zoom-out'
+    ];
+
+    for (const cursor of cursors) {
+      it(`should process cursor property with "${cursor}"`, () => {
+        const appearance: Appearance = { cursor: cursor };
+
+        processAppearance(appearance);
+
+        expect(styleUsageMapMock).toEqual({ [`cursor__${cursor}`]: 1 });
+      });
+    }
+  });
+
+  describe('shadow properties', () => {
+    it('should inherit missing shadow properties from the rest state', () => {
+      // "rest" defines all shadow properties.
+      // "hover" only defines shadowX.
+      // Expected: For hover, the missing properties should come from "rest"
+      const appearance: Appearance = {
+        shadowX: { rest: 10, hover: 20 },
+        shadowY: { rest: 15 },
+        shadowBlur: { rest: 5 },
+        shadowColor: { rest: [0, 0, 0, 0.5] }
+      };
+
+      processAppearance(appearance);
+
+      const restKey = 'shadow__[10,15,5,[0,0,0,0.5]]';
+      const hoverKey = 'shadow--hover__[20,15,5,[0,0,0,0.5]]';
+
+      expect(styleUsageMapMock[restKey]).toBe(1);
+      expect(styleUsageMapMock[hoverKey]).toBe(1);
+    });
+
+    it('should use default values when missing in both specific state and rest', () => {
+      // Only shadowX is set for "hover".
+      // Expected: For "hover" state, shadowY and shadowBlur default to 0, and shadowColor defaults to [0,0,0,1].
+      // Also, the "rest" state is processed with default values.
+      const appearance: Appearance = {
+        shadowX: { hover: 25 }
+      };
+
+      processAppearance(appearance);
+
+      const hoverKey = 'shadow--hover__[25,0,0,[0,0,0,1]]';
+      const restKey = 'shadow__[0,0,0,[0,0,0,1]]';
+
+      expect(styleUsageMapMock[hoverKey]).toBe(1);
+      expect(styleUsageMapMock[restKey]).toBe(1);
+    });
+
+    it('should process multiple interaction states with proper inheritance', () => {
+      // "rest" defines complete shadow values.
+      // "focus" defines its own shadowX and shadowY.
+      // "hover" defines shadowY and shadowColor.
+      // Expected: missing values inherit from "rest"
+      const appearance: Appearance = {
+        shadowX: { rest: 5, focus: 12 },
+        shadowY: { rest: 8, focus: 16, hover: 10 },
+        shadowBlur: { rest: 3 },
+        shadowColor: { rest: [10, 20, 30, 0.8], hover: [50, 60, 70, 0.9] }
+      };
+
+      processAppearance(appearance);
+
+      const restKey = 'shadow__[5,8,3,[10,20,30,0.8]]';
+      const focusKey = 'shadow--focus__[12,16,3,[10,20,30,0.8]]';
+      const hoverKey = 'shadow--hover__[5,10,3,[50,60,70,0.9]]';
+
+      expect(styleUsageMapMock[restKey]).toBe(1);
+      expect(styleUsageMapMock[focusKey]).toBe(1);
+      expect(styleUsageMapMock[hoverKey]).toBe(1);
     });
   });
 });
