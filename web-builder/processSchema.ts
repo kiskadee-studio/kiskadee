@@ -5,8 +5,6 @@ import { processDimensions } from './processDimensions';
 import { processPalettes } from './processPalettes';
 import { styleUsageMap } from './utils';
 
-// console.log({ kiskadee: JSON.stringify(kiskadee) });
-
 /**
  * Processes a Schema object by iterating over each component's elements.
  * For each style object, it processes the appearance, dimensions, and palettes
