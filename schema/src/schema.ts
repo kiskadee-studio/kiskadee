@@ -1,5 +1,3 @@
-// TODO: fazer estrutura para estado de interação de elementos filhos específicos
-
 import type { Appearance } from './types/appearance/appearance.types';
 import type { Dimensions } from './types/dimensions/dimensions.types';
 import type { Palettes } from './types/palettes/palettes.types';
@@ -14,7 +12,7 @@ type Style = Partial<{
 
 type Elements = Record<string, Style>;
 
-type Schema = {
+export type Schema = {
   breakpoint: Record<string, number>;
   components: Record<ComponentProps, { elements: Elements }>;
 };
