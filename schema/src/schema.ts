@@ -2,7 +2,7 @@ import type { Appearance } from './types/appearance/appearance.types';
 import type { Dimensions } from './types/dimensions/dimensions.types';
 import type { Palettes } from './types/palettes/palettes.types';
 
-type ComponentProps = 'button';
+export type ComponentKeys = 'button';
 
 type Style = Partial<{
   appearance: Appearance;
@@ -12,9 +12,13 @@ type Style = Partial<{
 
 type Elements = Record<string, Style>;
 
+type Breakpoint = Record<string, number>;
+
+type Components = Record<ComponentKeys, { elements: Elements }>;
+
 export type Schema = {
-  breakpoint: Record<string, number>;
-  components: Record<ComponentProps, { elements: Elements }>;
+  breakpoint: Breakpoint;
+  components: Components;
 };
 
 export const schema: Schema = {
