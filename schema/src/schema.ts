@@ -7,22 +7,23 @@ export type ComponentKeys = 'button';
 type Style = Partial<{
   appearance: Appearance;
   dimensions: Dimensions;
+  // This layer (Record) allows the Style structure to support multiple color variations within a white-label theme
   palettes: Record<string, Palettes>;
 }>;
 
 type Elements = Record<string, Style>;
 
-type Breakpoint = Record<string, number>;
+type Breakpoints = Record<string, number>;
 
 type Components = Record<ComponentKeys, { elements: Elements }>;
 
 export type Schema = {
-  breakpoint: Breakpoint;
+  breakpoints: Breakpoints;
   components: Components;
 };
 
 export const schema: Schema = {
-  breakpoint: {
+  breakpoints: {
     /*
      * @link https://gs.statcounter.com/screen-resolution-stats
      */
