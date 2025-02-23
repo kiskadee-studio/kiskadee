@@ -1,4 +1,4 @@
-import type { Schema } from '@kiskadee/schema';
+import type { ComponentKeys, Schema } from '@kiskadee/schema';
 import { schema } from '@kiskadee/schema';
 import { processAppearance } from './processAppearance';
 import { processDimensions } from './processDimensions';
@@ -16,7 +16,7 @@ import { styleUsageMap } from './utils';
 export function processSchema(schema: Schema): void {
   // Iterate over each component in the schema.
   for (const componentKey in schema.components) {
-    const component = schema.components[componentKey];
+    const component = schema.components[componentKey as ComponentKeys];
 
     // Iterate over each element within the component.
     for (const elementKey in component.elements) {
@@ -35,9 +35,9 @@ export function processSchema(schema: Schema): void {
       // Process palettes if defined.
       if (style.palettes) {
         // The palettes property is a record of Palettes.
-        Object.values(style.palettes).forEach((palette) => {
+        for (const palette of Object.values(style.palettes)) {
           processPalettes(palette);
-        });
+        }
       }
     }
   }
