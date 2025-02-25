@@ -26,7 +26,6 @@ describe('convertFontStyle', () => {
     });
 
     it('should return null for invalid values', () => {
-      // More concise name
       const cssRule = convertFontStyle('textItalic__center');
       expect(cssRule).toBeNull();
     });
