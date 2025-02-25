@@ -4,9 +4,9 @@
  *   ".textItalic__true { font-style: italic; }"
  *
  * @param key - The style key to process.
- * @returns The CSS rule as a string or null if the key doesn't match.
+ * @returns The CSS rule as a string or null if the key doesn't match or if the value is invalid.
  */
-export function generateCssTextStyle(key: string): string | null {
+export function generateTextStyle(key: string): string | null {
   if (!key.startsWith('textItalic__')) {
     return null;
   }
@@ -16,7 +16,14 @@ export function generateCssTextStyle(key: string): string | null {
     return null;
   }
 
-  // If the value is "true", then use italic; otherwise default to normal.
-  const cssValue = parts[1] === 'true' ? 'italic' : 'normal';
+  let cssValue: string;
+  if (parts[1] === 'true') {
+    cssValue = 'italic';
+  } else if (parts[1] === 'false') {
+    cssValue = 'normal';
+  } else {
+    return null;
+  }
+
   return `.${key} { font-style: ${cssValue}; }`;
 }
