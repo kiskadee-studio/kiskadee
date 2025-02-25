@@ -1,5 +1,5 @@
 import { convertTextAlign } from './generate-css/convertTextAlign';
-import { generateTextStyle } from './generate-css/generateTextStyle';
+import { convertFontStyle } from './generate-css/convertTextStyle';
 
 const style2 = {
   textItalic__true: 1,
@@ -120,7 +120,7 @@ export function generateCssFromStyle(style: Record<string, number>): string {
   // Iterate over the sorted keys and generate CSS rules using tokens.
   for (const key of sortedKeys) {
     // Try each helper function.
-    let rule: string | null = generateTextStyle(key);
+    let rule: string | null = convertFontStyle(key);
     if (!rule) {
       rule = generateCssTextDecorationForKey(key);
     }
