@@ -31,10 +31,16 @@ export const textWeight: TextWeight[] = [
 
 // Text Decoration ---------------------------------------------------------------------------------
 
+// TODO: Should "underline dotted," "overline," and "underline dotted red" be supported?
+// TODO: Where is the default value defined?
 export type TextDecoration =
   | 'none' // default
   | 'underline'
   | 'line-through';
+
+export const textDecoration: TextDecoration[] = ['none', 'underline', 'line-through'];
+
+// Text Transform ----------------------------------------------------------------------------------
 
 // TODO: Is it really necessary?
 export type TextTransform =
