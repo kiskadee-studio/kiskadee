@@ -2,47 +2,47 @@ import { describe, expect, it } from 'vitest';
 import { convertTextAlign } from './convertTextAlign';
 
 describe('convertTextAlign', () => {
-  it('should correctly convert a valid text alignment key for left alignment', () => {
-    const key = 'textAlign__left';
-    const expected = '.textAlign__left { text-align: left; }';
-    expect(convertTextAlign(key)).toBe(expected);
+  describe('convertTextAlign - Valid Values', () => {
+    it('should generate the correct CSS rule for "left"', () => {
+      const cssRule = convertTextAlign('textAlign__left');
+      expect(cssRule).toBe('.textAlign__left { text-align: left; }');
+    });
+
+    it('should generate the correct CSS rule for "center"', () => {
+      const cssRule = convertTextAlign('textAlign__center');
+      expect(cssRule).toBe('.textAlign__center { text-align: center; }');
+    });
+
+    it('should generate the correct CSS rule for "right"', () => {
+      const cssRule = convertTextAlign('textAlign__right');
+      expect(cssRule).toBe('.textAlign__right { text-align: right; }');
+    });
+
+    it('should generate the correct CSS rule for "justify"', () => {
+      const cssRule = convertTextAlign('textAlign__justify');
+      expect(cssRule).toBe('.textAlign__justify { text-align: justify; }');
+    });
   });
 
-  it('should correctly convert a valid text alignment key for center alignment', () => {
-    const key = 'textAlign__center';
-    const expected = '.textAlign__center { text-align: center; }';
-    expect(convertTextAlign(key)).toBe(expected);
-  });
+  describe('convertTextAlign - Exceptions', () => {
+    it('should return null for unsupported alignment values', () => {
+      const cssRule = convertTextAlign('textAlign__top');
+      expect(cssRule).toBeNull();
+    });
 
-  it('should correctly convert a valid text alignment key for right alignment', () => {
-    const key = 'textAlign__right';
-    const expected = '.textAlign__right { text-align: right; }';
-    expect(convertTextAlign(key)).toBe(expected);
-  });
+    it('should return null for an invalid prefix', () => {
+      const cssRule = convertTextAlign('alignText__center');
+      expect(cssRule).toBeNull();
+    });
 
-  it('should correctly convert a valid text alignment key for justify alignment', () => {
-    const key = 'textAlign__justify';
-    const expected = '.textAlign__justify { text-align: justify; }';
-    expect(convertTextAlign(key)).toBe(expected);
-  });
+    it('should return null for missing separators', () => {
+      const cssRule = convertTextAlign('textAlign-center');
+      expect(cssRule).toBeNull();
+    });
 
-  it('should return null for a valid prefix with an unsupported alignment value', () => {
-    const key = 'textAlign__top';
-    expect(convertTextAlign(key)).toBeNull();
-  });
-
-  it('should return null for a key with an invalid prefix', () => {
-    const key = 'alignText__center';
-    expect(convertTextAlign(key)).toBeNull();
-  });
-
-  it('should return null for a key with missing separators', () => {
-    const key = 'textAligncenter';
-    expect(convertTextAlign(key)).toBeNull();
-  });
-
-  it('should return null for a key with extra separators', () => {
-    const key = 'textAlign__center__extra';
-    expect(convertTextAlign(key)).toBeNull();
+    it('should return null for extra separators', () => {
+      const cssRule = convertTextAlign('textAlign__center__extra');
+      expect(cssRule).toBeNull();
+    });
   });
 });
