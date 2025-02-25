@@ -28,7 +28,7 @@ describe('generateTextStyle', () => {
   });
 
   it('should return null for keys that do not end with a valid value ("true" or "false")', () => {
-    const key = 'textItalic__false_';
+    const key = 'textItalic__center';
     const cssRule = generateTextStyle(key);
     expect(cssRule).toBeNull();
   });
