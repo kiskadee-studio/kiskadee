@@ -27,10 +27,21 @@ export type TextTransform =
   | 'lowercase'
   | 'capitalize';
 
+// Text Align --------------------------------------------------------------------------------------
+
+// TODO: Should "right" be the default in languages read from right to left, such as Japanese?
+// TODO: I'm not sure if the "justify" value will actually be used
+// TODO: What does "default" mean? So far there is no specific treatment for that
+
 export type TextAlign =
   | 'left' // default
   | 'center'
-  | 'right';
+  | 'right'
+  | 'justify';
+
+export const textAlign: TextAlign[] = ['left', 'center', 'right', 'justify'];
+
+// -------------------------------------------------------------------------------------------------
 
 // TODO: Is it really necessary?
 export type Cursor =
