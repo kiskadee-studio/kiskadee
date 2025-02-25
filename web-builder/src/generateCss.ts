@@ -1,4 +1,5 @@
-import { generateCssTextStyle } from './generate-css/generateCssTextStyle';
+import { convertTextAlign } from './generate-css/convertTextAlign';
+import { generateTextStyle } from './generate-css/generateTextStyle';
 
 const style2 = {
   textItalic__true: 1,
@@ -78,27 +79,6 @@ function generateCssTextDecorationForKey(key: string): string | null {
 }
 
 /**
- * Generates a CSS class rule for a text alignment property key.
- * For example, for key "textAlign__center" returns:
- *   ".textAlign__center { text-align: center; }"
- *
- * @param key - The style key to process.
- * @returns The CSS rule as a string or null if the key doesn't match.
- */
-function generateCssTextAlignForKey(key: string): string | null {
-  if (!key.startsWith('textAlign__')) {
-    return null;
-  }
-
-  const parts = key.split('__');
-  if (parts.length !== 2) {
-    return null;
-  }
-
-  return `.${key} { text-align: ${parts[1]}; }`;
-}
-
-/**
  * Generates CSS rules from the style object by iterating just once over its keys.
  * Keys are first sorted by their numeric values (descending), then reassigned tokens.
  *
@@ -140,12 +120,12 @@ export function generateCssFromStyle(style: Record<string, number>): string {
   // Iterate over the sorted keys and generate CSS rules using tokens.
   for (const key of sortedKeys) {
     // Try each helper function.
-    let rule: string | null = generateCssTextStyle(key);
+    let rule: string | null = generateTextStyle(key);
     if (!rule) {
       rule = generateCssTextDecorationForKey(key);
     }
     if (!rule) {
-      rule = generateCssTextAlignForKey(key);
+      rule = convertTextAlign(key);
     }
 
     // If no rule could be generated, skip this key.
