@@ -4,16 +4,32 @@ export type TextItalic = boolean;
 
 // type BackgroundColor = SingleColor;
 
+// Text Weight -------------------------------------------------------------------------------------
+
 export type TextWeight =
-  | 'thin' // 100
-  | 'extra-light' // 200
-  | 'light' // 300
-  | 'normal' // 400
-  | 'medium' // 500
-  | 'semi-bold' // 600
-  | 'bold' // 700
-  | 'extra-bold' // 800
-  | 'black'; // 900
+  | 'thin' //         100
+  | 'extra-light' //  200
+  | 'light' //        300
+  | 'normal' //       400
+  | 'medium' //       500
+  | 'semi-bold' //    600
+  | 'bold' //         700
+  | 'extra-bold' //   800
+  | 'black'; //       900
+
+export const textWeight: TextWeight[] = [
+  'thin',
+  'extra-light',
+  'light',
+  'normal',
+  'medium',
+  'semi-bold',
+  'bold',
+  'extra-bold',
+  'black'
+];
+
+// Text Decoration ---------------------------------------------------------------------------------
 
 export type TextDecoration =
   | 'none' // default

@@ -22,3 +22,4 @@
   shadow's state can be independent. For example, it is acceptable for a shadow to appear only on
   hover even if it is absent in the rest state. In contrast, a hover state for a background color
   implies that a default (rest) color is already defined.
+- Choosing named font weights improves clarity and maintainability by providing semantic context: it enhances readability, allows easier mapping to design systems, and simplifies future adjustments.
