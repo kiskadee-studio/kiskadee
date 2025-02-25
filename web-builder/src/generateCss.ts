@@ -1,5 +1,5 @@
-import { convertTextAlign } from './generate-css/convertTextAlign';
-import { convertFontStyle } from './generate-css/convertTextStyle';
+import { convertTextAlign } from './convert-to-css/convertTextAlign';
+import { convertFontStyle } from './convert-to-css/convertTextStyle';
 
 const style2 = {
   textItalic__true: 1,
