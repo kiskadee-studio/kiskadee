@@ -1,7 +1,7 @@
 import type { Dimensions } from './dimensions.types';
 
 const dimensions: Dimensions = {
-  fontSize: {
+  textSize: {
     // The first-level keys (sm, md, lg) represent different component size variants.
     // For example, a button can be small (sm), medium (md), or large (lg).
 

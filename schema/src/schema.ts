@@ -1,5 +1,5 @@
 import type { Appearance } from './types/appearance/appearance.types';
-import type { Dimensions } from './types/dimensions/dimensions.types';
+import type { BreakpointKeys, Dimensions } from './types/dimensions/dimensions.types';
 import type { Palettes } from './types/palettes/palettes.types';
 
 export type ComponentKeys = 'button';
@@ -7,7 +7,8 @@ export type ComponentKeys = 'button';
 type Style = Partial<{
   appearance: Appearance;
   dimensions: Dimensions;
-  // This layer (Record) allows the Style structure to support multiple color variations within a white-label theme
+  // This layer (Record) allows the Style structure to support multiple color variations within a
+  // white-label theme
   palettes: Record<string, Palettes>;
 }>;
 
@@ -15,22 +16,9 @@ type Elements = Record<string, Style>;
 
 // Breakpoints -------------------------------------------------------------------------------------
 
-type BreakpointKeys =
-  | 'all'
-  | 'sm1'
-  | 'sm2'
-  | 'sm3'
-  | 'md1'
-  | 'md2'
-  | 'md3'
-  | 'lg1'
-  | 'lg2'
-  | 'lg3'
-  | 'lg4';
-
 export type Breakpoints = Partial<Record<BreakpointKeys, number>>;
 
-// ------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 
 type Components = Record<ComponentKeys, { elements: Elements }>;
 
@@ -211,7 +199,7 @@ export const schema: Schema = {
             // textOverflow: 'ellipsis',
           },
           dimensions: {
-            fontSize: {
+            textSize: {
               sm: 12, // minimum is 10,
               md: {
                 all: 16,
@@ -240,7 +228,7 @@ export const schema: Schema = {
             width: 120,
             borderWidth: 1,
             borderRadius: 4,
-            lineHeight: 24
+            textHeight: 24
           },
           palettes: {
             p1: {

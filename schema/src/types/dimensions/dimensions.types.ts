@@ -1,4 +1,4 @@
-type BreakpointProperties =
+export type BreakpointKeys =
   | 'all' //     0px - Must have / Mobile first
   | 'sm1' //   320px
   | 'sm2' //   360px
@@ -11,7 +11,7 @@ type BreakpointProperties =
   | 'lg3' //  1792px
   | 'lg4'; // 2432px
 
-type SizeProperties =
+type SizeKeys =
   | '3xs'
   | '2xs'
   | 'xs'
@@ -26,13 +26,13 @@ type DimensionValue = number; // px
 
 // "all" property is required since it's the default value
 type BreakpointValues = { all: DimensionValue } & Partial<
-  Record<Exclude<BreakpointProperties, 'all'>, DimensionValue>
+  Record<Exclude<BreakpointKeys, 'all'>, DimensionValue>
 >;
 
-type DimensionProperties =
+type DimensionKeys =
   // Text
-  | 'fontSize'
-  | 'lineHeight'
+  | 'textSize'
+  | 'textHeight'
 
   // Padding
   | 'paddingTop'
@@ -54,6 +54,23 @@ type DimensionProperties =
   | 'borderWidth'
   | 'borderRadius';
 
-type Breakpoints = Partial<Record<SizeProperties, DimensionValue | BreakpointValues>>;
+export const dimensionKeys: DimensionKeys[] = [
+  'textSize',
+  'textHeight',
+  'paddingTop',
+  'paddingRight',
+  'paddingBottom',
+  'paddingLeft',
+  'marginTop',
+  'marginRight',
+  'marginBottom',
+  'marginLeft',
+  'height',
+  'width',
+  'borderWidth',
+  'borderRadius'
+];
 
-export type Dimensions = Partial<Record<DimensionProperties, DimensionValue | Breakpoints>>;
+type ElementBreakpoints = Partial<Record<SizeKeys, DimensionValue | BreakpointValues>>;
+
+export type Dimensions = Partial<Record<DimensionKeys, DimensionValue | ElementBreakpoints>>;
