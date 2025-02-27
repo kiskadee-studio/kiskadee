@@ -13,7 +13,24 @@ type Style = Partial<{
 
 type Elements = Record<string, Style>;
 
-type Breakpoints = Record<string, number>;
+// Breakpoints -------------------------------------------------------------------------------------
+
+type BreakpointKeys =
+  | 'all'
+  | 'sm1'
+  | 'sm2'
+  | 'sm3'
+  | 'md1'
+  | 'md2'
+  | 'md3'
+  | 'lg1'
+  | 'lg2'
+  | 'lg3'
+  | 'lg4';
+
+export type Breakpoints = Partial<Record<BreakpointKeys, number>>;
+
+// ------------------------------------------------------------------------------------------------
 
 type Components = Record<ComponentKeys, { elements: Elements }>;
 

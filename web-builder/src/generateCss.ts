@@ -146,7 +146,9 @@ export function generateCssFromStyle(style: Record<string, number>): string {
 const styleExample = {
   textItalic__true: 3,
   textAlign__center: 6,
-  textDecoration__underline: 9
+  textDecoration__underline: 9,
+  'fontSize--sm__12': 1,
+  'height--lg::lg1__44': 1
 };
 
 console.log(generateCssFromStyle(styleExample));
