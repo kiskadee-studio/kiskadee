@@ -1,19 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { convertDimensions } from './convertDimensions';
-
-const breakpoints = {
-  all: 0,
-  sm1: 320,
-  sm2: 360,
-  sm3: 400,
-  md1: 568,
-  md2: 768,
-  md3: 1024,
-  lg1: 1152,
-  lg2: 1312,
-  lg3: 1792,
-  lg4: 2432
-};
+import { breakpoints } from '@kiskadee/schema';
 
 describe('convertDimensions', () => {
   describe('convertDimensions - Valid Properties (Unique Value)', () => {
