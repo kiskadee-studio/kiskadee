@@ -1,4 +1,3 @@
-// convertDimensions.ts
 import type { Breakpoints } from '@kiskadee/schema';
 import { dimensionKeys } from '@kiskadee/schema';
 
@@ -28,55 +27,69 @@ const cssPropertyMap: Record<string, string> = {
 /**
  * Converts a dimension key into a CSS rule.
  *
- * For a simple key like "textSize--sm__16":
- *   If the key is for textSize, it outputs a class ".textSize-sm" with "font-size: 1rem;"
- *   (since 16px is converted to 1 rem).
+ * For keys with a class part (like "textSize--sm__16"):
+ *   It generates a class with the provided class suffix.
  *
- * For a key with a media query modifier like "paddingTop--md::lg1__20":
- *   The class name becomes ".paddingTop-md" and the CSS rule is wrapped inside a media query
- *   using the breakpoint value defined by "lg1".
+ * For keys without a class part (like "paddingTop__12"):
+ *   It uses the original key as the class selector.
+ *
+ * For keys using media query modifiers:
+ *   It wraps the CSS rule in the corresponding media query based on the breakpoints.
  *
  * @param key - The dimension key to process.
  * @param breakpoints - An object containing breakpoint definitions.
  * @returns The CSS rule as a string or null if the key is invalid.
  */
 export function convertDimensions(key: string, breakpoints: Breakpoints): string | null {
-  // Find the dimension key that matches the start of the key.
-  const matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
-  if (!matchingDimension) {
-    return null;
-  }
-
-  // Remove the dimension key prefix along with the separator (“--”)
-  const withoutPrefix = key.slice(`${matchingDimension}--`.length);
-
-  let classPart: string;
-  let breakpointKey: keyof Breakpoints | null = null;
+  let matchingDimension: string | undefined;
+  let className: string;
   let sizeValue: string;
   let mediaQuery: string | null = null;
 
-  // Check if the key contains a media query modifier using "::"
-  if (withoutPrefix.includes('::')) {
-    // Expected pattern: {classPart}::{breakpointKey}__{value}
-    const [left, right] = withoutPrefix.split('::');
-    classPart = left;
-    const parts = right.split('__');
-    if (parts.length !== 2) {
+  // First, check for keys using the custom class part marker: '--'
+  if (key.includes('--')) {
+    matchingDimension = dimensionKeys.find(dim => key.startsWith(`${dim}--`));
+    if (!matchingDimension) {
       return null;
     }
-    [breakpointKey, sizeValue] = parts as [keyof Breakpoints, string];
-    const bpValue = breakpoints[breakpointKey];
-    if (bpValue === undefined) {
+    const withoutPrefix = key.slice((matchingDimension + '--').length);
+    // Support media query modifier if present.
+    if (withoutPrefix.includes('::')) {
+      // Expected pattern: {customName}::{breakpointKey}__{value}
+      const [customName, remainder] = withoutPrefix.split('::');
+      const parts = remainder.split('__');
+      if (parts.length !== 2) {
+        return null;
+      }
+      const [breakpointKey, value] = parts as [keyof Breakpoints, string];
+      const bpValue = breakpoints[breakpointKey];
+      if (bpValue === undefined) {
+        return null;
+      }
+      mediaQuery = `@media (min-width: ${bpValue}px)`;
+      sizeValue = value;
+      className = `${matchingDimension}-${customName}`;
+    } else {
+      // Expected pattern: {customName}__{value}
+      const parts = withoutPrefix.split('__');
+      if (parts.length !== 2) {
+        return null;
+      }
+      const [customName, value] = parts as [string, string];
+      sizeValue = value;
+      className = `${matchingDimension}-${customName}`;
+    }
+  } else if (key.includes('__')) {
+    // For keys that do not have a custom class part,
+    // we use the key itself as the class name.
+    matchingDimension = dimensionKeys.find(dim => key.startsWith(`${dim}__`));
+    if (!matchingDimension) {
       return null;
     }
-    mediaQuery = `@media (min-width: ${bpValue}px)`;
+    sizeValue = key.slice((matchingDimension + '__').length);
+    className = key;
   } else {
-    // Expected simple pattern: {classPart}__{value}
-    const parts = withoutPrefix.split('__');
-    if (parts.length !== 2) {
-      return null;
-    }
-    [classPart, sizeValue] = parts as [string, string];
+    return null;
   }
 
   const numericValue = Number(sizeValue);
@@ -85,12 +98,9 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   }
 
   // Determine the CSS property name and unit.
-  // Look up the property from cssPropertyMap and fall back to using toKebabCase if not mapped.
   const propertyName = cssPropertyMap[matchingDimension] || toKebabCase(matchingDimension);
   let unit: string;
   let outputValue: number | string = numericValue;
-
-  // For textSize, we need to convert the raw numeric value from px to rem.
   if (matchingDimension === 'textSize') {
     outputValue = numericValue / 16;
     unit = 'rem';
@@ -98,13 +108,14 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
     unit = 'px';
   }
 
-  // Build a new class name using the dimension key and class part.
-  const className = `${matchingDimension}-${classPart}`;
-
-  const ruleContent = `.${className} {
+  // Build CSS rule – if a media query is specified, wrap the rule.
+  const ruleBody = `.${className} {
   ${propertyName}: ${outputValue}${unit};
 }`;
+  const rule = mediaQuery ? `
+${mediaQuery} {
+  ${ruleBody}
+}` : ruleBody;
 
-  // Wrap in media query if needed.
-  return mediaQuery ? `${mediaQuery} {\n  ${ruleContent}\n}` : ruleContent;
+  return rule;
 }

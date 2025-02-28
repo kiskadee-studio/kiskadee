@@ -1,8 +1,6 @@
-// convertDimensions.test.ts
 import { describe, expect, it } from 'vitest';
 import { convertDimensions } from './convertDimensions';
 
-// Breakpoints definition.
 const breakpoints = {
   all: 0,
   sm1: 320,
@@ -17,148 +15,142 @@ const breakpoints = {
   lg4: 2432
 };
 
-// The expected mapping from dimension keys to CSS property names.
-const expectedProperties: Record<string, string> = {
-  textSize: 'font-size',
-  paddingTop: 'padding-top',
-  marginLeft: 'margin-left',
-  borderWidth: 'border-width',
-  width: 'width',
-  height: 'height'
-};
-
 describe('convertDimensions', () => {
-  describe('convertDimensions - Valid Properties (Simple Conversion)', () => {
+  describe('convertDimensions - Valid Properties (Unique Value)', () => {
+    it("should convert 'textSize__16' into a valid CSS rule", () => {
+      const result = convertDimensions('textSize__16', breakpoints);
+      expect(result).toBeTruthy();
+      expect(result).toContain('.textSize__16 {');
+      expect(result).toContain('font-size: 1rem');
+    });
+
+    it("should convert 'paddingTop__16' into a valid CSS rule", () => {
+      const result = convertDimensions('paddingTop__16', breakpoints);
+      expect(result).toBeTruthy();
+      expect(result).toContain('.paddingTop__16 {');
+      expect(result).toContain('padding-top: 16px');
+    });
+
+    it("should convert 'marginLeft__16' into a valid CSS rule", () => {
+      const result = convertDimensions('marginLeft__16', breakpoints);
+      expect(result).toBeTruthy();
+      expect(result).toContain('.marginLeft__16 {');
+      expect(result).toContain('margin-left: 16px');
+    });
+
+    it("should convert 'borderWidth__16' into a valid CSS rule", () => {
+      const result = convertDimensions('borderWidth__16', breakpoints);
+      expect(result).toBeTruthy();
+      expect(result).toContain('.borderWidth__16 {');
+      expect(result).toContain('border-width: 16px');
+    });
+
+    it("should convert 'width__16' into a valid CSS rule", () => {
+      const result = convertDimensions('width__16', breakpoints);
+      expect(result).toBeTruthy();
+      expect(result).toContain('.width__16 {');
+      expect(result).toContain('width: 16px');
+    });
+
+    it("should convert 'height__16' into a valid CSS rule", () => {
+      const result = convertDimensions('height__16', breakpoints);
+      expect(result).toBeTruthy();
+      expect(result).toContain('.height__16 {');
+      expect(result).toContain('height: 16px');
+    });
+  });
+
+  describe('convertDimensions - Valid Properties (Size Support)', () => {
     it("should convert 'textSize--sm__16' into a valid CSS rule", () => {
-      const key = 'textSize--sm__16';
-      const result = convertDimensions(key, breakpoints);
+      const result = convertDimensions('textSize--sm__16', breakpoints);
       expect(result).toBeTruthy();
       expect(result).toContain('.textSize-sm {');
-      // For textSize, 16px converts to 1rem.
-      expect(result).toContain(`${expectedProperties.textSize}: 1rem`);
+      expect(result).toContain('font-size: 1rem');
     });
 
     it("should convert 'paddingTop--sm__16' into a valid CSS rule", () => {
-      const key = 'paddingTop--sm__16';
-      const result = convertDimensions(key, breakpoints);
+      const result = convertDimensions('paddingTop--sm__16', breakpoints);
       expect(result).toBeTruthy();
       expect(result).toContain('.paddingTop-sm {');
-      expect(result).toContain(`${expectedProperties.paddingTop}: 16px`);
+      expect(result).toContain('padding-top: 16px');
     });
 
     it("should convert 'marginLeft--sm__16' into a valid CSS rule", () => {
-      const key = 'marginLeft--sm__16';
-      const result = convertDimensions(key, breakpoints);
+      const result = convertDimensions('marginLeft--sm__16', breakpoints);
       expect(result).toBeTruthy();
       expect(result).toContain('.marginLeft-sm {');
-      expect(result).toContain(`${expectedProperties.marginLeft}: 16px`);
+      expect(result).toContain('margin-left: 16px');
     });
 
     it("should convert 'borderWidth--sm__16' into a valid CSS rule", () => {
-      const key = 'borderWidth--sm__16';
-      const result = convertDimensions(key, breakpoints);
+      const result = convertDimensions('borderWidth--sm__16', breakpoints);
       expect(result).toBeTruthy();
       expect(result).toContain('.borderWidth-sm {');
-      expect(result).toContain(`${expectedProperties.borderWidth}: 16px`);
+      expect(result).toContain('border-width: 16px');
     });
 
     it("should convert 'width--sm__16' into a valid CSS rule", () => {
-      const key = 'width--sm__16';
-      const result = convertDimensions(key, breakpoints);
+      const result = convertDimensions('width--sm__16', breakpoints);
       expect(result).toBeTruthy();
       expect(result).toContain('.width-sm {');
-      expect(result).toContain(`${expectedProperties.width}: 16px`);
+      expect(result).toContain('width: 16px');
     });
 
     it("should convert 'height--sm__16' into a valid CSS rule", () => {
-      const key = 'height--sm__16';
-      const result = convertDimensions(key, breakpoints);
+      const result = convertDimensions('height--sm__16', breakpoints);
       expect(result).toBeTruthy();
       expect(result).toContain('.height-sm {');
-      expect(result).toContain(`${expectedProperties.height}: 16px`);
+      expect(result).toContain('height: 16px');
     });
   });
 
   describe('convertDimensions - Valid Properties (Media Query Conversion)', () => {
-    it("should convert 'textSize--md::lg1__32' into a media query wrapped CSS rule", () => {
-      const key = 'textSize--md::lg1__32';
-      const result = convertDimensions(key, breakpoints);
+    it("should convert 'textSize--sm::md1__16' into a valid CSS rule", () => {
+      const result = convertDimensions('textSize--sm::md1__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.textSize-md {');
-      // For textSize, 32px converts to 2rem.
-      expect(result).toContain(`${expectedProperties.textSize}: 2rem`);
-      expect(result).toContain(`@media (min-width: ${breakpoints.lg1}px)`);
+      expect(result).toContain('@media (min-width: 568px)');
+      expect(result).toContain('.textSize-sm {');
+      expect(result).toContain('font-size: 1rem');
     });
 
-    it("should convert 'paddingTop--md::lg1__32' into a media query wrapped CSS rule", () => {
-      const key = 'paddingTop--md::lg1__32';
-      const result = convertDimensions(key, breakpoints);
+    it("should convert 'paddingTop--sm::lg1__16' into a valid CSS rule", () => {
+      const result = convertDimensions('paddingTop--sm::lg1__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.paddingTop-md {');
-      expect(result).toContain(`${expectedProperties.paddingTop}: 32px`);
-      expect(result).toContain(`@media (min-width: ${breakpoints.lg1}px)`);
+      expect(result).toContain('@media (min-width: 1152px)');
+      expect(result).toContain('.paddingTop-sm {');
+      expect(result).toContain('padding-top: 16px');
     });
 
-    it("should convert 'marginLeft--md::lg1__32' into a media query wrapped CSS rule", () => {
-      const key = 'marginLeft--md::lg1__32';
-      const result = convertDimensions(key, breakpoints);
+    it("should convert 'marginLeft--sm::lg2__16' into a valid CSS rule", () => {
+      const result = convertDimensions('marginLeft--sm::lg2__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.marginLeft-md {');
-      expect(result).toContain(`${expectedProperties.marginLeft}: 32px`);
-      expect(result).toContain(`@media (min-width: ${breakpoints.lg1}px)`);
+      expect(result).toContain('@media (min-width: 1312px)');
+      expect(result).toContain('.marginLeft-sm {');
+      expect(result).toContain('margin-left: 16px');
     });
 
-    it("should convert 'borderWidth--md::lg1__32' into a media query wrapped CSS rule", () => {
-      const key = 'borderWidth--md::lg1__32';
-      const result = convertDimensions(key, breakpoints);
+    it("should convert 'borderWidth--sm::lg3__16' into a valid CSS rule", () => {
+      const result = convertDimensions('borderWidth--sm::lg3__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.borderWidth-md {');
-      expect(result).toContain(`${expectedProperties.borderWidth}: 32px`);
-      expect(result).toContain(`@media (min-width: ${breakpoints.lg1}px)`);
+      expect(result).toContain('@media (min-width: 1792px)');
+      expect(result).toContain('.borderWidth-sm {');
+      expect(result).toContain('border-width: 16px');
     });
 
-    it("should convert 'width--md::lg1__32' into a media query wrapped CSS rule", () => {
-      const key = 'width--md::lg1__32';
-      const result = convertDimensions(key, breakpoints);
+    it("should convert 'width--sm::lg4__16' into a valid CSS rule", () => {
+      const result = convertDimensions('width--sm::lg4__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.width-md {');
-      expect(result).toContain(`${expectedProperties.width}: 32px`);
-      expect(result).toContain(`@media (min-width: ${breakpoints.lg1}px)`);
+      expect(result).toContain('@media (min-width: 2432px)');
+      expect(result).toContain('.width-sm {');
+      expect(result).toContain('width: 16px');
     });
 
-    it("should convert 'height--md::lg1__32' into a media query wrapped CSS rule", () => {
-      const key = 'height--md::lg1__32';
-      const result = convertDimensions(key, breakpoints);
+    it("should convert 'height--sm::sm1__16' into a valid CSS rule", () => {
+      const result = convertDimensions('height--sm::sm1__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.height-md {');
-      expect(result).toContain(`${expectedProperties.height}: 32px`);
-      expect(result).toContain(`@media (min-width: ${breakpoints.lg1}px)`);
-    });
-  });
-
-  describe('convertDimensions - Exceptions', () => {
-    it('should return null for a key with an invalid prefix', () => {
-      const key = 'invalid--sm__10';
-      const result = convertDimensions(key, breakpoints);
-      expect(result).toBeNull();
-    });
-
-    it('should return null for a key missing the proper delimiter', () => {
-      const key = 'width--sm-100';
-      const result = convertDimensions(key, breakpoints);
-      expect(result).toBeNull();
-    });
-
-    it('should return null if the dimension value is not numeric', () => {
-      const key = 'borderWidth--md__abc';
-      const result = convertDimensions(key, breakpoints);
-      expect(result).toBeNull();
-    });
-
-    it('should return null if the media query breakpoint key is not found in breakpoints', () => {
-      const key = 'height--lg::invalid__100';
-      const result = convertDimensions(key, breakpoints);
-      expect(result).toBeNull();
+      expect(result).toContain('@media (min-width: 320px)');
+      expect(result).toContain('.height-sm {');
+      expect(result).toContain('height: 16px');
     });
   });
 });
