@@ -48,11 +48,11 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
 
   // First, check for keys using the custom class part marker: '--'
   if (key.includes('--')) {
-    matchingDimension = dimensionKeys.find(dim => key.startsWith(`${dim}--`));
+    matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
     if (!matchingDimension) {
       return null;
     }
-    const withoutPrefix = key.slice((matchingDimension + '--').length);
+    const withoutPrefix = key.slice(`${matchingDimension}--`.length);
     // Support media query modifier if present.
     if (withoutPrefix.includes('::')) {
       // Expected pattern: {customName}::{breakpointKey}__{value}
@@ -82,11 +82,11 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   } else if (key.includes('__')) {
     // For keys that do not have a custom class part,
     // we use the key itself as the class name.
-    matchingDimension = dimensionKeys.find(dim => key.startsWith(`${dim}__`));
+    matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
     if (!matchingDimension) {
       return null;
     }
-    sizeValue = key.slice((matchingDimension + '__').length);
+    sizeValue = key.slice(`${matchingDimension}__`.length);
     className = key;
   } else {
     return null;
@@ -112,10 +112,12 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   const ruleBody = `.${className} {
   ${propertyName}: ${outputValue}${unit};
 }`;
-  const rule = mediaQuery ? `
+  const rule = mediaQuery
+    ? `
 ${mediaQuery} {
   ${ruleBody}
-}` : ruleBody;
+}`
+    : ruleBody;
 
   return rule;
 }
