@@ -1,7 +1,7 @@
 import type { Appearance } from './types/appearance/appearance.types';
-import type { BreakpointKeys, Dimensions } from './types/dimensions/dimensions.types';
+import type { Dimensions } from './types/dimensions/dimensions.types';
 import type { Palettes } from './types/palettes/palettes.types';
-import { breakpoints } from './breakpoints';
+import { type Breakpoints, breakpoints } from './breakpoints';
 
 export type ComponentKeys = 'button';
 
@@ -14,10 +14,6 @@ type Style = Partial<{
 }>;
 
 type Elements = Record<string, Style>;
-
-// Breakpoints -------------------------------------------------------------------------------------
-
-export type Breakpoints = Partial<Record<BreakpointKeys, number>>;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -66,14 +62,10 @@ export const schema: Schema = {
           },
           dimensions: {
             textSize: {
-              sm: 12, // minimum is 10,
-              md: {
-                all: 16,
-                lg1: 14
-              },
-              lg: {
-                all: 20,
-                lg1: 18
+              s_sm: 12,
+              s_md: {
+                bp_all: 16,
+                bp_lg_1: 14
               }
             },
             paddingTop: 10,
@@ -84,14 +76,14 @@ export const schema: Schema = {
             marginRight: 16,
             marginBottom: 8,
             marginLeft: 16,
-            height: {
-              md: 40, // Default
-              lg: {
-                all: 48,
-                lg1: 44
+            boxHeight: {
+              s_md: 40, // Default
+              s_lg: {
+                bp_all: 48,
+                bp_lg_1: 44
               }
             },
-            width: 120,
+            boxWidth: 120,
             borderWidth: 1,
             borderRadius: 4,
             textHeight: 24

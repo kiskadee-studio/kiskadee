@@ -1,10 +1,61 @@
-export const breakpoints = {
+// Size --------------------------------------------------------------------------------------------
+
+// The prefix "s_" was added to help differentiate more easily from the breakpoint keys (BreakpointKeys)
+export type SizeKeys =
+  | 's_3xs'
+  | 's_2xs'
+  | 's_xs'
+  | 's_sm'
+  | 's_md' // Default / Must have
+  | 's_lg'
+  | 's_xl'
+  | 's_2xl'
+  | 's_3xl';
+
+export const textSizes: Record<SizeKeys, number> = {
+  /*
+   * Probably the size 8 should not be used due to its tiny size that impacts accessibility, but for
+   * the sake of flexibility, we will keep it for now.
+   */
+  s_3xs: 8, //   0.5rem: Minimal, caption or supplementary text
+  s_2xs: 10, //  0.625rem
+  s_xs: 12, //   0.75rem
+  s_sm: 14, //   0.875rem
+  s_md: 16, //   1rem: Base text size
+  s_lg: 20, //   1.25rem
+  s_xl: 24, //   1.5rem
+  s_2xl: 32, //  2rem
+  /*
+   * Maybe 3xl is not enough for texts, and it might be necessary to add more sizes
+   */
+  s_3xl: 40 //   2.5rem
+};
+
+// Breakpoint --------------------------------------------------------------------------------------
+
+// The prefix "bp_" was added to help differentiate more easily from size keys (SizeKeys)
+export type BreakpointKeys =
+  | 'bp_all' //   0px    - Must have (mobile)
+  | 'bp_sm_1' //  320px
+  | 'bp_sm_2' //  360px
+  | 'bp_sm_3' //  400px
+  | 'bp_md_1' //  568px
+  | 'bp_md_2' //  768px  - Nice to have (tablet)
+  | 'bp_md_3' //  1024px
+  | 'bp_lg_1' //  1152px - Must have (desktop)
+  | 'bp_lg_2' //  1312px
+  | 'bp_lg_3' //  1792px
+  | 'bp_lg_4'; // 2432px
+
+export type Breakpoints = Partial<Record<BreakpointKeys, number>>;
+
+export const breakpoints: Breakpoints = {
   /*
    * @link https://gs.statcounter.com/screen-resolution-stats
    */
 
   // Applies to all devices
-  all: 0,
+  bp_all: 0,
 
   // --------------------------------------------------------------------------------------------
   // Mobile portrait sizes
@@ -17,7 +68,7 @@ export const breakpoints = {
    * Small mobile portrait sizes:
    * iPhone 5 / SE (320)
    */
-  sm1: 320,
+  bp_sm_1: 320,
 
   /*
    * Regular mobile portrait sizes:
@@ -30,7 +81,7 @@ export const breakpoints = {
    *
    * This breakpoint covers at least 40.36% of the mobile market
    */
-  sm2: 360, //+40px
+  bp_sm_2: 360, //+40px
 
   /*
    * Large mobile portrait sizes:
@@ -44,7 +95,7 @@ export const breakpoints = {
    *
    * This breakpoint covers at least 7.81% of the mobile market
    */
-  sm3: 400, //+40
+  bp_sm_3: 400, //+40
 
   // --------------------------------------------------------------------------------------------
   // Small tablet portrait and mobile landscape sizes:
@@ -58,7 +109,7 @@ export const breakpoints = {
    * 601 portrait - 3.55% of the tablet market
    * 744 portrait - 2.63% of the tablet market
    */
-  md1: 568, //+168
+  bp_md_1: 568, //+168
 
   /*
    * Small tablet portrait and mobile landscape sizes:
@@ -73,7 +124,7 @@ export const breakpoints = {
    *
    * This breakpoint covers at least 49.94% of the tablet market
    */
-  md2: 768, //+100px
+  bp_md_2: 768, //+100px
 
   // --------------------------------------------------------------------------------------------
   // Tablet portrait, laptop, and small desktop sizes
@@ -89,7 +140,7 @@ export const breakpoints = {
    *
    * This breakpoint covers at least 49.38% of the tablet market
    */
-  md3: 1024, //+256
+  bp_md_3: 1024, //+256
 
   // --------------------------------------------------------------------------------------------
   // Regular Laptop Sizes
@@ -102,7 +153,7 @@ export const breakpoints = {
    * This breakpoint covers at least 4.46%/14.07% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  lg1: 1152, //+128
+  bp_lg_1: 1152, //+128
 
   // --------------------------------------------------------------------------------------------
   // Large Desktop Sizes
@@ -116,7 +167,7 @@ export const breakpoints = {
    * This breakpoint covers at least 1.01%/17.87% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  lg2: 1312, //+160
+  bp_lg_2: 1312, //+160
 
   /*
    * 1920 - 57.47% (Steam) / 23.14% (StatCounter) of the desktop market
@@ -124,7 +175,7 @@ export const breakpoints = {
    * This breakpoint covers at least 57.47%/23.14% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  lg3: 1792, //+480
+  bp_lg_3: 1792, //+480
 
   /*
    * 2560 - 23.18% (Steam) / 2.84% (StatCounter) of the desktop market
@@ -132,5 +183,5 @@ export const breakpoints = {
    * This breakpoint covers at least 23.18%/2.84% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  lg4: 2432 //+640
+  bp_lg_4: 2432 //+640
 };
