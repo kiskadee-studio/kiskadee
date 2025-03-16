@@ -1,53 +1,66 @@
-// Size --------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+// Size
+//--------------------------------------------------------------------------------------------------
 
-// The prefix "s_" was added to help differentiate more easily from the breakpoint keys (BreakpointKeys)
-export type SizeKeys =
-  | 's_3xs'
-  | 's_2xs'
-  | 's_xs'
-  | 's_sm'
-  | 's_md' // Default / Must have
-  | 's_lg'
-  | 's_xl'
-  | 's_2xl'
-  | 's_3xl';
+export type SizeProps =
+  | 's:sm:5'
+  | 's:sm:4'
+  | 's:sm:3'
+  | 's:sm:2'
+  | 's:sm:1'
+  | 's:md:1' // Default / Must have
+  | 's:lg:1'
+  | 's:lg:2'
+  | 's:lg:3'
+  | 's:lg:4'
+  | 's:lg:5';
 
-export const textSizes: Record<SizeKeys, number> = {
-  /*
-   * Probably the size 8 should not be used due to its tiny size that impacts accessibility, but for
-   * the sake of flexibility, we will keep it for now.
-   */
-  s_3xs: 8, //   0.5rem: Minimal, caption or supplementary text
-  s_2xs: 10, //  0.625rem
-  s_xs: 12, //   0.75rem
-  s_sm: 14, //   0.875rem
-  s_md: 16, //   1rem: Base text size
-  s_lg: 20, //   1.25rem
-  s_xl: 24, //   1.5rem
-  s_2xl: 32, //  2rem
-  /*
-   * Maybe 3xl is not enough for texts, and it might be necessary to add more sizes
-   */
-  s_3xl: 40 //   2.5rem
+export const sizeProps: SizeProps[] = [
+  's:sm:5',
+  's:sm:4',
+  's:sm:3',
+  's:sm:2',
+  's:sm:1',
+  's:md:1', // Default / Must have
+  's:lg:1',
+  's:lg:2',
+  's:lg:3',
+  's:lg:4',
+  's:lg:5'
+];
+
+export const textSizes: Record<SizeProps, number> = {
+  's:sm:5': 6, //  0.375rem - not recommended
+  's:sm:4': 8, //  0.5rem   - not recommended
+  's:sm:3': 10, // 0.625rem
+  's:sm:2': 12, // 0.75rem
+  's:sm:1': 14, // 0.875rem
+  's:md:1': 16, // 1rem
+  's:lg:1': 20, // 1.25rem
+  's:lg:2': 24, // 1.5rem
+  's:lg:3': 32, // 2rem
+  's:lg:4': 40, // 2.5rem
+  's:lg:5': 48 //  3rem
 };
 
-// Breakpoint --------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+// Breakpoint
+//--------------------------------------------------------------------------------------------------
 
-// The prefix "bp_" was added to help differentiate more easily from size keys (SizeKeys)
-export type BreakpointKeys =
-  | 'bp_all' //   0px    - Must have (mobile)
-  | 'bp_sm_1' //  320px
-  | 'bp_sm_2' //  360px
-  | 'bp_sm_3' //  400px
-  | 'bp_md_1' //  568px
-  | 'bp_md_2' //  768px  - Nice to have (tablet)
-  | 'bp_md_3' //  1024px
-  | 'bp_lg_1' //  1152px - Must have (desktop)
-  | 'bp_lg_2' //  1312px
-  | 'bp_lg_3' //  1792px
-  | 'bp_lg_4'; // 2432px
+export type BreakpointProps =
+  | 'bp:all' //   0px    - Must have (mobile)
+  | 'bp:sm:1' //  320px
+  | 'bp:sm:2' //  360px
+  | 'bp:sm:3' //  400px
+  | 'bp:md:1' //  568px
+  | 'bp:md:2' //  768px  - Nice to have (tablet)
+  | 'bp:md:3' //  1024px
+  | 'bp:lg:1' //  1152px - Must have (desktop)
+  | 'bp:lg:2' //  1312px
+  | 'bp:lg:3' //  1792px
+  | 'bp:lg:4'; // 2432px
 
-export type Breakpoints = Partial<Record<BreakpointKeys, number>>;
+export type Breakpoints = Partial<Record<BreakpointProps, number>>;
 
 export const breakpoints: Breakpoints = {
   /*
@@ -55,20 +68,20 @@ export const breakpoints: Breakpoints = {
    */
 
   // Applies to all devices
-  bp_all: 0,
+  'bp:all': 0, // Immutable
 
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
   // Mobile portrait sizes
   // 07/28/2024
   // https://gs.statcounter.com/screen-resolution-stats/mobile/worldwide
   // https://store.steampowered.com/hwsurvey/
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
 
   /*
    * Small mobile portrait sizes:
    * iPhone 5 / SE (320)
    */
-  bp_sm_1: 320,
+  'bp:sm:1': 320,
 
   /*
    * Regular mobile portrait sizes:
@@ -81,7 +94,7 @@ export const breakpoints: Breakpoints = {
    *
    * This breakpoint covers at least 40.36% of the mobile market
    */
-  bp_sm_2: 360, //+40px
+  'bp:sm:2': 360, //+40px
 
   /*
    * Large mobile portrait sizes:
@@ -95,11 +108,11 @@ export const breakpoints: Breakpoints = {
    *
    * This breakpoint covers at least 7.81% of the mobile market
    */
-  bp_sm_3: 400, //+40
+  'bp:sm:3': 400, //+40
 
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
   // Small tablet portrait and mobile landscape sizes:
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
 
   /*
    * iPhone 5 (landscape)(568)
@@ -109,7 +122,7 @@ export const breakpoints: Breakpoints = {
    * 601 portrait - 3.55% of the tablet market
    * 744 portrait - 2.63% of the tablet market
    */
-  bp_md_1: 568, //+168
+  'bp:md:1': 568, //+168
 
   /*
    * Small tablet portrait and mobile landscape sizes:
@@ -124,11 +137,11 @@ export const breakpoints: Breakpoints = {
    *
    * This breakpoint covers at least 49.94% of the tablet market
    */
-  bp_md_2: 768, //+100px
+  'bp:md:2': 768, //+100px
 
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
   // Tablet portrait, laptop, and small desktop sizes
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
 
   /*
    * 1024 portrait - 24.22% of the tablet market
@@ -140,11 +153,11 @@ export const breakpoints: Breakpoints = {
    *
    * This breakpoint covers at least 49.38% of the tablet market
    */
-  bp_md_3: 1024, //+256
+  'bp:md:3': 1024, //+256
 
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
   // Regular Laptop Sizes
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
 
   /*
    * 1280 - 1.05% (Steam) / 9,84% (StatCounter) of the desktop market
@@ -153,11 +166,11 @@ export const breakpoints: Breakpoints = {
    * This breakpoint covers at least 4.46%/14.07% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  bp_lg_1: 1152, //+128
+  'bp:lg:1': 1152, //+128
 
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
   // Large Desktop Sizes
-  // --------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
 
   /*
    * 1440 - 0.99% (Steam) / 5.88% (StatCounter) of the desktop market
@@ -167,7 +180,7 @@ export const breakpoints: Breakpoints = {
    * This breakpoint covers at least 1.01%/17.87% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  bp_lg_2: 1312, //+160
+  'bp:lg:2': 1312, //+160
 
   /*
    * 1920 - 57.47% (Steam) / 23.14% (StatCounter) of the desktop market
@@ -175,7 +188,7 @@ export const breakpoints: Breakpoints = {
    * This breakpoint covers at least 57.47%/23.14% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  bp_lg_3: 1792, //+480
+  'bp:lg:3': 1792, //+480
 
   /*
    * 2560 - 23.18% (Steam) / 2.84% (StatCounter) of the desktop market
@@ -183,5 +196,5 @@ export const breakpoints: Breakpoints = {
    * This breakpoint covers at least 23.18%/2.84% of the desktop market
    * Considering scrollbar and toolbar/dock
    */
-  bp_lg_4: 2432 //+640
+  'bp:lg:4': 2432 //+640
 };

@@ -62,10 +62,10 @@ export const schema: Schema = {
           },
           dimensions: {
             textSize: {
-              s_sm: 12,
-              s_md: {
-                bp_all: 16,
-                bp_lg_1: 14
+              's:sm:1': 12,
+              's:md:1': {
+                'bp:all': 16,
+                'bp:lg:1': 14
               }
             },
             paddingTop: 10,
@@ -77,10 +77,10 @@ export const schema: Schema = {
             marginBottom: 8,
             marginLeft: 16,
             boxHeight: {
-              s_md: 40, // Default
-              s_lg: {
-                bp_all: 48,
-                bp_lg_1: 44
+              's:md:1': 40,
+              's:lg:1': {
+                'bp:all': 48,
+                'bp:lg:1': 44
               }
             },
             boxWidth: 120,

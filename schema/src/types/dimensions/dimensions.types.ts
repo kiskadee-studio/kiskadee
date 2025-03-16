@@ -1,4 +1,4 @@
-import type { BreakpointKeys, SizeKeys } from '../../breakpoints';
+import type { BreakpointProps, SizeProps } from '../../breakpoints';
 
 export type DimensionValue = number; // px
 
@@ -41,11 +41,11 @@ export const dimensionKeys: DimensionKeys[] = [
   'borderRadius'
 ];
 
-export type DimensionBreakpoints = Partial<Record<BreakpointKeys, DimensionValue>>;
+export type DimensionBreakpoints = Partial<Record<BreakpointProps, DimensionValue>>;
 
 export type Dimensions = Partial<
   Record<
     DimensionKeys,
-    Partial<Record<SizeKeys, DimensionBreakpoints | DimensionValue>> | DimensionValue
+    Partial<Record<SizeProps, DimensionBreakpoints | DimensionValue>> | DimensionValue
   >
 >;
