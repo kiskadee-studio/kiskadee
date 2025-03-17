@@ -1,8 +1,14 @@
-import type { Breakpoints } from '@kiskadee/schema';
-import { dimensionKeys } from '@kiskadee/schema';
+// convertDimensions.ts
+import {
+  type Breakpoints,
+  type SizeProps,
+  sizeProps,
+  dimensionKeys,
+  type BreakpointProps
+} from '@kiskadee/schema';
 
 /**
- * Utility to convert camelCase string to kebab-case.
+ * Utility that converts a camelCase string to kebab-case.
  *
  * @param str - The camelCase string.
  * @returns The kebab-case string.
@@ -19,105 +25,122 @@ const cssPropertyMap: Record<string, string> = {
   paddingTop: 'padding-top',
   marginLeft: 'margin-left',
   borderWidth: 'border-width',
-  width: 'width',
-  height: 'height'
+  boxWidth: 'width',
+  boxHeight: 'height'
   // Add other mappings as needed.
 };
 
 /**
+ * Returns the base class to be used in the CSS selector.
+ *
+ * If the dimension is "boxWidth" or "boxHeight", uses the mapped CSS property;
+ * otherwise, uses the dimension key.
+ *
+ * @param matchingDimension - The dimension key.
+ * @returns The base class name for the CSS rule.
+ */
+function getBaseClass(matchingDimension: string): string {
+  return matchingDimension.startsWith('box')
+    ? cssPropertyMap[matchingDimension]
+    : matchingDimension;
+}
+
+/**
  * Converts a dimension key into a CSS rule.
  *
- * For keys with a class part (like "textSize--sm__16"):
- *   It generates a class with the provided class suffix.
+ * Supports both standard keys (e.g. "paddingTop__16") and size-support keys (e.g. "textSize--s:sm:1__16").
  *
- * For keys without a class part (like "paddingTop__12"):
- *   It uses the original key as the class selector.
+ * For size-support keys, if the custom token exactly matches one of the valid size properties,
+ * then it is not included in the resulting CSS class name.
  *
- * For keys using media query modifiers:
- *   It wraps the CSS rule in the corresponding media query based on the breakpoints.
+ * Also supports an optional media query branch if the key uses "::" to denote a media query breakpoint.
  *
- * @param key - The dimension key to process.
- * @param breakpoints - An object containing breakpoint definitions.
- * @returns The CSS rule as a string or null if the key is invalid.
+ * @param key - The dimension key.
+ * @param breakpoints - Object containing breakpoint definitions.
+ * @returns The CSS rule string or null if the key is invalid.
  */
 export function convertDimensions(key: string, breakpoints: Breakpoints): string | null {
   let matchingDimension: string | undefined;
   let className: string;
-  let sizeValue: string;
   let mediaQuery: string | null = null;
+  let valuePortion: string;
 
-  // First, check for keys using the custom class part marker: '--'
   if (key.includes('--')) {
+    // Look for a matching dimension key with size support
     matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
-    if (!matchingDimension) {
-      return null;
-    }
+    if (!matchingDimension) return null;
     const withoutPrefix = key.slice(`${matchingDimension}--`.length);
-    // Support media query modifier if present.
+
     if (withoutPrefix.includes('::')) {
-      // Expected pattern: {customName}::{breakpointKey}__{value}
-      const [customName, remainder] = withoutPrefix.split('::');
+      // Pattern: {customToken}::{mediaToken}__{value}
+      let [customToken, remainder] = withoutPrefix.split('::');
       const parts = remainder.split('__');
-      if (parts.length !== 2) {
-        return null;
-      }
-      const [breakpointKey, value] = parts as [keyof Breakpoints, string];
-      const bpValue = breakpoints[breakpointKey];
-      if (bpValue === undefined) {
-        return null;
-      }
+      if (parts.length !== 2) return null;
+      const [mediaToken, value] = parts as [string, string];
+
+      const bpValue = breakpoints[mediaToken as BreakpointProps];
+      if (bpValue === undefined) return null;
       mediaQuery = `@media (min-width: ${bpValue}px)`;
-      sizeValue = value;
-      className = `${matchingDimension}-${customName}`;
-    } else {
-      // Expected pattern: {customName}__{value}
-      const parts = withoutPrefix.split('__');
-      if (parts.length !== 2) {
-        return null;
+      valuePortion = value;
+
+      // If custom token is a valid size prop, remove it.
+      if (customToken.includes(':') && sizeProps.includes(customToken as SizeProps)) {
+        customToken = '';
+      } else if (customToken.includes(':')) {
+        // Otherwise, if it contains colon(s), use only the first segment.
+        customToken = customToken.split(':')[0];
       }
-      const [customName, value] = parts as [string, string];
-      sizeValue = value;
-      className = `${matchingDimension}-${customName}`;
+
+      className = customToken
+        ? `${matchingDimension}-${customToken}__${value}`
+        : `${getBaseClass(matchingDimension)}__${value}`;
+    } else {
+      // Pattern: {customToken}__{value}
+      let [customToken, value] = withoutPrefix.split('__') as [string, string];
+      if (!customToken || !value) return null;
+      valuePortion = value;
+
+      if (customToken.includes(':') && sizeProps.includes(customToken as SizeProps)) {
+        customToken = '';
+      } else if (customToken.includes(':')) {
+        customToken = customToken.split(':')[0];
+      }
+
+      className = customToken
+        ? `${matchingDimension}-${customToken}__${value}`
+        : `${getBaseClass(matchingDimension)}__${value}`;
     }
   } else if (key.includes('__')) {
-    // For keys that do not have a custom class part,
-    // we use the key itself as the class name.
+    // Standard key without size qualifier
     matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
-    if (!matchingDimension) {
-      return null;
-    }
-    sizeValue = key.slice(`${matchingDimension}__`.length);
-    className = key;
+    if (!matchingDimension) return null;
+
+    const parts = key.split('__');
+    if (parts.length !== 2) return null;
+    const [_, value] = parts as [string, string];
+    className = key; // Use the original key as the class name.
+    valuePortion = value;
   } else {
     return null;
   }
 
-  const numericValue = Number(sizeValue);
-  if (Number.isNaN(numericValue)) {
-    return null;
-  }
+  // Determine the CSS property based on the dimension.
+  const cssProperty = cssPropertyMap[matchingDimension] || toKebabCase(matchingDimension);
 
-  // Determine the CSS property name and unit.
-  const propertyName = cssPropertyMap[matchingDimension] || toKebabCase(matchingDimension);
-  let unit: string;
-  let outputValue: number | string = numericValue;
+  // Determine the CSS value.
+  // For textSize, convert the numeric value to rem (assuming a base of 16px).
+  let cssValue: string;
   if (matchingDimension === 'textSize') {
-    outputValue = numericValue / 16;
-    unit = 'rem';
+    const number = Number(valuePortion);
+    cssValue = number ? `${number / 16}rem` : valuePortion;
   } else {
-    unit = 'px';
+    cssValue = `${valuePortion}px`;
   }
 
-  // Build CSS rule – if a media query is specified, wrap the rule.
-  const ruleBody = `.${className} {
-  ${propertyName}: ${outputValue}${unit};
-}`;
-  const rule = mediaQuery
-    ? `
-${mediaQuery} {
-  ${ruleBody}
-}`
-    : ruleBody;
-
+  // Build the CSS rule.
+  let rule = `.${className} { ${cssProperty}: ${cssValue}; }`;
+  if (mediaQuery) {
+    rule = `${mediaQuery} { ${rule} }`;
+  }
   return rule;
 }
