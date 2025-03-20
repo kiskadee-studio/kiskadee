@@ -67,18 +67,24 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   if (key.includes('--')) {
     // Find a matching dimension key with support for custom tokens (size and/or media-based)
     matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
-    if (!matchingDimension) return null;
+    if (!matchingDimension) {
+      return null;
+    }
     const withoutPrefix = key.slice(`${matchingDimension}--`.length);
 
     if (withoutPrefix.includes('::')) {
       // Pattern: {customToken}::{mediaToken}__{value}
       let [customToken, remainder] = withoutPrefix.split('::');
       const parts = remainder.split('__');
-      if (parts.length !== 2) return null;
+      if (parts.length !== 2) {
+        return null;
+      }
       const [mediaToken, value] = parts as [string, string];
 
       const bpValue = breakpoints[mediaToken as BreakpointProps];
-      if (bpValue === undefined) return null;
+      if (bpValue === undefined) {
+        return null;
+      }
       mediaQuery = `@media (min-width: ${bpValue}px)`;
       valuePortion = value;
 
@@ -107,7 +113,9 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
     } else {
       // Pattern: {customToken}__{value}
       let [customToken, value] = withoutPrefix.split('__') as [string, string];
-      if (!customToken || !value) return null;
+      if (!customToken || !value) {
+        return null;
+      }
       valuePortion = value;
       customToken = customToken.trim();
 
@@ -124,10 +132,14 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   } else if (key.includes('__')) {
     // Standard key without any token.
     matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
-    if (!matchingDimension) return null;
+    if (!matchingDimension) {
+      return null;
+    }
 
     const parts = key.split('__');
-    if (parts.length !== 2) return null;
+    if (parts.length !== 2) {
+      return null;
+    }
     const [_, value] = parts as [string, string];
     className = key;
     valuePortion = value;
