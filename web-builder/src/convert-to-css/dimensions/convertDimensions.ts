@@ -119,10 +119,10 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
       valuePortion = value;
       customToken = customToken.trim();
 
-      if (customToken.includes(':') && sizeProps.includes(customToken as SizeProps)) {
+      if (sizeProps.includes(customToken as SizeProps)) {
         customToken = '';
-      } else if (customToken.includes(':')) {
-        customToken = customToken.split(':')[0];
+      } else {
+        return null;
       }
 
       className = customToken
