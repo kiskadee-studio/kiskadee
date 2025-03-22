@@ -55,11 +55,11 @@ describe('convertDimensions', () => {
       expect(result).toContain('font-size: 1rem');
     });
 
-    it("should convert 'paddingTop--s:sm:1__16' into a valid CSS rule", () => {
-      const result = convertDimensions('paddingTop--s:sm:1__16', breakpoints);
+    it("should convert 'paddingRight--s:sm:1__16' into a valid CSS rule", () => {
+      const result = convertDimensions('paddingRight--s:sm:1__16', breakpoints);
       expect(result).toBeTruthy();
-      expect(result).toContain('.paddingTop__16 {');
-      expect(result).toContain('padding-top: 16px');
+      expect(result).toContain('.paddingRight__16 {');
+      expect(result).toContain('padding-right: 16px');
     });
 
     it("should convert 'marginLeft--s:sm:1__16' into a valid CSS rule", () => {
@@ -149,11 +149,6 @@ describe('convertDimensions', () => {
       expect(result).toBeNull();
     });
 
-    // it("Exception 6 - should return null for 'paddingTop--s:sm:1::bp:lg:1__16'", () => {
-    //   const result = convertDimensions('paddingTop--s:sm:1::bp:lg:1__16', breakpoints);
-    //   expect(result).toBeNull();
-    // });
-
     describe('Exception 5', () => {
       it('should return null when the custom token is missing in the non-media pattern', () => {
         const result = convertDimensions('paddingTop--__16', breakpoints);
@@ -194,6 +189,19 @@ describe('convertDimensions', () => {
       // Multiple values (__number)
       const result = convertDimensions('paddingTop__16__16', breakpoints);
       expect(result).toBeNull();
+    });
+
+    describe('Exception 8', () => {
+      it("should return null for 'paddingTop'", () => {
+        // Valid dimension key without a value
+        const result = convertDimensions('paddingTop', breakpoints);
+        expect(result).toBeNull();
+      });
+      it("should return null for 'invalid-string'", () => {
+        // Invalid dimension without a value
+        const result = convertDimensions('invalid-string', breakpoints);
+        expect(result).toBeNull();
+      });
     });
   });
 });
