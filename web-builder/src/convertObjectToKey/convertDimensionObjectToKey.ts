@@ -1,5 +1,5 @@
 import type { Dimensions } from '@kiskadee/schema';
-import { styleUsageMap } from './utils';
+import { styleUsageMap } from '../utils';
 
 /**
  * Processes the provided Dimensions object and updates the styleUsageMap with keys
@@ -20,7 +20,7 @@ import { styleUsageMap } from './utils';
  *
  * @param dimensions - The Dimensions object containing style properties.
  */
-export function processDimensions(dimensions: Dimensions) {
+export function convertDimensionObjectToKey(dimensions: Dimensions) {
   // Iterate over each property in the Dimensions object.
   for (const [prop, value] of Object.entries(dimensions)) {
     // Process direct numeric value.

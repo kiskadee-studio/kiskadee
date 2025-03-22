@@ -1,9 +1,9 @@
 import type { Dimensions } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { processDimensions } from './processDimensions';
-import { styleUsageMap } from './utils';
+import { convertDimensionObjectToKey } from './convertDimensionObjectToKey';
+import { styleUsageMap } from '../utils';
 
-describe('processDimensions', () => {
+describe('convertDimensionObjectToKey', () => {
   beforeEach(() => {
     // Clear the styleUsageMap before each test
     for (const key in styleUsageMap) {
@@ -16,7 +16,7 @@ describe('processDimensions', () => {
       paddingTop: 10
     };
 
-    processDimensions(dimensions);
+    convertDimensionObjectToKey(dimensions);
 
     expect(styleUsageMap).toEqual({
       paddingTop__10: 1
@@ -25,53 +25,53 @@ describe('processDimensions', () => {
 
   it('should process a dimension property provided as a direct number (no object)', () => {
     const dimensions: Dimensions = {
-      fontSize: 16
+      textSize: 16
     };
 
-    processDimensions(dimensions);
+    convertDimensionObjectToKey(dimensions);
 
     expect(styleUsageMap).toEqual({
-      fontSize__16: 1
+      textSize__16: 1
     });
   });
 
   it('should process a dimension property with a responsive breakpoint', () => {
     const dimensions: Dimensions = {
-      fontSize: { sm: 14 }
+      textSize: { 's:md:1': 14 }
     };
 
-    processDimensions(dimensions);
+    convertDimensionObjectToKey(dimensions);
 
     expect(styleUsageMap).toEqual({
-      'fontSize--sm__14': 1
+      'textSize--s:md:1__14': 1
     });
   });
 
   it('should process a dimension property with nested breakpoints', () => {
     const dimensions: Dimensions = {
-      fontSize: { md: { all: 16, lg2: 10 } }
+      textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } }
     };
 
-    processDimensions(dimensions);
+    convertDimensionObjectToKey(dimensions);
 
     expect(styleUsageMap).toEqual({
-      'fontSize--md__16': 1, // updated key for "all" breakpoint
-      'fontSize--md::lg2__10': 1
+      'textSize--s:md:1::bp:all__16': 1, // updated key for "all" breakpoint
+      'textSize--s:md:1::bp:lg:2__10': 1
     });
   });
 
   it('should process multiple dimension properties together', () => {
     const dimensions: Dimensions = {
-      fontSize: { md: 16 },
-      paddingBottom: { md: 8 },
+      textSize: { 's:md:1': 16 },
+      paddingBottom: { 's:md:1': 8 },
       marginTop: 20
     };
 
-    processDimensions(dimensions);
+    convertDimensionObjectToKey(dimensions);
 
     expect(styleUsageMap).toEqual({
-      'fontSize--md__16': 1,
-      'paddingBottom--md__8': 1,
+      'textSize--s:md:1__16': 1,
+      'paddingBottom--s:md:1__8': 1,
       marginTop__20: 1
     });
   });

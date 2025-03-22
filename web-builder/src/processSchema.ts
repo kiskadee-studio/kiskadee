@@ -1,7 +1,7 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
 import { schema } from '@kiskadee/schema';
 import { processAppearance } from './processAppearance';
-import { processDimensions } from './processDimensions';
+import { convertDimensionObjectToKey } from './convertObjectToKey/convertDimensionObjectToKey';
 import { processPalettes } from './processPalettes';
 import { styleUsageMap } from './utils';
 
@@ -29,7 +29,7 @@ export function processSchema(schema: Schema): void {
 
       // Process dimensions if defined.
       if (style.dimensions) {
-        processDimensions(style.dimensions);
+        convertDimensionObjectToKey(style.dimensions);
       }
 
       // Process palettes if defined.
