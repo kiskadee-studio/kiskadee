@@ -149,7 +149,12 @@ describe('convertDimensions', () => {
       expect(result).toBeNull();
     });
 
-    describe('Exception 7', () => {
+    // it("Exception 6 - should return null for 'paddingTop--s:sm:1::bp:lg:1__16'", () => {
+    //   const result = convertDimensions('paddingTop--s:sm:1::bp:lg:1__16', breakpoints);
+    //   expect(result).toBeNull();
+    // });
+
+    describe('Exception 5', () => {
       it('should return null when the custom token is missing in the non-media pattern', () => {
         const result = convertDimensions('paddingTop--__16', breakpoints);
         expect(result).toBeNull();
@@ -165,7 +170,13 @@ describe('convertDimensions', () => {
       });
     });
 
-    describe('Exception 8', () => {
+    it("Exception 6 - should return null for 'paddingCenter__16'", () => {
+      // Invalid dimension key
+      const result = convertDimensions('paddingCenter__16', breakpoints);
+      expect(result).toBeNull();
+    });
+
+    describe('Exception 7', () => {
       it('should return null when the custom token is only whitespace in the non-media pattern', () => {
         const result = convertDimensions('paddingTop--   __16', breakpoints);
         expect(result).toBeNull();
