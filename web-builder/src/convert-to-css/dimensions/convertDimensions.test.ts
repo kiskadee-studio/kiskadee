@@ -191,15 +191,24 @@ describe('convertDimensions', () => {
       expect(result).toBeNull();
     });
 
-    describe('Exception 8', () => {
-      it("should return null for 'paddingTop'", () => {
-        // Valid dimension key without a value
-        const result = convertDimensions('paddingTop', breakpoints);
+    describe('Exception 8: Invalid Dimension Identifier Format', () => {
+      it('should return null when the dimension key does not include any expected delimiters', () => {
+        // In this test, we provide a dimension key that lacks the expected "--" or "__" delimiters.
+        // Since the key format is not valid, the function should return null.
+        const result = convertDimensions('invalidKey', breakpoints);
         expect(result).toBeNull();
       });
-      it("should return null for 'invalid-string'", () => {
-        // Invalid dimension without a value
-        const result = convertDimensions('invalid-string', breakpoints);
+
+      it('should return null when the dimension key is only partially formatted', () => {
+        // This test verifies that a dimension key with an incorrect delimiter (e.g. using a single "-" instead of "__")
+        // is considered invalid and returns null.
+        const result = convertDimensions('textSize-16', breakpoints);
+        expect(result).toBeNull();
+      });
+
+      it('should return null when provided with an empty string as the dimension key', () => {
+        // This test checks if the function correctly handles an empty string as input by returning null.
+        const result = convertDimensions('', breakpoints);
         expect(result).toBeNull();
       });
     });
