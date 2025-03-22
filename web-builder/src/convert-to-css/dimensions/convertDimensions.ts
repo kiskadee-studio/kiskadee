@@ -68,6 +68,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
     // Find a matching dimension key with support for custom tokens (size and/or media-based)
     matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
     if (!matchingDimension) {
+      // Exception 1
       return null;
     }
     const withoutPrefix = key.slice(`${matchingDimension}--`.length);
@@ -77,12 +78,14 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
       const [customToken, remainder] = withoutPrefix.split('::');
       const parts = remainder.split('__');
       if (parts.length !== 2) {
+        // Exception 2
         return null;
       }
       const [mediaToken, value] = parts as [string, string];
 
       const bpValue = breakpoints[mediaToken as BreakpointProps];
       if (bpValue === undefined) {
+        // Exception 3
         return null;
       }
       mediaQuery = `@media (min-width: ${bpValue}px)`;
@@ -90,6 +93,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
 
       // If the custom token is a valid size prop, drop it.
       if (!sizeProps.includes(customToken as SizeProps)) {
+        // Exception 4
         return null;
       }
 
@@ -103,6 +107,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
       const validValue = value != null;
 
       if (!validToken || !validValue) {
+        // Exception 5
         return null;
       }
 
@@ -114,17 +119,20 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
     // Standard key without any token.
     matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
     if (!matchingDimension) {
+      // Exception 6
       return null;
     }
 
     const parts = key.split('__');
     if (parts.length !== 2) {
+      // Exception 7
       return null;
     }
     const [_, value] = parts as [string, string];
     className = key;
     valuePortion = value;
   } else {
+    // Exception 8
     return null;
   }
 
