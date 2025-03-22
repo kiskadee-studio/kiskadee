@@ -179,10 +179,14 @@ describe('convertDimensions', () => {
       });
     });
 
-    it("Exception 6 - should return null for 'paddingCenter__16'", () => {
-      // Invalid dimension key
-      const result = convertDimensions('paddingCenter__16', breakpoints);
-      expect(result).toBeNull();
+    describe('Exception 6: Unrecognized Dimension Key', () => {
+      it("should return null when provided with an invalid dimension key (e.g. 'paddingCenter__16')", () => {
+        // This test verifies that the function returns null when the dimension key
+        // does not match any of the predefined valid keys. In this case, 'paddingCenter'
+        // is not recognized as a valid dimension key.
+        const result = convertDimensions('paddingCenter__16', breakpoints);
+        expect(result).toBeNull();
+      });
     });
 
     describe('Exception 7: Dimension Key with Extra Separators', () => {
