@@ -185,10 +185,14 @@ describe('convertDimensions', () => {
       expect(result).toBeNull();
     });
 
-    it("Exception 7 - should return null for 'paddingTop__16__16'", () => {
-      // Multiple values (__number)
-      const result = convertDimensions('paddingTop__16__16', breakpoints);
-      expect(result).toBeNull();
+    describe('Exception 7: Dimension Key with Extra Separators', () => {
+      it("should return null when the dimension key has extra '__' delimiters (e.g. 'paddingTop__16__16')", () => {
+        // This test checks that an input dimension key containing more than one '__' separator,
+        // which results in an unexpected array size when splitting the string, causes the function
+        // to reject the input and return null.
+        const result = convertDimensions('paddingTop__16__16', breakpoints);
+        expect(result).toBeNull();
+      });
     });
 
     describe('Exception 8: Invalid Dimension Identifier Format', () => {
