@@ -126,65 +126,60 @@ describe('convertDimensions', () => {
       // 16px should be converted to 1rem (16 / 16)
       expect(result).toContain('font-size: 1rem');
     });
-
-    // You can add similar tests for other supported properties as needed,
-    // ensuring that keys with media tokens produce CSS rules wrapped in the proper media query.
   });
 
   describe('convertDimensions - Exception Scenarios', () => {
-    // 1. When the key includes "--" but no allowed dimension key is matched
-    it('should return null when no matching dimension key is found', () => {
+    it('Exception 1 - should return null when no matching dimension key is found', () => {
       const result = convertDimensions('invalidKey--s:sm:1::bp:lg:1__16', breakpoints);
       expect(result).toBeNull();
     });
 
-    // 2. In media pattern branch: if the remainder split by "__" does not yield exactly two parts (too many parts)
-    it('should return null when the media query pattern has too many parts', () => {
+    it('Exception 2 - should return null when the media query pattern has too many parts', () => {
       const result = convertDimensions('textSize--s:sm:1::bp:lg:1__16__extra', breakpoints);
       expect(result).toBeNull();
     });
 
-    // 3. In media pattern branch: if the breakpoint value is not found in the breakpoints object
-    it('should return null when the breakpoint token is not defined in breakpoints', () => {
-      const result = convertDimensions('textSize--s:bp:unknown:1__16', breakpoints);
-      expect(result).toBeNull();
-    });
-
-    // 4. In media pattern branch: if the custom token is not a valid size property
-    it('should return null when the custom token is invalid', () => {
-      const result = convertDimensions('textSize--invalid:bp:lg:1__16', breakpoints);
-      expect(result).toBeNull();
-    });
-
-    // 5. In media pattern branch: if the media query token does not start with "bp:"
-    it('should return null when the media query token format is invalid', () => {
+    it('Exception 3 - should return null when the media query token format is invalid', () => {
       const result = convertDimensions('textSize--s:sm:1::lg:1__16', breakpoints);
       expect(result).toBeNull();
     });
 
-    // 6. In normal (non-media) branch: if the custom token is missing
-    it('should return null when the custom token is missing in the non-media pattern', () => {
-      // Using the "--" branch without "::" so that we split by '__'
-      const result = convertDimensions('paddingTop--__16', breakpoints);
+    it('Exception 4 - should return null when the custom token is not a valid size prop', () => {
+      const result = convertDimensions('paddingTop--foo::bp:lg:1__16', breakpoints);
       expect(result).toBeNull();
     });
 
-    // 7. In normal (non-media) branch: if the value portion is missing
-    it('should return null when the value portion is missing in the non-media pattern', () => {
-      const result = convertDimensions('paddingTop--s:__', breakpoints);
-      expect(result).toBeNull();
+    describe('Exception 7', () => {
+      it('should return null when the custom token is missing in the non-media pattern', () => {
+        const result = convertDimensions('paddingTop--__16', breakpoints);
+        expect(result).toBeNull();
+      });
+
+      it('should return null when the value portion is missing in the non-media pattern', () => {
+        const result = convertDimensions('paddingTop--s:__', breakpoints);
+        expect(result).toBeNull();
+      });
+      it('should return null when the key lacks the "__" separator in the non-media pattern', () => {
+        const result = convertDimensions('paddingTop--s:sm:1', breakpoints);
+        expect(result).toBeNull();
+      });
     });
 
-    // 8. In normal (non-media) branch: if the "__" separator is missing entirely (so split yields only one part)
-    it('should return null when the key lacks the "__" separator in the non-media pattern', () => {
-      const result = convertDimensions('paddingTop--s:sm:1', breakpoints);
-      expect(result).toBeNull();
-    });
+    describe('Exception 8', () => {
+      it('should return null when the custom token is only whitespace in the non-media pattern', () => {
+        const result = convertDimensions('paddingTop--   __16', breakpoints);
+        expect(result).toBeNull();
+      });
 
-    // 9. In normal (non-media) branch: if the custom token contains only whitespace (which becomes empty after trim)
-    it('should return null when the custom token is only whitespace in the non-media pattern', () => {
-      const result = convertDimensions('paddingTop--   __16', breakpoints);
-      expect(result).toBeNull();
+      it('should return null when the breakpoint token is not defined in breakpoints', () => {
+        const result = convertDimensions('textSize--s:bp:unknown:1__16', breakpoints);
+        expect(result).toBeNull();
+      });
+
+      it('should return null when the custom token is invalid', () => {
+        const result = convertDimensions('textSize--invalid:bp:lg:1__16', breakpoints);
+        expect(result).toBeNull();
+      });
     });
   });
 });
