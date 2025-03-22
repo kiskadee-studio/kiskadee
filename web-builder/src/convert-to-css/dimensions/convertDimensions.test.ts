@@ -168,15 +168,6 @@ describe('convertDimensions', () => {
         const result = convertDimensions('paddingTop--s:sm:1', breakpoints);
         expect(result).toBeNull();
       });
-    });
-
-    it("Exception 6 - should return null for 'paddingCenter__16'", () => {
-      // Invalid dimension key
-      const result = convertDimensions('paddingCenter__16', breakpoints);
-      expect(result).toBeNull();
-    });
-
-    describe('Exception 7', () => {
       it('should return null when the custom token is only whitespace in the non-media pattern', () => {
         const result = convertDimensions('paddingTop--   __16', breakpoints);
         expect(result).toBeNull();
@@ -191,6 +182,12 @@ describe('convertDimensions', () => {
         const result = convertDimensions('textSize--invalid:bp:lg:1__16', breakpoints);
         expect(result).toBeNull();
       });
+    });
+
+    it("Exception 6 - should return null for 'paddingCenter__16'", () => {
+      // Invalid dimension key
+      const result = convertDimensions('paddingCenter__16', breakpoints);
+      expect(result).toBeNull();
     });
   });
 });
