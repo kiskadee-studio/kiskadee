@@ -8,26 +8,22 @@ import {
 } from '@kiskadee/schema';
 
 /**
- * Utility that converts a camelCase string to kebab-case.
- *
- * @param str - The camelCase string.
- * @returns The kebab-case string.
- */
-function toKebabCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-}
-
-/**
  * Map of project dimension keys to their corresponding CSS property names.
  */
 const cssPropertyMap: Record<string, string> = {
-  textSize: 'font-size',
-  textHeight: 'line-height',
-  paddingTop: 'padding-top',
-  marginLeft: 'margin-left',
   borderWidth: 'border-width',
+  boxHeight: 'height',
   boxWidth: 'width',
-  boxHeight: 'height'
+  marginBottom: 'margin-bottom',
+  marginLeft: 'margin-left',
+  marginRight: 'margin-right',
+  marginTop: 'margin-top',
+  paddingBottom: 'padding-bottom',
+  paddingLeft: 'padding-left',
+  paddingRight: 'padding-right',
+  paddingTop: 'padding-top',
+  textHeight: 'line-height',
+  textSize: 'font-size'
 };
 
 /**
@@ -137,7 +133,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   }
 
   // Determine the CSS property.
-  const cssProperty = cssPropertyMap[matchingDimension] || toKebabCase(matchingDimension);
+  const cssProperty = cssPropertyMap[matchingDimension];
 
   // Determine the numeric value.
   let cssValue: string;
