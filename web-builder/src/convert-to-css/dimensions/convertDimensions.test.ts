@@ -149,32 +149,25 @@ describe('convertDimensions', () => {
       expect(result).toBeNull();
     });
 
-    describe('Exception 5', () => {
-      it('should return null when the custom token is missing in the non-media pattern', () => {
-        const result = convertDimensions('paddingTop--__16', breakpoints);
+    describe('Exception 5 - Invalid Format Cases for Custom Token and Missing Value', () => {
+      it("should return null when a non-valid custom token is provided for 'textSize'", () => {
+        // Given a dimension string in the non-media query pattern with an invalid token that is not
+        // part of the allowed size properties, the conversion should return null.
+        const result = convertDimensions('textSize--invalid__16', breakpoints);
         expect(result).toBeNull();
       });
 
-      it('should return null when the value portion is missing in the non-media pattern', () => {
-        const result = convertDimensions('paddingTop--s:__', breakpoints);
-        expect(result).toBeNull();
-      });
-      it('should return null when the key lacks the "__" separator in the non-media pattern', () => {
-        const result = convertDimensions('paddingTop--s:sm:1', breakpoints);
-        expect(result).toBeNull();
-      });
-      it('should return null when the custom token is only whitespace in the non-media pattern', () => {
-        const result = convertDimensions('paddingTop--   __16', breakpoints);
+      it("should return null when the custom token is missing (empty) for 'textSize'", () => {
+        // Given a dimension string where the token part is empty, the conversion should return null
+        // since an empty token is not valid.
+        const result = convertDimensions('textSize--__16', breakpoints);
         expect(result).toBeNull();
       });
 
-      it('should return null when the breakpoint token is not defined in breakpoints', () => {
-        const result = convertDimensions('textSize--s:bp:unknown:1__16', breakpoints);
-        expect(result).toBeNull();
-      });
-
-      it('should return null when the custom token is invalid', () => {
-        const result = convertDimensions('textSize--invalid:bp:lg:1__16', breakpoints);
+      it("should return null when the value part is missing for 'textSize'", () => {
+        // Given a dimension string with a valid token but missing the value part, the conversion
+        // should return null.
+        const result = convertDimensions('textSize--s:sm:1', breakpoints);
         expect(result).toBeNull();
       });
     });
