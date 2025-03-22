@@ -74,7 +74,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
 
     if (withoutPrefix.includes('::')) {
       // Pattern: {customToken}::{mediaToken}__{value}
-      let [customToken, remainder] = withoutPrefix.split('::');
+      const [customToken, remainder] = withoutPrefix.split('::');
       const parts = remainder.split('__');
       if (parts.length !== 2) {
         return null;
@@ -89,45 +89,26 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
       valuePortion = value;
 
       // If the custom token is a valid size prop, drop it.
-      if (sizeProps.includes(customToken as SizeProps)) {
-        customToken = '';
-      } else {
+      if (!sizeProps.includes(customToken as SizeProps)) {
         return null;
       }
 
-      // Process the media token: simplify it by removing "bp:" and any colons.
-      let breakpointModifier = '';
-      if (mediaToken.startsWith('bp:')) {
-        breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
-      } else {
-        return null;
-      }
+      const breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
 
-      // Build the final class name.
-      // If the size token was dropped, use only the base class name with the breakpoint modifier.
-      if (customToken) {
-        className = `${getBaseClass(matchingDimension)}-${customToken}--${breakpointModifier}__${value}`;
-      } else {
-        className = `${getBaseClass(matchingDimension)}--${breakpointModifier}__${value}`;
-      }
+      className = `${getBaseClass(matchingDimension)}--${breakpointModifier}__${value}`;
     } else {
       // Pattern: {customToken}__{value}
-      let [customToken, value] = withoutPrefix.split('__') as [string, string];
-      if (!customToken || !value) {
+      const [token, value] = withoutPrefix.split('__') as [string, string];
+      const validToken = token != null && sizeProps.includes(token as SizeProps);
+      const validValue = value != null;
+
+      if (!validToken || !validValue) {
         return null;
       }
+
       valuePortion = value;
-      customToken = customToken.trim();
 
-      if (sizeProps.includes(customToken as SizeProps)) {
-        customToken = '';
-      } else {
-        return null;
-      }
-
-      className = customToken
-        ? `${getBaseClass(matchingDimension)}-${customToken}__${value}`
-        : `${getBaseClass(matchingDimension)}__${value}`;
+      className = `${getBaseClass(matchingDimension)}__${value}`;
     }
   } else if (key.includes('__')) {
     // Standard key without any token.
