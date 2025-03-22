@@ -189,5 +189,11 @@ describe('convertDimensions', () => {
       const result = convertDimensions('paddingCenter__16', breakpoints);
       expect(result).toBeNull();
     });
+
+    it("Exception 7 - should return null for 'paddingTop__16__16'", () => {
+      // Multiple values (__number)
+      const result = convertDimensions('paddingTop__16__16', breakpoints);
+      expect(result).toBeNull();
+    });
   });
 });
