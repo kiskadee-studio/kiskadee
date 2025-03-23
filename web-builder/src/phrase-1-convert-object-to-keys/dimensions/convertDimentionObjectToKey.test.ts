@@ -1,7 +1,7 @@
 import type { Dimensions } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { convertDimensionObjectToKey } from './convertDimensionObjectToKey';
-import { styleUsageMap } from '../utils';
+import { styleUsageMap } from '../../utils';
 
 describe('convertDimensionObjectToKey', () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import type { Dimensions } from '@kiskadee/schema';
-import { styleUsageMap } from '../utils';
+import { styleUsageMap } from '../../utils';
 
 /**
  * Processes the provided Dimensions object and updates the styleUsageMap with keys

@@ -1,9 +1,9 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
 import { schema } from '@kiskadee/schema';
-import { processAppearance } from './processAppearance';
-import { convertDimensionObjectToKey } from './convertObjectToKey/convertDimensionObjectToKey';
-import { processPalettes } from './processPalettes';
-import { styleUsageMap } from './utils';
+import { processAppearance } from '../processAppearance';
+import { processPalettes } from '../processPalettes';
+import { styleUsageMap } from '../utils';
+import { convertDimensionObjectToKey } from './dimensions/convertDimensionObjectToKey';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
@@ -13,7 +13,7 @@ import { styleUsageMap } from './utils';
  *
  * @param schema - The Schema object to process.
  */
-export function processSchema(schema: Schema): void {
+export function convertSchemaToKeys(schema: Schema): void {
   // Iterate over each component in the schema.
   for (const componentKey in schema.components) {
     const component = schema.components[componentKey as ComponentKeys];
@@ -29,6 +29,7 @@ export function processSchema(schema: Schema): void {
 
       // Process dimensions if defined.
       if (style.dimensions) {
+        // TODO: There are multiple keys with same value eg: textSize--s:md:1::bp:all__12 textSize--s:md:1__12 and textSize__12
         convertDimensionObjectToKey(style.dimensions);
       }
 
@@ -46,4 +47,4 @@ export function processSchema(schema: Schema): void {
   console.log(styleUsageMap);
 }
 
-processSchema(schema);
+convertSchemaToKeys(schema);
