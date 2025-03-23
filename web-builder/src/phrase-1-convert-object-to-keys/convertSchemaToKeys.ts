@@ -1,9 +1,9 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
 import { schema } from '@kiskadee/schema';
-import { processAppearance } from '../processAppearance';
+import { convertAppearanceToKeys } from './appearance/convertAppearanceToKeys';
 import { processPalettes } from '../processPalettes';
 import { styleUsageMap } from '../utils';
-import { convertDimensionObjectToKey } from './dimensions/convertDimensionObjectToKey';
+import { convertDimensionsToKeys } from './dimensions/convertDimensionsToKeys';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
@@ -24,13 +24,13 @@ export function convertSchemaToKeys(schema: Schema): void {
 
       // Process appearance if defined.
       if (style.appearance) {
-        processAppearance(style.appearance);
+        convertAppearanceToKeys(style.appearance);
       }
 
       // Process dimensions if defined.
       if (style.dimensions) {
         // TODO: There are multiple keys with same value eg: textSize--s:md:1::bp:all__12 textSize--s:md:1__12 and textSize__12
-        convertDimensionObjectToKey(style.dimensions);
+        convertDimensionsToKeys(style.dimensions);
       }
 
       // Process palettes if defined.

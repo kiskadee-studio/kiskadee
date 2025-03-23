@@ -1,13 +1,13 @@
 import type { Appearance, Cursor } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { processAppearance } from './processAppearance';
-import { styleUsageMap } from './utils';
+import { convertAppearanceToKeys } from './convertAppearanceToKeys';
+import { styleUsageMap } from '../../utils';
 
 vi.mock('./utils', () => ({
   styleUsageMap: {}
 }));
 
-describe('processAppearance', () => {
+describe('convertAppearanceToKeys', () => {
   let styleUsageMapMock: Record<string, number>;
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('processAppearance', () => {
     it('should process textItalic property set to true', () => {
       const appearance: Appearance = { textItalic: true };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textItalic__true: 1 });
     });
@@ -29,7 +29,7 @@ describe('processAppearance', () => {
     it('should process textItalic property set to false', () => {
       const appearance: Appearance = { textItalic: false };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textItalic__false: 1 });
     });
@@ -39,7 +39,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "thin"', () => {
       const appearance: Appearance = { textWeight: 'thin' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textWeight__thin: 1 });
     });
@@ -47,7 +47,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "extra-light"', () => {
       const appearance: Appearance = { textWeight: 'extra-light' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ 'textWeight__extra-light': 1 });
     });
@@ -55,7 +55,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "light"', () => {
       const appearance: Appearance = { textWeight: 'light' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textWeight__light: 1 });
     });
@@ -63,7 +63,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "normal"', () => {
       const appearance: Appearance = { textWeight: 'normal' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textWeight__normal: 1 });
     });
@@ -71,7 +71,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "medium"', () => {
       const appearance: Appearance = { textWeight: 'medium' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textWeight__medium: 1 });
     });
@@ -79,7 +79,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "semi-bold"', () => {
       const appearance: Appearance = { textWeight: 'semi-bold' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ 'textWeight__semi-bold': 1 });
     });
@@ -87,7 +87,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "bold"', () => {
       const appearance: Appearance = { textWeight: 'bold' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textWeight__bold: 1 });
     });
@@ -95,7 +95,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "extra-bold"', () => {
       const appearance: Appearance = { textWeight: 'extra-bold' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ 'textWeight__extra-bold': 1 });
     });
@@ -103,7 +103,7 @@ describe('processAppearance', () => {
     it('should process textWeight property with "black"', () => {
       const appearance: Appearance = { textWeight: 'black' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textWeight__black: 1 });
     });
@@ -113,7 +113,7 @@ describe('processAppearance', () => {
     it('should process textDecoration property with "none"', () => {
       const appearance: Appearance = { textDecoration: 'none' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textDecoration__none: 1 });
     });
@@ -121,7 +121,7 @@ describe('processAppearance', () => {
     it('should process textDecoration property with "underline"', () => {
       const appearance: Appearance = { textDecoration: 'underline' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textDecoration__underline: 1 });
     });
@@ -129,7 +129,7 @@ describe('processAppearance', () => {
     it('should process textDecoration property with "line-through"', () => {
       const appearance: Appearance = { textDecoration: 'line-through' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ 'textDecoration__line-through': 1 });
     });
@@ -139,7 +139,7 @@ describe('processAppearance', () => {
     it('should process textTransform property with "none"', () => {
       const appearance: Appearance = { textTransform: 'none' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textTransform__none: 1 });
     });
@@ -147,7 +147,7 @@ describe('processAppearance', () => {
     it('should process textTransform property with "uppercase"', () => {
       const appearance: Appearance = { textTransform: 'uppercase' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textTransform__uppercase: 1 });
     });
@@ -155,7 +155,7 @@ describe('processAppearance', () => {
     it('should process textTransform property with "lowercase"', () => {
       const appearance: Appearance = { textTransform: 'lowercase' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textTransform__lowercase: 1 });
     });
@@ -163,7 +163,7 @@ describe('processAppearance', () => {
     it('should process textTransform property with "capitalize"', () => {
       const appearance: Appearance = { textTransform: 'capitalize' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textTransform__capitalize: 1 });
     });
@@ -173,7 +173,7 @@ describe('processAppearance', () => {
     it('should process textAlign property with "left"', () => {
       const appearance: Appearance = { textAlign: 'left' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textAlign__left: 1 });
     });
@@ -181,7 +181,7 @@ describe('processAppearance', () => {
     it('should process textAlign property with "center"', () => {
       const appearance: Appearance = { textAlign: 'center' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textAlign__center: 1 });
     });
@@ -189,7 +189,7 @@ describe('processAppearance', () => {
     it('should process textAlign property with "right"', () => {
       const appearance: Appearance = { textAlign: 'right' };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       expect(styleUsageMapMock).toEqual({ textAlign__right: 1 });
     });
@@ -239,7 +239,7 @@ describe('processAppearance', () => {
       it(`should process cursor property with "${cursor}"`, () => {
         const appearance: Appearance = { cursor: cursor };
 
-        processAppearance(appearance);
+        convertAppearanceToKeys(appearance);
 
         expect(styleUsageMapMock).toEqual({ [`cursor__${cursor}`]: 1 });
       });
@@ -258,7 +258,7 @@ describe('processAppearance', () => {
         shadowColor: { rest: [0, 0, 0, 0.5] }
       };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       const restKey = 'shadow__[10,15,5,[0,0,0,0.5]]';
       const hoverKey = 'shadow--hover__[20,15,5,[0,0,0,0.5]]';
@@ -275,7 +275,7 @@ describe('processAppearance', () => {
         shadowX: { hover: 25 }
       };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       const hoverKey = 'shadow--hover__[25,0,0,[0,0,0,1]]';
       const restKey = 'shadow__[0,0,0,[0,0,0,1]]';
@@ -296,7 +296,7 @@ describe('processAppearance', () => {
         shadowColor: { rest: [10, 20, 30, 0.8], hover: [50, 60, 70, 0.9] }
       };
 
-      processAppearance(appearance);
+      convertAppearanceToKeys(appearance);
 
       const restKey = 'shadow__[5,8,3,[10,20,30,0.8]]';
       const focusKey = 'shadow--focus__[12,16,3,[10,20,30,0.8]]';

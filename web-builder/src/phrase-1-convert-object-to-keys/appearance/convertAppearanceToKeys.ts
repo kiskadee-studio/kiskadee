@@ -1,6 +1,6 @@
 // processAppearance.ts
 import type { Appearance, InteractionStatesKeys, SingleColor } from '@kiskadee/schema';
-import { styleUsageMap } from './utils';
+import { styleUsageMap } from '../../utils';
 
 function getShadowValue<T>(
   property: Partial<Record<InteractionStatesKeys, T>>,
@@ -31,7 +31,7 @@ function getShadowValue<T>(
  *
  * Note: Appearance never contains a "ref" key so that part is omitted.
  */
-export function processAppearance(appearance: Appearance) {
+export function convertAppearanceToKeys(appearance: Appearance) {
   // Process non-shadow properties
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {
