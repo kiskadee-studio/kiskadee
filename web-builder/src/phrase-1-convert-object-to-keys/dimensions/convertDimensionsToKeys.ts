@@ -9,14 +9,13 @@ import { sizeProps } from '@kiskadee/schema';
  * Key formats:
  * - Direct numeric value:         property__value
  * - First-level size:
- *     - If the size key is included in sizeProps and its value is a number,
+ *     - If the size token is in sizeProps and its value is a number,
  *       the size token is ignored and the key is: property__value.
  *     - Otherwise: property--size__value
  * - Responsive breakpoint override (nested object):
- *     - When the size token is exactly "s:md:1" and the breakpoint key is "bp:all",
- *       treat it as the default value and produce the key: property__value.
- *     - Otherwise, include the size token and breakpoint.
- *       Format: property--size::breakpoint__value
+ *     - If the size key is in sizeProps and the breakpoint key is "bp:all",
+ *       the size token is omitted and the key becomes: property__value.
+ *     - Otherwise, include the size token and breakpoint in the key as: property--size::breakpoint__value
  *
  * In the Dimensions object:
  * - A direct number for a property means its value is stored directly.
@@ -47,8 +46,8 @@ export function convertDimensionsToKeys(dimensions: Dimensions) {
           // Process responsive breakpoint overrides.
           for (const [breakpoint, innerVal] of Object.entries(sizeValue)) {
             let keyValue: string;
-            // Only for "s:md:1" with "bp:all", remove the size token.
-            if (size === 's:md:1' && breakpoint === 'bp:all') {
+            // For any size token in sizeProps with "bp:all", omit the size token.
+            if (sizeProps.includes(size as SizeProps) && breakpoint === 'bp:all') {
               keyValue = `${prop}__${innerVal}`;
             } else {
               keyValue = `${prop}--${size}::${breakpoint}__${innerVal}`;

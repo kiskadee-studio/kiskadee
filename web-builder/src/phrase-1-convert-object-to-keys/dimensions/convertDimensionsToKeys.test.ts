@@ -64,7 +64,10 @@ describe('convertDimensionsToKeys function', () => {
 
   it('correctly converts multiple dimension properties together', () => {
     const dimensions: Dimensions = {
-      textSize: { 's:sm:1': { 'bp:all': 12, 'bp:lg:3': 14 } },
+      textSize: {
+        's:sm:1': { 'bp:all': 14, 'bp:lg:1': 12 },
+        's:md:1': { 'bp:all': 16, 'bp:lg:1': 14 }
+      },
       paddingBottom: { 's:md:1': { 'bp:sm:1': 10, 'bp:lg:2': 8 } },
       marginTop: 20
     };
@@ -75,8 +78,10 @@ describe('convertDimensionsToKeys function', () => {
       marginTop__20: 1,
       'paddingBottom--s:md:1::bp:lg:2__8': 1,
       'paddingBottom--s:md:1::bp:sm:1__10': 1,
-      'textSize--s:sm:1::bp:all__12': 1,
-      'textSize--s:sm:1::bp:lg:3__14': 1
+      'textSize--s:md:1::bp:lg:1__14': 1,
+      'textSize--s:sm:1::bp:lg:1__12': 1,
+      textSize__14: 1,
+      textSize__16: 1
     });
   });
 });
