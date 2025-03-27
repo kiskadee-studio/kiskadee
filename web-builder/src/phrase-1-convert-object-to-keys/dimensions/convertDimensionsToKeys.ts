@@ -1,5 +1,6 @@
-import type { Dimensions } from '@kiskadee/schema';
+import type { Dimensions, SizeProps } from '@kiskadee/schema';
 import { styleUsageMap } from '../../utils';
+import { sizeProps } from '@kiskadee/schema';
 
 /**
  * Processes the provided Dimensions object and updates the styleUsageMap with keys
@@ -7,10 +8,13 @@ import { styleUsageMap } from '../../utils';
  *
  * Key formats:
  * - Direct numeric value:         property__value
- * - First-level size:             property--size__value
- * - Responsive breakpoint override:
- *     - If breakpoint is "all": property--size__value  (normalized)
- *     - Otherwise:              property--size::breakpoint__value
+ * - First-level size:
+ *     - If the size key is included in sizeProps and its value is a number,
+ *       the size token is ignored and the key is: property__value.
+ *     - Otherwise: property--size__value
+ * - Responsive breakpoint override (nested object):
+ *     - Always include the size token and breakpoint.
+ *       Format: property--size::breakpoint__value
  *
  * In the Dimensions object:
  * - A direct number for a property means its value is stored directly.
@@ -28,20 +32,20 @@ export function convertDimensionsToKeys(dimensions: Dimensions) {
       const keyValue = `${prop}__${value}`;
       styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
     } else if (typeof value === 'object' && value !== null) {
-      // Iterate over each size (e.g., sm, md, lg).
+      // Iterate over each size (e.g., "s:sm:1", "s:md:1", etc.).
       for (const [size, sizeValue] of Object.entries(value)) {
         // Process first-level size value.
         if (typeof sizeValue === 'number') {
-          const keyValue = `${prop}--${size}__${sizeValue}`;
+          // If the size token is one of the defined sizeProps, ignore it in the key.
+          const keyValue = sizeProps.includes(size as SizeProps)
+            ? `${prop}__${sizeValue}`
+            : `${prop}--${size}__${sizeValue}`;
           styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
         } else if (typeof sizeValue === 'object' && sizeValue !== null) {
           // Process responsive breakpoint overrides.
           for (const [breakpoint, innerVal] of Object.entries(sizeValue)) {
-            // If breakpoint is "all", normalize the key to first-level size format.
-            const keyValue =
-              breakpoint === 'all'
-                ? `${prop}--${size}__${innerVal}`
-                : `${prop}--${size}::${breakpoint}__${innerVal}`;
+            // When nested, always include the size token.
+            const keyValue = `${prop}--${size}::${breakpoint}__${innerVal}`;
             styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
           }
         }
