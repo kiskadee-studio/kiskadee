@@ -47,7 +47,7 @@ describe('convertDimensionsToKeys function', () => {
     });
   });
 
-  it('correctly converts a dimension property with nested responsive breakpoint overrides', () => {
+  it('correctly converts a dimension property with nested responsive breakpoint overrides, treating "s:md:1" with "bp:all" as default', () => {
     const dimensions: Dimensions = {
       textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } }
     };
@@ -55,24 +55,28 @@ describe('convertDimensionsToKeys function', () => {
     convertDimensionsToKeys(dimensions);
 
     expect(styleUsageMap).toEqual({
-      'textSize--s:md:1::bp:all__16': 1, // updated key for "bp:all" breakpoint
+      // For 'bp:all' with "s:md:1", the size token is removed.
+      textSize__16: 1,
+      // For other breakpoints, include the size token.
       'textSize--s:md:1::bp:lg:2__10': 1
     });
   });
 
   it('correctly converts multiple dimension properties together', () => {
     const dimensions: Dimensions = {
-      textSize: { 's:sm:1': 16 },
-      paddingBottom: { 's:md:1': 8 },
+      textSize: { 's:sm:1': { 'bp:all': 12, 'bp:lg:3': 14 } },
+      paddingBottom: { 's:md:1': { 'bp:sm:1': 10, 'bp:lg:2': 8 } },
       marginTop: 20
     };
 
     convertDimensionsToKeys(dimensions);
 
     expect(styleUsageMap).toEqual({
-      textSize__16: 1,
-      paddingBottom__8: 1,
-      marginTop__20: 1
+      marginTop__20: 1,
+      'paddingBottom--s:md:1::bp:lg:2__8': 1,
+      'paddingBottom--s:md:1::bp:sm:1__10': 1,
+      'textSize--s:sm:1::bp:all__12': 1,
+      'textSize--s:sm:1::bp:lg:3__14': 1
     });
   });
 });

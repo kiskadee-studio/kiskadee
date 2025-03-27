@@ -13,7 +13,9 @@ import { sizeProps } from '@kiskadee/schema';
  *       the size token is ignored and the key is: property__value.
  *     - Otherwise: property--size__value
  * - Responsive breakpoint override (nested object):
- *     - Always include the size token and breakpoint.
+ *     - When the size token is exactly "s:md:1" and the breakpoint key is "bp:all",
+ *       treat it as the default value and produce the key: property__value.
+ *     - Otherwise, include the size token and breakpoint.
  *       Format: property--size::breakpoint__value
  *
  * In the Dimensions object:
@@ -36,7 +38,7 @@ export function convertDimensionsToKeys(dimensions: Dimensions) {
       for (const [size, sizeValue] of Object.entries(value)) {
         // Process first-level size value.
         if (typeof sizeValue === 'number') {
-          // If the size token is one of the defined sizeProps, ignore it in the key.
+          // When the size token is in sizeProps, ignore it in the key.
           const keyValue = sizeProps.includes(size as SizeProps)
             ? `${prop}__${sizeValue}`
             : `${prop}--${size}__${sizeValue}`;
@@ -44,8 +46,13 @@ export function convertDimensionsToKeys(dimensions: Dimensions) {
         } else if (typeof sizeValue === 'object' && sizeValue !== null) {
           // Process responsive breakpoint overrides.
           for (const [breakpoint, innerVal] of Object.entries(sizeValue)) {
-            // When nested, always include the size token.
-            const keyValue = `${prop}--${size}::${breakpoint}__${innerVal}`;
+            let keyValue: string;
+            // Only for "s:md:1" with "bp:all", remove the size token.
+            if (size === 's:md:1' && breakpoint === 'bp:all') {
+              keyValue = `${prop}__${innerVal}`;
+            } else {
+              keyValue = `${prop}--${size}::${breakpoint}__${innerVal}`;
+            }
             styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
           }
         }
