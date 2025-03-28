@@ -1,5 +1,5 @@
 import type { InteractionStatesKeys, PaletteKeys, Palettes, VariantKeys } from '@kiskadee/schema';
-import { styleUsageMap } from './utils';
+import { styleUsageMap } from '../../utils';
 
 /**
  * Processes a Palettes object and records the usage of each style property
@@ -19,7 +19,7 @@ import { styleUsageMap } from './utils';
  *
  * @param palettes Object containing the palette definitions
  */
-export function processPalettes(palettes: Palettes) {
+export function convertPalettesToKeys(palettes: Palettes) {
   // Iterate over each palette property (e.g., bgColor, borderColor, textColor)
   for (const paletteProp in palettes) {
     const paletteValue = palettes[paletteProp as PaletteKeys];

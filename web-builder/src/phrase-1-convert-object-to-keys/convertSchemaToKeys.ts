@@ -1,7 +1,7 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
 import { schema } from '@kiskadee/schema';
 import { convertAppearanceToKeys } from './appearance/convertAppearanceToKeys';
-import { processPalettes } from '../processPalettes';
+import { convertPalettesToKeys } from './palettes/convertPalettesToKeys';
 import { styleUsageMap } from '../utils';
 import { convertDimensionsToKeys } from './dimensions/convertDimensionsToKeys';
 
@@ -37,7 +37,7 @@ export function convertSchemaToKeys(schema: Schema): void {
       if (style.palettes) {
         // The palettes property is a record of Palettes.
         for (const palette of Object.values(style.palettes)) {
-          processPalettes(palette);
+          convertPalettesToKeys(palette);
         }
       }
     }
