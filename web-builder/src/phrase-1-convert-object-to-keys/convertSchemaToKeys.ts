@@ -29,7 +29,6 @@ export function convertSchemaToKeys(schema: Schema): void {
 
       // Process dimensions if defined.
       if (style.dimensions) {
-        // TODO: There are multiple keys with same value eg: textSize--s:md:1::bp:all__12 textSize--s:md:1__12 and textSize__12
         convertDimensionsToKeys(style.dimensions);
       }
 
