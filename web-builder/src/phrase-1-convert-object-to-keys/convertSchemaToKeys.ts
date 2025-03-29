@@ -43,7 +43,10 @@ export function convertSchemaToKeys(schema: Schema): void {
   }
 
   // Log the final style usage map.
-  console.log(styleUsageMap);
+  const style = Object.fromEntries(
+    Object.entries(styleUsageMap).sort(([a], [b]) => a.localeCompare(b))
+  );
+  console.log(style);
 }
 
 convertSchemaToKeys(schema);

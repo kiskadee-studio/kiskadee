@@ -116,6 +116,9 @@ export const schema: Schema = {
           }
         },
         e2: {
+          dimensions: {
+            textSize: 16
+          },
           palettes: {
             p1: {
               textColor: {
