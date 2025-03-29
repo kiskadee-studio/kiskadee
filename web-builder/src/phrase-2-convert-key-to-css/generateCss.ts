@@ -1,4 +1,4 @@
-import { convertFontStyle } from './convertTextStyle';
+import { convertFontStyle } from './appearance/convertTextStyle';
 import { convertTextAlign } from './appearance/convertTextAlign';
 
 const style2 = {
