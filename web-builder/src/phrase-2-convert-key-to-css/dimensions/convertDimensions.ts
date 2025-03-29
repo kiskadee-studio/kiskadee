@@ -1,16 +1,17 @@
-// convertDimensions.ts
 import {
   type Breakpoints,
   type SizeProps,
   sizeProps,
   dimensionKeys,
-  type BreakpointProps
+  type BreakpointProps,
+  type DimensionKeys
 } from '@kiskadee/schema';
 
 /**
  * Map of project dimension keys to their corresponding CSS property names.
  */
-const cssPropertyMap: Record<string, string> = {
+const cssPropertyMap: Record<DimensionKeys, string> = {
+  borderRadius: 'border-radius',
   borderWidth: 'border-width',
   boxHeight: 'height',
   boxWidth: 'width',
@@ -35,7 +36,7 @@ const cssPropertyMap: Record<string, string> = {
  * @param matchingDimension - The dimension key.
  * @returns The base class name for the CSS rule.
  */
-function getBaseClass(matchingDimension: string): string {
+function getBaseClass(matchingDimension: DimensionKeys): string {
   return matchingDimension.startsWith('box')
     ? cssPropertyMap[matchingDimension]
     : matchingDimension;
@@ -55,19 +56,19 @@ function getBaseClass(matchingDimension: string): string {
  * @returns The CSS rule string or null if the key is invalid.
  */
 export function convertDimensions(key: string, breakpoints: Breakpoints): string | null {
-  let matchingDimension: string | undefined;
+  let dimensionKey: DimensionKeys | undefined;
   let className: string;
-  let mediaQuery: string | null = null;
+  let mediaQuery: string | undefined;
   let valuePortion: string;
 
   if (key.includes('--')) {
     // Find a matching dimension key with support for custom tokens (size and/or media-based)
-    matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
-    if (!matchingDimension) {
+    dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
+    if (dimensionKey == null) {
       // Exception 1
       return null;
     }
-    const withoutPrefix = key.slice(`${matchingDimension}--`.length);
+    const withoutPrefix = key.slice(`${dimensionKey}--`.length);
 
     if (withoutPrefix.includes('::')) {
       // Pattern: {customToken}::{mediaToken}__{value}
@@ -80,7 +81,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
       const [mediaToken, value] = parts as [string, string];
 
       const bpValue = breakpoints[mediaToken as BreakpointProps];
-      if (bpValue === undefined) {
+      if (bpValue == null) {
         // Exception 3
         return null;
       }
@@ -88,33 +89,33 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
       valuePortion = value;
 
       // If the custom token is a valid size prop, drop it.
-      if (!sizeProps.includes(customToken as SizeProps)) {
+      if (sizeProps.includes(customToken as SizeProps) === false) {
         // Exception 4
         return null;
       }
 
       const breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
 
-      className = `${getBaseClass(matchingDimension)}--${breakpointModifier}__${value}`;
+      className = `${getBaseClass(dimensionKey)}--${breakpointModifier}__${value}`;
     } else {
       // Pattern: {customToken}__{value}
       const [token, value] = withoutPrefix.split('__') as [string, string];
-      const validToken = token != null && sizeProps.includes(token as SizeProps);
+      const validToken = token != null && sizeProps.includes(token as SizeProps) === true;
       const validValue = value != null;
 
-      if (!validToken || !validValue) {
+      if (validToken === false || validValue === false) {
         // Exception 5
         return null;
       }
 
       valuePortion = value;
 
-      className = `${getBaseClass(matchingDimension)}__${value}`;
+      className = `${getBaseClass(dimensionKey)}__${value}`;
     }
-  } else if (key.includes('__')) {
+  } else if (key.includes('__') === true) {
     // Standard key without any token.
-    matchingDimension = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
-    if (!matchingDimension) {
+    dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
+    if (!dimensionKey) {
       // Exception 6
       return null;
     }
@@ -133,11 +134,11 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
   }
 
   // Determine the CSS property.
-  const cssProperty = cssPropertyMap[matchingDimension];
+  const cssProperty = cssPropertyMap[dimensionKey];
 
   // Determine the numeric value.
   let cssValue: string;
-  if (matchingDimension === 'textSize') {
+  if (dimensionKey === 'textSize') {
     const number = Number(valuePortion);
     cssValue = number ? `${number / 16}rem` : valuePortion;
   } else {
@@ -146,7 +147,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
 
   // Build the final CSS rule.
   let rule = `.${className} { ${cssProperty}: ${cssValue}; }`;
-  if (mediaQuery) {
+  if (mediaQuery != null) {
     rule = `${mediaQuery} { ${rule} }`;
   }
   return rule;
