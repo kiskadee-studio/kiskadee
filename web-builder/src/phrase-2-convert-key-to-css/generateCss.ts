@@ -1,5 +1,5 @@
-import { convertFontStyle } from './phrase-2-convert-key-to-css/convertTextStyle';
-import { convertTextAlign } from './phrase-2-convert-key-to-css/appearance/convertTextAlign';
+import { convertFontStyle } from './convertTextStyle';
+import { convertTextAlign } from './appearance/convertTextAlign';
 
 const style2 = {
   textItalic__true: 1,
