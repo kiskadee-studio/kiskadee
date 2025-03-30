@@ -58,6 +58,17 @@ export type InteractionStatesKeys =
   | 'pseudo-disabled'
   | 'read-only';
 
+// export const interactionStatesKeys: InteractionStatesKeys[] = [
+//   'rest',
+//   'hover',
+//   'pressed',
+//   'selected',
+//   'focus',
+//   'disabled',
+//   'pseudo-disabled',
+//   'read-only'
+// ];
+
 /**
  * A FullColor defines the set of colors for different interaction states.
  * The "rest" state is required and must be defined directly as a Color (not as an object with "ref").
@@ -100,7 +111,15 @@ export type Variants = {
 /**
  * The color properties used in the design system.
  */
-export type ColorProperties = 'textColor' | 'bgColor' | 'borderColor';
+export type ColorKeys = 'textColor' | 'bgColor' | 'borderColor';
 
-export type Palettes = Partial<Record<ColorProperties, FullColor | Variants>>;
+export enum CssColorProperty {
+  textColor = 'color',
+  bgColor = 'background-color',
+  borderColor = 'border-color'
+}
+
+// export const colorKeys: ColorKeys[] = ['textColor', 'bgColor', 'borderColor'];
+
+export type Palettes = Partial<Record<ColorKeys, FullColor | Variants>>;
 export type PaletteKeys = keyof Palettes;
