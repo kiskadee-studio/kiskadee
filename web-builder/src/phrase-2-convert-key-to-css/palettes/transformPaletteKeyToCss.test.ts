@@ -8,7 +8,7 @@ describe('transformColorKeyToCss', () => {
     // Using HSLA conversion, the computed hex should be:
     // For [120, 50, 50, 1]:
     //   s = 50 / 100 = 0.5, l = 50 / 100 = 0.5, c = 0.5, m = 0.25,
-    //   Since h=120 is in [120,180), we get r=0, g=0.5, b=0.
+    //   Since h=120 is in [120,180], we get r=0, g=0.5, b=0.
     //   Channel conversions:
     //     r: (0 + 0.25)*255 = ~64 -> "40"
     //     g: (0.5+0.25)*255 = ~191 -> "bf"
