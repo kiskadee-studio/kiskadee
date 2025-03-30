@@ -65,7 +65,7 @@ function convertHslaToHex(hsla: [number, number, number, number]): string {
   const bHex = toHex(b);
 
   // If alpha is 1 or undefined, return a 6-digit hex code.
-  if (a === undefined || a === 1) {
+  if (a == null || a === 1) {
     return `#${rHex}${gHex}${bHex}`;
   }
   const aHex = Math.round(a * 255)
