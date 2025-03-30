@@ -92,7 +92,7 @@ function convertHslaToHex(hsla: [number, number, number, number]): string {
  *
  * The CSS property is determined from the palette key using the cssPropertyMap.
  */
-function transformColorKeyToCss(key: string): string {
+export function transformColorKeyToCss(key: string): string {
   // Regular expression to capture the value in square brackets at the end of the string
   const valueRegex = /\[([^\]]+)\]$/;
   const valueMatch = key.match(valueRegex);
