@@ -55,11 +55,11 @@ export const textDecoration: TextDecoration[] = ['none', 'underline', 'line-thro
 // Text Transform ----------------------------------------------------------------------------------
 
 // TODO: Is it really necessary?
-export type TextTransform =
-  | 'none' // default
-  | 'uppercase'
-  | 'lowercase'
-  | 'capitalize';
+// export type TextTransform =
+//   | 'none' // default
+//   | 'uppercase'
+//   | 'lowercase'
+//   | 'capitalize';
 
 // Text Align --------------------------------------------------------------------------------------
 
@@ -116,11 +116,13 @@ export type Cursor =
   | 'zoom-in'
   | 'zoom-out';
 
-export type BorderStyle =
+export type BorderStyleValue =
   | 'none' // default
   | 'dotted'
   | 'dashed'
   | 'solid';
+
+export const borderStyleValues: BorderStyleValue[] = ['none', 'dotted', 'dashed', 'solid'];
 
 export type ShadowStyle = Partial<Record<InteractionStatesKeys, number>>;
 
@@ -142,14 +144,14 @@ export interface Appearance {
   textItalic?: TextItalic;
   textWeight?: TextWeight;
   textDecoration?: TextDecoration;
-  textTransform?: TextTransform;
+  // textTransform?: TextTransform;
   textAlign?: TextAlign;
 
   // Cursor
   cursor?: Cursor;
 
   // Border
-  borderStyle?: BorderStyle;
+  borderStyle?: BorderStyleValue;
 
   // Shadow
   shadowBlur?: ShadowStyle;

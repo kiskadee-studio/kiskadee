@@ -4,7 +4,7 @@ const buttonAppearance: Appearance = {
   textItalic: false,
   textWeight: 'bold',
   textDecoration: 'none',
-  textTransform: 'uppercase',
+  // textTransform: 'uppercase',
   textAlign: 'center',
   cursor: 'pointer',
   borderStyle: 'solid',
