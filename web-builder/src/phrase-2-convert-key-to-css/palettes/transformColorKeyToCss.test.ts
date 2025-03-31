@@ -1,6 +1,5 @@
-// transformPaletteKeyToCss.test.ts
 import { describe, it, expect } from 'vitest';
-import { transformColorKeyToCss } from './transformPaletteKeyToCss';
+import { transformColorKeyToCss } from './transformColorKeyToCss';
 
 describe('transformColorKeyToCss', () => {
   it('should correctly transform a key without "::ref" (alpha = 1)', () => {

@@ -1,14 +1,5 @@
 import { type ColorKeys, CssColorProperty } from '@kiskadee/schema';
 
-/*
-  Map of color keys to valid CSS property names.
-*/
-const cssPropertyMap: Record<ColorKeys, CssColorProperty> = {
-  textColor: CssColorProperty.textColor,
-  bgColor: CssColorProperty.bgColor,
-  borderColor: CssColorProperty.borderColor
-};
-
 /**
  * Converts an HSLA array into a hexadecimal color string.
  * - h: hue in degrees (0-360)
@@ -116,7 +107,7 @@ export function transformColorKeyToCss(key: string): string {
   // Determine the palette key (e.g., "textColor") that maps to a CSS property.
   // Splits on "--" or "__" to get the palette property.
   const colorKey = key.split(/--|__/)[0];
-  const cssProperty = cssPropertyMap[colorKey as ColorKeys];
+  const cssProperty = CssColorProperty[colorKey as ColorKeys];
 
   const hasRef = key.includes('::ref');
   let cssRule = '';
