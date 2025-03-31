@@ -65,6 +65,7 @@ export function convertDimensions(key: string, breakpoints: Breakpoints): string
     // Find a matching dimension key with support for custom tokens (size and/or media-based)
     dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
     if (dimensionKey == null) {
+      // TODO: Replace returning null with throwing an appropriate Error
       // Exception 1
       return null;
     }
