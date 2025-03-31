@@ -94,7 +94,7 @@ function convertHslaToHex(hsla: [number, number, number, number]): string {
  */
 export function transformColorKeyToCss(key: string): string {
   // Regular expression to capture the value in square brackets at the end of the string
-  const valueRegex = /\[([^\]]+)\]$/;
+  const valueRegex = /\[([^\]]+)]$/;
   const valueMatch = key.match(valueRegex);
 
   if (!valueMatch) {
@@ -131,21 +131,3 @@ export function transformColorKeyToCss(key: string): string {
 
   return cssRule;
 }
-
-/* Examples */
-
-// Example 1:
-const cssRule1 = transformColorKeyToCss('textColor__[120,50,50,1]');
-console.log(cssRule1);
-// Expected output (color converted to hex):
-// .textColor__[120,50,50,1] {
-//   color: <hex equivalent>;
-// }
-
-// Example 2:
-const cssRule2 = transformColorKeyToCss('bgColor--hover::ref__[240,50,50,0.5]');
-console.log(cssRule2);
-// Expected output (color converted to hex):
-// .textColor--hover::ref__[240,50,50,0.5] .textColor--hover::ref {
-//   color: <hex equivalent>;
-// }
