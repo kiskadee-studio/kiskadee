@@ -29,6 +29,18 @@ export const textWeight: TextWeight[] = [
   'black'
 ];
 
+export enum CssTextWeightProperty {
+  thin = '100',
+  'extra-light' = '200',
+  light = '300',
+  normal = '400',
+  medium = '500',
+  'semi-bold' = '600',
+  bold = '700',
+  'extra-bold' = '800',
+  black = '900'
+}
+
 // Text Decoration ---------------------------------------------------------------------------------
 
 // TODO: Should "underline dotted," "overline," and "underline dotted red" be supported?
