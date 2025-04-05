@@ -13,6 +13,7 @@ export function transformBorderStyleToCss(key: string): string {
   const borderStyleValue = key.substring(prefix.length);
 
   // Validate that the value is one of the allowed border style values
+  // TODO: replace array with an enum
   const invalidBorderStyleValue =
     borderStyleValues.includes(borderStyleValue as BorderStyleValue) === false;
 

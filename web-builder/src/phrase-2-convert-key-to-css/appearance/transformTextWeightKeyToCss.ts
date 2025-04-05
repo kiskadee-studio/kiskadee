@@ -10,12 +10,12 @@ export function transformTextWeightKeyToCss(key: string): string {
   }
 
   const weightKey = key.substring(prefix.length);
-  const fontWeight = CssTextWeightProperty[weightKey as TextWeight];
-  const invalidWeightKey = fontWeight == null;
+  const fontWeightValue = CssTextWeightProperty[weightKey as TextWeight];
+  const invalidWeightValue = fontWeightValue == null;
 
-  if (invalidWeightKey === true) {
+  if (invalidWeightValue === true) {
     throw new Error(UNSUPPORTED_VALUE('textWeight', weightKey, key));
   }
 
-  return `.${key} { font-weight: ${fontWeight} }`;
+  return `.${key} { font-weight: ${fontWeightValue} }`;
 }
