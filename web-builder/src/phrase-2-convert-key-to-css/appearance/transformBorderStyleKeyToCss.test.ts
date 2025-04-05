@@ -4,27 +4,35 @@ import { transformBorderStyleToCss } from './transformBorderStyleKeyToCss';
 describe('transformBorderStyleToCss function', () => {
   describe('Successful operation', () => {
     it('should return a valid CSS string for border style "none"', () => {
-      expect(transformBorderStyleToCss('borderStyle__none')).toBe(
-        '.borderStyle__none { border-style: none }'
-      );
+      const borderStyle = 'none';
+      const key = `borderStyle__${borderStyle}`;
+      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
+
+      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
     });
 
     it('should return a valid CSS string for border style "dotted"', () => {
-      expect(transformBorderStyleToCss('borderStyle__dotted')).toBe(
-        '.borderStyle__dotted { border-style: dotted }'
-      );
+      const borderStyle = 'dotted';
+      const key = `borderStyle__${borderStyle}`;
+      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
+
+      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
     });
 
     it('should return a valid CSS string for border style "dashed"', () => {
-      expect(transformBorderStyleToCss('borderStyle__dashed')).toBe(
-        '.borderStyle__dashed { border-style: dashed }'
-      );
+      const borderStyle = 'dashed';
+      const key = `borderStyle__${borderStyle}`;
+      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
+
+      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
     });
 
     it('should return a valid CSS string for border style "solid"', () => {
-      expect(transformBorderStyleToCss('borderStyle__solid')).toBe(
-        '.borderStyle__solid { border-style: solid }'
-      );
+      const borderStyle = 'solid';
+      const key = `borderStyle__${borderStyle}`;
+      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
+
+      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
     });
   });
 
@@ -32,19 +40,17 @@ describe('transformBorderStyleToCss function', () => {
     it('should throw an error when key does not start with "borderStyle__"', () => {
       const invalidPrefix = 'invalidPrefix';
       const key = `${invalidPrefix}__solid`;
+      const expectedMessage = `Invalid format for key "${key}". Expected key to start with "borderStyle__".`;
 
-      expect(() => transformBorderStyleToCss(key)).toThrowError(
-        `Invalid format for key "${key}". Expected key to start with "borderStyle__".`
-      );
+      expect(() => transformBorderStyleToCss(key)).toThrowError(expectedMessage);
     });
 
     it('should throw an error when border style value is not supported', () => {
       const unsupportedValue = 'unsupported';
       const key = `borderStyle__${unsupportedValue}`;
+      const expectedMessage = `Unsupported borderStyle value "${unsupportedValue}" in key "${key}"`;
 
-      expect(() => transformBorderStyleToCss(key)).toThrowError(
-        `Unsupported borderStyle value "${unsupportedValue}" in key "${key}"`
-      );
+      expect(() => transformBorderStyleToCss(key)).toThrowError(expectedMessage);
     });
   });
 });
