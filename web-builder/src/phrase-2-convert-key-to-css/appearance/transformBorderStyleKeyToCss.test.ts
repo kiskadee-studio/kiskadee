@@ -4,10 +4,9 @@ import { transformBorderStyleToCss } from './transformBorderStyleKeyToCss';
 describe('transformBorderStyleToCss function', () => {
   describe('Successful operation', () => {
     it('should return a valid CSS string for border style "none"', () => {
-      const key = 'borderStyle__none';
-      const expectedCss = '.borderStyle__none { border-style: none }';
-
-      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
+      expect(transformBorderStyleToCss('borderStyle__none')).toBe(
+        '.borderStyle__none { border-style: none }'
+      );
     });
 
     it('should return a valid CSS string for border style "dotted"', () => {
@@ -31,10 +30,11 @@ describe('transformBorderStyleToCss function', () => {
 
   describe('Error handling', () => {
     it('should throw an error when key does not start with "borderStyle__"', () => {
-      const invalidKey = 'invalidPrefix__solid';
+      const invalidPrefix = 'invalidPrefix';
+      const key = `${invalidPrefix}__solid`;
 
-      expect(() => transformBorderStyleToCss(invalidKey)).toThrowError(
-        'Invalid format for key "invalidPrefix__solid". Expected key to start with "borderStyle__".'
+      expect(() => transformBorderStyleToCss(key)).toThrowError(
+        `Invalid format for key "${key}". Expected key to start with "borderStyle__".`
       );
     });
 
@@ -43,7 +43,7 @@ describe('transformBorderStyleToCss function', () => {
       const key = `borderStyle__${unsupportedValue}`;
 
       expect(() => transformBorderStyleToCss(key)).toThrowError(
-        `Unsupported borderStyle value "unsupported" in key "${key}"`
+        `Unsupported borderStyle value "${unsupportedValue}" in key "${key}"`
       );
     });
   });
