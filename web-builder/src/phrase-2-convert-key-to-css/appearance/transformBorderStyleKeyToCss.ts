@@ -1,11 +1,12 @@
 import { borderStyleValues, type BorderStyleValue } from '@kiskadee/schema';
+import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
 
 export function transformBorderStyleToCss(key: string): string {
   const prefix = 'borderStyle__';
   const invalidKey = !key.startsWith(prefix);
 
   if (invalidKey === true) {
-    throw new Error(`Invalid format. Expected key to start with "${prefix}".`);
+    throw new Error(INVALID_KEY_PREFIX(prefix, key));
   }
 
   // Extract the border style value from the key
@@ -16,7 +17,7 @@ export function transformBorderStyleToCss(key: string): string {
     borderStyleValues.includes(borderStyleValue as BorderStyleValue) === false;
 
   if (invalidBorderStyleValue === true) {
-    throw new Error(`Unsupported borderStyle value: ${borderStyleValue}`);
+    throw new Error(UNSUPPORTED_VALUE('borderStyle', borderStyleValue, key));
   }
 
   return `.${key} { border-style: ${borderStyleValue} }`;
