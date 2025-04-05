@@ -1,31 +1,38 @@
 import { describe, it, expect } from 'vitest';
 import { transformTextWeightKeyToCss } from './transformTextWeightKeyToCss';
+import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
 
-describe('transformTextWeightKeyToCss', () => {
-  it('deve converter "textWeight__bold" corretamente', () => {
-    const result = transformTextWeightKeyToCss('textWeight__bold');
-    expect(result).toBe('.textWeight__bold { font-weight: 700 }');
+describe('transformTextWeightKeyToCss function', () => {
+  describe('Successful operation', () => {
+    it('should return a valid CSS string for text weight "bold"', () => {
+      const result = transformTextWeightKeyToCss('textWeight__bold');
+      expect(result).toBe('.textWeight__bold { font-weight: 700 }');
+    });
+
+    it('should return a valid CSS string for text weight "normal"', () => {
+      const result = transformTextWeightKeyToCss('textWeight__normal');
+      expect(result).toBe('.textWeight__normal { font-weight: 400 }');
+    });
+
+    it('should return a valid CSS string for text weight "light"', () => {
+      const result = transformTextWeightKeyToCss('textWeight__light');
+      expect(result).toBe('.textWeight__light { font-weight: 300 }');
+    });
   });
 
-  it('deve converter "textWeight__normal" corretamente', () => {
-    const result = transformTextWeightKeyToCss('textWeight__normal');
-    expect(result).toBe('.textWeight__normal { font-weight: 400 }');
-  });
+  describe('Error handling', () => {
+    it('should throw an error when the key does not start with "textWeight__"', () => {
+      const key = 'invalidPrefix__bold';
+      expect(() => transformTextWeightKeyToCss(key)).toThrowError(
+        INVALID_KEY_PREFIX('textWeight__', key)
+      );
+    });
 
-  it('deve converter "textWeight__light" corretamente', () => {
-    const result = transformTextWeightKeyToCss('textWeight__light');
-    expect(result).toBe('.textWeight__light { font-weight: 300 }');
-  });
-
-  it('deve lançar erro se a key não inicia com "textWeight__"', () => {
-    expect(() => transformTextWeightKeyToCss('invalidPrefix__bold')).toThrow(
-      'Invalid format. Expected the key (key: invalidPrefix__bold) to start with "textWeight__".'
-    );
-  });
-
-  it('deve lançar erro se o valor de peso não for suportado', () => {
-    expect(() => transformTextWeightKeyToCss('textWeight__unknown')).toThrow(
-      'Unsupported text weight: unknown (key: textWeight__unknown).'
-    );
+    it('should throw an error when the text weight value is not supported', () => {
+      const key = 'textWeight__unknown';
+      expect(() => transformTextWeightKeyToCss(key)).toThrowError(
+        UNSUPPORTED_VALUE('textWeight', 'unknown', key)
+      );
+    });
   });
 });
