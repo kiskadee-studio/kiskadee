@@ -19,26 +19,23 @@ export function transformTextWeightKeyToCss(key: string): string {
 
   // Check if the input key starts with the required prefix.
   // If it doesn't, throw an error indicating that the key has an invalid prefix.
-  const invalidKey = !key.startsWith(prefix);
-  if (invalidKey === true) {
+  if (!key.startsWith(prefix)) {
     throw new Error(INVALID_KEY_PREFIX(prefix, key));
   }
 
-  // Remove the prefix from the key to extract only the weight value.
+  // Remove the prefix from the key to extract only the text weight value.
   const textWeightValue = key.substring(prefix.length);
 
-  // Retrieve the numeric value for the text weight from the CssTextWeightProperty mapping.
-  // Casting weightKey to TextWeight for type safety.
+  // Retrieve the numeric CSS value for the text weight from the mapping.
   const cssValue = CssTextWeightProperty[textWeightValue as TextWeightValue];
 
-  // If the retrieved font weight value is null or undefined, then this value is unsupported.
-  // In such a case, throw an error indicating the unsupported value.
-  const invalidCssValue = cssValue == null;
-  if (invalidCssValue === true) {
+  // If the retrieved cssValue is null or undefined, the extracted text weight is unsupported.
+  // In such a case, throw an error indicating the unsupported text weight value.
+  if (cssValue == null) {
     throw new Error(UNSUPPORTED_VALUE('textWeight', textWeightValue, key));
   }
 
-  // Return the formatted CSS rule using the original key and the corresponding font weight value.
+  // Return the formatted CSS rule using the original key and the corresponding CSS value.
   // For example: ".textWeight__bold { font-weight: 700 }"
   return `.${key} { font-weight: ${cssValue} }`;
 }
