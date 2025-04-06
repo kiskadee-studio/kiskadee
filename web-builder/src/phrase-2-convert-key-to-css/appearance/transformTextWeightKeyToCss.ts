@@ -27,7 +27,8 @@ export function transformTextWeightKeyToCss(key: string): string {
   const textWeightValue = key.substring(prefix.length);
 
   // Retrieve the numeric CSS value for the text weight from the mapping.
-  const cssValue = CssTextWeightProperty[textWeightValue as TextWeightValue];
+  const cssValue: CssTextWeightProperty | undefined =
+    CssTextWeightProperty[textWeightValue as TextWeightValue];
 
   // If the retrieved cssValue is null or undefined, the extracted text weight is unsupported.
   // In such a case, throw an error indicating the unsupported text weight value.
