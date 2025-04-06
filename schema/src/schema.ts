@@ -34,7 +34,7 @@ export const schema: Schema = {
             textItalic: true,
             textWeight: 'bold',
             textDecoration: 'underline',
-            textTransform: 'uppercase',
+            // textTransform: 'uppercase',
             textAlign: 'center',
             cursor: 'pointer',
             borderStyle: 'solid',
