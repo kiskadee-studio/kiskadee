@@ -1,4 +1,4 @@
-import { CssTextWeightProperty, type TextWeight } from '@kiskadee/schema';
+import { CssTextWeightProperty, type TextWeightValue } from '@kiskadee/schema';
 import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
@@ -25,20 +25,20 @@ export function transformTextWeightKeyToCss(key: string): string {
   }
 
   // Remove the prefix from the key to extract only the weight value.
-  const weightKey = key.substring(prefix.length);
+  const textWeightValue = key.substring(prefix.length);
 
   // Retrieve the numeric value for the text weight from the CssTextWeightProperty mapping.
   // Casting weightKey to TextWeight for type safety.
-  const fontWeightValue = CssTextWeightProperty[weightKey as TextWeight];
+  const cssValue = CssTextWeightProperty[textWeightValue as TextWeightValue];
 
   // If the retrieved font weight value is null or undefined, then this value is unsupported.
   // In such a case, throw an error indicating the unsupported value.
-  const invalidWeightValue = fontWeightValue == null;
-  if (invalidWeightValue === true) {
-    throw new Error(UNSUPPORTED_VALUE('textWeight', weightKey, key));
+  const invalidCssValue = cssValue == null;
+  if (invalidCssValue === true) {
+    throw new Error(UNSUPPORTED_VALUE('textWeight', textWeightValue, key));
   }
 
   // Return the formatted CSS rule using the original key and the corresponding font weight value.
   // For example: ".textWeight__bold { font-weight: 700 }"
-  return `.${key} { font-weight: ${fontWeightValue} }`;
+  return `.${key} { font-weight: ${cssValue} }`;
 }

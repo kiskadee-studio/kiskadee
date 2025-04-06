@@ -6,7 +6,7 @@ export type TextItalic = boolean;
 
 // Text Weight -------------------------------------------------------------------------------------
 
-export type TextWeight =
+export type TextWeightValue =
   | 'thin' //         100
   | 'extra-light' //  200
   | 'light' //        300
@@ -17,7 +17,7 @@ export type TextWeight =
   | 'extra-bold' //   800
   | 'black'; //       900
 
-export const textWeight: TextWeight[] = [
+export const textWeight: TextWeightValue[] = [
   'thin',
   'extra-light',
   'light',
@@ -122,7 +122,12 @@ export type BorderStyleValue =
   | 'dashed'
   | 'solid';
 
-export const borderStyleValues: BorderStyleValue[] = ['none', 'dotted', 'dashed', 'solid'];
+export enum CssBorderStyleProperty {
+  none = 'none',
+  dotted = 'dotted',
+  dashed = 'dashed',
+  solid = 'solid'
+}
 
 export type ShadowStyle = Partial<Record<InteractionStatesKeys, number>>;
 
@@ -142,7 +147,7 @@ export type ShadowStyle = Partial<Record<InteractionStatesKeys, number>>;
 export interface Appearance {
   // Text
   textItalic?: TextItalic;
-  textWeight?: TextWeight;
+  textWeight?: TextWeightValue;
   textDecoration?: TextDecoration;
   // textTransform?: TextTransform;
   textAlign?: TextAlign;
