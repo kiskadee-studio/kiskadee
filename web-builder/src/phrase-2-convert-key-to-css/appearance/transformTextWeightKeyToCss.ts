@@ -26,11 +26,11 @@ export function transformTextWeightKeyToCss(key: string): string {
   // Remove the prefix from the key to extract only the text weight value.
   const textWeightValue = key.substring(prefix.length);
 
-  // Retrieve the numeric CSS value for the text weight from the mapping.
+  // Retrieve the corresponding CSS value for the text weight from the mapping.
   const cssValue: CssTextWeightProperty | undefined =
     CssTextWeightProperty[textWeightValue as TextWeightValue];
 
-  // If the retrieved cssValue is null or undefined, the extracted text weight is unsupported.
+  // If the retrieved cssValue is null or undefined, then the value is unsupported.
   // In such a case, throw an error indicating the unsupported text weight value.
   if (cssValue == null) {
     throw new Error(UNSUPPORTED_VALUE('textWeight', textWeightValue, key));
