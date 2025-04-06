@@ -38,16 +38,18 @@ describe('transformTextWeightKeyToCss function', () => {
       const weightValue = 'bold';
       const key = `${invalidPrefix}__${weightValue}`;
       const expectedError = INVALID_KEY_PREFIX('textWeight__', key);
+      const result = () => transformTextWeightKeyToCss(key);
 
-      expect(() => transformTextWeightKeyToCss(key)).toThrowError(expectedError);
+      expect(result).toThrowError(expectedError);
     });
 
     it('should throw an error when the text weight value is not supported', () => {
       const unsupportedValue = 'unknown';
       const key = `textWeight__${unsupportedValue}`;
       const expectedError = UNSUPPORTED_VALUE('textWeight', unsupportedValue, key);
+      const result = () => transformTextWeightKeyToCss(key);
 
-      expect(() => transformTextWeightKeyToCss(key)).toThrowError(expectedError);
+      expect(result).toThrowError(expectedError);
     });
   });
 });
