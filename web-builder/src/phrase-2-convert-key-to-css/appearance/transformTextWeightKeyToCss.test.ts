@@ -8,8 +8,8 @@ describe('transformTextWeightKeyToCss function', () => {
       const weightValue = 'bold';
       const key = `textWeight__${weightValue}`;
       const expectedCss = `.${key} { font-weight: 700 }`;
-
       const result = transformTextWeightKeyToCss(key);
+
       expect(result).toBe(expectedCss);
     });
 
@@ -17,8 +17,8 @@ describe('transformTextWeightKeyToCss function', () => {
       const weightValue = 'normal';
       const key = `textWeight__${weightValue}`;
       const expectedCss = `.${key} { font-weight: 400 }`;
-
       const result = transformTextWeightKeyToCss(key);
+
       expect(result).toBe(expectedCss);
     });
 
@@ -26,8 +26,8 @@ describe('transformTextWeightKeyToCss function', () => {
       const weightValue = 'light';
       const key = `textWeight__${weightValue}`;
       const expectedCss = `.${key} { font-weight: 300 }`;
-
       const result = transformTextWeightKeyToCss(key);
+
       expect(result).toBe(expectedCss);
     });
   });
