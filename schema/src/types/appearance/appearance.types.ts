@@ -146,7 +146,7 @@ export type ShadowStyle = Partial<Record<InteractionStatesKeys, number>>;
  */
 export interface Appearance {
   // Text
-  textItalic?: TextItalic; // Create phrase 2
+  textItalic?: TextItalic; // Update phrase 2
   textWeight?: TextWeightValue; // Phrase 1 and 2 are OK
   textDecoration?: TextDecoration; // Update phrase 2
   textAlign?: TextAlign; // Update phrase 2
