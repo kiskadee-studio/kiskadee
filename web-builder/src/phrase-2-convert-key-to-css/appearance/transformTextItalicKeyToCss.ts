@@ -1,5 +1,5 @@
 import { CssFontStyleValue } from '@kiskadee/schema';
-import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE, INVALID_KEY_FORMAT } from '../errorMessages';
+import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
  * Converts a text italic property key into a CSS class rule.
@@ -11,7 +11,6 @@ import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE, INVALID_KEY_FORMAT } from '../er
  * @returns A string containing the CSS rule.
  *
  * @throws An error if the key does not start with the expected prefix "textItalic__".
- * @throws An error if the key has an invalid format (for example, if it does not contain exactly one delimiter "__").
  * @throws An error if the extracted italic value is not supported.
  */
 export function transformTextItalicKeyToCss(key: string): string {
@@ -19,34 +18,25 @@ export function transformTextItalicKeyToCss(key: string): string {
   const property = 'textItalic';
   const prefix = `${property}__`;
 
-  // Check if the input key starts with the required prefix.
-  // If it doesn't, throw an error indicating that the key has an invalid prefix.
+  // Verify that the input key starts with the required prefix.
   if (!key.startsWith(prefix)) {
     throw new Error(INVALID_KEY_PREFIX(prefix, key));
   }
 
-  // Split the key into parts using the delimiter '__'.
-  // We expect exactly 2 parts: the prefix and the italic value.
-  const parts = key.split('__');
-  if (parts.length !== 2) {
-    // Throw an error if the key format is invalid.
-    throw new Error(INVALID_KEY_FORMAT(property, key));
-  }
+  // Remove the prefix from the key to extract only the text italic value.
+  const textItalicValue = key.substring(prefix.length);
 
-  // The second part of the key represents the italic value.
-  // It should be either 'true' (for italic styling) or 'false' (for normal styling).
-  const italicValue = parts[1];
+  // Determine the corresponding CSS value based on the text italic value.
   let cssValue: string;
-  if (italicValue === 'true') {
+  if (textItalicValue === 'true') {
     cssValue = CssFontStyleValue.italic;
-  } else if (italicValue === 'false') {
+  } else if (textItalicValue === 'false') {
     cssValue = CssFontStyleValue.normal;
   } else {
-    // Throw an error if the value is not recognized.
-    throw new Error(UNSUPPORTED_VALUE(property, italicValue, key));
+    throw new Error(UNSUPPORTED_VALUE(property, textItalicValue, key));
   }
 
-  // Return the formatted CSS rule using the original key and the corresponding CSS value.
+  // Return the formatted CSS rule.
   // For example: ".textItalic__true { font-style: italic; }"
   return `.${key} { font-style: ${cssValue}; }`;
 }
