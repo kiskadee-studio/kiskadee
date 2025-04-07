@@ -1,6 +1,13 @@
 import type { InteractionStatesKeys, SingleColor } from '../palettes/palettes.types';
 
+// Italic ------------------------------------------------------------------------------------------
+
 export type TextItalic = boolean;
+
+export enum CssFontStyleValue {
+  italic = 'italic',
+  normal = 'normal'
+}
 
 // type BackgroundColor = SingleColor;
 
