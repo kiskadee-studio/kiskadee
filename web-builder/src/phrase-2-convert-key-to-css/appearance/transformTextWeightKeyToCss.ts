@@ -15,7 +15,8 @@ import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
  */
 export function transformTextWeightKeyToCss(key: string): string {
   // Define the expected prefix for the key.
-  const prefix = 'textWeight__';
+  const property = 'textWeight';
+  const prefix = `${property}__`;
 
   // Check if the input key starts with the required prefix.
   // If it doesn't, throw an error indicating that the key has an invalid prefix.
@@ -33,7 +34,7 @@ export function transformTextWeightKeyToCss(key: string): string {
   // If the retrieved cssValue is null or undefined, then the value is unsupported.
   // In such a case, throw an error indicating the unsupported text weight value.
   if (cssValue == null) {
-    throw new Error(UNSUPPORTED_VALUE('textWeight', textWeightValue, key));
+    throw new Error(UNSUPPORTED_VALUE(property, textWeightValue, key));
   }
 
   // Return the formatted CSS rule using the original key and the corresponding CSS value.
