@@ -1,5 +1,5 @@
 import { CssFontStyleValue } from '@kiskadee/schema';
-import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
  * Converts a text italic property key into a CSS class rule.
@@ -20,7 +20,7 @@ export function transformTextItalicKeyToCss(key: string): string {
 
   // Verify that the input key starts with the required prefix.
   if (!key.startsWith(prefix)) {
-    throw new Error(INVALID_KEY_PREFIX(prefix, key));
+    throw new Error(UNSUPPORTED_PROPERTY(prefix, key));
   }
 
   // Remove the prefix from the key to extract only the text italic value.

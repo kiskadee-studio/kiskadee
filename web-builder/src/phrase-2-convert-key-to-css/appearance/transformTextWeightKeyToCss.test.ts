@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformTextWeightKeyToCss } from './transformTextWeightKeyToCss';
-import { INVALID_KEY_PREFIX, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 describe('transformTextWeightKeyToCss function', () => {
   describe('Successful operation', () => {
@@ -37,7 +37,7 @@ describe('transformTextWeightKeyToCss function', () => {
       const invalidPrefix = 'invalidPrefix';
       const weightValue = 'bold';
       const key = `${invalidPrefix}__${weightValue}`;
-      const expectedError = INVALID_KEY_PREFIX('textWeight__', key);
+      const expectedError = UNSUPPORTED_PROPERTY('textWeight__', key);
       const result = () => transformTextWeightKeyToCss(key);
 
       expect(result).toThrowError(expectedError);
