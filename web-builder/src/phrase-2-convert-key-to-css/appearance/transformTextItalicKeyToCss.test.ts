@@ -31,7 +31,7 @@ describe('transformTextItalicKeyToCss function', () => {
       const invalidProperty = 'notTextItalic';
       const textItalicValue = 'true';
       const styleKey = `${invalidProperty}__${textItalicValue}`;
-      const expectedMessage = UNSUPPORTED_PROPERTY('textItalic__', styleKey);
+      const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
       const result = () => transformTextItalicKeyToCss(styleKey);
 
       expect(result).toThrowError(expectedMessage);
@@ -39,7 +39,7 @@ describe('transformTextItalicKeyToCss function', () => {
 
     it('should throw an error for style keys that are not correctly separated', () => {
       const styleKey = 'textItalictrue';
-      const expectedMessage = UNSUPPORTED_PROPERTY('textItalic__', styleKey);
+      const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
       const result = () => transformTextItalicKeyToCss(styleKey);
 
       expect(result).toThrowError(expectedMessage);
@@ -57,29 +57,29 @@ describe('transformTextItalicKeyToCss function', () => {
     it('should throw an error for keys with extra segments', () => {
       const validValue = 'true';
       const extraSegment = 'extra';
-      const key = `textItalic__${validValue}__${extraSegment}`;
+      const styleKey = `${textItalicProperty}__${validValue}__${extraSegment}`;
       const expectedMessage = UNSUPPORTED_VALUE(
-        'textItalic',
+        textItalicProperty,
         `${validValue}__${extraSegment}`,
-        key
+        styleKey
       );
-      const transform = () => transformTextItalicKeyToCss(key);
+      const transform = () => transformTextItalicKeyToCss(styleKey);
 
       expect(transform).toThrowError(expectedMessage);
     });
 
     it('should throw an error for keys with empty value segment', () => {
       const key = 'textItalic__';
-      const expectedMessage = UNSUPPORTED_VALUE('textItalic', '', key);
+      const expectedMessage = UNSUPPORTED_VALUE(textItalicProperty, '', key);
       const transform = () => transformTextItalicKeyToCss(key);
 
       expect(transform).toThrowError(expectedMessage);
     });
 
-    it('should throw an error for an empty string', () => {
-      const key = '';
-      const expectedMessage = UNSUPPORTED_PROPERTY('textItalic__', key);
-      const transform = () => transformTextItalicKeyToCss(key);
+    it('should throw an error for an empty style key', () => {
+      const styleKey = '';
+      const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
+      const transform = () => transformTextItalicKeyToCss(styleKey);
 
       expect(transform).toThrowError(expectedMessage);
     });

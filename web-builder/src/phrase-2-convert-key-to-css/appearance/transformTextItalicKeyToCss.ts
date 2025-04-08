@@ -2,42 +2,54 @@ import { CssFontStyleValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
- * Converts a text italic property key into a CSS class rule.
+ * Converts a text italic style key into a corresponding CSS rule.
  *
- * For example, for the key "textItalic__true", it returns:
+ * The style key includes both the text italic property and its value, separated by "__".
+ * For example, the style key "textItalic__true" generates:
  *   ".textItalic__true { font-style: italic; }"
  *
- * @param styleKey - The text italic property key to process.
- * @returns A string containing the CSS rule.
+ * @param styleKey - The combined style key for text italic, including both the property and value (e.g., "textItalic__true").
+ * @returns A string representing the generated CSS rule.
  *
- * @throws An error if the key does not start with the expected prefix "textItalic__".
- * @throws An error if the extracted italic value is not supported.
+ * @throws An error if the key's property component is not exactly "textItalic".
+ * @throws An error if the key contains extra segments or an unsupported value.
  */
 export function transformTextItalicKeyToCss(styleKey: string): string {
-  const property = 'textItalic';
+  // Define the expected style key for the text italic property.
+  const textItalicProperty = 'textItalic';
+
+  // Split the style key on "__" to separate the property component and its value.
   const styleKeyParts = styleKey.split('__');
   const styleProperty = styleKeyParts[0];
   const styleValue = styleKeyParts[1];
 
+  // If the property component does not match the expected value,
+  // throw an error indicating an unsupported property.
+  if (styleProperty !== textItalicProperty) {
+    throw new Error(UNSUPPORTED_PROPERTY(textItalicProperty, styleKey));
+  }
+
+  // If the style key doesn't have exactly one value component, it is formatted incorrectly.
+  // Combine any extra segments and report them as an unsupported value.
   if (styleKeyParts.length !== 2) {
-    throw new Error(UNSUPPORTED_VALUE(property, styleValue, styleKey));
+    const [, ...invalidValue] = styleKeyParts;
+    throw new Error(UNSUPPORTED_VALUE(textItalicProperty, invalidValue.join('__'), styleKey));
   }
 
-  if (styleProperty !== property) {
-    throw new Error(UNSUPPORTED_PROPERTY(property, styleKey));
-  }
-
-  // Determine the corresponding CSS value based on the text italic value.
+  // Determine the corresponding CSS font-style based on the value.
   let cssValue: string;
   if (styleValue === 'true') {
+    // "true" indicates that the text should be italic.
     cssValue = CssFontStyleValue.italic;
   } else if (styleValue === 'false') {
+    // "false" indicates that the text should be normal.
     cssValue = CssFontStyleValue.normal;
   } else {
-    throw new Error(UNSUPPORTED_VALUE(property, styleValue, styleKey));
+    // Any other value is unsupported.
+    throw new Error(UNSUPPORTED_VALUE(textItalicProperty, styleValue, styleKey));
   }
 
-  // Return the formatted CSS rule.
-  // For example: ".textItalic__true { font-style: italic; }"
+  // Return the CSS rule string in the proper format.
+  // Example: ".textItalic__true { font-style: italic; }"
   return `.${styleKey} { font-style: ${cssValue}; }`;
 }
