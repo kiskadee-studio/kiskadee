@@ -1,4 +1,3 @@
-// processAppearance.ts
 import type { Appearance, InteractionStatesKeys, SingleColor } from '@kiskadee/schema';
 import { styleUsageMap } from '../../utils';
 
