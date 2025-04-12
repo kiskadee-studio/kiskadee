@@ -1,54 +1,82 @@
 import { describe, it, expect } from 'vitest';
 import { transformTextWeightKeyToCss } from './transformTextWeightKeyToCss';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import type { TextWeightValue } from '@kiskadee/schema';
+
+const propertyName = 'textWeight';
 
 describe('transformTextWeightKeyToCss function', () => {
   describe('Successful operation', () => {
     it('should return a valid CSS string for text weight "bold"', () => {
-      const weightValue = 'bold';
-      const key = `textWeight__${weightValue}`;
-      const expectedCss = `.${key} { font-weight: 700 }`;
-      const result = transformTextWeightKeyToCss(key);
+      const textWeightValue: TextWeightValue = 'bold';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 700 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
 
+      // input: textWeight__bold
+      // output: .textWeight__bold { font-weight: 700 }
       expect(result).toBe(expectedCss);
     });
 
     it('should return a valid CSS string for text weight "normal"', () => {
-      const weightValue = 'normal';
-      const key = `textWeight__${weightValue}`;
-      const expectedCss = `.${key} { font-weight: 400 }`;
-      const result = transformTextWeightKeyToCss(key);
+      const textWeightValue: TextWeightValue = 'normal';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 400 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
 
+      // input: textWeight__normal
+      // output: .textWeight__normal { font-weight: 400 }
       expect(result).toBe(expectedCss);
     });
 
     it('should return a valid CSS string for text weight "light"', () => {
-      const weightValue = 'light';
-      const key = `textWeight__${weightValue}`;
-      const expectedCss = `.${key} { font-weight: 300 }`;
-      const result = transformTextWeightKeyToCss(key);
+      const textWeightValue: TextWeightValue = 'light';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 300 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
 
+      // input: textWeight__light
+      // output: .textWeight__light { font-weight: 300 }
+      expect(result).toBe(expectedCss);
+    });
+
+    it('should return a valid CSS string for text weight "semi-bold"', () => {
+      const textWeightValue: TextWeightValue = 'semiBold';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 600 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
+
+      // input: textWeight__semiBold
+      // output: .textWeight__semiBold { font-weight: 600 }
       expect(result).toBe(expectedCss);
     });
   });
 
   describe('Error handling', () => {
     it('should throw an error when the key does not start with "textWeight__"', () => {
-      const invalidPrefix = 'invalidPrefix';
-      const weightValue = 'bold';
-      const key = `${invalidPrefix}__${weightValue}`;
-      const expectedError = UNSUPPORTED_PROPERTY('textWeight__', key);
-      const result = () => transformTextWeightKeyToCss(key);
+      const invalidProperty = 'invalidProperty';
+      const textWeightValue: TextWeightValue = 'bold';
+      const styleKey = `${invalidProperty}__${textWeightValue}`;
+      const expectedError = UNSUPPORTED_PROPERTY(propertyName, styleKey);
+      const result = () => transformTextWeightKeyToCss(styleKey);
 
+      /*
+        input: invalidProperty__bold
+        output: Invalid style key "invalidProperty__bold". Expected the key to be in the format "<property>__<value>" with the property part being "textWeight".
+      */
       expect(result).toThrowError(expectedError);
     });
 
     it('should throw an error when the text weight value is not supported', () => {
       const unsupportedValue = 'unknown';
-      const key = `textWeight__${unsupportedValue}`;
-      const expectedError = UNSUPPORTED_VALUE('textWeight', unsupportedValue, key);
-      const result = () => transformTextWeightKeyToCss(key);
+      const styleKey = `${propertyName}__${unsupportedValue}`;
+      const expectedError = UNSUPPORTED_VALUE(propertyName, unsupportedValue, styleKey);
+      const result = () => transformTextWeightKeyToCss(styleKey);
 
+      /*
+        input: textWeight__unknown
+        output: Unsupported value "unknown" for property "textWeight" in style key "textWeight__unknown".
+      */
       expect(result).toThrowError(expectedError);
     });
   });
