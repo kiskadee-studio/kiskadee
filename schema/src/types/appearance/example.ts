@@ -2,7 +2,7 @@ import type { Appearance } from './appearance.types';
 
 const buttonAppearance: Appearance = {
   textItalic: false,
-  textWeight: 'bold',
+  textWeight: 'semiBold',
   textDecoration: 'none',
   // textTransform: 'uppercase',
   textAlign: 'center',

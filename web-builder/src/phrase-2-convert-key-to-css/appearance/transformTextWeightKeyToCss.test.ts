@@ -7,25 +7,25 @@ const propertyName = 'textWeight';
 
 describe('transformTextWeightKeyToCss function', () => {
   describe('Successful operation', () => {
-    it('should return a valid CSS string for text weight "bold"', () => {
-      const textWeightValue: TextWeightValue = 'bold';
+    it('should return a valid CSS string for text weight "thin"', () => {
+      const textWeightValue: TextWeightValue = 'thin';
       const styleKey = `${propertyName}__${textWeightValue}`;
-      const expectedCss = `.${styleKey} { font-weight: 700 }`;
+      const expectedCss = `.${styleKey} { font-weight: 100 }`;
       const result = transformTextWeightKeyToCss(styleKey);
 
-      // input: textWeight__bold
-      // output: .textWeight__bold { font-weight: 700 }
+      // input: textWeight__thin
+      // output: .textWeight__thin { font-weight: 100 }
       expect(result).toBe(expectedCss);
     });
 
-    it('should return a valid CSS string for text weight "normal"', () => {
-      const textWeightValue: TextWeightValue = 'normal';
+    it('should return a valid CSS string for text weight "extraLight"', () => {
+      const textWeightValue: TextWeightValue = 'extraLight';
       const styleKey = `${propertyName}__${textWeightValue}`;
-      const expectedCss = `.${styleKey} { font-weight: 400 }`;
+      const expectedCss = `.${styleKey} { font-weight: 200 }`;
       const result = transformTextWeightKeyToCss(styleKey);
 
-      // input: textWeight__normal
-      // output: .textWeight__normal { font-weight: 400 }
+      // input: textWeight__extraLight
+      // output: .textWeight__extraLight { font-weight: 200 }
       expect(result).toBe(expectedCss);
     });
 
@@ -40,7 +40,29 @@ describe('transformTextWeightKeyToCss function', () => {
       expect(result).toBe(expectedCss);
     });
 
-    it('should return a valid CSS string for text weight "semi-bold"', () => {
+    it('should return a valid CSS string for text weight "normal"', () => {
+      const textWeightValue: TextWeightValue = 'normal';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 400 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
+
+      // input: textWeight__normal
+      // output: .textWeight__normal { font-weight: 400 }
+      expect(result).toBe(expectedCss);
+    });
+
+    it('should return a valid CSS string for text weight "medium"', () => {
+      const textWeightValue: TextWeightValue = 'medium';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 500 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
+
+      // input: textWeight__medium
+      // output: .textWeight__medium { font-weight: 500 }
+      expect(result).toBe(expectedCss);
+    });
+
+    it('should return a valid CSS string for text weight "semiBold"', () => {
       const textWeightValue: TextWeightValue = 'semiBold';
       const styleKey = `${propertyName}__${textWeightValue}`;
       const expectedCss = `.${styleKey} { font-weight: 600 }`;
@@ -48,6 +70,39 @@ describe('transformTextWeightKeyToCss function', () => {
 
       // input: textWeight__semiBold
       // output: .textWeight__semiBold { font-weight: 600 }
+      expect(result).toBe(expectedCss);
+    });
+
+    it('should return a valid CSS string for text weight "bold"', () => {
+      const textWeightValue: TextWeightValue = 'bold';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 700 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
+
+      // input: textWeight__bold
+      // output: .textWeight__bold { font-weight: 700 }
+      expect(result).toBe(expectedCss);
+    });
+
+    it('should return a valid CSS string for text weight "extraBold"', () => {
+      const textWeightValue: TextWeightValue = 'extraBold';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 800 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
+
+      // input: textWeight__extraBold
+      // output: .textWeight__extraBold { font-weight: 800 }
+      expect(result).toBe(expectedCss);
+    });
+
+    it('should return a valid CSS string for text weight "black"', () => {
+      const textWeightValue: TextWeightValue = 'black';
+      const styleKey = `${propertyName}__${textWeightValue}`;
+      const expectedCss = `.${styleKey} { font-weight: 900 }`;
+      const result = transformTextWeightKeyToCss(styleKey);
+
+      // input: textWeight__black
+      // output: .textWeight__black { font-weight: 900 }
       expect(result).toBe(expectedCss);
     });
   });
