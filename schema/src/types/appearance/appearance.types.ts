@@ -14,37 +14,25 @@ export enum CssFontStyleValue {
 // Text Weight -------------------------------------------------------------------------------------
 
 export type TextWeightValue =
-  | 'thin' //         100
-  | 'extra-light' //  200
-  | 'light' //        300
-  | 'normal' //       400
-  | 'medium' //       500
-  | 'semi-bold' //    600
-  | 'bold' //         700
-  | 'extra-bold' //   800
-  | 'black'; //       900
+  | 'thin'
+  | 'extraLight'
+  | 'light'
+  | 'normal'
+  | 'medium'
+  | 'semiBold'
+  | 'bold'
+  | 'extraBold'
+  | 'black';
 
-export const textWeight: TextWeightValue[] = [
-  'thin',
-  'extra-light',
-  'light',
-  'normal',
-  'medium',
-  'semi-bold',
-  'bold',
-  'extra-bold',
-  'black'
-];
-
-export enum CssTextWeightProperty {
+export enum CssTextWeightValue {
   thin = '100',
-  'extra-light' = '200',
+  extraLight = '200',
   light = '300',
   normal = '400',
   medium = '500',
-  'semi-bold' = '600',
+  semiBold = '600',
   bold = '700',
-  'extra-bold' = '800',
+  extraBold = '800',
   black = '900'
 }
 
@@ -52,12 +40,18 @@ export enum CssTextWeightProperty {
 
 // TODO: Should "underline dotted," "overline," and "underline dotted red" be supported?
 // TODO: Where is the default value defined?
-export type TextDecoration =
+export type TextDecorationValue =
   | 'none' // default
   | 'underline'
   | 'line-through';
 
-export const textDecoration: TextDecoration[] = ['none', 'underline', 'line-through'];
+export const textDecoration: TextDecorationValue[] = ['none', 'underline', 'line-through'];
+
+export enum CssTextDecorationProperty {
+  none = 'none',
+  underline = 'underline',
+  lineThrough = 'line-through'
+}
 
 // Text Transform ----------------------------------------------------------------------------------
 
@@ -155,7 +149,7 @@ export interface Appearance {
   // Text
   textItalic?: TextItalic; // Update phrase 2
   textWeight?: TextWeightValue; // Phrase 1 and 2 are OK
-  textDecoration?: TextDecoration; // Update phrase 2
+  textDecoration?: TextDecorationValue; // Update phrase 2
   textAlign?: TextAlign; // Update phrase 2
   // textTransform?: TextTransform;
 
