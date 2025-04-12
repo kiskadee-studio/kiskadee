@@ -38,7 +38,7 @@ export enum CssTextWeightValue {
 
 // Text Decoration ---------------------------------------------------------------------------------
 
-// TODO: Should "underline dotted," "overline," and "underline dotted red" be supported?
+// TODO: Should "underline dotted", "overline" and "underline dotted red" be supported?
 // TODO: Where is the default value defined?
 export type TextDecorationValue =
   | 'none' // default
