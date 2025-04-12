@@ -43,11 +43,9 @@ export enum CssTextWeightValue {
 export type TextDecorationValue =
   | 'none' // default
   | 'underline'
-  | 'line-through';
+  | 'lineThrough';
 
-export const textDecoration: TextDecorationValue[] = ['none', 'underline', 'line-through'];
-
-export enum CssTextDecorationProperty {
+export enum CssTextDecorationValue {
   none = 'none',
   underline = 'underline',
   lineThrough = 'line-through'
