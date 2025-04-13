@@ -1,6 +1,8 @@
 import { CssFontStyleValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
+const { italic, normal } = CssFontStyleValue;
+
 /**
  * Converts a text italic style key into a corresponding CSS rule.
  *
@@ -39,11 +41,11 @@ export function transformTextItalicKeyToCss(styleKey: string): string {
   // Determine the corresponding CSS font-style based on the value.
   let cssValue: string;
   if (styleValue === 'true') {
-    // "true" indicates that the text should be italic.
-    cssValue = CssFontStyleValue.italic;
+    // "true" indicates that the text style should be italic.
+    cssValue = italic;
   } else if (styleValue === 'false') {
-    // "false" indicates that the text should be normal.
-    cssValue = CssFontStyleValue.normal;
+    // "false" indicates that the text style should be normal.
+    cssValue = normal;
   } else {
     // Any other value is unsupported.
     throw new Error(UNSUPPORTED_VALUE(textItalicProperty, styleValue, styleKey));
