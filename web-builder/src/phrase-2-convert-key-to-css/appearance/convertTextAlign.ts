@@ -1,40 +1,35 @@
-import { type TextAlign, textAlign } from '@kiskadee/schema';
+import { type TextAlignValue, textAlign, CssTextAlignValue } from '@kiskadee/schema';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
- * Converts a text alignment property key into a CSS class rule.
- * For example, the key "textAlign__center" returns:
+ * Converts a text alignment property key into a corresponding CSS class rule.
+ * For example, for the key "textAlign__center", it returns:
  *   ".textAlign__center { text-align: center; }"
  *
- * @param key - The text alignment property key to process.
- * @returns The CSS rule as a string or null if the key doesn't match or has an invalid value.
+ * @param styleKey - The text alignment property key to process.
+ * @returns A string containing the CSS rule.
+ *
+ * @throws An error if the key does not start with the expected prefix "textAlign__".
+ * @throws An error if the extracted alignment value is not supported.
  */
-export function convertTextAlign(key: string): string | null {
-  // Check if the input key starts with the required prefix 'textAlign__'.
-  // If not, return null since the key doesn't follow the expected naming convention.
-  if (!key.startsWith('textAlign__')) {
-    return null;
+export function convertTextAlign(styleKey: string): string {
+  const propertyName = 'textAlign';
+  const prefix = `${propertyName}__`;
+
+  // Check if the input key starts with the required prefix.
+  if (!styleKey.startsWith(prefix)) {
+    throw new Error(UNSUPPORTED_PROPERTY(propertyName, styleKey));
   }
 
-  // Split the key into parts using the delimiter '__'.
-  // We expect exactly 2 parts: the prefix and the actual alignment value.
-  const parts = key.split('__');
-  if (parts.length !== 2) {
-    // Return null if there are extra parts or missing separators.
-    return null;
+  // Extract the alignment value by removing the prefix.
+  const textAlignValue = styleKey.substring(prefix.length);
+  const cssValue: CssTextAlignValue | undefined =
+    CssTextAlignValue[textAlignValue as TextAlignValue];
+
+  if (!cssValue) {
+    throw new Error(UNSUPPORTED_VALUE(propertyName, textAlignValue, styleKey));
   }
 
-  // The second part is the alignment value, which should be one of a defined set of allowed values.
-  // Here, we enforce the type cast to TextAlign for type safety.
-  const alignment = parts[1] as TextAlign;
-
-  // Check if the extracted alignment value is actually included in the allowed values,
-  // which are maintained in the 'textAlign' array. If not, return null.
-  if (!textAlign.includes(alignment)) {
-    return null;
-  }
-
-  // All checks passed. Return the CSS rule as a formatted string.
-  // For example, for key 'textAlign__center', this returns:
-  //   ".textAlign__center { text-align: center; }"
-  return `.${key} { text-align: ${alignment}; }`;
+  // Return the formatted CSS rule.
+  return `.${styleKey} { text-align: ${cssValue}; }`;
 }

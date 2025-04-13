@@ -66,13 +66,18 @@ export enum CssTextDecorationValue {
 // TODO: I'm not sure if the "justify" value will actually be used
 // TODO: What does "default" mean? So far there is no specific treatment for that
 
-export type TextAlign =
+export type TextAlignValue =
   | 'left' // default
   | 'center'
   | 'right'
   | 'justify';
 
-export const textAlign: TextAlign[] = ['left', 'center', 'right', 'justify'];
+export enum CssTextAlignValue {
+  left = 'left',
+  center = 'center',
+  right = 'right',
+  justify = 'justify'
+}
 
 // -------------------------------------------------------------------------------------------------
 
@@ -148,7 +153,7 @@ export interface Appearance {
   textItalic?: TextItalic; // Update phrase 2
   textWeight?: TextWeightValue; // Phrase 1 and 2 are OK
   textDecoration?: TextDecorationValue; // Update phrase 2
-  textAlign?: TextAlign; // Update phrase 2
+  textAlign?: TextAlignValue; // Update phrase 2
   // textTransform?: TextTransform;
 
   // Cursor

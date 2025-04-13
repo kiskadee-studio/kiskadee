@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { convertTextAlign } from './convertTextAlign';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 describe('convertTextAlign', () => {
-  describe('convertTextAlign - Valid Values', () => {
+  describe('Valid Cases', () => {
     it('should generate the correct CSS rule for "left"', () => {
       const cssRule = convertTextAlign('textAlign__left');
       expect(cssRule).toBe('.textAlign__left { text-align: left; }');
@@ -24,25 +25,25 @@ describe('convertTextAlign', () => {
     });
   });
 
-  describe('convertTextAlign - Exceptions', () => {
-    it('should return null for unsupported alignment values', () => {
-      const cssRule = convertTextAlign('textAlign__top');
-      expect(cssRule).toBeNull();
+  describe('Error Cases', () => {
+    it('should throw an error for unsupported alignment value', () => {
+      expect(() => convertTextAlign('textAlign__top')).toThrowError(
+        UNSUPPORTED_VALUE('textAlign', 'top', 'textAlign__top')
+      );
     });
 
-    it('should return null for an invalid prefix', () => {
-      const cssRule = convertTextAlign('alignText__center');
-      expect(cssRule).toBeNull();
+    it('should throw an error for an invalid prefix', () => {
+      expect(() => convertTextAlign('alignText__center')).toThrowError(
+        UNSUPPORTED_PROPERTY('textAlign', 'alignText__center')
+      );
     });
 
-    it('should return null for missing separators', () => {
-      const cssRule = convertTextAlign('textAlign-center');
-      expect(cssRule).toBeNull();
+    it('should throw an error for extra separators', () => {
+      expect(() => convertTextAlign('textAlign__center__extra')).toThrowError();
     });
 
-    it('should return null for extra separators', () => {
-      const cssRule = convertTextAlign('textAlign__center__extra');
-      expect(cssRule).toBeNull();
+    it('should throw an error for missing separators', () => {
+      expect(() => convertTextAlign('textAlign-center')).toThrowError();
     });
   });
 });
