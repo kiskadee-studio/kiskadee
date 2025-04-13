@@ -14,14 +14,14 @@ import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
  * @throws An error if the extracted weight value is not supported or does not exist in the CssTextWeightProperty mapping.
  */
 export function transformTextWeightKeyToCss(styleKey: string): string {
-  // Define the expected prefix for the key.
+  // Define the expected property for the style key.
   const propertyName = 'textWeight';
   const prefix = `${propertyName}__`;
 
   // Check if the input key starts with the required prefix.
   // If it doesn't, throw an error indicating that the key has an invalid prefix.
-  if (!styleKey.startsWith(prefix)) {
-    throw new Error(UNSUPPORTED_PROPERTY(prefix, styleKey));
+  if (styleKey.startsWith(prefix) === false) {
+    throw new Error(UNSUPPORTED_PROPERTY(propertyName, styleKey));
   }
 
   // Remove the prefix from the key to extract only the text weight value.
@@ -31,9 +31,9 @@ export function transformTextWeightKeyToCss(styleKey: string): string {
   const cssValue: CssTextWeightValue | undefined =
     CssTextWeightValue[textWeightValue as TextWeightValue];
 
-  // If the retrieved cssValue is null or undefined, then the value is unsupported.
+  // If the retrieved cssValue is undefined, then the value is unsupported.
   // In such a case, throw an error indicating the unsupported text weight value.
-  if (cssValue == null) {
+  if (cssValue === undefined) {
     throw new Error(UNSUPPORTED_VALUE(propertyName, textWeightValue, styleKey));
   }
 
