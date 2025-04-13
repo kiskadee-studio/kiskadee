@@ -1,5 +1,5 @@
 import { transformTextItalicKeyToCss } from './appearance/transformTextItalicKeyToCss';
-import { convertTextAlign } from './appearance/convertTextAlign';
+import { transformTextAlignKeyToCss } from './appearance/transformTextAlignKeyToCss';
 
 const style2 = {
   textItalic__true: 1,
@@ -125,7 +125,7 @@ export function generateCssFromStyle(style: Record<string, number>): string {
       rule = generateCssTextDecorationForKey(key);
     }
     if (!rule) {
-      rule = convertTextAlign(key);
+      rule = transformTextAlignKeyToCss(key);
     }
 
     // If no rule could be generated, skip this key.

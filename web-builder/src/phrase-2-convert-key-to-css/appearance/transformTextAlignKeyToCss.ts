@@ -12,7 +12,7 @@ import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
  * @throws An error if the key does not start with the expected prefix "textAlign__".
  * @throws An error if the extracted alignment value is not supported.
  */
-export function convertTextAlign(styleKey: string): string {
+export function transformTextAlignKeyToCss(styleKey: string): string {
   const propertyName = 'textAlign';
   const prefix = `${propertyName}__`;
 
