@@ -36,7 +36,7 @@ export const schema: Schema = {
             textDecoration: 'underline',
             // textTransform: 'uppercase',
             textAlign: 'center',
-            cursor: 'pointer',
+            // cursor: 'pointer',
             borderStyle: 'solid',
             shadowColor: { rest: [0, 0, 0, 0.5] },
             shadowBlur: {
