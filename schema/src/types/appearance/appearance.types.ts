@@ -307,7 +307,7 @@ export type BorderStyleValue =
   | 'dashed'
   | 'solid';
 
-export enum CssBorderStyleProperty {
+export enum CssBorderStyleValue {
   none = 'none',
   dotted = 'dotted',
   dashed = 'dashed',

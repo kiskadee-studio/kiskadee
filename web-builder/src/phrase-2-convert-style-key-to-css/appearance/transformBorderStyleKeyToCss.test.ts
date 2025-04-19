@@ -39,16 +39,16 @@ describe('transformBorderStyleToCss function', () => {
   describe('Error handling', () => {
     it('should throw an error when key does not start with "borderStyle__"', () => {
       const invalidPrefix = 'invalidPrefix';
-      const key = `${invalidPrefix}__solid`;
-      const expectedMessage = `Invalid format for key "${key}". Expected key to start with "borderStyle__".`;
+      const styleKey = `${invalidPrefix}__solid`;
+      const expectedMessage = `Invalid style key "${styleKey}". Expected the key to be in the format "<property>__<value>" with the property part being "borderStyle__"`;
 
-      expect(() => transformBorderStyleToCss(key)).toThrowError(expectedMessage);
+      expect(() => transformBorderStyleToCss(styleKey)).toThrowError(expectedMessage);
     });
 
     it('should throw an error when border style value is not supported', () => {
       const unsupportedValue = 'unsupported';
       const key = `borderStyle__${unsupportedValue}`;
-      const expectedMessage = `Unsupported borderStyle value "${unsupportedValue}" in key "${key}"`;
+      const expectedMessage = `Unsupported value "${unsupportedValue}" for property "borderStyle" in style key "${key}"`;
 
       expect(() => transformBorderStyleToCss(key)).toThrowError(expectedMessage);
     });

@@ -1,4 +1,4 @@
-import { CssBorderStyleProperty, type BorderStyleValue } from '@kiskadee/schema';
+import { CssBorderStyleValue, type BorderStyleValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
@@ -27,8 +27,8 @@ export function transformBorderStyleToCss(key: string): string {
   const borderStyleValue = key.substring(prefix.length);
 
   // Retrieve the corresponding CSS value for the border style from the mapping.
-  const cssValue: CssBorderStyleProperty | undefined =
-    CssBorderStyleProperty[borderStyleValue as BorderStyleValue];
+  const cssValue: CssBorderStyleValue | undefined =
+    CssBorderStyleValue[borderStyleValue as BorderStyleValue];
 
   // If the retrieved cssValue is null or undefined, then the value is unsupported.
   // In such a case, throw an error indicating the unsupported border style value.
