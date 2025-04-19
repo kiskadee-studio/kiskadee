@@ -338,7 +338,7 @@ export interface Appearance {
   // textTransform?: TextTransform;
 
   // Cursor
-  cursor?: CursorValues; // Crate phrase 2
+  // cursor?: CursorValues; // Crate phrase 2
 
   // Border
   borderStyle?: BorderStyleValue; // Phrase 1 and 2 are OK

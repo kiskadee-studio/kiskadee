@@ -6,7 +6,7 @@ const buttonAppearance: Appearance = {
   textDecoration: 'none',
   // textTransform: 'uppercase',
   textAlign: 'center',
-  cursor: 'pointer',
+  // cursor: 'pointer',
   borderStyle: 'solid',
   shadowColor: { rest: [0, 0, 0, 0.5] },
   shadowBlur: { rest: 5, hover: 10 },
