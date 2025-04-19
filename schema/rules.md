@@ -27,3 +27,10 @@
 - The ability to customize cursors has been deprioritized. Instead, each component will have a
   predefined cursor that best matches its semantic purpose and interaction model, ensuring
   consistent and appropriate cursor behavior across the design system.
+- The absence of italic indicates that the text is rendered as normal. This means that, in both
+  Kiskadee and the majority (if not all) of platforms, text is presented in its regular style with
+  the optional alternative of being italicized. With this in mind, to optimize performance,
+  Kiskadee does not apply any styling for normal text as it is the default; it only applies
+  styling when italic formatting is required.
+
+
