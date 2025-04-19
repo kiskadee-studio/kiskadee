@@ -82,43 +82,224 @@ export enum CssTextAlignValue {
 // -------------------------------------------------------------------------------------------------
 
 // TODO: Is it really necessary?
-export type Cursor =
-  | 'auto'
-  | 'default'
-  | 'none'
-  | 'context-menu'
-  | 'help'
-  | 'pointer'
-  | 'progress'
-  | 'wait'
-  | 'cell'
-  | 'crosshair'
-  | 'text'
-  | 'vertical-text'
-  | 'alias'
-  | 'copy'
-  | 'move'
-  | 'no-drop'
-  | 'not-allowed'
-  | 'grab'
-  | 'grabbing'
-  | 'all-scroll'
-  | 'col-resize'
-  | 'row-resize'
-  | 'n-resize'
-  | 'e-resize'
-  | 's-resize'
-  | 'w-resize'
-  | 'ne-resize'
-  | 'nw-resize'
-  | 'se-resize'
-  | 'sw-resize'
-  | 'ew-resize'
-  | 'ns-resize'
-  | 'nesw-resize'
-  | 'nwse-resize'
-  | 'zoom-in'
-  | 'zoom-out';
+// TODO: maybe it's necessary to create a platform level, as it might not be possible to use the same cursor across all platforms
+export enum CursorValues {
+  /**
+   * Default cursor adjusted based on context.
+   * Supported on Windows (system default arrow), macOS (contextual arrow) and Linux.
+   */
+  auto = 'auto',
+
+  /**
+   * System default cursor.
+   * Supported on Windows (arrow), macOS (arrow) and Linux.
+   */
+  default = 'default',
+
+  /**
+   * Hides the cursor.
+   * In native applications on Windows, macOS, and Linux a custom implementation is required.
+   */
+  none = 'none',
+
+  /**
+   * Cursor for context menus.
+   * Not supported natively on Windows, macOS, and Linux (no native equivalent exists).
+   */
+  contextMenu = 'context-menu',
+
+  /**
+   * Help cursor.
+   * On Windows it is equivalent to IDC_HELP; on macOS and Linux, use the default help pointer if available.
+   */
+  help = 'help',
+
+  /**
+   * Pointer cursor for interactive elements.
+   * Supported on Windows (hand icon), macOS (pointing hand), and Linux.
+   */
+  pointer = 'pointer',
+
+  /**
+   * Indicates ongoing progress.
+   * May require a custom implementation on Windows, macOS, and Linux if a native progress cursor is not available.
+   */
+  progress = 'progress',
+
+  /**
+   * Wait (busy) cursor.
+   * Supported on Windows (hourglass or spinning circle), macOS (spinning beach ball) and Linux.
+   */
+  wait = 'wait',
+
+  /**
+   * Cursor for cell selection.
+   * Not commonly mapped on Windows, macOS, and Linux; may require a custom implementation.
+   */
+  cell = 'cell',
+
+  /**
+   * Crosshair cursor for precision targeting.
+   * Supported natively as "crosshair" on Windows, macOS, and Linux.
+   */
+  crosshair = 'crosshair',
+
+  /**
+   * Text cursor.
+   * Supported on Windows (I-beam), macOS (I-beam) and Linux.
+   */
+  text = 'text',
+
+  /**
+   * Vertical text cursor.
+   * Not supported natively on Windows, macOS, and Linux (no direct native equivalent).
+   */
+  verticalText = 'vertical-text',
+
+  /**
+   * Alias cursor.
+   * Not natively supported on Windows, macOS, and Linux; may require custom implementation.
+   */
+  alias = 'alias',
+
+  /**
+   * Copy cursor.
+   * Not natively supported on Windows, macOS, and Linux; may require custom implementation.
+   */
+  copy = 'copy',
+
+  /**
+   * Cursor indicating movement.
+   * Supported on Windows, macOS, and Linux as a move cursor.
+   */
+  move = 'move',
+
+  /**
+   * Indicates that an item cannot be dropped.
+   * Supported on Windows, macOS, and Linux as a "no drop" cursor.
+   */
+  noDrop = 'no-drop',
+
+  /**
+   * Not allowed cursor.
+   * Supported on Windows (circle with a slash), macOS, and Linux.
+   */
+  notAllowed = 'not-allowed',
+
+  /**
+   * Cursor indicating that an element can be grabbed.
+   * On Windows and macOS it is equivalent to an open hand; on Linux, a similar open-hand icon is used.
+   */
+  grab = 'grab',
+
+  /**
+   * Cursor indicating an element is being grabbed.
+   * Often implemented as a closed hand on Windows and macOS; may require a custom implementation on Linux.
+   */
+  grabbing = 'grabbing',
+
+  /**
+   * All-direction scroll cursor.
+   * Supported on Windows, macOS, and Linux as the all-scroll cursor.
+   */
+  allScroll = 'all-scroll',
+
+  /**
+   * Horizontal resize cursor.
+   * Supported on Windows (horizontal double arrow), macOS, and Linux.
+   */
+  colResize = 'col-resize',
+
+  /**
+   * Vertical resize cursor.
+   * Supported on Windows (vertical double arrow), macOS, and Linux.
+   */
+  rowResize = 'row-resize',
+
+  /**
+   * Resize cursor for north direction.
+   * Supported on Windows, macOS, and Linux.
+   */
+  nResize = 'n-resize',
+
+  /**
+   * Resize cursor for east direction.
+   * Supported on Windows, macOS, and Linux.
+   */
+  eResize = 'e-resize',
+
+  /**
+   * Resize cursor for south direction.
+   * Supported on Windows, macOS, and Linux.
+   */
+  sResize = 's-resize',
+
+  /**
+   * Resize cursor for west direction.
+   * Supported on Windows, macOS, and Linux.
+   */
+  wResize = 'w-resize',
+
+  /**
+   * Resize cursor diagonally towards the northeast.
+   * Supported on Windows, macOS, and Linux.
+   */
+  neResize = 'ne-resize',
+
+  /**
+   * Resize cursor diagonally towards the northwest.
+   * Supported on Windows, macOS, and Linux.
+   */
+  nwResize = 'nw-resize',
+
+  /**
+   * Resize cursor diagonally towards the southeast.
+   * Supported on Windows, macOS, and Linux.
+   */
+  seResize = 'se-resize',
+
+  /**
+   * Resize cursor diagonally towards the southwest.
+   * Supported on Windows, macOS, and Linux.
+   */
+  swResize = 'sw-resize',
+
+  /**
+   * Alias for horizontal resize.
+   * Supported on Windows, macOS, and Linux.
+   */
+  ewResize = 'ew-resize',
+
+  /**
+   * Alias for vertical resize.
+   * Supported on Windows, macOS, and Linux.
+   */
+  nsResize = 'ns-resize',
+
+  /**
+   * Diagonal resize cursor for northeast-southwest direction.
+   * Supported on Windows, macOS, and Linux.
+   */
+  neswResize = 'nesw-resize',
+
+  /**
+   * Diagonal resize cursor for northwest-southeast direction.
+   * Supported on Windows, macOS, and Linux.
+   */
+  nwseResize = 'nwse-resize',
+
+  /**
+   * Zoom in cursor.
+   * Not supported natively on Windows, macOS, and Linux (no direct equivalent exists); requires custom implementation.
+   */
+  zoomIn = 'zoom-in',
+
+  /**
+   * Zoom out cursor.
+   * Not supported natively on Windows, macOS, and Linux (no direct equivalent exists); requires custom implementation.
+   */
+  zoomOut = 'zoom-out'
+}
 
 export type BorderStyleValue =
   | 'none' // default
@@ -157,7 +338,7 @@ export interface Appearance {
   // textTransform?: TextTransform;
 
   // Cursor
-  cursor?: Cursor; // Crate phrase 2
+  cursor?: CursorValues; // Crate phrase 2
 
   // Border
   borderStyle?: BorderStyleValue; // Phrase 1 and 2 are OK
