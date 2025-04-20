@@ -1,3 +1,7 @@
+import { UNSUPPORTED_PROPERTY } from '../errorMessages';
+import { InteractionStateCssMapping, type InteractionStates } from '@kiskadee/schema';
+import { convertHslaToHex } from '../utils/convertHslaToHex';
+
 /**
  * Transforms a shadow style key into a valid CSS rule.
  *

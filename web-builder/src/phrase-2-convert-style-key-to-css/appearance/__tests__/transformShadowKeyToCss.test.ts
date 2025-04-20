@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { transformShadowKeyToCss, InteractionStateCssMapping } from '../transformShadowKeyToCss';
+import { transformShadowKeyToCss } from '../transformShadowKeyToCss';
+import { InteractionStateCssMapping } from '@kiskadee/schema';
 
 describe('transformShadowKeyToCss', () => {
   describe('Valid shadow keys', () => {
