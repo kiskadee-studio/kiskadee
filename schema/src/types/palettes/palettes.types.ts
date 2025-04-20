@@ -55,7 +55,7 @@ export type InteractionStates =
   | 'selected'
   | 'focus'
   | 'disabled'
-  | 'pseudo-disabled'
+  | 'pseudoDisabled'
   | 'readOnly';
 
 // Mapping from our interaction state to the corresponding CSS pseudo-selector.
@@ -67,7 +67,7 @@ export const InteractionStateCssMapping: Record<InteractionStates, string> = {
   selected: '',
   focus: ':focus',
   disabled: ':disabled',
-  'pseudo-disabled': '',
+  pseudoDisabled: '',
   readOnly: ':read-only'
 };
 

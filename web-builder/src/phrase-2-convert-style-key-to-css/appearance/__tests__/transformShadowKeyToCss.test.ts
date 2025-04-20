@@ -25,10 +25,10 @@ describe('transformShadowKeyToCss', () => {
     });
 
     it('should treat "pseudo-disabled" as rest (no pseudo-selector)', () => {
-      const styleKey = 'shadow--pseudo-disabled__[5,5,5,[0,0,0,1]]';
+      const styleKey = 'shadow--pseudoDisabled__[5,5,5,[0,0,0,1]]';
       // "pseudo-disabled" should map to an empty pseudo (like rest)
       const expected =
-        '.shadow--pseudo-disabled__[5,5,5,"[0,0,0,1]"] { box-shadow: 5px 5px 5px #000000; }';
+        '.shadow--pseudoDisabled__[5,5,5,[0,0,0,1]] { box-shadow: 5px 5px 5px #000000; }';
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
 
