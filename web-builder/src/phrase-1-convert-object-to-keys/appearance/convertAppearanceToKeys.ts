@@ -1,9 +1,9 @@
-import type { Appearance, InteractionStatesKeys, SingleColor } from '@kiskadee/schema';
+import type { Appearance, InteractionStates, SingleColor } from '@kiskadee/schema';
 import { styleUsageMap } from '../../utils';
 
 function getShadowValue<T>(
-  property: Partial<Record<InteractionStatesKeys, T>>,
-  state: InteractionStatesKeys,
+  property: Partial<Record<InteractionStates, T>>,
+  state: InteractionStates,
   defaultValue: T
 ): T {
   return property[state] !== undefined
@@ -56,12 +56,12 @@ export function convertAppearanceToKeys(appearance: Appearance) {
 
   if (hasShadowProperty) {
     const { shadowX = {}, shadowY = {}, shadowBlur = {}, shadowColor = {} } = appearance;
-    const allStates = new Set<InteractionStatesKeys>([
+    const allStates = new Set<InteractionStates>([
       ...Object.keys(shadowX),
       ...Object.keys(shadowY),
       ...Object.keys(shadowBlur),
       ...Object.keys(shadowColor)
-    ] as InteractionStatesKeys[]);
+    ] as InteractionStates[]);
     allStates.add('rest');
 
     for (const state of allStates) {

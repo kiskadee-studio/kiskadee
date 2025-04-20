@@ -48,7 +48,7 @@ export type StateColor = Color | { ref: Omit<Color, 'rest'> };
  *  - "pseudo-disabled" is when the element appears disabled but still responds to interactions (e.g., to trigger a validation).
  *  - "read-only" is when the user can't modify the element's value.
  */
-export type InteractionStatesKeys =
+export type InteractionStates =
   | 'rest'
   | 'hover'
   | 'pressed'
@@ -56,18 +56,20 @@ export type InteractionStatesKeys =
   | 'focus'
   | 'disabled'
   | 'pseudo-disabled'
-  | 'read-only';
+  | 'readOnly';
 
-// export const interactionStatesKeys: InteractionStatesKeys[] = [
-//   'rest',
-//   'hover',
-//   'pressed',
-//   'selected',
-//   'focus',
-//   'disabled',
-//   'pseudo-disabled',
-//   'read-only'
-// ];
+// Mapping from our interaction state to the corresponding CSS pseudo-selector.
+// If there is no equivalent (or for "pseudo-disabled"), we use the default (rest) behavior.
+export const InteractionStateCssMapping: Record<InteractionStates, string> = {
+  rest: '',
+  hover: ':hover',
+  pressed: ':click',
+  selected: '',
+  focus: ':focus',
+  disabled: ':disabled',
+  'pseudo-disabled': '',
+  readOnly: ':read-only'
+};
 
 /**
  * A FullColor defines the set of colors for different interaction states.
@@ -76,7 +78,7 @@ export type InteractionStatesKeys =
  */
 export type FullColor = {
   rest: Color;
-} & Partial<Record<Exclude<InteractionStatesKeys, 'rest'>, StateColor>>;
+} & Partial<Record<Exclude<InteractionStates, 'rest'>, StateColor>>;
 
 /**
  * Color variant properties.
