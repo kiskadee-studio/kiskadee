@@ -32,5 +32,11 @@
   the optional alternative of being italicized. With this in mind, to optimize performance,
   Kiskadee does not apply any styling for normal text as it is the default; it only applies
   styling when italic formatting is required.
+- Focus Behavior: We opt for using `:focus` on input elements to consistently indicate when a field
+  is active, ensuring clarity during text entry. Conversely, `:focus-visible` is applied to
+  interactive elements like buttons to restrict the focus outline to cases of keyboard (or similar)
+  navigation. This choice minimizes visual noise during mouse interactions while maintaining strong
+  accessibility cues where they are most needed.
+
 
 
