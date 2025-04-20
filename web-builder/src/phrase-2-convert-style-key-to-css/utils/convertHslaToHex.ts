@@ -1,3 +1,5 @@
+import type { HLSA, Hex } from '@kiskadee/schema';
+
 /**
  * Converts an HSLA array into a hexadecimal color string.
  * - h: hue in degrees (0-360)
@@ -6,7 +8,7 @@
  *
  * Returns a 6-digit hex if alpha is 1, otherwise an 8-digit hex (including alpha).
  */
-export function convertHslaToHex(hsla: [number, number, number, number]): string {
+export function convertHslaToHex(hsla: HLSA): Hex {
   let [h, s, l, a] = hsla;
   s /= 100;
   l /= 100;

@@ -70,19 +70,16 @@ export function transformShadowKeyToCss(styleKey: string): string {
   let hexColor: string;
   try {
     let parsed = JSON.parse(rawColor);
-    if (typeof parsed === 'string' && parsed.trim().startsWith('[')) {
+    if (typeof parsed === 'string' && parsed.startsWith('[')) {
       parsed = JSON.parse(parsed);
     }
     if (Array.isArray(parsed) && parsed.length === 4) {
       hexColor = convertHslaToHex(parsed as [number, number, number, number]);
-    } else if (typeof parsed === 'string') {
-      hexColor = parsed;
     } else {
-      hexColor = rawColor;
+      throw new Error('Invalid shadow color value.');
     }
   } catch (e) {
-    // If parsing fails, use the raw value.
-    hexColor = rawColor;
+    throw new Error('Invalid shadow color value.');
   }
 
   // Construct the CSS selector.

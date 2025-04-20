@@ -11,7 +11,10 @@ type Saturation = number;
 type Alpha = number;
 
 /** Represents a color in HLSA format: [hue, lightness, saturation, alpha]. */
-type HLSA = [hue: Hue, lightness: Lightness, saturation: Saturation, alpha: Alpha];
+export type HLSA = [hue: Hue, lightness: Lightness, saturation: Saturation, alpha: Alpha];
+
+/** Represents a color in hexadecimal format (e.g., "#ff0000" or "#ff0000ff"). */
+export type Hex = string;
 
 /** Represents a single color in HLSA format. */
 export type SingleColor = HLSA;
