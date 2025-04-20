@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { transformShadowKeyToCss } from './transformShadowKeyToCss';
+import { transformShadowKeyToCss } from '../transformShadowKeyToCss';
 
 describe('transformShadowKeyToCss', () => {
   describe('Valid shadow keys', () => {

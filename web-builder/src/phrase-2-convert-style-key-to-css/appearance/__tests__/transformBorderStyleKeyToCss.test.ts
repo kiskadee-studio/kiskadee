@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { transformBorderStyleToCss } from './transformBorderStyleKeyToCss';
+import { transformBorderStyleToCss } from '../transformBorderStyleKeyToCss';
 
 describe('transformBorderStyleToCss function', () => {
   describe('Successful operation', () => {

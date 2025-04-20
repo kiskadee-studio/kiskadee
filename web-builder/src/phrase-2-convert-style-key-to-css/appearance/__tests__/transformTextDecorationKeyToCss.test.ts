@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { CssTextDecorationValue, type TextDecorationValue } from '@kiskadee/schema';
-import { transformTextDecorationKeyToCss } from './transformTextDecorationKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { CssTextDecorationValue, type TextDecorationValue } from 'schema/src';
+import { transformTextDecorationKeyToCss } from '../transformTextDecorationKeyToCss';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 const propertyName = 'textDecoration';
 const { lineThrough, underline, none } = CssTextDecorationValue;

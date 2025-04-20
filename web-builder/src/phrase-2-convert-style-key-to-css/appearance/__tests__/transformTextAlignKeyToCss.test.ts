@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { transformTextAlignKeyToCss } from './transformTextAlignKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { transformTextAlignKeyToCss } from '../transformTextAlignKeyToCss';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 describe('transformTextAlignKeyToCss function', () => {
   describe('Valid Cases', () => {
