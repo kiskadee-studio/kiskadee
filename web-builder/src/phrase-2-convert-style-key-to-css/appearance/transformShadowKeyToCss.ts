@@ -13,45 +13,45 @@ import { convertHslaToHex } from '../utils/convertHslaToHex';
  *   x, y, and blur are numeric values (without units) and
  *   color is represented using JSON.stringify (e.g., "\"[0,0,0,1]\"").
  *
- * If there is an interaction state (e.g., "hover"), the generated CSS selector adds the pseudo-selector accordingly.
- *
- * Example:
- *   transformShadowKeyToCss("shadow__[2,4,5,\"[0,0,0,1]\"]")
- *   returns:
- *     ".shadow__[2,4,5,\"[0,0,0,1]\"] { box-shadow: 2px 4px 5px rgba(0, 0, 0, 1); }"
- *
- *   transformShadowKeyToCss("shadow--hover__[6,8,10,\"[0,0,0,0.5]\"]")
- *   returns:
- *     ".shadow--hover__[6,8,10,\"[0,0,0,0.5]\"]:hover { box-shadow: 6px 8px 10px rgba(0, 0, 0, 0.5); }"
+ * The color is converted to a hexadecimal string using convertHslaToHex.
+ * If the interaction state has a CSS pseudo-selector equivalent, it is applied.
  *
  * @param styleKey - The style key to be transformed.
  * @returns A string containing the resulting CSS rule.
  *
- * @throws Error if the style key does not follow the expected pattern.
+ * @throws Error if the style key does not follow the expected pattern,
+ *         if its property is unsupported, or if the interaction state is unrecognized.
  */
 export function transformShadowKeyToCss(styleKey: string): string {
   // Verify that the key starts with "shadow"
   if (!styleKey.startsWith('shadow')) {
-    throw new Error(`Unsupported property for shadow: ${styleKey}`);
+    throw new Error(UNSUPPORTED_PROPERTY('shadow', styleKey));
   }
 
-  // Define regex to capture the optional state and content between the brackets.
+  // Regex to capture the optional state and the content between the brackets.
   // Pattern:
   //   ^shadow(?:--(\w+))?__\[(.*)\]$
   // Group 1 (optional): the interaction state (e.g., hover)
   // Group 2: shadow content: "x,y,blur,color"
-  const regex = /^shadow(?:--(\w+))?__\[(.*)\]$/;
+  const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
   const match = styleKey.match(regex);
   if (!match) {
     throw new Error(`Invalid shadow style key format: ${styleKey}`);
   }
 
-  // If group 1 exists, it represents the interaction state; otherwise, the state is "rest"
-  const state = match[1] ? match[1] : 'rest';
+  // Determine interaction state; default to "rest" if not specified.
+  const state: string = match[1] ? match[1] : 'rest';
+
+  // Check that the interaction state is valid according to our mapping.
+  if (!(state in InteractionStateCssMapping)) {
+    throw new Error(`Unsupported interaction state "${state}" in shadow key "${styleKey}".`);
+  }
+
+  const pseudo: string = InteractionStateCssMapping[state as InteractionStates];
+
   const content = match[2].trim();
 
-  // The content should contain 4 parts: x, y, blur, and color.
-  // Since the color part may contain commas (e.g., "[0,0,0,1]"), we use a regex to capture the first 3 numeric values and the rest as color.
+  // Regex to capture the first 3 numeric parts and the remaining as color.
   const partsRegex = /^(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(.+)$/;
   const partsMatch = content.match(partsRegex);
   if (!partsMatch) {
@@ -61,23 +61,18 @@ export function transformShadowKeyToCss(styleKey: string): string {
   const x = partsMatch[1];
   const y = partsMatch[2];
   const blur = partsMatch[3];
-  let rawColor = partsMatch[4].trim();
+  const rawColor = partsMatch[4].trim();
 
-  // Attempt to parse the color part as JSON.
-  // If it is a JSON string representing an array of numbers,
-  // convert it to an rgba format. Otherwise, use the value as-is.
+  // Try to parse the color part as JSON.
+  // When successful and an array of 4 numbers is found, convert it to a hex color.
   let cssColor: string;
   try {
-    const parsed = JSON.parse(rawColor);
+    let parsed = JSON.parse(rawColor);
     if (typeof parsed === 'string' && parsed.trim().startsWith('[')) {
-      const colorArray = JSON.parse(parsed);
-      if (Array.isArray(colorArray) && colorArray.length === 4) {
-        cssColor = `rgba(${colorArray.join(', ')})`;
-      } else {
-        cssColor = parsed;
-      }
-    } else if (Array.isArray(parsed) && parsed.length === 4) {
-      cssColor = `rgba(${parsed.join(', ')})`;
+      parsed = JSON.parse(parsed);
+    }
+    if (Array.isArray(parsed) && parsed.length === 4) {
+      cssColor = convertHslaToHex(parsed as [number, number, number, number]);
     } else if (typeof parsed === 'string') {
       cssColor = parsed;
     } else {
@@ -88,17 +83,14 @@ export function transformShadowKeyToCss(styleKey: string): string {
     cssColor = rawColor;
   }
 
-  // Append the "px" unit to the numeric values.
+  // Append the "px" unit to numeric values.
   const xPx = `${x}px`;
   const yPx = `${y}px`;
   const blurPx = `${blur}px`;
 
-  // Define the CSS selector; if the state is not "rest", add the corresponding pseudo-selector.
-  // For example, if state === "hover", the selector becomes:
-  //   .shadow--hover__[...]:hover { ... }
-  const pseudo = state !== 'rest' ? `:${state}` : '';
+  // Construct the CSS selector.
+  // If the pseudo-selector is not empty, attach it at the end.
   const selector = `.${styleKey}${pseudo}`;
 
-  // Return the formatted CSS rule.
   return `${selector} { box-shadow: ${xPx} ${yPx} ${blurPx} ${cssColor}; }`;
 }
