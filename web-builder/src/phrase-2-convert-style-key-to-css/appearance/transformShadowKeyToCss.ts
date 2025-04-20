@@ -35,25 +35,27 @@ export function transformShadowKeyToCss(styleKey: string): string {
   // Group 2: shadow content: "x,y,blur,color"
   const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
   const match = styleKey.match(regex);
-  if (!match) {
+  if (match === null) {
     throw new Error(`Invalid shadow style key format: ${styleKey}`);
   }
 
   // Determine interaction state; default to "rest" if not specified.
-  const state: string = match[1] ? match[1] : 'rest';
+  const interactionState = (match[1] ?? 'rest') as InteractionStates;
 
-  // Check that the interaction state is valid according to our mapping.
-  if (!(state in InteractionStateCssMapping)) {
-    throw new Error(`Unsupported interaction state "${state}" in shadow key "${styleKey}".`);
+  // Check that the interaction state is valid, according to our mapping.
+  if (interactionState in InteractionStateCssMapping === false) {
+    throw new Error(
+      `Unsupported interaction state "${interactionState}" in shadow key "${styleKey}".`
+    );
   }
 
-  const pseudo: string = InteractionStateCssMapping[state as InteractionStates];
+  const cssPseudo = InteractionStateCssMapping[interactionState as InteractionStates];
 
-  const content = match[2].trim();
+  const shadowValue = match[2];
 
   // Regex to capture the first 3 numeric parts and the remaining as color.
   const partsRegex = /^(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(.+)$/;
-  const partsMatch = content.match(partsRegex);
+  const partsMatch = shadowValue.match(partsRegex);
   if (!partsMatch) {
     throw new Error(`Invalid shadow values in key: ${styleKey}`);
   }
@@ -61,36 +63,31 @@ export function transformShadowKeyToCss(styleKey: string): string {
   const x = partsMatch[1];
   const y = partsMatch[2];
   const blur = partsMatch[3];
-  const rawColor = partsMatch[4].trim();
+  const rawColor = partsMatch[4];
 
   // Try to parse the color part as JSON.
   // When successful and an array of 4 numbers is found, convert it to a hex color.
-  let cssColor: string;
+  let hexColor: string;
   try {
     let parsed = JSON.parse(rawColor);
     if (typeof parsed === 'string' && parsed.trim().startsWith('[')) {
       parsed = JSON.parse(parsed);
     }
     if (Array.isArray(parsed) && parsed.length === 4) {
-      cssColor = convertHslaToHex(parsed as [number, number, number, number]);
+      hexColor = convertHslaToHex(parsed as [number, number, number, number]);
     } else if (typeof parsed === 'string') {
-      cssColor = parsed;
+      hexColor = parsed;
     } else {
-      cssColor = rawColor;
+      hexColor = rawColor;
     }
   } catch (e) {
     // If parsing fails, use the raw value.
-    cssColor = rawColor;
+    hexColor = rawColor;
   }
-
-  // Append the "px" unit to numeric values.
-  const xPx = `${x}px`;
-  const yPx = `${y}px`;
-  const blurPx = `${blur}px`;
 
   // Construct the CSS selector.
   // If the pseudo-selector is not empty, attach it at the end.
-  const selector = `.${styleKey}${pseudo}`;
+  const selector = `.${styleKey}${cssPseudo}`;
 
-  return `${selector} { box-shadow: ${xPx} ${yPx} ${blurPx} ${cssColor}; }`;
+  return `${selector} { box-shadow: ${x}px ${y}px ${blur}px ${hexColor}; }`;
 }
