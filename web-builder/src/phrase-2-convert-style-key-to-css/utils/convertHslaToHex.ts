@@ -1,4 +1,5 @@
-import type { HLSA, Hex } from '@kiskadee/schema';
+import type { Hex, HLSA } from '@kiskadee/schema';
+import { toShortHex } from './toShortHex';
 
 /**
  * Converts an HSLA array into a hexadecimal color string.
@@ -7,6 +8,7 @@ import type { HLSA, Hex } from '@kiskadee/schema';
  * - a: alpha (0-1)
  *
  * Returns a 6-digit hex if alpha is 1, otherwise an 8-digit hex (including alpha).
+ * Uses the short version of the hex string when possible.
  */
 export function convertHslaToHex(hsla: HLSA): Hex {
   let [h, s, l, a] = hsla;
@@ -55,12 +57,18 @@ export function convertHslaToHex(hsla: HLSA): Hex {
   const gHex = toHex(g);
   const bHex = toHex(b);
 
+  let result: string;
+
   // If alpha is 1 or undefined, return a 6-digit hex code.
   if (a == null || a === 1) {
-    return `#${rHex}${gHex}${bHex}`;
+    result = `#${rHex}${gHex}${bHex}`;
+    return toShortHex(result);
   }
+
   const aHex = Math.round(a * 255)
     .toString(16)
     .padStart(2, '0');
-  return `#${rHex}${gHex}${bHex}${aHex}`;
+
+  result = `#${rHex}${gHex}${bHex}${aHex}`;
+  return toShortHex(result);
 }
