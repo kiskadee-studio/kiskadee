@@ -331,20 +331,20 @@ export type ShadowStyle = Partial<Record<InteractionStates, number>>;
  */
 export interface Appearance {
   // Text
-  textItalic?: TextItalic; // Update phrase 2
-  textWeight?: TextWeightValue; // Phrase 1 and 2 are OK
-  textDecoration?: TextDecorationValue; // Update phrase 2
-  textAlign?: TextAlignValue; // Update phrase 2
+  textItalic?: TextItalic;
+  textWeight?: TextWeightValue;
+  textDecoration?: TextDecorationValue;
+  textAlign?: TextAlignValue;
   // textTransform?: TextTransform;
 
   // Cursor
-  // cursor?: CursorValues; // Crate phrase 2
+  // cursor?: CursorValues;
 
   // Border
-  borderStyle?: BorderStyleValue; // Phrase 1 and 2 are OK
+  borderStyle?: BorderStyleValue;
 
   // Shadow
-  shadowBlur?: ShadowStyle; // Create phrase 2
+  shadowBlur?: ShadowStyle;
   shadowY?: ShadowStyle;
   shadowX?: ShadowStyle;
   shadowColor?: Partial<Record<InteractionStates, SingleColor>>;
