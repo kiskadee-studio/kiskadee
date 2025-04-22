@@ -5,22 +5,22 @@ import { InteractionStateCssMapping } from '@kiskadee/schema';
 describe('transformShadowKeyToCss', () => {
   describe('Valid shadow keys', () => {
     it('should transform default state shadow key using hex color conversion', () => {
-      // For HSLA [0,0,0,1] convertHslaToHex returns "#000000"
-      const styleKey = 'shadow__[2,4,5,"[0,0,0,1]"]';
-      const expected = '.shadow__[2,4,5,"[0,0,0,1]"] { box-shadow: 2px 4px 5px #000; }';
+      // For HSLA [0,0,0,1] convertHslaToHex returns "#000000" (shortened to "#000")
+      const styleKey = 'shadow__[2,4,5,[0,0,0,1]]';
+      const expected = '.shadow__[2,4,5,[0,0,0,1]] { box-shadow: 2px 4px 5px #000; }';
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
 
     it('should transform a hover state shadow key with pseudo-selector', () => {
       // For HSLA [0,0,0,0.5] convertHslaToHex returns "#00000080"
-      const styleKey = 'shadow--hover__[6,8,10,"[0,0,0,0.5]"]';
-      const expected = `.shadow--hover__[6,8,10,"[0,0,0,0.5]"]${InteractionStateCssMapping.hover} { box-shadow: 6px 8px 10px #00000080; }`;
+      const styleKey = 'shadow--hover__[6,8,10,[0,0,0,0.5]]';
+      const expected = `.shadow--hover__[6,8,10,[0,0,0,0.5]]${InteractionStateCssMapping.hover} { box-shadow: 6px 8px 10px #00000080; }`;
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
 
     it('should transform a pressed state shadow key to use :active pseudo-selector', () => {
-      const styleKey = 'shadow--pressed__[3,3,3,"[0,0,0,1]"]';
-      const expected = `.shadow--pressed__[3,3,3,"[0,0,0,1]"]${InteractionStateCssMapping.pressed} { box-shadow: 3px 3px 3px #000; }`;
+      const styleKey = 'shadow--pressed__[3,3,3,[0,0,0,1]]';
+      const expected = `.shadow--pressed__[3,3,3,[0,0,0,1]]${InteractionStateCssMapping.pressed} { box-shadow: 3px 3px 3px #000; }`;
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
 
@@ -35,7 +35,7 @@ describe('transformShadowKeyToCss', () => {
 
   describe('Error handling', () => {
     it('should throw an error when key does not start with "shadow"', () => {
-      const invalidKey = 'notShadow__[2,4,5,"[0,0,0,1]"]';
+      const invalidKey = 'notShadow__[2,4,5,[0,0,0,1]]';
       expect(() => transformShadowKeyToCss(invalidKey)).toThrowError(
         /Invalid style key "notShadow__.*"/
       );
@@ -43,7 +43,7 @@ describe('transformShadowKeyToCss', () => {
 
     it('should throw an error for an invalid shadow key format', () => {
       // Missing proper bracket structure
-      const invalidKey = 'shadow__2,4,5,"[0,0,0,1]"';
+      const invalidKey = 'shadow__2,4,5,[0,0,0,1]';
       expect(() => transformShadowKeyToCss(invalidKey)).toThrowError(
         `Invalid shadow style key format: ${invalidKey}`
       );
@@ -58,7 +58,7 @@ describe('transformShadowKeyToCss', () => {
     });
 
     it('should throw an error for an unsupported interaction state', () => {
-      const invalidKey = 'shadow--unknown__[1,1,1,"[0,0,0,1]"]';
+      const invalidKey = 'shadow--unknown__[1,1,1,[0,0,0,1]]';
       expect(() => transformShadowKeyToCss(invalidKey)).toThrowError(
         `Unsupported interaction state "unknown" in shadow key "${invalidKey}".`
       );
