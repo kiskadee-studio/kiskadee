@@ -1,4 +1,4 @@
-import type { Appearance, Cursor } from '@kiskadee/schema';
+import type { Appearance } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { convertAppearanceToKeys } from './convertAppearanceToKeys';
 import { styleUsageMap } from '../../utils';
