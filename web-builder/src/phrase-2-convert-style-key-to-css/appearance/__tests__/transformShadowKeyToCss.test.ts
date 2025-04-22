@@ -7,7 +7,7 @@ describe('transformShadowKeyToCss', () => {
     it('should transform default state shadow key using hex color conversion', () => {
       // For HSLA [0,0,0,1] convertHslaToHex returns "#000000"
       const styleKey = 'shadow__[2,4,5,"[0,0,0,1]"]';
-      const expected = '.shadow__[2,4,5,"[0,0,0,1]"] { box-shadow: 2px 4px 5px #000000; }';
+      const expected = '.shadow__[2,4,5,"[0,0,0,1]"] { box-shadow: 2px 4px 5px #000; }';
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
 
@@ -20,7 +20,7 @@ describe('transformShadowKeyToCss', () => {
 
     it('should transform a pressed state shadow key to use :active pseudo-selector', () => {
       const styleKey = 'shadow--pressed__[3,3,3,"[0,0,0,1]"]';
-      const expected = `.shadow--pressed__[3,3,3,"[0,0,0,1]"]${InteractionStateCssMapping.pressed} { box-shadow: 3px 3px 3px #000000; }`;
+      const expected = `.shadow--pressed__[3,3,3,"[0,0,0,1]"]${InteractionStateCssMapping.pressed} { box-shadow: 3px 3px 3px #000; }`;
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
 
@@ -28,14 +28,7 @@ describe('transformShadowKeyToCss', () => {
       const styleKey = 'shadow--pseudoDisabled__[5,5,5,[0,0,0,1]]';
       // "pseudo-disabled" should map to an empty pseudo (like rest)
       const expected =
-        '.shadow--pseudoDisabled__[5,5,5,[0,0,0,1]] { box-shadow: 5px 5px 5px #000000; }';
-      expect(transformShadowKeyToCss(styleKey)).toBe(expected);
-    });
-
-    it('should use the raw color value when JSON parsing fails', () => {
-      // The color "blue" cannot be parsed as JSON into an array, so it remains as-is.
-      const styleKey = 'shadow__[10,20,30,blue]';
-      const expected = '.shadow__[10,20,30,blue] { box-shadow: 10px 20px 30px blue; }';
+        '.shadow--pseudoDisabled__[5,5,5,[0,0,0,1]] { box-shadow: 5px 5px 5px #000; }';
       expect(transformShadowKeyToCss(styleKey)).toBe(expected);
     });
   });
@@ -69,6 +62,12 @@ describe('transformShadowKeyToCss', () => {
       expect(() => transformShadowKeyToCss(invalidKey)).toThrowError(
         `Unsupported interaction state "unknown" in shadow key "${invalidKey}".`
       );
+    });
+
+    it('should throw an error for an invalid color value', () => {
+      // "blue" is not a valid HSLA array format - must be a 4-element array like [0,0,0,1]
+      const styleKey = 'shadow__[10,20,30,blue]';
+      expect(() => transformShadowKeyToCss(styleKey)).toThrowError(/Invalid shadow color value./);
     });
   });
 });
