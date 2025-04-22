@@ -9,8 +9,24 @@ import { toShortHex } from './toShortHex';
  *
  * Returns a 6-digit hex if alpha is 1, otherwise an 8-digit hex (including alpha).
  * Uses the short version of the hex string when possible.
+ *
+ * Throws an error if the hsla parameter is not a valid array of 3 or 4 numbers.
  */
 export function convertHslaToHex(hsla: HLSA): Hex {
+  if (!Array.isArray(hsla)) {
+    throw new Error(`Invalid hsla value: expected an array, received ${typeof hsla}`);
+  }
+
+  if (![3, 4].includes(hsla.length)) {
+    throw new Error(`Invalid hsla array length: expected 3 or 4, received ${hsla.length}`);
+  }
+
+  for (let i = 0; i < hsla.length; i++) {
+    if (typeof hsla[i] !== 'number' || Number.isNaN(hsla[i])) {
+      throw new Error(`Invalid hsla value at index ${i}: expected a number, received ${hsla[i]}`);
+    }
+  }
+
   let [h, s, l, a] = hsla;
   s /= 100;
   l /= 100;
@@ -59,8 +75,8 @@ export function convertHslaToHex(hsla: HLSA): Hex {
 
   let result: string;
 
-  // If alpha is 1 or undefined, return a 6-digit hex code.
-  if (a == null || a === 1) {
+  // If alpha is 1, return a 6-digit hex code.
+  if (a === 1) {
     result = `#${rHex}${gHex}${bHex}`;
     return toShortHex(result);
   }

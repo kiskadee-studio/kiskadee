@@ -34,22 +34,14 @@ describe('convertHslaToHex', () => {
       expect(convertHslaToHex(hsla)).toBe('#ff000080');
     });
 
-    it('should return a 6-digit hex (or shortened) if alpha is null or undefined', () => {
-      // Using undefined for alpha should be treated as full opacity.
-      // For orange, the hex result "#ff8000" cannot be shortened.
-      const hsla: HLSA = [30, 100, 50, undefined as unknown as number];
-      expect(convertHslaToHex(hsla)).toBe('#ff8000');
-    });
-
     it('should correctly handle hues near the upper boundary with alpha', () => {
-      // For h=359, s=100, l=50, alpha=0.3
-      // Expected: "#ff00044d" (non-shortenable due to the alpha part)
+      // For h=359, s=100, l=50, alpha=0.3 -> "#ff00044d"
       const hsla: HLSA = [359, 100, 50, 0.3];
       expect(convertHslaToHex(hsla)).toBe('#ff00044d');
     });
 
     it('should convert black color to hex properly and shorten it when possible', () => {
-      // Black: h=any, s=0, l=0, alpha=1 -> "#000000" shortened to "#000"
+      // Black: any h, s=0, l=0, alpha=1 -> "#000000" shortened to "#000"
       const hsla: HLSA = [0, 0, 0, 1];
       expect(convertHslaToHex(hsla)).toBe('#000');
     });
@@ -57,13 +49,38 @@ describe('convertHslaToHex', () => {
 
   describe('Error handling', () => {
     it('should throw an error when hsla is null', () => {
-      // hsla is required for conversion, passing null should result in error
-      expect(() => convertHslaToHex(null as unknown as HLSA)).toThrow();
+      const errorMessage = 'Invalid hsla value: expected an array, received object';
+      expect(() => convertHslaToHex(null as unknown as HLSA)).toThrowError(errorMessage);
     });
 
     it('should throw an error when hsla is not an array', () => {
-      // Passing a value that is not an array should result in an error
-      expect(() => convertHslaToHex({} as unknown as HLSA)).toThrow();
+      const errorMessage = 'Invalid hsla value: expected an array, received object';
+      expect(() => convertHslaToHex({} as unknown as HLSA)).toThrowError(errorMessage);
+    });
+
+    it('should throw an error when hsla array has less than 3 items', () => {
+      const invalidHsla = [0, 100] as unknown as HLSA;
+      const errorMessage = 'Invalid hsla array length: expected 3 or 4, received 2';
+      expect(() => convertHslaToHex(invalidHsla)).toThrowError(errorMessage);
+    });
+
+    it('should throw an error when hsla array has more than 4 items', () => {
+      const invalidHsla = [0, 100, 50, 1, 0] as unknown as HLSA;
+      const errorMessage = 'Invalid hsla array length: expected 3 or 4, received 5';
+      expect(() => convertHslaToHex(invalidHsla)).toThrowError(errorMessage);
+    });
+
+    it('should throw an error when hsla array contains non-numeric values', () => {
+      const invalidHsla = ['0', '100', '50', '1'] as unknown as HLSA;
+      const errorMessage = 'Invalid hsla value at index 0: expected a number, received 0';
+      expect(() => convertHslaToHex(invalidHsla)).toThrowError(errorMessage);
+    });
+
+    it('should throw an error when alpha is undefined', () => {
+      // Now that no hsla value can be undefined or null, this should throw.
+      const invalidHsla = [30, 100, 50, undefined] as unknown as HLSA;
+      const errorMessage = 'Invalid hsla value at index 3: expected a number, received undefined';
+      expect(() => convertHslaToHex(invalidHsla)).toThrowError(errorMessage);
     });
   });
 });
