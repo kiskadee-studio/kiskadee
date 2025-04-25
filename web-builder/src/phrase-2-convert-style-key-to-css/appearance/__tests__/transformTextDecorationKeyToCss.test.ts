@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CssTextDecorationValue, type TextDecorationValue } from 'schema/src';
+import { CssTextDecorationValue, type TextDecorationValue } from '@kiskadee/schema';
 import { transformTextDecorationKeyToCss } from '../transformTextDecorationKeyToCss';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 
@@ -22,7 +22,7 @@ describe('transformTextDecorationKeyToCss function', () => {
     it('should return a valid CSS string for text decoration "lineThrough"', () => {
       const textDecorationValue: TextDecorationValue = 'lineThrough';
       const styleKey = `${propertyName}__${textDecorationValue}`;
-      const expectedCss = `.${styleKey} { text-decoration: ${lineThrough}`;
+      const expectedCss = `.${styleKey} { text-decoration: ${lineThrough}; }`;
       const result = transformTextDecorationKeyToCss(styleKey);
 
       // input: textDecoration__lineThrough

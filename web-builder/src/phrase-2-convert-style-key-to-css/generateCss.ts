@@ -151,7 +151,7 @@ const styleExample = {
   'height--lg::lg1__44': 1
 };
 
-console.log(generateCssFromStyle(styleExample));
+// console.log(generateCssFromStyle(styleExample));
 
 /*
 Expected Output:
