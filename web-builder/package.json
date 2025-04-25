@@ -1,5 +1,5 @@
 {
-  "name": "web-builder",
+  "name": "@kiskadee/web-builder",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -15,9 +15,9 @@
     "@kiskadee/schema": "workspace:^"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^3.0.4",
-    "@vitest/ui": "^3.0.4",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.4"
+    "@vitest/coverage-v8": "^3.1.2",
+    "@vitest/ui": "^3.1.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
   }
 }
