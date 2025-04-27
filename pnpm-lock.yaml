@@ -21,13 +21,13 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
 
-  schema:
+  packages/schema:
     devDependencies:
       typescript:
         specifier: ^5.7.3
         version: 5.8.3
 
-  web-builder:
+  packages/web-builder:
     dependencies:
       '@kiskadee/schema':
         specifier: workspace:^

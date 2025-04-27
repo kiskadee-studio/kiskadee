@@ -5,7 +5,9 @@
   "description": "Schemas and types used in the Kiskadee monorepo.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "author": "Rodrigo J C Mello",
   "license": "MIT",
   "private": true,
