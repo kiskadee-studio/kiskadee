@@ -7,6 +7,18 @@ import {
   type DimensionKeys
 } from '@kiskadee/schema';
 
+export const ERROR_NO_MATCHING_DIMENSION_KEY = 'No matching dimension key found.';
+export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
+  'Invalid media query pattern; expected exactly one media token and one value.';
+export const ERROR_INVALID_MEDIA_TOKEN = 'Invalid media query token.';
+export const ERROR_INVALID_CUSTOM_TOKEN = 'Invalid custom size token.';
+export const ERROR_MISSING_VALUE = 'Missing value for dimension.';
+export const ERROR_NO_STANDARD_DIMENSION_KEY = 'No matching standard dimension key found.';
+export const ERROR_INVALID_STANDARD_PATTERN =
+  'Invalid standard dimension key format; unexpected number of parts.';
+export const ERROR_INVALID_KEY_FORMAT =
+  'Invalid dimension key format; missing required delimiters.';
+
 /**
  * Map of project dimension keys to their corresponding CSS property names.
  */
@@ -55,101 +67,80 @@ function getBaseClass(matchingDimension: DimensionKeys): string {
  * @param breakpoints - Object containing breakpoint definitions.
  * @returns The CSS rule string or null if the key is invalid.
  */
-export function convertDimensions(key: string, breakpoints: Breakpoints): string | null {
+export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints): string {
   let dimensionKey: DimensionKeys | undefined;
   let className: string;
   let mediaQuery: string | undefined;
   let valuePortion: string;
 
   if (key.includes('--')) {
-    // Find a matching dimension key with support for custom tokens (size and/or media-based)
     dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
     if (dimensionKey == null) {
-      // TODO: Replace returning null with throwing an appropriate Error
-      // Exception 1
-      return null;
+      throw new Error(ERROR_NO_MATCHING_DIMENSION_KEY);
     }
     const withoutPrefix = key.slice(`${dimensionKey}--`.length);
 
     if (withoutPrefix.includes('::')) {
-      // Pattern: {customToken}::{mediaToken}__{value}
       const [customToken, remainder] = withoutPrefix.split('::');
       const parts = remainder.split('__');
       if (parts.length !== 2) {
-        // Exception 2
-        return null;
+        throw new Error(ERROR_INVALID_MEDIA_QUERY_PATTERN);
       }
       const [mediaToken, value] = parts as [string, string];
-
       const bpValue = breakpoints[mediaToken as BreakpointProps];
       if (bpValue == null) {
-        // Exception 3
-        return null;
+        throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
       mediaQuery = `@media (min-width: ${bpValue}px)`;
       valuePortion = value;
-
-      // If the custom token is a valid size prop, drop it.
-      if (sizeProps.includes(customToken as SizeProps) === false) {
-        // Exception 4
-        return null;
+      if (!sizeProps.includes(customToken as SizeProps)) {
+        throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
-
       const breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
-
       className = `${getBaseClass(dimensionKey)}--${breakpointModifier}__${value}`;
     } else {
-      // Pattern: {customToken}__{value}
       const [token, value] = withoutPrefix.split('__') as [string, string];
-      const validToken = token != null && sizeProps.includes(token as SizeProps) === true;
+      const validToken = token != null && sizeProps.includes(token as SizeProps);
       const validValue = value != null;
-
-      if (validToken === false || validValue === false) {
-        // Exception 5
-        return null;
+      if (!validToken) {
+        throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
-
+      if (!validValue) {
+        throw new Error(ERROR_MISSING_VALUE);
+      }
       valuePortion = value;
-
       className = `${getBaseClass(dimensionKey)}__${value}`;
     }
-  } else if (key.includes('__') === true) {
-    // Standard key without any token.
+  } else if (key.includes('__')) {
     dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
     if (!dimensionKey) {
-      // Exception 6
-      return null;
+      throw new Error(ERROR_NO_STANDARD_DIMENSION_KEY);
     }
-
     const parts = key.split('__');
     if (parts.length !== 2) {
-      // Exception 7
-      return null;
+      throw new Error(ERROR_INVALID_STANDARD_PATTERN);
     }
-    const [_, value] = parts as [string, string];
+    const [, value] = parts as [string, string];
     className = key;
     valuePortion = value;
   } else {
-    // Exception 8
-    return null;
+    throw new Error(ERROR_INVALID_KEY_FORMAT);
   }
 
-  // Determine the CSS property.
   const cssProperty = cssPropertyMap[dimensionKey];
-
-  // Determine the numeric value.
   let cssValue: string;
   if (dimensionKey === 'textSize') {
-    const number = Number(valuePortion);
-    cssValue = number ? `${number / 16}rem` : valuePortion;
+    const num = Number(valuePortion);
+    cssValue = num ? `${num / 16}rem` : valuePortion;
   } else {
     cssValue = `${valuePortion}px`;
   }
 
-  // Build the final CSS rule.
   let rule = `.${className} { ${cssProperty}: ${cssValue}; }`;
-  if (mediaQuery != null) {
+  if (mediaQuery) {
     rule = `${mediaQuery} { ${rule} }`;
   }
   return rule;
 }
+
+export const convertDimensions = transformDimensionKeyToCss;
