@@ -16,6 +16,7 @@ import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 export function transformBorderStyleToCss(key: string): string {
   // Define the expected prefix for the key.
   const prefix = 'borderStyle__';
+  // comment to test new git hook
 
   // Check if the input key starts with the required prefix.
   // If it doesn't, throw an error indicating that the key has an invalid prefix.
