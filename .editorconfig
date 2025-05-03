@@ -1,0 +1,17 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+# global settings
+[*]
+indent_style = space       # use spaces for indentation
+indent_size = 2            # 2 spaces per indent level
+end_of_line = lf           # line endings = LF (Unix)
+charset = utf-8            # encoding = UTF-8
+trim_trailing_whitespace = true  # remove trailing whitespace
+insert_final_newline = true      # end file with newline
+
+[*.md]
+trim_trailing_whitespace = false # don't trim trailing whitespace (useful in lists)
+
