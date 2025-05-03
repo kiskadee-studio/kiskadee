@@ -103,6 +103,6 @@ const styleKeyValueCount = {
 const cssContent = convertToCSSWithShadows(styleKeyValueCount);
 
 // Write to a CSS file
-fs.writeFileSync('split-shadow-styles.css', cssContent);
+// fs.writeFileSync('split-shadow-styles.css', cssContent);
 
 console.log('CSS file generated: split-shadow-styles.css');
