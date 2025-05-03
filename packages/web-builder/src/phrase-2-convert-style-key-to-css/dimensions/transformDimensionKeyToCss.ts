@@ -142,5 +142,3 @@ export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints
   }
   return rule;
 }
-
-export const convertDimensions = transformDimensionKeyToCss;
