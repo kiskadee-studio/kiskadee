@@ -7,14 +7,14 @@ import { sizeProps } from '@kiskadee/schema';
  * representing each dimension property and its corresponding value.
  *
  * Key formats:
- * - Direct numeric value:         property__value
+ * - Direct numeric value: property__value
  * - First-level size:
  *     - If the size token is in sizeProps and its value is a number,
  *       the size token is ignored and the key is: property__value.
  *     - Otherwise: property--size__value
  * - Responsive breakpoint override (nested object):
  *     - If the size key is in sizeProps and the breakpoint key is "bp:all",
- *       the size token is omitted and the key becomes: property__value.
+ *       the size token is omitted, and the key becomes: property__value.
  *     - Otherwise, include the size token and breakpoint in the key as: property--size::breakpoint__value
  *
  * In the Dimensions object:
