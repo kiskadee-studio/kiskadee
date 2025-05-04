@@ -1,5 +1,13 @@
 import { transformTextItalicKeyToCss } from './appearance/transformTextItalicKeyToCss';
 import { transformTextAlignKeyToCss } from './appearance/transformTextAlignKeyToCss';
+import { transformBorderStyleToCss } from './appearance/transformBorderStyleKeyToCss';
+import { transformShadowKeyToCss } from './appearance/transformShadowKeyToCss';
+import { transformTextDecorationKeyToCss } from './appearance/transformTextDecorationKeyToCss';
+import { transformTextWeightKeyToCss } from './appearance/transformTextWeightKeyToCss';
+import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
+import { breakpoints, dimensionKeys } from '@kiskadee/schema';
+import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
+import { colorKeys } from '@kiskadee/schema/dist';
 
 const style2 = {
   textItalic__true: 1,
@@ -58,31 +66,10 @@ export function getToken(index: number): string {
 }
 
 /**
- * Generates a CSS class rule for a text decoration property key.
- * For example, for key "textDecoration__underline" returns:
- *   ".textDecoration__underline { text-decoration: underline; }"
- *
- * @param key - The style key to process.
- * @returns The CSS rule as a string or null if the key doesn't match.
- */
-function generateCssTextDecorationForKey(key: string): string | null {
-  if (!key.startsWith('textDecoration__')) {
-    return null;
-  }
-
-  const parts = key.split('__');
-  if (parts.length !== 2) {
-    return null;
-  }
-
-  return `.${key} { text-decoration: ${parts[1]}; }`;
-}
-
-/**
  * Generates CSS rules from the style object by iterating just once over its keys.
  * Keys are first sorted by their numeric values (descending), then reassigned tokens.
  *
- * @param style - The style object with keys and numeric values.
+ * @param styleKeyList - The style object with keys and numeric values.
  * @returns A string containing all the generated CSS class rules.
  *
  * Expected Output (using a simple style example):
@@ -103,29 +90,52 @@ function generateCssTextDecorationForKey(key: string): string | null {
  * .b { text-align: center; }
  * .c { text-decoration: underline; }
  */
-export function generateCssFromStyle(style: Record<string, number>): string {
-  const cssRules: string[] = [];
+export function generateCssFromStyle(styleKeyList: Record<string, number>): string {
+  const cssRuleList: string[] = [];
 
   // Get an array of keys sorted by their frequency (highest first)
-  const sortedKeys = Object.keys(style).sort((a, b) => style[b] - style[a]);
+  // const sortedKeys = Object.keys(styleKeys).sort();
 
   // Map to store the token for each key.
-  const tokenMapping: Record<string, string> = {};
+  // const tokenMapping: Record<string, string> = {};
 
   // Assign tokens based on sorted order.
-  sortedKeys.forEach((key, index) => {
-    tokenMapping[key] = getToken(index);
-  });
+  // sortedKeys.forEach((key, index) => {
+  //   tokenMapping[key] = getToken(index);
+  // });
 
   // Iterate over the sorted keys and generate CSS rules using tokens.
-  for (const key of sortedKeys) {
-    // Try each helper function.
-    let rule: string | null = transformTextItalicKeyToCss(key);
-    if (!rule) {
-      rule = generateCssTextDecorationForKey(key);
+  for (const styleKey of Object.keys(styleKeyList)) {
+    let rule: string | null = null;
+
+    // Appearances
+    if (styleKey.startsWith('borderStyle')) {
+      rule = transformBorderStyleToCss(styleKey);
+    } else if (styleKey.startsWith('shadow')) {
+      rule = transformShadowKeyToCss(styleKey);
+    } else if (styleKey.startsWith('textAlign')) {
+      rule = transformTextAlignKeyToCss(styleKey);
+    } else if (styleKey.startsWith('textDecoration')) {
+      rule = transformTextDecorationKeyToCss(styleKey);
+    } else if (styleKey.startsWith('textItalic')) {
+      rule = transformTextItalicKeyToCss(styleKey);
+    } else if (styleKey.startsWith('textWeight')) {
+      rule = transformTextWeightKeyToCss(styleKey);
     }
-    if (!rule) {
-      rule = transformTextAlignKeyToCss(key);
+    // Dimensions
+    else if (!rule) {
+      const matchDim = dimensionKeys.find((dim) => styleKey.startsWith(dim));
+      if (matchDim) {
+        rule = transformDimensionKeyToCss(styleKey, breakpoints);
+      }
+    }
+
+    // Pallets
+    else if (!rule) {
+      const matchPallet = colorKeys.find((dim) => styleKey.startsWith(dim));
+      if (matchPallet) {
+        rule = transformColorKeyToCss(styleKey);
+      }
     }
 
     // If no rule could be generated, skip this key.
@@ -134,24 +144,50 @@ export function generateCssFromStyle(style: Record<string, number>): string {
     }
 
     // Replace the original class name with the assigned token.
-    const token = tokenMapping[key];
-    rule = rule.replace(new RegExp(`\\.${key}\\b`), `.${token}`);
-    cssRules.push(rule);
+    // const token = tokenMapping[key];
+    // rule = rule.replace(new RegExp(`\\.${key}\\b`), `.${token}`);
+    cssRuleList.push(rule);
   }
 
-  return cssRules.join('\n');
+  return cssRuleList.sort().join('\n');
 }
 
 // Example usage:
 const styleExample = {
-  textItalic__true: 3,
-  textAlign__center: 6,
-  textDecoration__underline: 9,
-  'fontSize--sm__12': 1,
-  'height--lg::lg1__44': 1
+  'bgColor__[0,0,0,0.5]': 1,
+  'bgColor__[10,35,100,0]': 2,
+  'bgColor--hover__[10,35,100,0]': 2,
+  'borderColor__[0,0,0,0.5]': 1,
+  borderRadius__4: 1,
+  borderStyle__solid: 1,
+  borderWidth__1: 1,
+  boxHeight__40: 1,
+  boxHeight__48: 1,
+  'boxHeight--s:lg:1::bp:lg:1__44': 1,
+  boxWidth__120: 1,
+  marginBottom__8: 1,
+  marginLeft__16: 1,
+  marginRight__16: 1,
+  marginTop__8: 1,
+  paddingBottom__8: 1,
+  paddingLeft__8: 1,
+  paddingRight__8: 1,
+  paddingTop__10: 1,
+  'shadow__[0,0,0,[0,0,0,0.5]]': 1,
+  'shadow--hover__[4,4,4,[0,0,0,0.5]]': 1,
+  textAlign__center: 1,
+  'textColor__[0,0,0,0.5]': 2,
+  'textColor--hover::ref__[0,0,0,0.5]': 1,
+  textDecoration__underline: 1,
+  textHeight__24: 1,
+  textItalic__true: 1,
+  textSize__12: 1,
+  textSize__16: 2,
+  'textSize--s:md:1::bp:lg:1__14': 1,
+  textWeight__bold: 1
 };
 
-// console.log(generateCssFromStyle(styleExample));
+console.log(generateCssFromStyle(styleExample));
 
 /*
 Expected Output:
