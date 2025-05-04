@@ -34,7 +34,7 @@ export function convertSchemaToKeys(schema: Schema): void {
 
       // Process palettes if defined.
       if (style.palettes) {
-        // The palettes property is a record of Palettes.
+        // The palette property is a record of Palettes.
         for (const palette of Object.values(style.palettes)) {
           convertPalettesToKeys(palette);
         }
