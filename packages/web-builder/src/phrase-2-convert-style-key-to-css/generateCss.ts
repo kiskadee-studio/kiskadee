@@ -8,6 +8,8 @@ import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyTo
 import { breakpoints, dimensionKeys } from '@kiskadee/schema';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { colorKeys } from '@kiskadee/schema/dist';
+import postcss from 'postcss';
+import combineMq from 'postcss-combine-media-query';
 
 const style2 = {
   textItalic__true: 1,
@@ -90,7 +92,7 @@ export function getToken(index: number): string {
  * .b { text-align: center; }
  * .c { text-decoration: underline; }
  */
-export function generateCssFromStyle(styleKeyList: Record<string, number>): string {
+export async function generateCssFromStyle(styleKeyList: Record<string, number>): Promise<string> {
   const cssRuleList: string[] = [];
 
   // Get an array of keys sorted by their frequency (highest first)
@@ -149,7 +151,14 @@ export function generateCssFromStyle(styleKeyList: Record<string, number>): stri
     cssRuleList.push(rule);
   }
 
-  return cssRuleList.sort().join('\n');
+  const rawCss = cssRuleList.sort().join('\n');
+
+  // Apply postcss-combine-media-query plugin to combine media queries
+  const grouped = await postcss([combineMq()]).process(rawCss, {
+    from: undefined // avoid source file warning
+  });
+
+  return grouped.css;
 }
 
 // Example usage:
@@ -187,7 +196,8 @@ const styleExample = {
   textWeight__bold: 1
 };
 
-console.log(generateCssFromStyle(styleExample));
+const css = await generateCssFromStyle(styleExample);
+console.log(css);
 
 /*
 Expected Output:
