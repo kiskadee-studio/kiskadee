@@ -118,6 +118,8 @@ export type Variants = {
  */
 export type ColorKeys = 'textColor' | 'bgColor' | 'borderColor';
 
+export const colorKeys: ColorKeys[] = ['textColor', 'bgColor', 'borderColor'];
+
 export enum CssColorProperty {
   textColor = 'color',
   bgColor = 'background-color',
