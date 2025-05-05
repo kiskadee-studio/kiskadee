@@ -5,49 +5,12 @@ import { transformShadowKeyToCss } from './appearance/transformShadowKeyToCss';
 import { transformTextDecorationKeyToCss } from './appearance/transformTextDecorationKeyToCss';
 import { transformTextWeightKeyToCss } from './appearance/transformTextWeightKeyToCss';
 import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
-import { breakpoints, dimensionKeys } from '@kiskadee/schema';
+import { breakpoints, dimensionKeys, schema } from '@kiskadee/schema';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { colorKeys } from '@kiskadee/schema/dist';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
-
-const style2 = {
-  textItalic__true: 1,
-  textWeight__bold: 1,
-  textDecoration__underline: 1,
-  textTransform__uppercase: 1,
-  textAlign__center: 1,
-  cursor__pointer: 1,
-  borderStyle__solid: 1,
-  'shadow__[0,0,0,[0,0,0,0.5]]': 1,
-  'shadow--hover__[4,4,4,[0,0,0,0.5]]': 1,
-  'fontSize--sm__12': 1,
-  'fontSize--md__16': 1,
-  'fontSize--md::lg1__14': 1,
-  'fontSize--lg__20': 1,
-  'fontSize--lg::lg1__18': 1,
-  paddingTop__10: 1,
-  paddingRight__8: 1,
-  paddingBottom__8: 1,
-  paddingLeft__8: 1,
-  marginTop__8: 1,
-  marginRight__16: 1,
-  marginBottom__8: 1,
-  marginLeft__16: 1,
-  'height--md__40': 1,
-  'height--lg__48': 1,
-  'height--lg::lg1__44': 1,
-  width__120: 1,
-  borderWidth__1: 1,
-  borderRadius__4: 1,
-  lineHeight__24: 1,
-  'textColor__[0,0,0,0.5]': 2,
-  'borderColor__[0,0,0,0.5]': 1,
-  'bgColor__[10,35,100,0]': 2,
-  'bgColor--hover__[10,35,100,0]': 2,
-  'bgColor__[0,0,0,0.5]': 1,
-  'textColor--hover::ref__[0,0,0,0.5]': 1
-};
+import { convertSchemaToKeys } from '../phrase-1-convert-object-to-style-keys/convertSchemaToKeys';
 
 /**
  * Converts a zero-based index to a token string.
@@ -160,48 +123,3 @@ export async function generateCssFromStyle(styleKeyList: Record<string, number>)
 
   return grouped.css;
 }
-
-// Example usage:
-const styleExample = {
-  'bgColor__[0,0,0,0.5]': 1,
-  'bgColor__[10,35,100,0]': 2,
-  'bgColor--hover__[10,35,100,0]': 2,
-  'borderColor__[0,0,0,0.5]': 1,
-  borderRadius__4: 1,
-  borderStyle__solid: 1,
-  borderWidth__1: 1,
-  boxHeight__40: 1,
-  boxHeight__48: 1,
-  'boxHeight--s:lg:1::bp:lg:1__44': 1,
-  boxWidth__120: 1,
-  marginBottom__8: 1,
-  marginLeft__16: 1,
-  marginRight__16: 1,
-  marginTop__8: 1,
-  paddingBottom__8: 1,
-  paddingLeft__8: 1,
-  paddingRight__8: 1,
-  paddingTop__10: 1,
-  'shadow__[0,0,0,[0,0,0,0.5]]': 1,
-  'shadow--hover__[4,4,4,[0,0,0,0.5]]': 1,
-  textAlign__center: 1,
-  'textColor__[0,0,0,0.5]': 2,
-  'textColor--hover::ref__[0,0,0,0.5]': 1,
-  textDecoration__underline: 1,
-  textHeight__24: 1,
-  textItalic__true: 1,
-  textSize__12: 1,
-  textSize__16: 2,
-  'textSize--s:md:1::bp:lg:1__14': 1,
-  textWeight__bold: 1
-};
-
-const css = await generateCssFromStyle(styleExample);
-console.log(css);
-
-/*
-Expected Output:
-.a { font-style: italic; }
-.b { text-align: center; }
-.c { text-decoration: underline; }
-*/
