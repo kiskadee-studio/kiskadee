@@ -37,6 +37,8 @@
   interactive elements like buttons to restrict the focus outline to cases of keyboard (or similar)
   navigation. This choice minimizes visual noise during mouse interactions while maintaining strong
   accessibility cues where they are most needed.
+- The first element/layer of a component will serve as the component’s reference for interaction  
+  states triggered through the parent element, such as hover, disabled, etc.
 
 
 
