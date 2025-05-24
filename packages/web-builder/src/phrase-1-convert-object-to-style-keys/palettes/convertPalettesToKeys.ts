@@ -1,4 +1,4 @@
-import type { InteractionStates, PaletteKeys, Palettes, VariantKeys } from '@kiskadee/schema';
+import type { InteractionState, PaletteKeys, Palettes, VariantKeys } from '@kiskadee/schema';
 import { styleUsageMap } from '../../utils';
 
 /**
@@ -37,7 +37,7 @@ export function convertPalettesToKeys(palettes: Palettes) {
 
       // Iterate over each state (e.g., rest, hover, etc.)
       for (const _state in states) {
-        const state = _state as InteractionStates;
+        const state = _state as InteractionState;
 
         const rawValue = states[state];
         const hasRef = rawValue !== null && typeof rawValue === 'object' && 'ref' in rawValue;

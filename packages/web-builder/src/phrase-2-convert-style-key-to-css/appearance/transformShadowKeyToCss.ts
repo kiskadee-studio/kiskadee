@@ -1,5 +1,5 @@
 import { UNSUPPORTED_PROPERTY } from '../errorMessages';
-import { type HLSA, InteractionStateCssMapping, type InteractionStates } from '@kiskadee/schema';
+import { type HLSA, InteractionStateCssMapping, type InteractionState } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
 /**
@@ -40,7 +40,7 @@ export function transformShadowKeyToCss(styleKey: string): string {
   }
 
   // Determine the interaction state; default to "rest" if not specified.
-  const interactionState = (match[1] ?? 'rest') as InteractionStates;
+  const interactionState = (match[1] ?? 'rest') as InteractionState;
 
   // Check that the interaction state is valid according to our mapping.
   if (interactionState in InteractionStateCssMapping === false) {
@@ -49,7 +49,7 @@ export function transformShadowKeyToCss(styleKey: string): string {
     );
   }
 
-  const cssPseudo = InteractionStateCssMapping[interactionState as InteractionStates];
+  const cssPseudo = InteractionStateCssMapping[interactionState as InteractionState];
 
   const shadowValue = match[2];
 

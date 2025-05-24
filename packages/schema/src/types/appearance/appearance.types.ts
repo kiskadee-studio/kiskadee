@@ -1,4 +1,4 @@
-import type { InteractionStates, SingleColor } from '../palettes/palettes.types';
+import type { InteractionState, SingleColor } from '../palettes/palettes.types';
 
 // Italic ------------------------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ export enum CssBorderStyleValue {
   solid = 'solid'
 }
 
-export type ShadowStyle = Partial<Record<InteractionStates, number>>;
+export type ShadowStyle = Partial<Record<InteractionState, number>>;
 
 /**
  * Appearance represents style properties that are solid in nature – meaning they do not vary with
@@ -347,5 +347,5 @@ export interface Appearance {
   shadowBlur?: ShadowStyle;
   shadowY?: ShadowStyle;
   shadowX?: ShadowStyle;
-  shadowColor?: Partial<Record<InteractionStates, SingleColor>>;
+  shadowColor?: Partial<Record<InteractionState, SingleColor>>;
 }
