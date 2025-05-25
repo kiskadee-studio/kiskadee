@@ -1,9 +1,11 @@
-import { transformTextItalicKeyToCss } from './appearance/transformTextItalicKeyToCss';
-import { transformTextAlignKeyToCss } from './appearance/transformTextAlignKeyToCss';
-import { transformBorderStyleToCss } from './appearance/transformBorderStyleKeyToCss';
-import { transformShadowKeyToCss } from './appearance/transformShadowKeyToCss';
-import { transformTextDecorationKeyToCss } from './appearance/transformTextDecorationKeyToCss';
-import { transformTextWeightKeyToCss } from './appearance/transformTextWeightKeyToCss';
+import {
+  transformTextAlignKeyToCss,
+  transformTextItalicKeyToCss,
+  transformBorderStyleToCss,
+  transformShadowKeyToCss,
+  transformTextDecorationKeyToCss,
+  transformTextWeightKeyToCss
+} from './appearance';
 import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
 import { breakpoints, dimensionKeys, schema } from '@kiskadee/schema';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
