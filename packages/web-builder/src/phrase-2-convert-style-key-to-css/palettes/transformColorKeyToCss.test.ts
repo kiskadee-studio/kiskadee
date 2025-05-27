@@ -2,44 +2,47 @@ import { describe, it, expect } from 'vitest';
 import { transformColorKeyToCss } from './transformColorKeyToCss';
 
 describe('transformColorKeyToCss', () => {
-  it('should correctly transform a key without "::ref" (alpha = 1)', () => {
-    // Example: textColor, HSLA [120,50,50,1]
-    // Using HSLA conversion, the computed hex should be:
-    // For [120, 50, 50, 1]:
-    //   s = 50 / 100 = 0.5, l = 50 / 100 = 0.5, c = 0.5, m = 0.25,
-    //   Since h=120 is in [120,180], we get r=0, g=0.5, b=0.
-    //   Channel conversions:
-    //     r: (0 + 0.25)*255 = ~64 -> "40"
-    //     g: (0.5+0.25)*255 = ~191 -> "bf"
-    //     b: (0+0.25)*255 = ~64 -> "40"
-    //   Alpha is 1 so no alpha hex appended.
-    const inputKey = 'textColor__[120,50,50,1]';
-    const expectedCssRule = '.textColor__[120,50,50,1] { color: #40bf40; }';
-    expect(transformColorKeyToCss(inputKey)).toBe(expectedCssRule);
+  describe('Success operation', () => {
+    it('should transform a key without "::ref" (alpha = 1)', () => {
+      const inputKey = 'textColor__[120,50,50,1]';
+      const expected = '.textColor__[120,50,50,1] { color: #40bf40; }';
+      expect(transformColorKeyToCss(inputKey)).toBe(expected);
+    });
+
+    it('should transform a key with "--hover::ref" and include :hover on parent', () => {
+      const inputKey = 'bgColor--hover::ref__[240,50,50,0.5]';
+      const expected =
+        '.bgColor--hover::ref__[240,50,50,0.5]:hover .bgColor--hover::ref { background-color: #4040bf80; }';
+      expect(transformColorKeyToCss(inputKey)).toBe(expected);
+    });
+
+    it('should transform a key with "--focus::ref" and include :focus on parent', () => {
+      const inputKey = 'textColor--focus::ref__[0,0,0,0.3]';
+      const expected =
+        '.textColor--focus::ref__[0,0,0,0.3]:focus .textColor--focus::ref { color: #0000004d; }';
+      expect(transformColorKeyToCss(inputKey)).toBe(expected);
+    });
   });
 
-  it('should correctly transform a key with "::ref" (alpha < 1)', () => {
-    // Example: bgColor with referential selector -- key containing "::ref" and HSLA [240,50,50,0.5]
-    // For [240,50,50,0.5]:
-    //   h=240, s=0.5, l=0.5, so c = 0.5, m = 0.25.
-    //   For h in [240,300), we get: r = x = 0, g = 0, b = c = 0.5.
-    //   Channel conversions:
-    //     r: (0 + 0.25)*255 ≈ 64 -> "40"
-    //     g: (0 + 0.25)*255 ≈ 64 -> "40"
-    //     b: (0.5+0.25)*255 ≈ 191 -> "bf"
-    //   Alpha: 0.5 * 255 = ~128 -> "80"
-    //   Expected hex: "#4040bf80"
-    // The CSS rule should have two selectors: one for the full key and one for the referential part.
-    const inputKey = 'bgColor--hover::ref__[240,50,50,0.5]';
-    const expectedCssRule =
-      '.bgColor--hover::ref__[240,50,50,0.5] .bgColor--hover::ref { background-color: #4040bf80; }';
-    expect(transformColorKeyToCss(inputKey)).toBe(expectedCssRule);
-  });
+  describe('Error handling', () => {
+    it('should throw if "::ref" is used without a state', () => {
+      const inputKey = 'bgColor::ref__[240,50,50,0.5]';
+      expect(() => transformColorKeyToCss(inputKey)).toThrowError(
+        'Invalid key format. "::ref" requires a preceding interaction state.'
+      );
+    });
 
-  it('should throw an error when the key format is invalid', () => {
-    const invalidKey = 'textColor'; // missing HSLA value in brackets
-    expect(() => transformColorKeyToCss(invalidKey)).toThrowError(
-      'Invalid key format. Expected value in square brackets at the end.'
-    );
+    it('should throw if the key format is invalid', () => {
+      expect(() => transformColorKeyToCss('invalidKey')).toThrowError(
+        'Invalid key format. Expected value in square brackets at the end.'
+      );
+    });
+
+    it('should throw when using unsupported state "visited"', () => {
+      const inputKey = 'bgColor--visited::ref__[240,50,50,0.5]';
+      expect(() => transformColorKeyToCss(inputKey)).toThrowError(
+        'Invalid key format. "::ref" requires a preceding interaction state.'
+      );
+    });
   });
 });
