@@ -28,7 +28,7 @@
   predefined cursor that best matches its semantic purpose and interaction model, ensuring
   consistent and appropriate cursor behavior across the design system.
 - The absence of italic indicates that the text is rendered as normal. This means that, in both
-  Kiskadee and the majority (if not all) of platforms, text is presented in its regular style with
+  Kiskadee and the majority (if not all) of platforms, a text is presented in its regular style with
   the optional alternative of being italicized. With this in mind, to optimize performance,
   Kiskadee does not apply any styling for normal text as it is the default; it only applies
   styling when italic formatting is required.
@@ -39,6 +39,10 @@
   accessibility cues where they are most needed.
 - The first element/layer of a component will serve as the component’s reference for interaction  
   states triggered through the parent element, such as hover, disabled, etc.
+- Only block elements can have shadows. Unlike the "palettes" structure that supports referencing a
+  parent element to trigger state changes, shadows must be placed on the parent element itself, such
+  as a card or button. If scenarios arise that require this rule to change, it can be reviewed, but
+  until then this remains as a rule.
 
 
 
