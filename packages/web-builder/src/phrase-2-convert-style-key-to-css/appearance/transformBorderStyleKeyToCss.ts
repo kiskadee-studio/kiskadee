@@ -2,41 +2,40 @@ import { CssBorderStyleValue, type BorderStyleValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
- * Converts a border style property key into a corresponding CSS rule.
+ * Converts a border style property key into a corresponding CSS rule object.
  *
  * For example, for the key "borderStyle__dashed", it returns:
- *   ".borderStyle__dashed { border-style: dashed }"
+ *   {
+ *     className: "borderStyle__dashed",
+ *     cssRule: ".borderStyle__dashed { border-style: dashed }"
+ *   }
  *
  * @param key - The border style property key to process.
- * @returns A string containing the CSS rule.
+ * @returns An object containing:
+ *   - className: the CSS class name (without the leading dot).
+ *   - cssRule: the full CSS rule string (selector plus declarations).
  *
  * @throws An error if the key does not start with the expected prefix "borderStyle__".
- * @throws An error if the extracted border style value is not supported or does not exist in the CssBorderStyleProperty mapping.
+ * @throws An error if the extracted border style value is not supported or does not exist in the CssBorderStyleValue mapping.
  */
-export function transformBorderStyleToCss(key: string): string {
-  // Define the expected prefix for the key.
-  const prefix = 'borderStyle__';
+export function transformBorderStyleToCss(key: string): { className: string; cssRule: string } {
+  const propertyName = 'borderStyle';
+  const prefix = `${propertyName}__`;
 
-  // Check if the input key starts with the required prefix.
-  // If it doesn't, throw an error indicating that the key has an invalid prefix.
-  if (!key.startsWith(prefix)) {
+  if (key.startsWith(prefix) === false) {
     throw new Error(UNSUPPORTED_PROPERTY(prefix, key));
   }
 
-  // Remove the prefix from the key to extract only the border style value.
   const borderStyleValue = key.substring(prefix.length);
-
-  // Retrieve the corresponding CSS value for the border style from the mapping.
   const cssValue: CssBorderStyleValue | undefined =
     CssBorderStyleValue[borderStyleValue as BorderStyleValue];
 
-  // If the retrieved cssValue is null or undefined, then the value is unsupported.
-  // In such a case, throw an error indicating the unsupported border style value.
-  if (cssValue == null) {
-    throw new Error(UNSUPPORTED_VALUE('borderStyle', borderStyleValue, key));
+  if (cssValue === undefined) {
+    throw new Error(UNSUPPORTED_VALUE(propertyName, borderStyleValue, key));
   }
 
-  // Return the formatted CSS rule using the original key and the corresponding CSS value.
-  // For example: ".borderStyle__dashed { border-style: dashed }"
-  return `.${key} { border-style: ${cssValue} }`;
+  const className = key;
+  const cssRule = `.${key} { border-style: ${cssValue} }`;
+
+  return { className, cssRule };
 }

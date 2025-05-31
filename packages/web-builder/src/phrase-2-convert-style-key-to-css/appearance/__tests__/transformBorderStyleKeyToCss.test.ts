@@ -1,56 +1,37 @@
 import { describe, it, expect } from 'vitest';
+import { CssBorderStyleValue } from '@kiskadee/schema';
 import { transformBorderStyleToCss } from '../transformBorderStyleKeyToCss';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
+
+const propertyName = 'borderStyle';
 
 describe('transformBorderStyleToCss function', () => {
   describe('Successful operation', () => {
-    it('should return a valid CSS string for border style "none"', () => {
-      const borderStyle = 'none';
-      const key = `borderStyle__${borderStyle}`;
-      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
+    for (const [keySuffix, cssValue] of Object.entries(CssBorderStyleValue)) {
+      const styleKey = `${propertyName}__${keySuffix}` as const;
+      const expected = {
+        className: styleKey,
+        cssRule: `.${styleKey} { border-style: ${cssValue} }`
+      };
 
-      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
-    });
-
-    it('should return a valid CSS string for border style "dotted"', () => {
-      const borderStyle = 'dotted';
-      const key = `borderStyle__${borderStyle}`;
-      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
-
-      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
-    });
-
-    it('should return a valid CSS string for border style "dashed"', () => {
-      const borderStyle = 'dashed';
-      const key = `borderStyle__${borderStyle}`;
-      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
-
-      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
-    });
-
-    it('should return a valid CSS string for border style "solid"', () => {
-      const borderStyle = 'solid';
-      const key = `borderStyle__${borderStyle}`;
-      const expectedCss = `.${key} { border-style: ${borderStyle} }`;
-
-      expect(transformBorderStyleToCss(key)).toBe(expectedCss);
-    });
+      it(`should return correct className and cssRule for "${keySuffix}"`, () => {
+        const result = transformBorderStyleToCss(styleKey);
+        expect(result).toEqual(expected);
+      });
+    }
   });
 
   describe('Error handling', () => {
-    it('should throw an error when key does not start with "borderStyle__"', () => {
-      const invalidPrefix = 'invalidPrefix';
-      const styleKey = `${invalidPrefix}__solid`;
-      const expectedMessage = `Invalid style key "${styleKey}". Expected the key to be in the format "<property>__<value>" with the property part being "borderStyle__"`;
-
-      expect(() => transformBorderStyleToCss(styleKey)).toThrowError(expectedMessage);
+    it('should throw if the key does not start with the expected prefix', () => {
+      const badKey = 'invalidPrefix__solid';
+      const expectedError = UNSUPPORTED_PROPERTY(`${propertyName}__`, badKey);
+      expect(() => transformBorderStyleToCss(badKey)).toThrowError(expectedError);
     });
 
-    it('should throw an error when border style value is not supported', () => {
-      const unsupportedValue = 'unsupported';
-      const key = `borderStyle__${unsupportedValue}`;
-      const expectedMessage = `Unsupported value "${unsupportedValue}" for property "borderStyle" in style key "${key}"`;
-
-      expect(() => transformBorderStyleToCss(key)).toThrowError(expectedMessage);
+    it('should throw if the value is not supported', () => {
+      const badKey = `${propertyName}__unknownValue`;
+      const expectedError = UNSUPPORTED_VALUE(propertyName, 'unknownValue', badKey);
+      expect(() => transformBorderStyleToCss(badKey)).toThrowError(expectedError);
     });
   });
 });
