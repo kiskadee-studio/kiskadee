@@ -1,5 +1,6 @@
 import { CssBorderStyleValue, type BorderStyleValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import type { GeneratedCss } from '../types';
 
 /**
  * Converts a border style property key into a corresponding CSS rule object.
@@ -18,7 +19,7 @@ import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
  * @throws An error if the key does not start with the expected prefix "borderStyle__".
  * @throws An error if the extracted border style value is not supported or does not exist in the CssBorderStyleValue mapping.
  */
-export function transformBorderStyleToCss(key: string): { className: string; cssRule: string } {
+export function transformBorderKeyToCss(key: string): GeneratedCss {
   const propertyName = 'borderStyle';
   const prefix = `${propertyName}__`;
 

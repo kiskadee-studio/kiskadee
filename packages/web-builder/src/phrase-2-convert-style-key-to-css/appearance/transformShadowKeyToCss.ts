@@ -6,6 +6,7 @@ import {
 } from '../errorMessages';
 import { type HLSA, InteractionStateCssMapping, type InteractionState } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
+import type { GeneratedCss } from '../types';
 
 /**
  * Transforms a generated shadow style key into a CSS rule.
@@ -34,7 +35,7 @@ import { convertHslaToHex } from '../utils/convertHslaToHex';
  *   - `cssRule`: the corresponding CSS rule string
  * @throws Error if the key format, interaction state, values, or color are invalid
  */
-export function transformShadowKeyToCss(styleKey: string): { className: string; cssRule: string } {
+export function transformShadowKeyToCss(styleKey: string): GeneratedCss {
   // Extract the optional interaction state and the bracketed value
   const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
   const match = styleKey.match(regex);

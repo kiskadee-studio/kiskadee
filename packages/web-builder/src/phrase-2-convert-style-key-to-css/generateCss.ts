@@ -1,7 +1,7 @@
 import {
   transformTextAlignKeyToCss,
   transformTextItalicKeyToCss,
-  transformBorderStyleToCss,
+  transformBorderKeyToCss,
   transformShadowKeyToCss,
   transformTextDecorationKeyToCss,
   transformTextWeightKeyToCss
@@ -77,7 +77,7 @@ export async function generateCssFromStyle(styleKeyList: Record<string, number>)
 
     // Appearances
     if (styleKey.startsWith('borderStyle')) {
-      rule = transformBorderStyleToCss(styleKey);
+      rule = transformBorderKeyToCss(styleKey);
     } else if (styleKey.startsWith('shadow')) {
       rule = transformShadowKeyToCss(styleKey);
     } else if (styleKey.startsWith('textAlign')) {
