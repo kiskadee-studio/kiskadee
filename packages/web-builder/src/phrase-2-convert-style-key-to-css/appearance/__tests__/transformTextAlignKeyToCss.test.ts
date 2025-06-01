@@ -1,49 +1,71 @@
-import { describe, expect, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { transformTextAlignKeyToCss } from '../transformTextAlignKeyToCss';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 describe('transformTextAlignKeyToCss function', () => {
-  describe('Valid Cases', () => {
-    it('should generate the correct CSS rule for "left"', () => {
-      const cssRule = transformTextAlignKeyToCss('textAlign__left');
-      expect(cssRule).toBe('.textAlign__left { text-align: left; }');
+  describe('Successful operation', () => {
+    it('should return GeneratedCss for "left"', () => {
+      const result = transformTextAlignKeyToCss('textAlign__left');
+      expect(result).toEqual({
+        className: 'textAlign__left',
+        cssRule: '.textAlign__left { text-align: left; }'
+      });
+      expect(result).toMatchSnapshot();
     });
 
-    it('should generate the correct CSS rule for "center"', () => {
-      const cssRule = transformTextAlignKeyToCss('textAlign__center');
-      expect(cssRule).toBe('.textAlign__center { text-align: center; }');
+    it('should return GeneratedCss for "center"', () => {
+      const result = transformTextAlignKeyToCss('textAlign__center');
+      expect(result).toEqual({
+        className: 'textAlign__center',
+        cssRule: '.textAlign__center { text-align: center; }'
+      });
+      expect(result).toMatchSnapshot();
     });
 
-    it('should generate the correct CSS rule for "right"', () => {
-      const cssRule = transformTextAlignKeyToCss('textAlign__right');
-      expect(cssRule).toBe('.textAlign__right { text-align: right; }');
+    it('should return GeneratedCss for "right"', () => {
+      const result = transformTextAlignKeyToCss('textAlign__right');
+      expect(result).toEqual({
+        className: 'textAlign__right',
+        cssRule: '.textAlign__right { text-align: right; }'
+      });
+      expect(result).toMatchSnapshot();
     });
 
-    it('should generate the correct CSS rule for "justify"', () => {
-      const cssRule = transformTextAlignKeyToCss('textAlign__justify');
-      expect(cssRule).toBe('.textAlign__justify { text-align: justify; }');
+    it('should return GeneratedCss for "justify"', () => {
+      const result = transformTextAlignKeyToCss('textAlign__justify');
+      expect(result).toEqual({
+        className: 'textAlign__justify',
+        cssRule: '.textAlign__justify { text-align: justify; }'
+      });
+      expect(result).toMatchSnapshot();
     });
   });
 
-  describe('Error Cases', () => {
+  describe('Error handling', () => {
     it('should throw an error for unsupported alignment value', () => {
-      expect(() => transformTextAlignKeyToCss('textAlign__top')).toThrowError(
-        UNSUPPORTED_VALUE('textAlign', 'top', 'textAlign__top')
-      );
+      const call = () => transformTextAlignKeyToCss('textAlign__top');
+      expect(call).toThrowError(UNSUPPORTED_VALUE('textAlign', 'top', 'textAlign__top'));
+      expect(call).toThrowErrorMatchingSnapshot();
     });
 
     it('should throw an error for an invalid prefix', () => {
-      expect(() => transformTextAlignKeyToCss('alignText__center')).toThrowError(
-        UNSUPPORTED_PROPERTY('textAlign', 'alignText__center')
-      );
+      const call = () => transformTextAlignKeyToCss('alignText__center');
+      expect(call).toThrowError(UNSUPPORTED_PROPERTY('textAlign', 'alignText__center'));
+      expect(call).toThrowErrorMatchingSnapshot();
     });
 
     it('should throw an error for extra separators', () => {
-      expect(() => transformTextAlignKeyToCss('textAlign__center__extra')).toThrowError();
+      const call = () => transformTextAlignKeyToCss('textAlign__center__extra');
+      expect(call).toThrowError(
+        UNSUPPORTED_VALUE('textAlign', 'center__extra', 'textAlign__center__extra')
+      );
+      expect(call).toThrowErrorMatchingSnapshot();
     });
 
     it('should throw an error for missing separators', () => {
-      expect(() => transformTextAlignKeyToCss('textAlign-center')).toThrowError();
+      const call = () => transformTextAlignKeyToCss('textAlign-center');
+      expect(call).toThrowError(UNSUPPORTED_PROPERTY('textAlign', 'textAlign-center'));
+      expect(call).toThrowErrorMatchingSnapshot();
     });
   });
 });
