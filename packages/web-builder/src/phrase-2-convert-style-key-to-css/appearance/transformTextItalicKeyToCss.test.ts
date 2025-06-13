@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { transformTextItalicKeyToCss } from './transformTextItalicKeyToCss';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
-import { CSSTextItalicValue } from '@kiskadee/schema';
+import type { TextItalicValue } from '@kiskadee/schema';
 
 const textItalicProperty = 'textItalic';
 
 describe('transformTextItalicKeyToCss function', () => {
   describe('Successful operation', () => {
     it('should return a GeneratedCss for italic text "true"', () => {
-      const textItalicValue = CSSTextItalicValue.true;
+      const textItalicValue: TextItalicValue = 'true';
       const styleKey = `${textItalicProperty}__${textItalicValue}`;
 
       const result = transformTextItalicKeyToCss(styleKey);
@@ -21,7 +21,7 @@ describe('transformTextItalicKeyToCss function', () => {
     });
 
     it('should return a GeneratedCss for italic text "false"', () => {
-      const textItalicValue = CSSTextItalicValue.false;
+      const textItalicValue: TextItalicValue = 'false';
       const styleKey = `${textItalicProperty}__${textItalicValue}`;
 
       const result = transformTextItalicKeyToCss(styleKey);
@@ -37,7 +37,7 @@ describe('transformTextItalicKeyToCss function', () => {
   describe('Error handling', () => {
     it('should throw an error for style keys that do not start with "textItalic__"', () => {
       const invalidProperty = 'notTextItalic';
-      const textItalicValue = CSSTextItalicValue.true;
+      const textItalicValue: TextItalicValue = 'true';
       const styleKey = `${invalidProperty}__${textItalicValue}`;
       const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
       const result = () => transformTextItalicKeyToCss(styleKey);
@@ -63,7 +63,7 @@ describe('transformTextItalicKeyToCss function', () => {
     });
 
     it('should throw an error for keys with extra segments', () => {
-      const validValue = CSSTextItalicValue.true;
+      const validValue: TextItalicValue = 'true';
       const extraSegment = 'extra';
       const styleKey = `${textItalicProperty}__${validValue}__${extraSegment}`;
       const expectedMessage = UNSUPPORTED_VALUE(

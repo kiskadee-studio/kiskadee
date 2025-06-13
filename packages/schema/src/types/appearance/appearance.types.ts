@@ -4,15 +4,9 @@ import type { InteractionState, SingleColor } from '../palettes/palettes.types';
 
 export type TextItalic = boolean;
 
-export enum CssFontStyleValue {
-  italic = 'italic',
-  normal = 'normal'
-}
+export type TextItalicValue = 'true' | 'false';
 
-export enum CSSTextItalicValue {
-  true = 'true',
-  false = 'false'
-}
+export type CssFontStyleValue = 'normal' | 'italic';
 
 // -------------------------------------------------------------------------------------------------
 

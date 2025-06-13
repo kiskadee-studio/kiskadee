@@ -1,4 +1,4 @@
-import { CssFontStyleValue, CSSTextItalicValue } from '@kiskadee/schema';
+import type { CssFontStyleValue, TextItalicValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { GeneratedCss } from '../types';
 
@@ -29,7 +29,7 @@ export function transformTextItalicKeyToCss(styleKey: string): GeneratedCss {
   const textItalicProperty = 'textItalic';
   const styleKeyParts = styleKey.split('__');
   const styleProperty = styleKeyParts[0];
-  const styleValue: CSSTextItalicValue = styleKeyParts[1] as CSSTextItalicValue;
+  const styleValue: TextItalicValue = styleKeyParts[1] as TextItalicValue;
 
   if (styleProperty !== textItalicProperty) {
     throw new Error(UNSUPPORTED_PROPERTY(textItalicProperty, styleKey));
@@ -41,10 +41,10 @@ export function transformTextItalicKeyToCss(styleKey: string): GeneratedCss {
   }
 
   let cssValue: CssFontStyleValue;
-  if (styleValue === CSSTextItalicValue.true) {
-    cssValue = CssFontStyleValue.italic;
-  } else if (styleValue === CSSTextItalicValue.false) {
-    cssValue = CssFontStyleValue.normal;
+  if (styleValue === 'true') {
+    cssValue = 'italic';
+  } else if (styleValue === 'false') {
+    cssValue = 'normal';
   } else {
     throw new Error(UNSUPPORTED_VALUE(textItalicProperty, styleValue, styleKey));
   }
