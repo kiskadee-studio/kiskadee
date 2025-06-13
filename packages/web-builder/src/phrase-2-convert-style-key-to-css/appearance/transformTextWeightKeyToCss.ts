@@ -1,43 +1,46 @@
 import { CssTextWeightValue, type TextWeightValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import type { GeneratedCss } from '../types';
 
 /**
- * Converts a text weight property key into a corresponding CSS rule.
+ * Converts a textWeight style key into a GeneratedCss object.
  *
- * For example, for the key "textWeight__bold", it returns:
- *   ".textWeight__bold { font-weight: 700 }"
+ * The key must be in the format "textWeight__<value>", where <value> is one of the
+ * values defined in CssTextWeightValue.
  *
- * @param styleKey - The text weight property key.
- * @returns A string containing the CSS rule.
+ * @example
+ * ```ts
+ * const result = transformTextWeightKeyToCss("textWeight__bold");
+ * // result:
+ * // {
+ * //   className: "textWeight__bold",
+ * //   cssRule: ".textWeight__bold { font-weight: 700 }"
+ * // }
+ * ```
  *
- * @throws An error if the key does not start with the expected prefix "textWeight__".
- * @throws An error if the extracted weight value is not supported or does not exist in the CssTextWeightValue mapping.
+ * @param styleKey - The text weight style key (e.g., "textWeight__bold").
+ * @returns A GeneratedCss object containing:
+ *   - `className`: the raw key (no leading dot)
+ *   - `cssRule`: the full CSS rule string (selector + declaration)
+ *
+ * @throws An error if the key does not start with "textWeight__" or if the value is unsupported.
  */
-export function transformTextWeightKeyToCss(styleKey: string): string {
-  // Define the expected property name for the style key.
+export function transformTextWeightKeyToCss(styleKey: string): GeneratedCss {
   const propertyName = 'textWeight';
   const prefix = `${propertyName}__`;
 
-  // Check if the input key starts with the required prefix.
-  // If it doesn't, throw an error indicating that the property name is invalid.
   if (styleKey.startsWith(prefix) === false) {
     throw new Error(UNSUPPORTED_PROPERTY(propertyName, styleKey));
   }
 
-  // Remove the prefix from the style key to extract the text weight value.
   const textWeightValue = styleKey.substring(prefix.length);
-
-  // Retrieve the corresponding CSS value for the text weight from the mapping.
   const cssValue: CssTextWeightValue | undefined =
     CssTextWeightValue[textWeightValue as TextWeightValue];
 
-  // If the retrieved CSS value is undefined, the text weight is unsupported.
-  // Thus, throw an error indicating the unsupported value along with the style key.
   if (cssValue === undefined) {
     throw new Error(UNSUPPORTED_VALUE(propertyName, textWeightValue, styleKey));
   }
 
-  // Return a CSS rule using the property name and its corresponding CSS value.
-  // Example: ".textWeight__bold { font-weight: 700 }"
-  return `.${styleKey} { font-weight: ${cssValue} }`;
+  const cssRule = `.${styleKey} { font-weight: ${cssValue} }`;
+  return { className: styleKey, cssRule };
 }
