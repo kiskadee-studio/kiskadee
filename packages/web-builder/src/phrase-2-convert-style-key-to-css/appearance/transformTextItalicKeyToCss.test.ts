@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { transformTextItalicKeyToCss } from '../transformTextItalicKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { transformTextItalicKeyToCss } from './transformTextItalicKeyToCss';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 const textItalicProperty = 'textItalic';
 

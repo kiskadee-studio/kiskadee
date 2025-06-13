@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import type { HLSA } from '@kiskadee/schema';
 import { InteractionStateCssMapping } from '@kiskadee/schema';
-import { convertHslaToHex } from '../../utils/convertHslaToHex';
-import { transformShadowKeyToCss } from '../transformShadowKeyToCss';
+import { convertHslaToHex } from '../utils/convertHslaToHex';
+import { transformShadowKeyToCss } from './transformShadowKeyToCss';
 import {
   UNSUPPORTED_PROPERTY,
   UNSUPPORTED_INTERACTION_STATE,
   INVALID_SHADOW_COLOR_VALUE,
   UNSUPPORTED_VALUE
-} from '../../errorMessages';
+} from '../errorMessages';
 
 const propertyName = 'shadow';
 

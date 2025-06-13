@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { CssBorderStyleValue } from '@kiskadee/schema';
-import { transformBorderKeyToCss } from '../transformBorderStyleKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { transformBorderKeyToCss } from './transformBorderStyleKeyToCss';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 const propertyName = 'borderStyle';
 
