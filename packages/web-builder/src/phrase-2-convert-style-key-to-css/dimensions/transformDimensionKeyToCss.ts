@@ -1,3 +1,4 @@
+import type { GeneratedCss } from '../types';
 import {
   type Breakpoints,
   type SizeProps,
@@ -65,55 +66,55 @@ function getBaseClass(matchingDimension: DimensionKeys): string {
  *
  * @param key - The dimension key.
  * @param breakpoints - Object containing breakpoint definitions.
- * @returns The CSS rule string or null if the key is invalid.
+ * @returns An object with `className` and `cssRule`.
  */
-export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints): string {
+export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints): GeneratedCss {
   let dimensionKey: DimensionKeys | undefined;
   let className: string;
   let mediaQuery: string | undefined;
   let valuePortion: string;
 
-  if (key.includes('--')) {
+  if (key.includes('--') === true) {
     dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
     if (dimensionKey == null) {
       throw new Error(ERROR_NO_MATCHING_DIMENSION_KEY);
     }
     const withoutPrefix = key.slice(`${dimensionKey}--`.length);
 
-    if (withoutPrefix.includes('::')) {
-      const [customToken, remainder] = withoutPrefix.split('::');
-      const parts = remainder.split('__');
+    if (withoutPrefix.includes('::') === true) {
+      const [customToken, remainder] = withoutPrefix.split('::') as [SizeProps, string];
+      const parts = remainder.split('__') as [BreakpointProps, string];
       if (parts.length !== 2) {
         throw new Error(ERROR_INVALID_MEDIA_QUERY_PATTERN);
       }
-      const [mediaToken, value] = parts as [string, string];
-      const bpValue = breakpoints[mediaToken as BreakpointProps];
+      const [mediaToken, value] = parts;
+      const bpValue = breakpoints[mediaToken];
       if (bpValue == null) {
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
       mediaQuery = `@media (min-width: ${bpValue}px)`;
       valuePortion = value;
-      if (!sizeProps.includes(customToken as SizeProps)) {
+      if (sizeProps.includes(customToken) === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
       const breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
       className = `${getBaseClass(dimensionKey)}--${breakpointModifier}__${value}`;
     } else {
-      const [token, value] = withoutPrefix.split('__') as [string, string];
-      const validToken = token != null && sizeProps.includes(token as SizeProps);
+      const [token, value] = withoutPrefix.split('__') as [SizeProps, string];
+      const validToken = token != null && sizeProps.includes(token) === true;
       const validValue = value != null;
-      if (!validToken) {
+      if (validToken === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
-      if (!validValue) {
+      if (validValue === false) {
         throw new Error(ERROR_MISSING_VALUE);
       }
       valuePortion = value;
       className = `${getBaseClass(dimensionKey)}__${value}`;
     }
-  } else if (key.includes('__')) {
+  } else if (key.includes('__') === true) {
     dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
-    if (!dimensionKey) {
+    if (dimensionKey == null) {
       throw new Error(ERROR_NO_STANDARD_DIMENSION_KEY);
     }
     const parts = key.split('__');
@@ -140,5 +141,5 @@ export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints
   if (mediaQuery) {
     rule = `${mediaQuery} { ${rule} }`;
   }
-  return rule;
+  return { className, cssRule: rule };
 }
