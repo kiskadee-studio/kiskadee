@@ -1,6 +1,6 @@
 import { CssBorderStyleValue, type BorderStyleValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
-import type { GeneratedCss } from '../types';
+import type { GeneratedCss } from '../phrase2.types';
 
 /**
  * Converts a border style property key into a corresponding CSS rule object.

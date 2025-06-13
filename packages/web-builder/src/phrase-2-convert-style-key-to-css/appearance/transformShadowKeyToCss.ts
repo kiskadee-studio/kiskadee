@@ -6,7 +6,7 @@ import {
 } from '../errorMessages';
 import { type HLSA, InteractionStateCssMapping, type InteractionState } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
-import type { GeneratedCss } from '../types';
+import type { GeneratedCss } from '../phrase2.types';
 
 /**
  * Transforms a generated shadow style key into a CSS rule.

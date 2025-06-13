@@ -1,4 +1,4 @@
-import type { GeneratedCss } from '../types';
+import type { GeneratedCss } from '../phrase2.types';
 import {
   type Breakpoints,
   type SizeProps,

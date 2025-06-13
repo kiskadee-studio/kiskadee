@@ -1,6 +1,6 @@
 import { type TextAlignValue, CssTextAlignValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
-import type { GeneratedCss } from '../types';
+import type { GeneratedCss } from '../phrase2.types';
 
 /**
  * Converts a text alignment property key into a corresponding CSS class rule object.

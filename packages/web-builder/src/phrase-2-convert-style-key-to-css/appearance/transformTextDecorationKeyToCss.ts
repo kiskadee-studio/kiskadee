@@ -1,6 +1,6 @@
 import { type TextDecorationValue, CssTextDecorationValue } from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
-import type { GeneratedCss } from '../types';
+import type { GeneratedCss } from '../phrase2.types';
 
 /**
  * Converts a text‐decoration style key into a GeneratedCss object.
