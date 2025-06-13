@@ -9,6 +9,13 @@ export enum CssFontStyleValue {
   normal = 'normal'
 }
 
+export enum CSSTextItalicValue {
+  true = 'true',
+  false = 'false'
+}
+
+// -------------------------------------------------------------------------------------------------
+
 // type BackgroundColor = SingleColor;
 
 // Text Weight -------------------------------------------------------------------------------------
