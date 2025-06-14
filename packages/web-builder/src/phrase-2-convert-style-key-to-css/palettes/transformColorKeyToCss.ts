@@ -1,5 +1,5 @@
 import {
-  type ColorKeys,
+  type ColorProperty,
   CssColorProperty,
   type HLSA,
   InteractionStateCssMapping
@@ -38,8 +38,8 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
   const hex = convertHslaToHex(hsla);
 
   // Base color property, e.g. "background-color" or "color"
-  const colorKey = styleKey.split(/--|__/)[0] as ColorKeys;
-  const cssProp = CssColorProperty[colorKey];
+  const colorProperty = styleKey.split(/--|__/)[0] as ColorProperty;
+  const cssProperty = CssColorProperty[colorProperty];
 
   // Prepare interaction state patterns (e.g. "hover", "focus", ...)
   const states = Object.values(InteractionStateCssMapping).map((s) => s.slice(1));
@@ -56,9 +56,9 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
     className = styleKey;
     const match = styleKey.match(inlineStateRegex);
     if (match !== null) {
-      cssRule = `.${styleKey}:${match[1]} { ${cssProp}: ${hex}; }`;
+      cssRule = `.${styleKey}:${match[1]} { ${cssProperty}: ${hex}; }`;
     } else {
-      cssRule = `.${styleKey} { ${cssProp}: ${hex}; }`;
+      cssRule = `.${styleKey} { ${cssProperty}: ${hex}; }`;
     }
   } else {
     // Reference state: split out child selector
@@ -69,7 +69,7 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
       throw new Error(ERROR_REF_REQUIRE_STATE);
     }
     parentClassName = styleKey;
-    cssRule = `.${styleKey}:${match[1]} .${child} { ${cssProp}: ${hex}; }`;
+    cssRule = `.${styleKey}:${match[1]} .${child} { ${cssProperty}: ${hex}; }`;
   }
 
   return { className, parentClassName, cssRule };

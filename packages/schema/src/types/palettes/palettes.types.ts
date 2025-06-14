@@ -116,9 +116,9 @@ export type Variants = {
 /**
  * The color properties used in the design system.
  */
-export type ColorKeys = 'textColor' | 'bgColor' | 'borderColor';
+export type ColorProperty = 'textColor' | 'bgColor' | 'borderColor';
 
-export const colorKeys: ColorKeys[] = ['textColor', 'bgColor', 'borderColor'];
+export const colorPropertyList: ColorProperty[] = ['textColor', 'bgColor', 'borderColor'];
 
 export enum CssColorProperty {
   textColor = 'color',
@@ -128,5 +128,5 @@ export enum CssColorProperty {
 
 // export const colorKeys: ColorKeys[] = ['textColor', 'bgColor', 'borderColor'];
 
-export type Palettes = Partial<Record<ColorKeys, FullColor | Variants>>;
+export type Palettes = Partial<Record<ColorProperty, FullColor | Variants>>;
 export type PaletteKeys = keyof Palettes;

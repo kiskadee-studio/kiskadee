@@ -9,7 +9,7 @@ import {
 import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
 import { breakpoints, dimensionKeys, schema } from '@kiskadee/schema';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
-import { colorKeys } from '@kiskadee/schema/dist';
+import { colorPropertyList } from '@kiskadee/schema';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import { convertSchemaToKeys } from '../phrase-1-convert-object-to-style-keys/convertSchemaToKeys';
@@ -61,47 +61,52 @@ export async function generateCssFromStyle(styleKeyList: Record<string, number>)
   const cssRuleList: string[] = [];
 
   // Get an array of keys sorted by their frequency (highest first)
-  // const sortedKeys = Object.keys(styleKeys).sort();
+  // const sortedKeys = Object.keys(styleKeyList).sort();
 
-  // Map to store the token for each key.
+  // // Map to store the token for each key.
   // const tokenMapping: Record<string, string> = {};
-
-  // Assign tokens based on sorted order.
+  //
+  // // Assign tokens based on sorted order.
   // sortedKeys.forEach((key, index) => {
   //   tokenMapping[key] = getToken(index);
   // });
 
   // Iterate over the sorted keys and generate CSS rules using tokens.
   for (const styleKey of Object.keys(styleKeyList)) {
-    let rule: string | null = null;
+    let rule: string | undefined = undefined;
 
-    // Appearances
+    // Appearances ---------------------------------------------------------------------------------
     if (styleKey.startsWith('borderStyle')) {
-      rule = transformBorderKeyToCss(styleKey);
+      const result = transformBorderKeyToCss(styleKey);
+      rule = result.cssRule;
     } else if (styleKey.startsWith('shadow')) {
-      rule = transformShadowKeyToCss(styleKey);
+      const result = transformShadowKeyToCss(styleKey);
+      rule = result.cssRule;
     } else if (styleKey.startsWith('textAlign')) {
-      rule = transformTextAlignKeyToCss(styleKey);
+      const result = transformTextAlignKeyToCss(styleKey);
+      rule = result.cssRule;
     } else if (styleKey.startsWith('textDecoration')) {
-      rule = transformTextDecorationKeyToCss(styleKey);
+      const result = transformTextDecorationKeyToCss(styleKey);
+      rule = result.cssRule;
     } else if (styleKey.startsWith('textItalic')) {
-      rule = transformTextItalicKeyToCss(styleKey);
+      const result = transformTextItalicKeyToCss(styleKey);
+      rule = result.cssRule;
     } else if (styleKey.startsWith('textWeight')) {
-      rule = transformTextWeightKeyToCss(styleKey);
-    }
-    // Dimensions
-    else if (!rule) {
+      const result = transformTextWeightKeyToCss(styleKey);
+      rule = result.cssRule;
+    } else if (rule === undefined) {
+      // Dimensions ----------------------------------------------------------------------------------
       const matchDim = dimensionKeys.find((dim) => styleKey.startsWith(dim));
       if (matchDim) {
-        rule = transformDimensionKeyToCss(styleKey, breakpoints);
-      }
-    }
-
-    // Pallets
-    else if (!rule) {
-      const matchPallet = colorKeys.find((dim) => styleKey.startsWith(dim));
-      if (matchPallet) {
-        rule = transformColorKeyToCss(styleKey);
+        const result = transformDimensionKeyToCss(styleKey, breakpoints);
+        rule = result.cssRule;
+      } else {
+        // Pallets -------------------------------------------------------------------------------------
+        const matchColor = colorPropertyList.find((color) => styleKey.startsWith(color));
+        if (matchColor) {
+          const result = transformColorKeyToCss(styleKey);
+          rule = result.cssRule;
+        }
       }
     }
 
@@ -111,17 +116,18 @@ export async function generateCssFromStyle(styleKeyList: Record<string, number>)
     }
 
     // Replace the original class name with the assigned token.
-    // const token = tokenMapping[key];
-    // rule = rule.replace(new RegExp(`\\.${key}\\b`), `.${token}`);
+    // const token = tokenMapping[styleKey];
+    // rule = rule.replace(new RegExp(`\\.${styleKey}\\b`), `.${token}`);
     cssRuleList.push(rule);
   }
 
   const rawCss = cssRuleList.sort().join('\n');
+  return rawCss;
 
-  // Apply postcss-combine-media-query plugin to combine media queries
-  const grouped = await postcss([combineMq()]).process(rawCss, {
-    from: undefined // avoid source file warning
-  });
-
-  return grouped.css;
+  // // Apply postcss-combine-media-query plugin to combine media queries
+  // const grouped = await postcss([combineMq()]).process(rawCss, {
+  //   from: undefined // avoid source file warning
+  // });
+  //
+  // return grouped.css;
 }
