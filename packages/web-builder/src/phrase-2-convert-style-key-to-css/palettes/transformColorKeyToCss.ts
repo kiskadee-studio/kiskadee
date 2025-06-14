@@ -72,5 +72,9 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
     cssRule = `.${styleKey}:${match[1]} .${child} { ${cssProperty}: ${hex}; }`;
   }
 
-  return { className, parentClassName, cssRule };
+  return {
+    className,
+    cssRule,
+    ...(parentClassName ? { parentClassName } : {})
+  };
 }

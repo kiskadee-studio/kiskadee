@@ -26,6 +26,5 @@ exports[`transformColorKeyToCss > Success operation > should transform a key wit
 {
   "className": "bgColor--hover__[240,50,50,0.5]",
   "cssRule": ".bgColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }",
-  "parentClassName": undefined,
 }
 `;
