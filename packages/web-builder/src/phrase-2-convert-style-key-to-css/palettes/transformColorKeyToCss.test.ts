@@ -28,12 +28,12 @@ describe('transformColorKeyToCss', () => {
       expect(result).toMatchSnapshot();
     });
 
-    it('should transform a key without "::ref" and include ":hover', () => {
+    it('should transform a key without "::ref" and include ":hover"', () => {
       const result = transformColorKeyToCss('bgColor--hover__[240,50,50,0.5]');
 
       const expected: GeneratedCss = {
         className: 'bgColor--hover__[240,50,50,0.5]',
-        cssRule: '.bgColor--hover__[240,50,50,0.5] { background-color: #4040bf80; }',
+        cssRule: '.bgColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }',
         parentClassName: undefined
       };
 

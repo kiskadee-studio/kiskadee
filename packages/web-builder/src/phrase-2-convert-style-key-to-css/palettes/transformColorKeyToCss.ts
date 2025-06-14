@@ -32,10 +32,21 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
   let className: string;
   let parentClassName: string | undefined;
 
-  if (styleKey.includes('::ref') === false) {
+  if (!styleKey.includes('::ref')) {
     // no reference state, use full key as className
     className = styleKey;
-    cssRule = `.${styleKey} { ${cssProperty}: ${hexColor}; }`;
+    // Detect interaction state for pseudo-selector on the same element
+    const validStates = Object.values(InteractionStateCssMapping)
+      .map((val) => val.replace(/^:/, ''))
+      .join('|');
+    const stateRegex = new RegExp(`--(${validStates})(?=__)`);
+    const stateMatch = styleKey.match(stateRegex);
+    if (stateMatch) {
+      const state = stateMatch[1];
+      cssRule = `.${styleKey}:${state} { ${cssProperty}: ${hexColor}; }`;
+    } else {
+      cssRule = `.${styleKey} { ${cssProperty}: ${hexColor}; }`;
+    }
   } else {
     // reference state present, extract child selector
     const [refSelector] = styleKey.split('__');
@@ -53,7 +64,8 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
     }
 
     parentClassName = styleKey;
-    cssRule = `.${styleKey}:${stateMatch[1]} .${refSelector} { ${cssProperty}: ${hexColor}; }`;
+    const state = stateMatch[1];
+    cssRule = `.${styleKey}:${state} .${refSelector} { ${cssProperty}: ${hexColor}; }`;
   }
 
   return { className, parentClassName, cssRule };
