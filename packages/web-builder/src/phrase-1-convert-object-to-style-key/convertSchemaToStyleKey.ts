@@ -1,8 +1,8 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
-import { convertAppearanceToKeys } from './appearance/convertAppearanceToKeys';
-import { convertPalettesToKeys } from './palettes/convertPalettesToKeys';
+import { convertAppearanceToStyleKey } from './appearance/convertAppearanceToStyleKey';
+import { convertPalettesToStyleKey } from './palettes/convertPalettesToStyleKey';
 import { styleUsageMap } from '../utils';
-import { convertDimensionsToKeys } from './dimensions/convertDimensionsToKeys';
+import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToStyleKey';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
@@ -12,7 +12,7 @@ import { convertDimensionsToKeys } from './dimensions/convertDimensionsToKeys';
  *
  * @param schema - The Schema object to process.
  */
-export function convertSchemaToKeys(schema: Schema): { [p: string]: number } {
+export function convertSchemaToStyleKey(schema: Schema): { [p: string]: number } {
   // Iterate over each component in the schema.
   for (const componentKey in schema.components) {
     const component = schema.components[componentKey as ComponentKeys];
@@ -23,19 +23,19 @@ export function convertSchemaToKeys(schema: Schema): { [p: string]: number } {
 
       // Process appearance if defined.
       if (style.appearance) {
-        convertAppearanceToKeys(style.appearance);
+        convertAppearanceToStyleKey(style.appearance);
       }
 
       // Process dimensions if defined.
       if (style.dimensions) {
-        convertDimensionsToKeys(style.dimensions);
+        convertDimensionsToStyleKey(style.dimensions);
       }
 
       // Process palettes if defined.
       if (style.palettes) {
         // The palette property is a record of Palettes.
         for (const palette of Object.values(style.palettes)) {
-          convertPalettesToKeys(palette);
+          convertPalettesToStyleKey(palette);
         }
       }
     }

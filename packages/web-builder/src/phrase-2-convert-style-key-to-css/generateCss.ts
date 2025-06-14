@@ -12,7 +12,7 @@ import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { colorPropertyList } from '@kiskadee/schema';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
-import { convertSchemaToKeys } from '../phrase-1-convert-object-to-style-keys/convertSchemaToKeys';
+import { convertSchemaToStyleKey } from '../phrase-1-convert-object-to-style-key/convertSchemaToStyleKey';
 import { extractCssClassName } from './utils/extractCssClassName';
 import type { GeneratedCss } from './phrase2.types';
 

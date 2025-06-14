@@ -25,7 +25,7 @@ import { sizeProps } from '@kiskadee/schema';
  *
  * @param dimensions - The Dimensions object containing style properties.
  */
-export function convertDimensionsToKeys(dimensions: Dimensions) {
+export function convertDimensionsToStyleKey(dimensions: Dimensions) {
   // Iterate over each property in the Dimensions object.
   for (const [prop, value] of Object.entries(dimensions)) {
     // Process direct numeric value.

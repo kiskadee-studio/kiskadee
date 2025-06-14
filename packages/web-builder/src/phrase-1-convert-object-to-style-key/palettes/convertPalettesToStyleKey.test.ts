@@ -1,13 +1,13 @@
 import type { Palettes } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { convertPalettesToKeys } from './convertPalettesToKeys';
+import { convertPalettesToStyleKey } from './convertPalettesToStyleKey';
 import { styleUsageMap } from '../../utils';
 
 vi.mock('./utils', () => ({
   styleUsageMap: {}
 }));
 
-describe('convertPalettesToKeys', () => {
+describe('convertPalettesToStyleKey', () => {
   let styleUsageMapMock: Record<string, number>;
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('convertPalettesToKeys', () => {
       }
     };
 
-    convertPalettesToKeys(palettes);
+    convertPalettesToStyleKey(palettes);
 
     // For "rest", the key uses the pattern: property + "__" + value
     expect(styleUsageMapMock).toEqual({
@@ -45,7 +45,7 @@ describe('convertPalettesToKeys', () => {
       }
     };
 
-    convertPalettesToKeys(palettes);
+    convertPalettesToStyleKey(palettes);
 
     // For "rest", the key should not include "ref::", even if the value is referenced.
     // For "hover", the pattern is: property--state::ref__value
@@ -74,7 +74,7 @@ describe('convertPalettesToKeys', () => {
       }
     };
 
-    convertPalettesToKeys(palettes);
+    convertPalettesToStyleKey(palettes);
 
     expect(styleUsageMapMock).toEqual({
       // For textColor - "rest" does not include the state; "hover" uses the pattern with ref.

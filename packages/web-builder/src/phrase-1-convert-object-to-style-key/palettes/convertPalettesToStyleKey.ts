@@ -19,7 +19,7 @@ import { styleUsageMap } from '../../utils';
  *
  * @param palettes Object containing the palette definitions
  */
-export function convertPalettesToKeys(palettes: Palettes) {
+export function convertPalettesToStyleKey(palettes: Palettes) {
   // Iterate over each palette property (e.g., bgColor, borderColor, textColor)
   for (const paletteProp in palettes) {
     const paletteValue = palettes[paletteProp as PaletteKeys];

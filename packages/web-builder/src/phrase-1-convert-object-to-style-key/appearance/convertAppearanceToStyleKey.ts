@@ -30,7 +30,7 @@ function getShadowValue<T>(
  *
  * Note: Appearance never contains a "ref" key so that part is omitted.
  */
-export function convertAppearanceToKeys(appearance: Appearance) {
+export function convertAppearanceToStyleKey(appearance: Appearance) {
   // Process non-shadow properties
   for (const [key, value] of Object.entries(appearance)) {
     if (!key.startsWith('shadow')) {

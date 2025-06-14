@@ -1,9 +1,9 @@
 import type { Dimensions } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { convertDimensionsToKeys } from './convertDimensionsToKeys';
+import { convertDimensionsToStyleKey } from './convertDimensionsToStyleKey';
 import { styleUsageMap } from '../../utils';
 
-describe('convertDimensionsToKeys function', () => {
+describe('convertDimensionsToStyleKey', () => {
   beforeEach(() => {
     // Clear the styleUsageMap before each test
     for (const key in styleUsageMap) {
@@ -16,7 +16,7 @@ describe('convertDimensionsToKeys function', () => {
       paddingTop: 10
     };
 
-    convertDimensionsToKeys(dimensions);
+    convertDimensionsToStyleKey(dimensions);
 
     expect(styleUsageMap).toEqual({
       paddingTop__10: 1
@@ -28,7 +28,7 @@ describe('convertDimensionsToKeys function', () => {
       textSize: 16
     };
 
-    convertDimensionsToKeys(dimensions);
+    convertDimensionsToStyleKey(dimensions);
 
     expect(styleUsageMap).toEqual({
       textSize__16: 1
@@ -40,7 +40,7 @@ describe('convertDimensionsToKeys function', () => {
       textSize: { 's:md:1': 14 }
     };
 
-    convertDimensionsToKeys(dimensions);
+    convertDimensionsToStyleKey(dimensions);
 
     expect(styleUsageMap).toEqual({
       textSize__14: 1
@@ -52,7 +52,7 @@ describe('convertDimensionsToKeys function', () => {
       textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } }
     };
 
-    convertDimensionsToKeys(dimensions);
+    convertDimensionsToStyleKey(dimensions);
 
     expect(styleUsageMap).toEqual({
       // For 'bp:all' with "s:md:1", the size token is removed.
@@ -72,7 +72,7 @@ describe('convertDimensionsToKeys function', () => {
       marginTop: 20
     };
 
-    convertDimensionsToKeys(dimensions);
+    convertDimensionsToStyleKey(dimensions);
 
     expect(styleUsageMap).toEqual({
       marginTop__20: 1,
