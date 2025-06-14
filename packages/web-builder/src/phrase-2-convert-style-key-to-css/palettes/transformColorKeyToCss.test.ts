@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { transformColorKeyToCss } from './transformColorKeyToCss';
+import {
+  transformColorKeyToCss,
+  ERROR_INVALID_KEY_FORMAT,
+  ERROR_REF_REQUIRE_STATE
+} from './transformColorKeyToCss';
 import type { GeneratedCss } from '../phrase2.types';
 
 describe('transformColorKeyToCss', () => {
@@ -16,27 +20,23 @@ describe('transformColorKeyToCss', () => {
 
     it('should transform a key with "--hover::ref" and include :hover on parent', () => {
       const result = transformColorKeyToCss('bgColor--hover::ref__[240,50,50,0.5]');
-
       const expected: GeneratedCss = {
         className: 'bgColor--hover::ref',
         parentClassName: 'bgColor--hover::ref__[240,50,50,0.5]',
         cssRule:
           '.bgColor--hover::ref__[240,50,50,0.5]:hover .bgColor--hover::ref { background-color: #4040bf80; }'
       };
-
       expect(result).toEqual(expected);
       expect(result).toMatchSnapshot();
     });
 
     it('should transform a key without "::ref" and include ":hover"', () => {
       const result = transformColorKeyToCss('bgColor--hover__[240,50,50,0.5]');
-
       const expected: GeneratedCss = {
         className: 'bgColor--hover__[240,50,50,0.5]',
         cssRule: '.bgColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }',
         parentClassName: undefined
       };
-
       expect(result).toEqual(expected);
       expect(result).toMatchSnapshot();
     });
@@ -58,22 +58,22 @@ describe('transformColorKeyToCss', () => {
   describe('Error handling', () => {
     it('should throw if "::ref" is used without a state', () => {
       const key = 'bgColor::ref__[240,50,50,0.5]';
-      expect(() => transformColorKeyToCss(key)).toThrowError(
-        'Invalid key format. "::ref" requires a preceding interaction state.'
-      );
+      const fn = () => transformColorKeyToCss(key);
+      expect(fn).toThrowError(ERROR_REF_REQUIRE_STATE);
+      expect(fn).toThrowErrorMatchingSnapshot();
     });
 
-    it('should throw if the key format is invalid', () => {
-      expect(() => transformColorKeyToCss('invalidKey')).toThrowError(
-        'Invalid key format. Expected value in square brackets at the end.'
-      );
+    it('should throw if the style key format is invalid', () => {
+      const fn = () => transformColorKeyToCss('invalidKey');
+      expect(fn).toThrowError(ERROR_INVALID_KEY_FORMAT);
+      expect(fn).toThrowErrorMatchingSnapshot();
     });
 
     it('should throw when using unsupported state "visited"', () => {
       const key = 'bgColor--visited::ref__[240,50,50,0.5]';
-      expect(() => transformColorKeyToCss(key)).toThrowError(
-        'Invalid key format. "::ref" requires a preceding interaction state.'
-      );
+      const fn = () => transformColorKeyToCss(key);
+      expect(fn).toThrowError(ERROR_REF_REQUIRE_STATE);
+      expect(fn).toThrowErrorMatchingSnapshot();
     });
   });
 });

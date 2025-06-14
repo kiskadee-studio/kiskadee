@@ -7,6 +7,11 @@ import {
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 import type { GeneratedCss } from '../phrase2.types';
 
+export const ERROR_INVALID_KEY_FORMAT =
+  'Invalid key format. Expected value in square brackets at the end.';
+export const ERROR_REF_REQUIRE_STATE =
+  'Invalid key format. "::ref" requires a preceding interaction state.';
+
 /**
  * Transform a style key into its corresponding CSS rule representation.
  *
@@ -27,7 +32,7 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
   // Extract HSLA values from brackets at end; error if missing.
   const hslaMatch = styleKey.match(/\[([^\]]+)]$/);
   if (hslaMatch === null) {
-    throw new Error('Invalid key format. Expected value in square brackets at the end.');
+    throw new Error(ERROR_INVALID_KEY_FORMAT);
   }
   const hsla = hslaMatch[1].split(',').map(Number) as HLSA;
   const hex = convertHslaToHex(hsla);
@@ -46,7 +51,7 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
   let cssRule: string;
 
   // Determine if this is a reference style
-  if (styleKey.includes('::ref') === false) {
+  if (!styleKey.includes('::ref')) {
     // Simple class, may include a pseudo-state
     className = styleKey;
     const match = styleKey.match(inlineStateRegex);
@@ -61,9 +66,7 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
     className = child;
     const match = child.match(refStateRegex);
     if (match === null) {
-      throw new Error(
-        `Invalid key format. "::ref" requires a preceding interaction state. ${child}`
-      );
+      throw new Error(ERROR_REF_REQUIRE_STATE);
     }
     parentClassName = styleKey;
     cssRule = `.${styleKey}:${match[1]} .${child} { ${cssProp}: ${hex}; }`;
