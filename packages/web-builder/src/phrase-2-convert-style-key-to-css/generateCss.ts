@@ -13,6 +13,8 @@ import { colorPropertyList } from '@kiskadee/schema';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import { convertSchemaToKeys } from '../phrase-1-convert-object-to-style-keys/convertSchemaToKeys';
+import { extractCssClassName } from './utils/extractCssClassName';
+import type { GeneratedCss } from './phrase2.types';
 
 /**
  * Converts a zero-based index to a token string.
@@ -73,52 +75,47 @@ export async function generateCssFromStyle(styleKeyList: Record<string, number>)
 
   // Iterate over the sorted keys and generate CSS rules using tokens.
   for (const styleKey of Object.keys(styleKeyList)) {
-    let rule: string | undefined = undefined;
+    let generatedCss: GeneratedCss | undefined = undefined;
 
     // Appearances ---------------------------------------------------------------------------------
     if (styleKey.startsWith('borderStyle')) {
-      const result = transformBorderKeyToCss(styleKey);
-      rule = result.cssRule;
+      generatedCss = transformBorderKeyToCss(styleKey);
     } else if (styleKey.startsWith('shadow')) {
-      const result = transformShadowKeyToCss(styleKey);
-      rule = result.cssRule;
+      generatedCss = transformShadowKeyToCss(styleKey);
     } else if (styleKey.startsWith('textAlign')) {
-      const result = transformTextAlignKeyToCss(styleKey);
-      rule = result.cssRule;
+      generatedCss = transformTextAlignKeyToCss(styleKey);
     } else if (styleKey.startsWith('textDecoration')) {
-      const result = transformTextDecorationKeyToCss(styleKey);
-      rule = result.cssRule;
+      generatedCss = transformTextDecorationKeyToCss(styleKey);
     } else if (styleKey.startsWith('textItalic')) {
-      const result = transformTextItalicKeyToCss(styleKey);
-      rule = result.cssRule;
+      generatedCss = transformTextItalicKeyToCss(styleKey);
     } else if (styleKey.startsWith('textWeight')) {
-      const result = transformTextWeightKeyToCss(styleKey);
-      rule = result.cssRule;
-    } else if (rule === undefined) {
+      generatedCss = transformTextWeightKeyToCss(styleKey);
+    } else if (generatedCss === undefined) {
       // Dimensions ----------------------------------------------------------------------------------
       const matchDim = dimensionKeys.find((dim) => styleKey.startsWith(dim));
       if (matchDim) {
-        const result = transformDimensionKeyToCss(styleKey, breakpoints);
-        rule = result.cssRule;
+        generatedCss = transformDimensionKeyToCss(styleKey, breakpoints);
       } else {
         // Pallets -------------------------------------------------------------------------------------
         const matchColor = colorPropertyList.find((color) => styleKey.startsWith(color));
         if (matchColor) {
-          const result = transformColorKeyToCss(styleKey);
-          rule = result.cssRule;
+          generatedCss = transformColorKeyToCss(styleKey);
         }
       }
     }
 
     // If no rule could be generated, skip this key.
-    if (!rule) {
+    if (generatedCss === undefined) {
       continue;
     }
+
+    // const cssRule = extractCssClassName(rule);
+    console.log({ styleKey, generatedCss });
 
     // Replace the original class name with the assigned token.
     // const token = tokenMapping[styleKey];
     // rule = rule.replace(new RegExp(`\\.${styleKey}\\b`), `.${token}`);
-    cssRuleList.push(rule);
+    cssRuleList.push(generatedCss.cssRule);
   }
 
   const rawCss = cssRuleList.sort().join('\n');
