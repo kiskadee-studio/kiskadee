@@ -1,5 +1,5 @@
 import type { InteractionState, PaletteKeys, Palettes, VariantKeys } from '@kiskadee/schema';
-import { styleUsageMap } from '../../utils';
+import { styleKeyUsageMap } from '../../utils';
 
 /**
  * Processes a Palettes object and records the usage of each style property
@@ -46,13 +46,13 @@ export function convertPalettesToStyleKey(palettes: Palettes) {
         const actualValue = hasRef ? rawValue?.ref : rawValue;
         const jsonValue = JSON.stringify(actualValue);
 
-        let key: string;
+        let styleKey: string;
         if (state === 'rest') {
-          key = `${paletteProp}__${hasRef ? 'ref::' : ''}${jsonValue}`;
+          styleKey = `${paletteProp}__${hasRef ? 'ref::' : ''}${jsonValue}`;
         } else {
-          key = `${paletteProp}--${state}${hasRef ? '::ref' : ''}__${jsonValue}`;
+          styleKey = `${paletteProp}--${state}${hasRef ? '::ref' : ''}__${jsonValue}`;
         }
-        styleUsageMap[key] = (styleUsageMap[key] || 0) + 1;
+        styleKeyUsageMap[styleKey] = (styleKeyUsageMap[styleKey] || 0) + 1;
       }
     }
   }

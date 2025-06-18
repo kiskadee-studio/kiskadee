@@ -43,6 +43,8 @@
   parent element to trigger state changes, shadows must be placed on the parent element itself, such
   as a card or button. If scenarios arise that require this rule to change, it can be reviewed, but
   until then this remains as a rule.
+- Shadow was already part of appearance, but it became clearer that shadow is an effect, just like
+  a blurred background or glass effect.
 
 
 

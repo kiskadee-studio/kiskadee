@@ -1,13 +1,13 @@
 import type { Dimensions } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { convertDimensionsToStyleKey } from './convertDimensionsToStyleKey';
-import { styleUsageMap } from '../../utils';
+import { styleKeyUsageMap } from '../../utils';
 
 describe('convertDimensionsToStyleKey', () => {
   beforeEach(() => {
     // Clear the styleUsageMap before each test
-    for (const key in styleUsageMap) {
-      delete styleUsageMap[key];
+    for (const key in styleKeyUsageMap) {
+      delete styleKeyUsageMap[key];
     }
   });
 
@@ -18,7 +18,7 @@ describe('convertDimensionsToStyleKey', () => {
 
     convertDimensionsToStyleKey(dimensions);
 
-    expect(styleUsageMap).toEqual({
+    expect(styleKeyUsageMap).toEqual({
       paddingTop__10: 1
     });
   });
@@ -30,7 +30,7 @@ describe('convertDimensionsToStyleKey', () => {
 
     convertDimensionsToStyleKey(dimensions);
 
-    expect(styleUsageMap).toEqual({
+    expect(styleKeyUsageMap).toEqual({
       textSize__16: 1
     });
   });
@@ -42,7 +42,7 @@ describe('convertDimensionsToStyleKey', () => {
 
     convertDimensionsToStyleKey(dimensions);
 
-    expect(styleUsageMap).toEqual({
+    expect(styleKeyUsageMap).toEqual({
       textSize__14: 1
     });
   });
@@ -54,7 +54,7 @@ describe('convertDimensionsToStyleKey', () => {
 
     convertDimensionsToStyleKey(dimensions);
 
-    expect(styleUsageMap).toEqual({
+    expect(styleKeyUsageMap).toEqual({
       // For 'bp:all' with "s:md:1", the size token is removed.
       textSize__16: 1,
       // For other breakpoints, include the size token.
@@ -74,7 +74,7 @@ describe('convertDimensionsToStyleKey', () => {
 
     convertDimensionsToStyleKey(dimensions);
 
-    expect(styleUsageMap).toEqual({
+    expect(styleKeyUsageMap).toEqual({
       marginTop__20: 1,
       'paddingBottom--s:md:1::bp:lg:2__8': 1,
       'paddingBottom--s:md:1::bp:sm:1__10': 1,

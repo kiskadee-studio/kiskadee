@@ -1,7 +1,7 @@
 import type { Palettes } from '@kiskadee/schema';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { convertPalettesToStyleKey } from './convertPalettesToStyleKey';
-import { styleUsageMap } from '../../utils';
+import { styleKeyUsageMap } from '../../utils';
 
 vi.mock('./utils', () => ({
   styleUsageMap: {}
@@ -12,10 +12,10 @@ describe('convertPalettesToStyleKey', () => {
 
   beforeEach(() => {
     // Clear the map before each test
-    for (const key of Object.keys(styleUsageMap)) {
-      delete styleUsageMap[key];
+    for (const styleKey of Object.keys(styleKeyUsageMap)) {
+      delete styleKeyUsageMap[styleKey];
     }
-    styleUsageMapMock = styleUsageMap;
+    styleUsageMapMock = styleKeyUsageMap;
   });
 
   it('should process a palette property without ref', () => {

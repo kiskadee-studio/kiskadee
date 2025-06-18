@@ -1,5 +1,5 @@
 import type { Dimensions, SizeProps } from '@kiskadee/schema';
-import { styleUsageMap } from '../../utils';
+import { styleKeyUsageMap } from '../../utils';
 import { sizeProps } from '@kiskadee/schema';
 
 /**
@@ -31,7 +31,7 @@ export function convertDimensionsToStyleKey(dimensions: Dimensions) {
     // Process direct numeric value.
     if (typeof value === 'number') {
       const keyValue = `${prop}__${value}`;
-      styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
+      styleKeyUsageMap[keyValue] = (styleKeyUsageMap[keyValue] || 0) + 1;
     } else if (typeof value === 'object' && value !== null) {
       // Iterate over each size (e.g., "s:sm:1", "s:md:1", etc.).
       for (const [size, sizeValue] of Object.entries(value)) {
@@ -41,7 +41,7 @@ export function convertDimensionsToStyleKey(dimensions: Dimensions) {
           const keyValue = sizeProps.includes(size as SizeProps)
             ? `${prop}__${sizeValue}`
             : `${prop}--${size}__${sizeValue}`;
-          styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
+          styleKeyUsageMap[keyValue] = (styleKeyUsageMap[keyValue] || 0) + 1;
         } else if (typeof sizeValue === 'object' && sizeValue !== null) {
           // Process responsive breakpoint overrides.
           for (const [breakpoint, innerVal] of Object.entries(sizeValue)) {
@@ -52,7 +52,7 @@ export function convertDimensionsToStyleKey(dimensions: Dimensions) {
             } else {
               keyValue = `${prop}--${size}::${breakpoint}__${innerVal}`;
             }
-            styleUsageMap[keyValue] = (styleUsageMap[keyValue] || 0) + 1;
+            styleKeyUsageMap[keyValue] = (styleKeyUsageMap[keyValue] || 0) + 1;
           }
         }
       }

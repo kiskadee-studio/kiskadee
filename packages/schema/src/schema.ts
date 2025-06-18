@@ -1,6 +1,6 @@
 import type { Appearance } from './types/appearance/appearance.types';
 import type { Dimensions } from './types/dimensions/dimensions.types';
-import type { Palettes } from './types/palettes/palettes.types';
+import type { InteractionState, Palettes } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints } from './breakpoints';
 
 export type ComponentKeys = 'button';
@@ -14,6 +14,28 @@ type Style = Partial<{
 }>;
 
 type Elements = Record<string, Style>;
+
+// -------------------------------------------------------------------------------------------------
+
+interface ClassNameMap {
+  componentList: {
+    [componenteName: string]: {
+      [elementName: string]: Partial<Record<InteractionState, string[]>>;
+    };
+  };
+}
+
+// Input
+const classNameMap: ClassNameMap = {
+  componentList: {
+    button: {
+      e1: {
+        rest: ['bg-primary-500', 'text-white'],
+        hover: ['bg-primary-600']
+      }
+    }
+  }
+};
 
 // -------------------------------------------------------------------------------------------------
 

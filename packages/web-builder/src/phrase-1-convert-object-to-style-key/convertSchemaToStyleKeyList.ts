@@ -1,7 +1,7 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
-import { convertAppearanceToStyleKey } from './appearance/convertAppearanceToStyleKey';
+import { convertElementAppearanceToStyleKey } from './appearance/convertElementAppearanceToStyleKey';
 import { convertPalettesToStyleKey } from './palettes/convertPalettesToStyleKey';
-import { styleUsageMap } from '../utils';
+import { styleKeyUsageMap } from '../utils';
 import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToStyleKey';
 
 /**
@@ -12,29 +12,29 @@ import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToSty
  *
  * @param schema - The Schema object to process.
  */
-export function convertSchemaToStyleKey(schema: Schema): { [p: string]: number } {
+export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: number } {
   // Iterate over each component in the schema.
   for (const componentKey in schema.components) {
     const component = schema.components[componentKey as ComponentKeys];
 
     // Iterate over each element within the component.
     for (const elementKey in component.elements) {
-      const style = component.elements[elementKey];
+      const element = component.elements[elementKey];
 
       // Process appearance if defined.
-      if (style.appearance) {
-        convertAppearanceToStyleKey(style.appearance);
+      if (element.appearance) {
+        convertElementAppearanceToStyleKey(element.appearance, elementKey);
       }
 
       // Process dimensions if defined.
-      if (style.dimensions) {
-        convertDimensionsToStyleKey(style.dimensions);
+      if (element.dimensions) {
+        convertDimensionsToStyleKey(element.dimensions);
       }
 
       // Process palettes if defined.
-      if (style.palettes) {
+      if (element.palettes) {
         // The palette property is a record of Palettes.
-        for (const palette of Object.values(style.palettes)) {
+        for (const palette of Object.values(element.palettes)) {
           convertPalettesToStyleKey(palette);
         }
       }
@@ -42,5 +42,7 @@ export function convertSchemaToStyleKey(schema: Schema): { [p: string]: number }
   }
 
   // Log the final style usage map.
-  return Object.fromEntries(Object.entries(styleUsageMap).sort(([a], [b]) => a.localeCompare(b)));
+  return Object.fromEntries(
+    Object.entries(styleKeyUsageMap).sort(([a], [b]) => a.localeCompare(b))
+  );
 }
