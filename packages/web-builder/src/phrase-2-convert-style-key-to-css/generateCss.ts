@@ -34,7 +34,7 @@ export function getToken(index: number): string {
   return token;
 }
 
-export function generateCssFromStyleKey(styleKey: string): GeneratedCss {
+export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
   let generatedCss: GeneratedCss | undefined = undefined;
 
   // Appearances ---------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ export async function generateCssFromStyleKeyList(
 
   // Iterate over the sorted keys and generate CSS rules using tokens.
   for (const styleKey of Object.keys(styleKeyList)) {
-    const generatedCss = generateCssFromStyleKey(styleKey);
+    const generatedCss = generateCssRuleFromStyleKey(styleKey);
 
     // const cssRule = extractCssClassName(rule);
     console.log({ styleKey, generatedCss });

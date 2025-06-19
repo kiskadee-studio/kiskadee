@@ -14,16 +14,17 @@ import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToSty
  */
 export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: number } {
   // Iterate over each component in the schema.
-  for (const componentKey in schema.components) {
-    const component = schema.components[componentKey as ComponentKeys];
+  for (const componentName in schema.components) {
+    const component = schema.components[componentName as ComponentKeys];
 
     // Iterate over each element within the component.
-    for (const elementKey in component.elements) {
-      const element = component.elements[elementKey];
+    for (const elementName in component.elements) {
+      const element = component.elements[elementName];
 
       // Process appearance if defined.
       if (element.appearance) {
-        convertElementAppearanceToStyleKey(element.appearance, elementKey);
+        console.log({ appearance: element.appearance });
+        convertElementAppearanceToStyleKey(componentName, elementName, element.appearance);
       }
 
       // Process dimensions if defined.

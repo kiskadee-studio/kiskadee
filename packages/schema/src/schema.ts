@@ -17,22 +17,18 @@ type Elements = Record<string, Style>;
 
 // -------------------------------------------------------------------------------------------------
 
-interface ClassNameMap {
-  componentList: {
-    [componenteName: string]: {
-      [elementName: string]: Partial<Record<InteractionState, string[]>>;
-    };
+export interface ClassNameMap {
+  [componenteName: string]: {
+    [elementName: string]: Partial<Record<InteractionState, string[]>>;
   };
 }
 
 // Input
 const classNameMap: ClassNameMap = {
-  componentList: {
-    button: {
-      e1: {
-        rest: ['bg-primary-500', 'text-white'],
-        hover: ['bg-primary-600']
-      }
+  button: {
+    e1: {
+      rest: ['bg-primary-500', 'text-white'],
+      hover: ['bg-primary-600']
     }
   }
 };
