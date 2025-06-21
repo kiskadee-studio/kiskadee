@@ -1,4 +1,5 @@
 import type { Appearance, ClassNameMap, InteractionState, SingleColor } from '@kiskadee/schema';
+import { updateElementStyleKeyMap } from '../../utils';
 
 /**
  * Gets a shadow property value for the given interaction state, falling back to 'rest' then to a
@@ -14,34 +15,6 @@ function getShadowValue<T>(
     : property.rest !== undefined
       ? property.rest
       : defaultValue;
-}
-
-/**
- * Adds a style key to the specified component and element state in the ClassNameMap, preserving
- * existing keys.
- */
-function updateElementStyleKeyMap(
-  elementStyleKeyMap: ClassNameMap,
-  componentName: string,
-  elementName: string,
-  state: InteractionState,
-  styleKey: string
-): ClassNameMap {
-  const componentMap = elementStyleKeyMap[componentName] ?? {};
-  const elementMap = componentMap[elementName] ?? {};
-  const currentStyleKeys = elementMap[state] ?? [];
-
-  Object.assign(elementStyleKeyMap, {
-    [componentName]: {
-      ...componentMap,
-      [elementName]: {
-        ...elementMap,
-        [state]: [...currentStyleKeys, styleKey]
-      }
-    }
-  });
-
-  return elementStyleKeyMap;
 }
 
 /**
