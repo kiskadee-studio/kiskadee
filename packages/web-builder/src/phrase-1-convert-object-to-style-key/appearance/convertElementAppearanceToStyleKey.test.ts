@@ -1,253 +1,230 @@
 import type { Appearance } from '@kiskadee/schema';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { convertElementAppearanceToStyleKey } from './convertElementAppearanceToStyleKey';
-import { styleKeyUsageMap } from '../../utils';
-
-vi.mock('./utils', () => ({
-  styleUsageMap: {}
-}));
 
 describe('convertElementAppearanceToStyleKey', () => {
-  let styleUsageMapMock: Record<string, number>;
-
-  beforeEach(() => {
-    for (const key of Object.keys(styleKeyUsageMap)) {
-      delete styleKeyUsageMap[key];
-    }
-    styleUsageMapMock = styleKeyUsageMap;
-  });
+  const component = 'button';
+  const element = 'e1';
 
   describe('textItalic', () => {
-    it('should process textItalic property set to true', () => {
+    it('should generate textItalic true style key', () => {
       const appearance: Appearance = { textItalic: true };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textItalic__true: 1 });
+      expect(result).toEqual({
+        button: {
+          e1: {
+            rest: ['textItalic__true']
+          }
+        }
+      });
     });
 
-    it('should process textItalic property set to false', () => {
+    it('should generate textItalic false style key', () => {
       const appearance: Appearance = { textItalic: false };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textItalic__false: 1 });
+      expect(result).toEqual({
+        button: {
+          e1: {
+            rest: ['textItalic__false']
+          }
+        }
+      });
     });
   });
 
   describe('textWeight', () => {
-    it('should process textWeight property with "thin"', () => {
+    it('should generate textWeight thin style key', () => {
       const appearance: Appearance = { textWeight: 'thin' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__thin: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__thin']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "extra-light"', () => {
+    it('should generate textWeight extraLight style key', () => {
       const appearance: Appearance = { textWeight: 'extraLight' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__extraLight: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__extraLight']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "light"', () => {
+    it('should generate textWeight light style key', () => {
       const appearance: Appearance = { textWeight: 'light' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__light: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__light']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "normal"', () => {
+    it('should generate textWeight normal style key', () => {
       const appearance: Appearance = { textWeight: 'normal' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__normal: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__normal']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "medium"', () => {
+    it('should generate textWeight medium style key', () => {
       const appearance: Appearance = { textWeight: 'medium' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__medium: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__medium']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "semi-bold"', () => {
+    it('should generate textWeight semiBold style key', () => {
       const appearance: Appearance = { textWeight: 'semiBold' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__semiBold: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__semiBold']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "bold"', () => {
+    it('should generate textWeight bold style key', () => {
       const appearance: Appearance = { textWeight: 'bold' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__bold: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__bold']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "extra-bold"', () => {
+    it('should generate textWeight extraBold style key', () => {
       const appearance: Appearance = { textWeight: 'extraBold' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__extraBold: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__extraBold']
+          }
+        }
+      });
     });
 
-    it('should process textWeight property with "black"', () => {
+    it('should generate textWeight black style key', () => {
       const appearance: Appearance = { textWeight: 'black' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textWeight__black: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textWeight__black']
+          }
+        }
+      });
     });
   });
 
   describe('textDecoration', () => {
-    it('should process textDecoration property with "none"', () => {
+    it('should generate textDecoration none style key', () => {
       const appearance: Appearance = { textDecoration: 'none' };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textDecoration__none: 1 });
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textDecoration__none']
+          }
+        }
+      });
     });
 
-    it('should process textDecoration property with "underline"', () => {
+    it('should generate textDecoration underline style key', () => {
       const appearance: Appearance = { textDecoration: 'underline' };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textDecoration__underline: 1 });
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textDecoration__underline']
+          }
+        }
+      });
     });
 
-    it('should process textDecoration property with "line-through"', () => {
+    it('should generate textDecoration line-through style key', () => {
       const appearance: Appearance = { textDecoration: 'lineThrough' };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textDecoration__lineThrough: 1 });
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textDecoration__lineThrough']
+          }
+        }
+      });
     });
   });
-
-  // describe('textTransform', () => {
-  //   it('should process textTransform property with "none"', () => {
-  //     const appearance: Appearance = { textTransform: 'none' };
-  //
-  //     convertAppearanceToStyleKey(appearance);
-  //
-  //     expect(styleUsageMapMock).toEqual({ textTransform__none: 1 });
-  //   });
-  //
-  //   it('should process textTransform property with "uppercase"', () => {
-  //     const appearance: Appearance = { textTransform: 'uppercase' };
-  //
-  //     convertAppearanceToStyleKey(appearance);
-  //
-  //     expect(styleUsageMapMock).toEqual({ textTransform__uppercase: 1 });
-  //   });
-  //
-  //   it('should process textTransform property with "lowercase"', () => {
-  //     const appearance: Appearance = { textTransform: 'lowercase' };
-  //
-  //     convertAppearanceToStyleKey(appearance);
-  //
-  //     expect(styleUsageMapMock).toEqual({ textTransform__lowercase: 1 });
-  //   });
-  //
-  //   it('should process textTransform property with "capitalize"', () => {
-  //     const appearance: Appearance = { textTransform: 'capitalize' };
-  //
-  //     convertAppearanceToStyleKey(appearance);
-  //
-  //     expect(styleUsageMapMock).toEqual({ textTransform__capitalize: 1 });
-  //   });
-  // });
 
   describe('textAlign', () => {
-    it('should process textAlign property with "left"', () => {
+    it('should generate textAlign left style key', () => {
       const appearance: Appearance = { textAlign: 'left' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textAlign__left: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textAlign__left']
+          }
+        }
+      });
     });
 
-    it('should process textAlign property with "center"', () => {
+    it('should generate textAlign center style key', () => {
       const appearance: Appearance = { textAlign: 'center' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textAlign__center: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textAlign__center']
+          }
+        }
+      });
     });
 
-    it('should process textAlign property with "right"', () => {
+    it('should generate textAlign right style key', () => {
       const appearance: Appearance = { textAlign: 'right' };
-
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      expect(styleUsageMapMock).toEqual({ textAlign__right: 1 });
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['textAlign__right']
+          }
+        }
+      });
     });
   });
 
-  // describe('cursor', () => {
-  //   const cursors: Cursor[] = [
-  //     'auto',
-  //     'default',
-  //     'none',
-  //     'context-menu',
-  //     'help',
-  //     'pointer',
-  //     'progress',
-  //     'wait',
-  //     'cell',
-  //     'crosshair',
-  //     'text',
-  //     'vertical-text',
-  //     'alias',
-  //     'copy',
-  //     'move',
-  //     'no-drop',
-  //     'not-allowed',
-  //     'grab',
-  //     'grabbing',
-  //     'all-scroll',
-  //     'col-resize',
-  //     'row-resize',
-  //     'n-resize',
-  //     'e-resize',
-  //     's-resize',
-  //     'w-resize',
-  //     'ne-resize',
-  //     'nw-resize',
-  //     'se-resize',
-  //     'sw-resize',
-  //     'ew-resize',
-  //     'ns-resize',
-  //     'nesw-resize',
-  //     'nwse-resize',
-  //     'zoom-in',
-  //     'zoom-out'
-  //   ];
-  //
-  //   for (const cursor of cursors) {
-  //     it(`should process cursor property with "${cursor}"`, () => {
-  //       const appearance: Appearance = { cursor: cursor };
-  //
-  //       convertAppearanceToStyleKey(appearance);
-  //
-  //       expect(styleUsageMapMock).toEqual({ [`cursor__${cursor}`]: 1 });
-  //     });
-  //   }
-  // });
-
-  describe('shadow properties', () => {
-    it('should inherit missing shadow properties from the rest state', () => {
+  describe('shadow', () => {
+    it('should generate shadow style keys inheriting missing properties for rest and hover', () => {
       // "rest" defines all shadow properties.
       // "hover" only defines shadowX.
       // Expected: For hover, the missing properties should come from "rest"
@@ -257,34 +234,38 @@ describe('convertElementAppearanceToStyleKey', () => {
         shadowBlur: { rest: 5 },
         shadowColor: { rest: [0, 0, 0, 0.5] }
       };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      const restKey = 'shadow__[10,15,5,[0,0,0,0.5]]';
-      const hoverKey = 'shadow--hover__[20,15,5,[0,0,0,0.5]]';
-
-      expect(styleUsageMapMock[restKey]).toBe(1);
-      expect(styleUsageMapMock[hoverKey]).toBe(1);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['shadow__[10,15,5,[0,0,0,0.5]]'],
+            hover: ['shadow--hover__[20,15,5,[0,0,0,0.5]]']
+          }
+        }
+      });
     });
 
-    it('should use default values when missing in both specific state and rest', () => {
+    it('should generate style key with shadow default values for rest and hover states', () => {
       // Only shadowX is set for "hover".
       // Expected: For "hover" state, shadowY and shadowBlur default to 0, and shadowColor defaults to [0,0,0,1].
       // Also, the "rest" state is processed with default values.
       const appearance: Appearance = {
         shadowX: { hover: 25 }
       };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      const hoverKey = 'shadow--hover__[25,0,0,[0,0,0,1]]';
-      const restKey = 'shadow__[0,0,0,[0,0,0,1]]';
-
-      expect(styleUsageMapMock[hoverKey]).toBe(1);
-      expect(styleUsageMapMock[restKey]).toBe(1);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['shadow__[0,0,0,[0,0,0,1]]'],
+            hover: ['shadow--hover__[25,0,0,[0,0,0,1]]']
+          }
+        }
+      });
     });
 
-    it('should process multiple interaction states with proper inheritance', () => {
+    it('should generate shadow style key with multiple interaction states and proper inheritance', () => {
       // "rest" defines complete shadow values.
       // "focus" defines its own shadowX and shadowY.
       // "hover" defines shadowY and shadowColor.
@@ -295,16 +276,17 @@ describe('convertElementAppearanceToStyleKey', () => {
         shadowBlur: { rest: 3 },
         shadowColor: { rest: [10, 20, 30, 0.8], hover: [50, 60, 70, 0.9] }
       };
+      const result = convertElementAppearanceToStyleKey(component, element, appearance);
 
-      convertElementAppearanceToStyleKey('button', 'e1', appearance);
-
-      const restKey = 'shadow__[5,8,3,[10,20,30,0.8]]';
-      const focusKey = 'shadow--focus__[12,16,3,[10,20,30,0.8]]';
-      const hoverKey = 'shadow--hover__[5,10,3,[50,60,70,0.9]]';
-
-      expect(styleUsageMapMock[restKey]).toBe(1);
-      expect(styleUsageMapMock[focusKey]).toBe(1);
-      expect(styleUsageMapMock[hoverKey]).toBe(1);
+      expect(result).toEqual({
+        [component]: {
+          [element]: {
+            rest: ['shadow__[5,8,3,[10,20,30,0.8]]'],
+            focus: ['shadow--focus__[12,16,3,[10,20,30,0.8]]'],
+            hover: ['shadow--hover__[5,10,3,[50,60,70,0.9]]']
+          }
+        }
+      });
     });
   });
 });

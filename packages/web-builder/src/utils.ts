@@ -1,4 +1,7 @@
 import type { ClassNameMap } from '@kiskadee/schema';
 
-export const styleKeyUsageMap: Record<string, number> = {};
-export const elementClassNameMap: ClassNameMap = {};
+export type StyleKeyUsageMap = Record<string, number>;
+
+export const styleKeyUsageMap: StyleKeyUsageMap = {};
+export const classNameMap: ClassNameMap = {};
+export const elementStyleKeyMap: ClassNameMap = {};

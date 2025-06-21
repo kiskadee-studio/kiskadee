@@ -1,6 +1,4 @@
 import type { Appearance, ClassNameMap, InteractionState, SingleColor } from '@kiskadee/schema';
-import { elementClassNameMap, styleKeyUsageMap } from '../../utils';
-import { generateCssRuleFromStyleKey } from '../../phrase-2-convert-style-key-to-css/generateCss';
 
 function getShadowValue<T>(
   property: Partial<Record<InteractionState, T>>,
@@ -12,6 +10,30 @@ function getShadowValue<T>(
     : property.rest !== undefined
       ? property.rest
       : defaultValue;
+}
+
+function updateElementStyleKeyMap(
+  elementStyleKeyMap: ClassNameMap,
+  componentName: string,
+  elementName: string,
+  state: InteractionState,
+  styleKey: string
+): ClassNameMap {
+  const componentMap = elementStyleKeyMap[componentName] ?? {};
+  const elementMap = componentMap[elementName] ?? {};
+  const currentStyleKeys = elementMap[state] ?? [];
+
+  Object.assign(elementStyleKeyMap, {
+    [componentName]: {
+      ...componentMap,
+      [elementName]: {
+        ...elementMap,
+        [state]: [...currentStyleKeys, styleKey]
+      }
+    }
+  });
+
+  return elementStyleKeyMap;
 }
 
 /**
@@ -29,53 +51,40 @@ function getShadowValue<T>(
  * The numbers x, y, blur are included directly (without units) and the color,
  * which is of type SingleColor, is represented as a literal array.
  *
- * Note: Appearance never contains a "ref" key so that part is omitted.
+ * Note: Appearance never contains a "ref" key, so that part is omitted.
  */
 export function convertElementAppearanceToStyleKey(
   componentName: string,
   elementName: string,
   appearance: Appearance
-) {
-  let classNameMap = elementClassNameMap;
+): ClassNameMap {
+  let elementStyleKeyMap: ClassNameMap = {};
 
-  // Process non-shadow properties
-  for (const [key, value] of Object.entries(appearance)) {
-    if (key.startsWith('shadow') === false) {
+  for (const [property, value] of Object.entries(appearance)) {
+    if (property.startsWith('shadow') === false) {
       if (
         typeof value === 'boolean' ||
         typeof value === 'string' ||
         typeof value === 'number' ||
         Array.isArray(value)
       ) {
-        // Generate style key
         const formattedValue = Array.isArray(value) ? JSON.stringify(value) : value;
-        const styleKey = `${key}__${formattedValue}`;
-        styleKeyUsageMap[styleKey] = (styleKeyUsageMap[styleKey] || 0) + 1;
-
-        // Map class name
-        const { className } = generateCssRuleFromStyleKey(styleKey);
-        const componentMap = classNameMap[componentName] ?? {};
-        const elementMap = componentMap[elementName] ?? { rest: [] };
-        elementMap?.rest?.push(className);
-        const rest = elementMap.rest;
-
-        classNameMap = {
-          ...classNameMap,
-          [componentName]: {
-            ...componentMap,
-            [elementName]: {
-              ...elementMap,
-              rest
-            }
-          }
-        };
+        const styleKey = `${property}__${formattedValue}`;
+        elementStyleKeyMap = updateElementStyleKeyMap(
+          elementStyleKeyMap,
+          componentName,
+          elementName,
+          'rest',
+          styleKey
+        );
       }
     }
   }
 
-  console.log({ nextState: JSON.stringify(classNameMap) });
+  // Shadows are treated differently from other properties because in CSS, even though shadows
+  // have different attributes like x, y, blur and color, they are treated as a single
+  // property, requiring value unification.
 
-  // Process shadow properties, if any exist.
   const hasShadowProperty =
     'shadowColor' in appearance ||
     'shadowX' in appearance ||
@@ -100,31 +109,20 @@ export function convertElementAppearanceToStyleKey(
       // Keep the color as a simple array (SingleColor)
       const color: SingleColor = getShadowValue(shadowColor, state, [0, 0, 0, 1]);
       // Create the key as a literal array string.
-      const shadowKey =
+      const styleKey =
         state === 'rest'
           ? `shadow__[${x},${y},${blur},${JSON.stringify(color)}]`
           : `shadow--${state}__[${x},${y},${blur},${JSON.stringify(color)}]`;
-      styleKeyUsageMap[shadowKey] = (styleKeyUsageMap[shadowKey] || 0) + 1;
 
-      // Map class name
-      const { className } = generateCssRuleFromStyleKey(shadowKey);
-      const componentMap = classNameMap[componentName] ?? {};
-      const elementMap = componentMap[elementName] ?? {};
-      const current = elementMap[state] ?? [];
-      const nextElementMap = {
-        ...elementMap,
-        [state]: [...current, className]
-      };
-
-      classNameMap = {
-        ...classNameMap,
-        [componentName]: {
-          ...componentMap,
-          [elementName]: nextElementMap
-        }
-      };
-
-      console.log({ nextState: JSON.stringify(classNameMap) });
+      elementStyleKeyMap = updateElementStyleKeyMap(
+        elementStyleKeyMap,
+        componentName,
+        elementName,
+        state,
+        styleKey
+      );
     }
   }
+
+  return elementStyleKeyMap;
 }

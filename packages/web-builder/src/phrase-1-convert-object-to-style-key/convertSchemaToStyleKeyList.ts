@@ -24,7 +24,12 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
       // Process appearance if defined.
       if (element.appearance) {
         console.log({ appearance: element.appearance });
-        convertElementAppearanceToStyleKey(componentName, elementName, element.appearance);
+        const appearanceClassNameMap = convertElementAppearanceToStyleKey(
+          componentName,
+          elementName,
+          element.appearance
+        );
+        console.log({ appearanceClassNameMap: JSON.stringify(appearanceClassNameMap) });
       }
 
       // Process dimensions if defined.
