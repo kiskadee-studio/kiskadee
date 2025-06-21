@@ -10,7 +10,6 @@ describe('convertElementAppearanceToStyleKey', () => {
     it('should generate textItalic true style key', () => {
       const appearance: Appearance = { textItalic: true };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
-
       expect(result).toEqual({
         button: {
           e1: {
@@ -23,7 +22,6 @@ describe('convertElementAppearanceToStyleKey', () => {
     it('should generate textItalic false style key', () => {
       const appearance: Appearance = { textItalic: false };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
-
       expect(result).toEqual({
         button: {
           e1: {
@@ -148,7 +146,6 @@ describe('convertElementAppearanceToStyleKey', () => {
     it('should generate textDecoration none style key', () => {
       const appearance: Appearance = { textDecoration: 'none' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
-
       expect(result).toEqual({
         [component]: {
           [element]: {
@@ -161,7 +158,6 @@ describe('convertElementAppearanceToStyleKey', () => {
     it('should generate textDecoration underline style key', () => {
       const appearance: Appearance = { textDecoration: 'underline' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
-
       expect(result).toEqual({
         [component]: {
           [element]: {
@@ -174,7 +170,6 @@ describe('convertElementAppearanceToStyleKey', () => {
     it('should generate textDecoration line-through style key', () => {
       const appearance: Appearance = { textDecoration: 'lineThrough' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
-
       expect(result).toEqual({
         [component]: {
           [element]: {

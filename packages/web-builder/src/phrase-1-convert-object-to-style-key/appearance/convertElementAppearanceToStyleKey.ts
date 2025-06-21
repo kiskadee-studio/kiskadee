@@ -1,5 +1,9 @@
 import type { Appearance, ClassNameMap, InteractionState, SingleColor } from '@kiskadee/schema';
 
+/**
+ * Gets a shadow property value for the given interaction state, falling back to 'rest' then to a
+ * default.
+ */
 function getShadowValue<T>(
   property: Partial<Record<InteractionState, T>>,
   state: InteractionState,
@@ -12,6 +16,10 @@ function getShadowValue<T>(
       : defaultValue;
 }
 
+/**
+ * Adds a style key to the specified component and element state in the ClassNameMap, preserving
+ * existing keys.
+ */
 function updateElementStyleKeyMap(
   elementStyleKeyMap: ClassNameMap,
   componentName: string,
@@ -37,21 +45,19 @@ function updateElementStyleKeyMap(
 }
 
 /**
- * Processes the given "appearance" object by extracting style-related properties
- * and generating keys for the `styleUsageMap`.
+ * Converts an element's appearance settings into a map of style keys for each interaction state.
  *
- * Non-shadow properties are processed using the pattern:
+ * Non-shadow properties (boolean, string, number, or array) generate a 'rest' state key:
  *   {property}__{value}
- * where if the value is an array, JSON.stringify is used.
+ * (arrays are JSON-stringified).
  *
- * Shadow properties are processed as follows:
- *   - For the default state (rest): shadow__[x,y,blur,[color]]
- *   - For other states:             shadow--{state}__[x,y,blur,[color]]
- *
- * The numbers x, y, blur are included directly (without units) and the color,
- * which is of type SingleColor, is represented as a literal array.
- *
- * Note: Appearance never contains a "ref" key, so that part is omitted.
+ * Shadow properties (shadowX, shadowY, shadowBlur, shadowColor) are unified:
+ *   - Determines all states present on any shadow property, plus 'rest'.
+ *   - For each state, missing values fall back to 'rest', then to defaults
+ *     (0 for offsets/blur, [0,0,0,1] for color).
+ *   - Generates keys:
+ *       rest:     shadow__[x,y,blur,[r,g,b,a]]
+ *       non-rest: shadow--{state}__[x,y,blur,[r,g,b,a]]
  */
 export function convertElementAppearanceToStyleKey(
   componentName: string,
@@ -81,9 +87,8 @@ export function convertElementAppearanceToStyleKey(
     }
   }
 
-  // Shadows are treated differently from other properties because in CSS, even though shadows
-  // have different attributes like x, y, blur and color, they are treated as a single
-  // property, requiring value unification.
+  // CSS handles shadows as a single property despite having multiple attributes (x, y, blur, color).
+  // So we need to combine all shadow properties into a unified value for each state.
 
   const hasShadowProperty =
     'shadowColor' in appearance ||
@@ -102,13 +107,10 @@ export function convertElementAppearanceToStyleKey(
     allStates.add('rest');
 
     for (const state of allStates) {
-      // Generate style key
       const x = getShadowValue(shadowX, state, 0);
       const y = getShadowValue(shadowY, state, 0);
       const blur = getShadowValue(shadowBlur, state, 0);
-      // Keep the color as a simple array (SingleColor)
       const color: SingleColor = getShadowValue(shadowColor, state, [0, 0, 0, 1]);
-      // Create the key as a literal array string.
       const styleKey =
         state === 'rest'
           ? `shadow__[${x},${y},${blur},${JSON.stringify(color)}]`
