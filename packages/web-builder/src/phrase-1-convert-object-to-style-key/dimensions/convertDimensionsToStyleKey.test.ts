@@ -1,68 +1,62 @@
 import type { Dimensions } from '@kiskadee/schema';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { convertDimensionsToStyleKey } from './convertDimensionsToStyleKey';
-import { styleKeyUsageMap } from '../../utils';
 
 describe('convertDimensionsToStyleKey', () => {
-  beforeEach(() => {
-    // Clear the styleUsageMap before each test
-    for (const key in styleKeyUsageMap) {
-      delete styleKeyUsageMap[key];
-    }
-  });
+  const component = 'button';
+  const element = 'e1';
 
-  it('correctly converts a direct numeric dimension property', () => {
-    const dimensions: Dimensions = {
-      paddingTop: 10
-    };
-
-    convertDimensionsToStyleKey(dimensions);
-
-    expect(styleKeyUsageMap).toEqual({
-      paddingTop__10: 1
+  it('should generate paddingTop 10 style key for numeric value', () => {
+    const dimensions: Dimensions = { paddingTop: 10 };
+    const result = convertDimensionsToStyleKey(component, element, dimensions);
+    expect(result).toEqual({
+      button: {
+        e1: {
+          rest: ['paddingTop__10']
+        }
+      }
     });
   });
 
-  it('correctly converts a dimension property provided as a direct number (no object)', () => {
-    const dimensions: Dimensions = {
-      textSize: 16
-    };
-
-    convertDimensionsToStyleKey(dimensions);
-
-    expect(styleKeyUsageMap).toEqual({
-      textSize__16: 1
+  it('should generate textSize 16 style key when provided as a direct number', () => {
+    const dimensions: Dimensions = { textSize: 16 };
+    const result = convertDimensionsToStyleKey(component, element, dimensions);
+    expect(result).toEqual({
+      button: {
+        e1: {
+          rest: ['textSize__16']
+        }
+      }
     });
   });
 
-  it('correctly converts a dimension property without responsive breakpoints (ignoring size tokens)', () => {
-    const dimensions: Dimensions = {
-      textSize: { 's:md:1': 14 }
-    };
-
-    convertDimensionsToStyleKey(dimensions);
-
-    expect(styleKeyUsageMap).toEqual({
-      textSize__14: 1
+  it('should generate textSize__14 style key when given as a size token without breakpoints', () => {
+    const dimensions: Dimensions = { textSize: { 's:md:1': 14 } };
+    const result = convertDimensionsToStyleKey(component, element, dimensions);
+    expect(result).toEqual({
+      button: {
+        e1: {
+          rest: ['textSize__14']
+        }
+      }
     });
   });
 
-  it('correctly converts a dimension property with nested responsive breakpoint overrides, treating "s:md:1" with "bp:all" as default', () => {
+  it('should generate default and breakpoint style keys for nested responsive overrides', () => {
     const dimensions: Dimensions = {
       textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } }
     };
-
-    convertDimensionsToStyleKey(dimensions);
-
-    expect(styleKeyUsageMap).toEqual({
-      // For 'bp:all' with "s:md:1", the size token is removed.
-      textSize__16: 1,
-      // For other breakpoints, include the size token.
-      'textSize--s:md:1::bp:lg:2__10': 1
+    const result = convertDimensionsToStyleKey(component, element, dimensions);
+    expect(result).toEqual({
+      button: {
+        e1: {
+          rest: ['textSize__16', 'textSize--s:md:1::bp:lg:2__10']
+        }
+      }
     });
   });
 
-  it('correctly converts multiple dimension properties together', () => {
+  it('should generate style keys for textSize, paddingBottom and marginTop together', () => {
     const dimensions: Dimensions = {
       textSize: {
         's:sm:1': { 'bp:all': 14, 'bp:lg:1': 12 },
@@ -71,17 +65,21 @@ describe('convertDimensionsToStyleKey', () => {
       paddingBottom: { 's:md:1': { 'bp:sm:1': 10, 'bp:lg:2': 8 } },
       marginTop: 20
     };
-
-    convertDimensionsToStyleKey(dimensions);
-
-    expect(styleKeyUsageMap).toEqual({
-      marginTop__20: 1,
-      'paddingBottom--s:md:1::bp:lg:2__8': 1,
-      'paddingBottom--s:md:1::bp:sm:1__10': 1,
-      'textSize--s:md:1::bp:lg:1__14': 1,
-      'textSize--s:sm:1::bp:lg:1__12': 1,
-      textSize__14: 1,
-      textSize__16: 1
+    const result = convertDimensionsToStyleKey(component, element, dimensions);
+    expect(result).toEqual({
+      button: {
+        e1: {
+          rest: [
+            'textSize__14',
+            'textSize--s:sm:1::bp:lg:1__12',
+            'textSize__16',
+            'textSize--s:md:1::bp:lg:1__14',
+            'paddingBottom--s:md:1::bp:sm:1__10',
+            'paddingBottom--s:md:1::bp:lg:2__8',
+            'marginTop__20'
+          ]
+        }
+      }
     });
   });
 });

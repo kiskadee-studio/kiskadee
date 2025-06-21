@@ -21,7 +21,6 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
     for (const elementName in component.elements) {
       const element = component.elements[elementName];
 
-      // Process appearance if defined.
       if (element.appearance) {
         console.log({ appearance: element.appearance });
         const appearanceClassNameMap = convertElementAppearanceToStyleKey(
@@ -32,14 +31,16 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
         console.log({ appearanceClassNameMap: JSON.stringify(appearanceClassNameMap) });
       }
 
-      // Process dimensions if defined.
       if (element.dimensions) {
-        convertDimensionsToStyleKey(element.dimensions);
+        const dimensionsClassNameMap = convertDimensionsToStyleKey(
+          componentName,
+          elementName,
+          element.dimensions
+        );
+        console.log({ dimensionsClassNameMap: JSON.stringify(dimensionsClassNameMap) });
       }
 
-      // Process palettes if defined.
       if (element.palettes) {
-        // The palette property is a record of Palettes.
         for (const palette of Object.values(element.palettes)) {
           convertPalettesToStyleKey(palette);
         }
