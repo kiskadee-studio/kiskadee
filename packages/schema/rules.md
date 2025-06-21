@@ -45,6 +45,11 @@
   until then this remains as a rule.
 - Shadow was already part of appearance, but it became clearer that shadow is an effect, just like
   a blurred background or glass effect.
+- Although it is possible to manage text transformation (uppercase, lowercase, capitalized), it was
+  decided that components should only reflect the values inserted into them. This means if a button
+  needs uppercase letters, it should be written explicitly that way. If in the future we notice that
+  there are design systems that frequently use entirely uppercase or lowercase letters as a
+  mandatory design rule, we can revisit this decision.
 
 
 
