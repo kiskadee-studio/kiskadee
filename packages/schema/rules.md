@@ -1,6 +1,11 @@
 - Kiskadee does not work with design systems with light or dark mode, but rather a single theme with
   support for different color palettes, which can be used to handle variations of a white label
   product or variations of light or dark mode, or both.
+- Component variants employ color variations within a unified palette to convey distinct meanings.
+  Consider a button that maintains its core structure - dimensions and visual style - but adapts its
+  color to communicate purpose: red for dangerous actions requiring caution, green for confirmatory
+  actions. These color variations create component variants without constituting a separate theme or
+  design system.
 - The web platform is the most fragile of all, as it relies on downloading the source code at
   runtime. Therefore, the web platform is the reference platform for Kiskadee, due to the necessary
   optimizations to ensure maximum performance.
