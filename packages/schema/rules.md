@@ -11,6 +11,15 @@
   makes sense in the context of that design system, as the "red" color is only used in error
   messages and error inputs. However, the "danger" color variant can be used in buttons and other
   elements, and that is why it is called "danger" in the Kiskadee design system.
+- For optimization purposes, a visual identity's colors are exported to a separate file, aligning
+  with Kiskadee's emphasis on maximum web performance. When generating the style schema, colors must
+  be imported from the desired palette or theme variant. For instance, consider a white-label
+  e-commerce platform where one brand uses blue and another uses red, while sharing the same visual
+  identity structure. With Kiskadee, you only need one visual identity with two defined palettes -
+  one for each store. The colors from each palette are extracted separately for optimal performance.
+  Since users of one store are typically unaware of the shared codebase with another store, it would
+  be inefficient for users of the red-themed store to download blue-themed store colors they'll
+  never use.
 
 ## 2. Interaction States
 - The interaction state of an element (hover, focus, active, etc.) does not change its size, only
