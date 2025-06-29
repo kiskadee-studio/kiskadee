@@ -1,6 +1,6 @@
 import type { Appearance } from './types/appearance/appearance.types';
 import type { Dimensions } from './types/dimensions/dimensions.types';
-import type { InteractionState, Palettes } from './types/palettes/palettes.types';
+import type { InteractionState, Palettes, IntentColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints } from './breakpoints';
 
 export type ComponentKeys = 'button';
@@ -16,22 +16,53 @@ type Style = Partial<{
 type Elements = Record<string, Style>;
 
 // -------------------------------------------------------------------------------------------------
+type StyleKey = string;
+type ComponentName = string;
+type ElementName = string;
+type PaletteName = string;
 
+// Mapping of style keys by interaction state per element
+type InteractionStateStyleKeyMap = Record<InteractionState, StyleKey[]>;
+
+export interface ElementStyleKeyMap {
+  appearance: InteractionStateStyleKeyMap;
+  dimensions: InteractionStateStyleKeyMap;
+  palettes: Record<
+    PaletteName,
+    {
+      [K in IntentColor]?: InteractionStateStyleKeyMap;
+    }
+  >;
+}
+
+export interface ComponentStyleKeyMap {
+  [componenteName: ComponentName]: {
+    [elementName: ElementName]: ElementStyleKeyMap;
+  };
+}
+
+// Legacy, delete it
 export interface ClassNameMap {
   [componenteName: string]: {
     [elementName: string]: Partial<Record<InteractionState, string[]>>;
   };
 }
 
-// Input
-const classNameMap: ClassNameMap = {
-  button: {
-    e1: {
-      rest: ['bg-primary-500', 'text-white'],
-      hover: ['bg-primary-600']
-    }
-  }
-};
+// export interface ClassNameMap {
+//   [componenteName: string]: {
+//     [elementName: string]: Partial<Record<InteractionState, string[]>>;
+//   };
+// }
+//
+// // Input
+// const classNameMap: ClassNameMap = {
+//   button: {
+//     e1: {
+//       rest: ['bg-primary-500', 'text-white'],
+//       hover: ['bg-primary-600']
+//     }
+//   }
+// };
 
 // -------------------------------------------------------------------------------------------------
 

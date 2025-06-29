@@ -31,12 +31,9 @@ type Gradient = [Degree, [...SingleColor, Position][]];
 /** Represents a color, which can either be a single color or a gradient. */
 export type Color = SingleColor | Gradient;
 
-/**
- * Defines a state color that can be directly a Color
- * or an object with a "ref" property that holds a Color.
- * (Note: The "rest" interaction state is handled separately.)
- */
-export type StateColor = Color | { ref: Omit<Color, 'rest'> };
+type ParentColor = { ref: Omit<Color, 'rest'> };
+
+export type ColorOrRef = Color | ParentColor;
 
 /**
  * Interaction states.
@@ -74,18 +71,13 @@ export const InteractionStateCssMapping: Record<InteractionState, string> = {
   readOnly: ':read-only'
 };
 
-/**
- * A FullColor defines the set of colors for different interaction states.
- * The "rest" state is required and must be defined directly as a Color (not as an object with "ref").
- * The remaining interaction states are optional and can be defined as a StateColor.
- */
-export type FullColor = {
+export type InteractionStateColorMap = {
   rest: Color;
-} & Partial<Record<Exclude<InteractionState, 'rest'>, StateColor>>;
+} & Partial<Record<Exclude<InteractionState, 'rest'>, ColorOrRef>>;
 
 /**
- * Color variant properties.
- * These keys describe the different visual usages for colors within the design system.
+ * Color intent tokens.
+ * These semantic names are widely adopted in UI design systems to convey the purpose of each color:
  *
  *  - "primary" represents the main color used for prominent elements.
  *  - "secondary" serves as a supporting color that complements the primary.
@@ -93,10 +85,11 @@ export type FullColor = {
  *  - "danger" indicates error states or destructive actions.
  *  - "warning" highlights cautionary statuses or alerts.
  *  - "success" conveys positive actions or states.
- *  - "info" is employed to give feedback or highlight neutral actions, often using lighter tones.
- *  - "neutral" is intended for elements with less emphasis, such as less prominent text, borders, dividers, or backgrounds.
+ *  - "info" is used to give feedback or highlight neutral actions, often using lighter tones.
+ *  - "neutral" is intended for elements with less emphasis, such as less prominent text, borders,
+ *    dividers, or backgrounds.
  */
-export type VariantKeys =
+export type IntentColor =
   | 'primary'
   | 'secondary'
   | 'tertiary'
@@ -106,11 +99,8 @@ export type VariantKeys =
   | 'info'
   | 'neutral';
 
-/**
- * Each variant is defined as a FullColor (an object with at least the "rest" interaction state).
- */
-export type Variants = {
-  [K in VariantKeys]?: FullColor;
+export type IntentColorMap = {
+  [K in IntentColor]?: InteractionStateColorMap;
 };
 
 /**
@@ -126,7 +116,7 @@ export enum CssColorProperty {
   borderColor = 'border-color'
 }
 
-// export const colorKeys: ColorKeys[] = ['textColor', 'bgColor', 'borderColor'];
+type InteractionStateOrIntentColorMap = InteractionStateColorMap | IntentColorMap;
 
-export type Palettes = Partial<Record<ColorProperty, FullColor | Variants>>;
-export type PaletteKeys = keyof Palettes;
+export type Palettes = Partial<Record<ColorProperty, InteractionStateOrIntentColorMap>>;
+export type PaletteKey = keyof Palettes;

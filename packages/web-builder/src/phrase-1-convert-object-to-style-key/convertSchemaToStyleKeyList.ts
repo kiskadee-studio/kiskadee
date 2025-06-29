@@ -42,7 +42,8 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
 
       if (element.palettes) {
         for (const palette of Object.values(element.palettes)) {
-          convertPalettesToStyleKey(palette);
+          const colorClassNameMap = convertPalettesToStyleKey(componentName, elementName, palette);
+          console.log({ colorClassNameMap: JSON.stringify(colorClassNameMap) });
         }
       }
     }

@@ -1,59 +1,76 @@
-import type { InteractionState, PaletteKeys, Palettes, VariantKeys } from '@kiskadee/schema';
-import { styleKeyUsageMap } from '../../utils';
+import type {
+  ClassNameMap,
+  IntentColor,
+  InteractionState,
+  PaletteKey,
+  Palettes
+} from '@kiskadee/schema';
+import { updateElementStyleKeyMap } from '../../utils';
 
 /**
- * Processes a Palettes object and records the usage of each style property
- * in the styleUsageMap.
+ * Generates a ClassNameMap of style keys from a Palettes object for each interaction state.
  *
- * For each palette property (e.g., bgColor, borderColor, textColor), if the value is defined
- * as FullColor (has the "rest" key), the keys are generated as follows:
- *   {property}__{value} (when the state is "rest")
- * or
- *   {property}--{state}::{ref (if present)}__{value} (for other states)
+ * Supports both:
+ *  - Direct interaction-state maps (InteractionStateColorMap): if the value has a 'rest' key,
+ *    it's treated as single intent under a default 'primary'.
+ *  - Intent-based maps (IntentColorMap): iterate each intent (primary, secondary, danger, etc.).
  *
- * If the palette property is defined as Variants (e.g., with keys like primary, secondary, etc.),
- * each variant's FullColor is processed, but the variant key is omitted in the final key.
+ * Style-key format:
+ *  - Rest state:
+ *      {property}__[ref::]{JSON-stringified color}
+ *  - Other states:
+ *      {property}--{state}__[JSON-stringified color][::ref]
  *
- * Additionally, if the value is wrapped in an object with a "ref" property, the "ref"
- * indicator is included in the key pattern.
+ * Presence of a reference (`{ ref: Color }`) is encoded as:
+ *  - 'ref::' prefix on rest keys
+ *  - '::ref' suffix on non-rest keys
  *
- * @param palettes Object containing the palette definitions
+ * @param componentName     Name of the component used to namespace style keys.
+ * @param elementName       Name of the element within the component.
+ * @param colorPropertyMap  Palettes object defining colors per property, intent, and state.
+ * @returns A ClassNameMap mapping component → element → interaction state → array of style keys.
  */
-export function convertPalettesToStyleKey(palettes: Palettes) {
-  // Iterate over each palette property (e.g., bgColor, borderColor, textColor)
-  for (const paletteProp in palettes) {
-    const paletteValue = palettes[paletteProp as PaletteKeys];
-    if (!paletteValue) continue;
 
-    // Check if the entry is FullColor (has the "rest" key) or Variants.
-    const isFullColor = 'rest' in paletteValue;
+export function convertPalettesToStyleKey(
+  componentName: string,
+  elementName: string,
+  colorPropertyMap: Palettes
+): ClassNameMap {
+  let elementStyleKeyMap: ClassNameMap = {};
 
-    // If the entry is FullColor, wrap it in a pseudo-group for unified processing.
-    const variants = isFullColor ? { primary: paletteValue } : paletteValue;
+  for (const p in colorPropertyMap) {
+    const propertyName = p as PaletteKey;
+    const interactionStateOrIntentColor = colorPropertyMap[propertyName];
+    if (interactionStateOrIntentColor === undefined) continue;
 
-    // Process each group (for variants, the group key is omitted in the final key)
-    for (const variant in variants) {
-      const states = variants[variant as VariantKeys];
+    const isInteractionState = 'rest' in interactionStateOrIntentColor;
+    const intentColorMap = isInteractionState
+      ? { primary: interactionStateOrIntentColor }
+      : interactionStateOrIntentColor;
 
-      // Iterate over each state (e.g., rest, hover, etc.)
-      for (const _state in states) {
-        const state = _state as InteractionState;
+    for (const intentColor in intentColorMap) {
+      const interactionStateMap = intentColorMap[intentColor as IntentColor];
+      for (const i in interactionStateMap) {
+        const interactionState = i as InteractionState;
+        const colorOrRef = interactionStateMap[interactionState];
+        const hasRef = typeof colorOrRef === 'object' && 'ref' in colorOrRef;
+        const color = JSON.stringify(hasRef ? colorOrRef?.ref : colorOrRef);
 
-        const rawValue = states[state];
-        const hasRef = rawValue !== null && typeof rawValue === 'object' && 'ref' in rawValue;
+        const styleKey =
+          interactionState === 'rest'
+            ? `${propertyName}__${hasRef ? 'ref::' : ''}${color}`
+            : `${propertyName}--${interactionState}${hasRef ? '::ref' : ''}__${color}`;
 
-        // If there is a "ref", extract the actual value
-        const actualValue = hasRef ? rawValue?.ref : rawValue;
-        const jsonValue = JSON.stringify(actualValue);
-
-        let styleKey: string;
-        if (state === 'rest') {
-          styleKey = `${paletteProp}__${hasRef ? 'ref::' : ''}${jsonValue}`;
-        } else {
-          styleKey = `${paletteProp}--${state}${hasRef ? '::ref' : ''}__${jsonValue}`;
-        }
-        styleKeyUsageMap[styleKey] = (styleKeyUsageMap[styleKey] || 0) + 1;
+        elementStyleKeyMap = updateElementStyleKeyMap(
+          elementStyleKeyMap,
+          componentName,
+          elementName,
+          interactionState,
+          styleKey
+        );
       }
     }
   }
+
+  return elementStyleKeyMap;
 }
