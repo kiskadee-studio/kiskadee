@@ -79,3 +79,12 @@
 - The web platform is the most fragile of all, as it relies on downloading the source code at
   runtime. Therefore, the web platform is the reference platform for Kiskadee, due to the necessary
   optimizations to ensure maximum performance.
+
+## 9. Naming Conventions
+- All style properties must begin with the name of the object they modify. For example, 
+  `borderColor` refers to the color of the border. However, not all properties typically include the 
+  object in their name, such as `height`, `width`, or even `background`. To standardize these names,
+  we use the concept of the "box." Standalone properties thus become `boxHeight`, `boxWidth`, and
+  `boxColor` (`background-color`). Terms related to text and fonts are standardized as well: instead
+  of `fontName` or simply `Color`, we prefix them with `text`, resulting in `textFont`, 
+  `textDecoration`, and `textColor`.
