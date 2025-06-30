@@ -1,6 +1,6 @@
-import type { Palettes } from './palettes.types';
+import type { ColorSchema } from './palettes.types';
 
-const palettes: Palettes = {
+const palettes: ColorSchema = {
   bgColor: {
     primary: {
       rest: [

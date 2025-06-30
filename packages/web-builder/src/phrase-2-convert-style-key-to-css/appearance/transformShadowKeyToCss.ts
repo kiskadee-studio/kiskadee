@@ -4,7 +4,7 @@ import {
   UNSUPPORTED_INTERACTION_STATE,
   INVALID_SHADOW_COLOR_VALUE
 } from '../errorMessages';
-import { type HLSA, InteractionStateCssMapping, type InteractionState } from '@kiskadee/schema';
+import { type HLSA, InteractionStateCssMap, type InteractionState } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 import type { GeneratedCss } from '../phrase2.types';
 
@@ -45,12 +45,12 @@ export function transformShadowKeyToCss(styleKey: string): GeneratedCss {
 
   // Determine interaction state or default to "rest"
   const interactionState = (match[1] ?? 'rest') as InteractionState;
-  if (!(interactionState in InteractionStateCssMapping)) {
+  if (!(interactionState in InteractionStateCssMap)) {
     throw new Error(UNSUPPORTED_INTERACTION_STATE(interactionState, styleKey));
   }
 
   // Map to CSS pseudo-selector (empty string for "rest" or states without a pseudo)
-  const cssPseudo = InteractionStateCssMapping[interactionState] || '';
+  const cssPseudo = InteractionStateCssMap[interactionState] || '';
 
   // The inner value should be "x,y,blur,color"
   const shadowValue = match[2];

@@ -19,17 +19,17 @@ export type Hex = string;
 /** Represents a single solid color in HLSA format. */
 export type SolidColor = HLSA;
 
-/** Represents a position value as a percentage along a gradient (0 to 100). */
-type Position = number;
+/** Represents the position of a color stop in a CSS gradient as a percentage (0–100). */
+type GradientStopPosition = number;
 
-/** Represents a degree angle for gradients, ranging from 0 to 360. */
-type Degree = number;
+/** Represents a gradient angle in degrees (0–360). */
+type GradientAngle = number;
 
 /**
  * Represents a gradient defined by an angle and a series of color stops.
  * Each stop is a tuple of [hue, lightness, saturation, alpha, position].
  */
-type Gradient = [Degree, [...SolidColor, Position][]];
+type Gradient = [GradientAngle, [...SolidColor, GradientStopPosition][]];
 
 /** Represents a color, which can be either a solid color or a gradient definition. */
 export type Color = SolidColor | Gradient;
@@ -51,7 +51,8 @@ export type ColorValue = Color | { ref: Color };
  *  - "selected" is when the element is selected, checked, or activated.
  *  - "focus" is when the element is focused.
  *  - "disabled" is when the user can't interact with the element.
- *  - "pseudo-disabled" is when the element appears disabled but still responds to interactions (e.g., to trigger a validation).
+ *  - "pseudo-disabled" is when the element appears disabled but still responds to interactions (e.g.,
+ *      to trigger a validation).
  *  - "read-only" is when the user can't modify the element's value.
  */
 export type InteractionState =
@@ -77,17 +78,15 @@ export const InteractionStateCssMap: Record<InteractionState, string> = {
 };
 
 /**
- * Defines how an element’s color varies across its own interaction states
- * (e.g., rest, hover, focus, disabled). Each state maps to either a direct
- * Color definition or a ParentColor reference.
+ * Represents how an element’s color varies across its own interaction states (e.g., rest, hover,
+ * focus, disabled). Each state maps to either a direct Color definition or a ParentColor reference.
  */
 export type InteractionStateColorMap = {
   rest: Color;
 } & Partial<Record<Exclude<InteractionState, 'rest'>, ColorValue>>;
 
 /**
- * Color intent tokens.
- * These semantic names are widely adopted in UI design systems to convey the purpose of each color:
+ * Semantic color tokens that convey the purpose of each color:
  *
  *  - "primary" represents the main color used for prominent elements.
  *  - "secondary" serves as a supporting color that complements the primary.
@@ -99,7 +98,7 @@ export type InteractionStateColorMap = {
  *  - "neutral" is intended for elements with less emphasis, such as less prominent text, borders,
  *    dividers, or backgrounds.
  */
-export type IntentColor =
+export type SemanticColor =
   | 'primary'
   | 'secondary'
   | 'tertiary'
@@ -109,9 +108,12 @@ export type IntentColor =
   | 'info'
   | 'neutral';
 
-/** Defines a mapping from semantic intent colors to their corresponding interaction-state color maps. */
-export type IntentColorMap = {
-  [K in IntentColor]?: InteractionStateColorMap;
+/**
+ * Defines a (partial) mapping from each semantic color token to its color definitions across
+ * interaction states.
+ */
+export type SemanticColorMap = {
+  [K in SemanticColor]?: InteractionStateColorMap;
 };
 
 /** The set of color-related properties available */
@@ -128,13 +130,13 @@ export enum CssColorProperty {
 }
 
 /**
- * Union type representing either a simple interaction-state color map
- * or an intent-based color map for more complex semantic usage.
+ * Union type representing either a simple interaction-state color map or an intent-based color map
+ * for more complex semantic usage.
  */
-type ColorEntry = InteractionStateColorMap | IntentColorMap;
+type ColorEntry = InteractionStateColorMap | SemanticColorMap;
 
 /**
- * Defines the color schema for components, mapping each ColorProperty
- * to either direct interaction-state colors or intent-based color maps.
+ * Represents the color schema for components, mapping each ColorProperty to either direct
+ * interaction-state colors or intent-based color maps.
  */
 export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;

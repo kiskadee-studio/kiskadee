@@ -1,12 +1,12 @@
 import type { ComponentKeys, Schema } from '@kiskadee/schema';
 import { convertElementAppearanceToStyleKey } from './appearance/convertElementAppearanceToStyleKey';
-import { convertPalettesToStyleKey } from './palettes/convertPalettesToStyleKey';
+import { convertColorsToStyleKeys } from './colors/convertColorsToStyleKeys';
 import { styleKeyUsageMap } from '../utils';
 import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToStyleKey';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
- * For each style object, it processes the appearance, dimensions, and palettes
+ * For each style object, it processes the appearance, dimensions, and colors
  * (if defined) using their respective methods. Finally, the accumulated styleUsageMap
  * is logged to the console.
  *
@@ -42,7 +42,7 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
 
       if (element.palettes) {
         for (const palette of Object.values(element.palettes)) {
-          const colorClassNameMap = convertPalettesToStyleKey(componentName, elementName, palette);
+          const colorClassNameMap = convertColorsToStyleKeys(componentName, elementName, palette);
           console.log({ colorClassNameMap: JSON.stringify(colorClassNameMap) });
         }
       }

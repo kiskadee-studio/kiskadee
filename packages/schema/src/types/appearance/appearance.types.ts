@@ -1,4 +1,4 @@
-import type { InteractionState, SingleColor } from '../palettes/palettes.types';
+import type { InteractionState, SolidColor } from '../palettes/palettes.types';
 
 // Italic ------------------------------------------------------------------------------------------
 
@@ -348,5 +348,5 @@ export interface Appearance {
   shadowBlur?: ShadowStyle;
   shadowY?: ShadowStyle;
   shadowX?: ShadowStyle;
-  shadowColor?: Partial<Record<InteractionState, SingleColor>>;
+  shadowColor?: Partial<Record<InteractionState, SolidColor>>;
 }

@@ -1,4 +1,4 @@
-import type { Appearance, ClassNameMap, InteractionState, SingleColor } from '@kiskadee/schema';
+import type { Appearance, ClassNameMap, InteractionState, SolidColor } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 
 /**
@@ -83,7 +83,7 @@ export function convertElementAppearanceToStyleKey(
       const x = getShadowValue(shadowX, state, 0);
       const y = getShadowValue(shadowY, state, 0);
       const blur = getShadowValue(shadowBlur, state, 0);
-      const color: SingleColor = getShadowValue(shadowColor, state, [0, 0, 0, 1]);
+      const color: SolidColor = getShadowValue(shadowColor, state, [0, 0, 0, 1]);
       const styleKey =
         state === 'rest'
           ? `shadow__[${x},${y},${blur},${JSON.stringify(color)}]`

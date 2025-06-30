@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { HLSA } from '@kiskadee/schema';
-import { InteractionStateCssMapping } from '@kiskadee/schema';
+import { InteractionStateCssMap } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 import { transformShadowKeyToCss } from './transformShadowKeyToCss';
 import {
@@ -32,7 +32,7 @@ describe('transformShadowKeyToCss function', () => {
       const styleKey = `${propertyName}--hover__[6,8,10,[0,0,0,0.5]]`;
       const hsla = JSON.parse('[0,0,0,0.5]') as HLSA;
       const hex = convertHslaToHex(hsla);
-      const pseudo = InteractionStateCssMapping.hover;
+      const pseudo = InteractionStateCssMap.hover;
       const expectedCssRule = `.${styleKey}${pseudo} { box-shadow: 6px 8px 10px ${hex}; }`;
 
       const result = transformShadowKeyToCss(styleKey);
@@ -47,7 +47,7 @@ describe('transformShadowKeyToCss function', () => {
       const styleKey = `${propertyName}--pressed__[3,3,3,[0,0,0,1]]`;
       const hsla = JSON.parse('[0,0,0,1]') as HLSA;
       const hex = convertHslaToHex(hsla);
-      const pseudo = InteractionStateCssMapping.pressed;
+      const pseudo = InteractionStateCssMap.pressed;
       const expectedCssRule = `.${styleKey}${pseudo} { box-shadow: 3px 3px 3px ${hex}; }`;
 
       const result = transformShadowKeyToCss(styleKey);

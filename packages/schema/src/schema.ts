@@ -1,16 +1,20 @@
 import type { Appearance } from './types/appearance/appearance.types';
 import type { Dimensions } from './types/dimensions/dimensions.types';
-import type { InteractionState, Palettes, IntentColor } from './types/palettes/palettes.types';
+import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints } from './breakpoints';
 
 export type ComponentKeys = 'button';
 
+// Unique identifier for each color palette variation within a theme
+type PaletteName = string;
+
+// TODO: Does this partial structure make sense?
 type Style = Partial<{
   appearance: Appearance;
   dimensions: Dimensions;
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
-  palettes: Record<string, Palettes>;
+  palettes: Record<PaletteName, ColorSchema>;
 }>;
 
 type Elements = Record<string, Style>;
@@ -19,7 +23,6 @@ type Elements = Record<string, Style>;
 type StyleKey = string;
 type ComponentName = string;
 type ElementName = string;
-type PaletteName = string;
 
 // Mapping of style keys by interaction state per element
 type InteractionStateStyleKeyMap = Record<InteractionState, StyleKey[]>;
@@ -30,7 +33,7 @@ export interface ElementStyleKeyMap {
   palettes: Record<
     PaletteName,
     {
-      [K in IntentColor]?: InteractionStateStyleKeyMap;
+      [K in SemanticColor]?: InteractionStateStyleKeyMap;
     }
   >;
 }

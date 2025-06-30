@@ -1,13 +1,13 @@
-import type { Palettes } from '@kiskadee/schema';
+import type { ColorSchema } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
-import { convertPalettesToStyleKey } from './convertPalettesToStyleKey';
+import { convertColorsToStyleKeys } from './convertColorsToStyleKeys';
 
-describe('convertPalettesToStyleKey', () => {
-  const componentName = 'TestComponent';
-  const elementName = 'TestElement';
+describe('convertColorsToStyleKeys', () => {
+  const componentName = 'button';
+  const elementName = 'e1';
 
   it('should process a palette property without ref', () => {
-    const palettes: Palettes = {
+    const palettes: ColorSchema = {
       bgColor: {
         primary: {
           rest: [45, 100, 50, 1]
@@ -15,7 +15,7 @@ describe('convertPalettesToStyleKey', () => {
       }
     };
 
-    const result = convertPalettesToStyleKey(componentName, elementName, palettes);
+    const result = convertColorsToStyleKeys(componentName, elementName, palettes);
 
     expect(result).toEqual({
       [componentName]: {
@@ -27,7 +27,7 @@ describe('convertPalettesToStyleKey', () => {
   });
 
   it('should process a palette property with a ref value', () => {
-    const palettes: Palettes = {
+    const palettes: ColorSchema = {
       borderColor: {
         primary: {
           rest: [255, 255, 255, 1],
@@ -36,7 +36,7 @@ describe('convertPalettesToStyleKey', () => {
       }
     };
 
-    const result = convertPalettesToStyleKey(componentName, elementName, palettes);
+    const result = convertColorsToStyleKeys(componentName, elementName, palettes);
 
     expect(result).toEqual({
       [componentName]: {
@@ -49,7 +49,7 @@ describe('convertPalettesToStyleKey', () => {
   });
 
   it('should process multiple palette entries', () => {
-    const palettes: Palettes = {
+    const palettes: ColorSchema = {
       textColor: {
         primary: {
           rest: [120, 50, 50, 1],
@@ -67,7 +67,7 @@ describe('convertPalettesToStyleKey', () => {
       }
     };
 
-    const result = convertPalettesToStyleKey(componentName, elementName, palettes);
+    const result = convertColorsToStyleKeys(componentName, elementName, palettes);
 
     expect(result).toEqual({
       [componentName]: {

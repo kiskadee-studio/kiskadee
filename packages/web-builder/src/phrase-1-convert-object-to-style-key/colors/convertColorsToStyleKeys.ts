@@ -1,9 +1,10 @@
 import type {
   ClassNameMap,
-  IntentColor,
+  SemanticColor,
   InteractionState,
   PaletteKey,
-  Palettes
+  ColorSchema,
+  ColorProperty
 } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 
@@ -31,15 +32,15 @@ import { updateElementStyleKeyMap } from '../../utils';
  * @returns A ClassNameMap mapping component → element → interaction state → array of style keys.
  */
 
-export function convertPalettesToStyleKey(
+export function convertColorsToStyleKeys(
   componentName: string,
   elementName: string,
-  colorPropertyMap: Palettes
+  colorPropertyMap: ColorSchema
 ): ClassNameMap {
   let elementStyleKeyMap: ClassNameMap = {};
 
   for (const p in colorPropertyMap) {
-    const propertyName = p as PaletteKey;
+    const propertyName = p as ColorProperty;
     const interactionStateOrIntentColor = colorPropertyMap[propertyName];
     if (interactionStateOrIntentColor === undefined) continue;
 
@@ -49,7 +50,7 @@ export function convertPalettesToStyleKey(
       : interactionStateOrIntentColor;
 
     for (const intentColor in intentColorMap) {
-      const interactionStateMap = intentColorMap[intentColor as IntentColor];
+      const interactionStateMap = intentColorMap[intentColor as SemanticColor];
       for (const i in interactionStateMap) {
         const interactionState = i as InteractionState;
         const colorOrRef = interactionStateMap[interactionState];
