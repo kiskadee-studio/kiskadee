@@ -16,24 +16,30 @@ export type HLSA = [hue: Hue, lightness: Lightness, saturation: Saturation, alph
 /** Represents a color in hexadecimal format (e.g., "#ff0000" or "#ff0000ff"). */
 export type Hex = string;
 
-/** Represents a single color in HLSA format. */
-export type SingleColor = HLSA;
+/** Represents a single solid color in HLSA format. */
+export type SolidColor = HLSA;
 
-/** Represents a position value as a percentage ranging from 0 to 100. */
+/** Represents a position value as a percentage along a gradient (0 to 100). */
 type Position = number;
 
-/** Represents a degree value ranging from 0 to 360. */
+/** Represents a degree angle for gradients, ranging from 0 to 360. */
 type Degree = number;
 
-/** Represents a gradient consisting of a degree and an array of color/position pairs. */
-type Gradient = [Degree, [...SingleColor, Position][]];
+/**
+ * Represents a gradient defined by an angle and a series of color stops.
+ * Each stop is a tuple of [hue, lightness, saturation, alpha, position].
+ */
+type Gradient = [Degree, [...SolidColor, Position][]];
 
-/** Represents a color, which can either be a single color or a gradient. */
-export type Color = SingleColor | Gradient;
+/** Represents a color, which can be either a solid color or a gradient definition. */
+export type Color = SolidColor | Gradient;
 
-type ParentColor = { ref: Omit<Color, 'rest'> };
-
-export type ColorOrRef = Color | ParentColor;
+/**
+ * A color value that can be either:
+ *  - a direct Color definition (applied in the element’s own state)
+ *  - a ParentColor reference (applied only when the parent’s interaction state is inherited)
+ */
+export type ColorValue = Color | { ref: Color };
 
 /**
  * Interaction states.
@@ -58,9 +64,8 @@ export type InteractionState =
   | 'pseudoDisabled'
   | 'readOnly';
 
-// Mapping from our interaction state to the corresponding CSS pseudo-selector.
-// If there is no equivalent (or for "pseudo-disabled"), we use the default (rest) behavior.
-export const InteractionStateCssMapping: Record<InteractionState, string> = {
+/** Mapping from interaction states to CSS pseudo-selectors (default to rest if none). */
+export const InteractionStateCssMap: Record<InteractionState, string> = {
   rest: '',
   hover: ':hover',
   pressed: ':click',
@@ -71,9 +76,14 @@ export const InteractionStateCssMapping: Record<InteractionState, string> = {
   readOnly: ':read-only'
 };
 
+/**
+ * Defines how an element’s color varies across its own interaction states
+ * (e.g., rest, hover, focus, disabled). Each state maps to either a direct
+ * Color definition or a ParentColor reference.
+ */
 export type InteractionStateColorMap = {
   rest: Color;
-} & Partial<Record<Exclude<InteractionState, 'rest'>, ColorOrRef>>;
+} & Partial<Record<Exclude<InteractionState, 'rest'>, ColorValue>>;
 
 /**
  * Color intent tokens.
@@ -99,24 +109,32 @@ export type IntentColor =
   | 'info'
   | 'neutral';
 
+/** Defines a mapping from semantic intent colors to their corresponding interaction-state color maps. */
 export type IntentColorMap = {
   [K in IntentColor]?: InteractionStateColorMap;
 };
 
-/**
- * The color properties used in the design system.
- */
+/** The set of color-related properties available */
 export type ColorProperty = 'textColor' | 'bgColor' | 'borderColor';
 
+/** List of all color properties for iteration or validation. */
 export const colorPropertyList: ColorProperty[] = ['textColor', 'bgColor', 'borderColor'];
 
+/** Enumerates corresponding CSS properties for each design system color property. */
 export enum CssColorProperty {
   textColor = 'color',
   bgColor = 'background-color',
   borderColor = 'border-color'
 }
 
-type InteractionStateOrIntentColorMap = InteractionStateColorMap | IntentColorMap;
+/**
+ * Union type representing either a simple interaction-state color map
+ * or an intent-based color map for more complex semantic usage.
+ */
+type ColorEntry = InteractionStateColorMap | IntentColorMap;
 
-export type Palettes = Partial<Record<ColorProperty, InteractionStateOrIntentColorMap>>;
-export type PaletteKey = keyof Palettes;
+/**
+ * Defines the color schema for components, mapping each ColorProperty
+ * to either direct interaction-state colors or intent-based color maps.
+ */
+export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
