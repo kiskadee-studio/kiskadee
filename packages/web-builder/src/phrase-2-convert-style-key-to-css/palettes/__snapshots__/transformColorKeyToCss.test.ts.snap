@@ -8,23 +8,23 @@ exports[`transformColorKeyToCss > Error handling > should throw when using unsup
 
 exports[`transformColorKeyToCss > Success operation > should transform a key with "--hover::ref" and include :hover on parent 1`] = `
 {
-  "className": "bgColor--hover::ref",
-  "cssRule": ".bgColor--hover::ref__[240,50,50,0.5]:hover .bgColor--hover::ref { background-color: #4040bf80; }",
-  "parentClassName": "bgColor--hover::ref__[240,50,50,0.5]",
+  "className": "boxColor--hover::ref",
+  "cssRule": ".boxColor--hover::ref__[240,50,50,0.5]:hover .boxColor--hover::ref { background-color: #4040bf80; }",
+  "parentClassName": "boxColor--hover::ref__[240,50,50,0.5]",
 }
 `;
 
 exports[`transformColorKeyToCss > Success operation > should transform a key without "::ref" and include ":hover 1`] = `
 {
-  "className": "bgColor--hover__[240,50,50,0.5]",
-  "cssRule": ".bgColor--hover__[240,50,50,0.5] { background-color: #4040bf80; }",
+  "className": "boxColor--hover__[240,50,50,0.5]",
+  "cssRule": ".boxColor--hover__[240,50,50,0.5] { background-color: #4040bf80; }",
   "parentClassName": undefined,
 }
 `;
 
 exports[`transformColorKeyToCss > Success operation > should transform a key without "::ref" and include ":hover" 1`] = `
 {
-  "className": "bgColor--hover__[240,50,50,0.5]",
-  "cssRule": ".bgColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }",
+  "className": "boxColor--hover__[240,50,50,0.5]",
+  "cssRule": ".boxColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }",
 }
 `;

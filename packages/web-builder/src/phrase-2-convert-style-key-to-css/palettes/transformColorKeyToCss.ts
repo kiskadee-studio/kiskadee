@@ -21,8 +21,8 @@ export const ERROR_REF_REQUIRE_STATE =
  * 2. Reference keys ("::ref"): generates a parent rule with a pseudo-state and
  *    a nested rule targeting the child selector.
  *
- * @param styleKey - the style token, e.g. "bgColor--hover__[240,50,50,0.5]" or
- *                   "bgColor--hover::ref__[240,50,50,0.5]"
+ * @param styleKey - the style token, e.g. "boxColor--hover__[240,50,50,0.5]" or
+ *                   "boxColor--hover::ref__[240,50,50,0.5]"
  * @returns GeneratedCss containing:
  *   - className: token without dot prefix, for use in HTML
  *   - cssRule: full CSS text including selector(s)

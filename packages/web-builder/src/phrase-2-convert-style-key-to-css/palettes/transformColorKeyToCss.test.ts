@@ -19,22 +19,22 @@ describe('transformColorKeyToCss', () => {
     });
 
     it('should transform a key with "--hover::ref" and include :hover on parent', () => {
-      const result = transformColorKeyToCss('bgColor--hover::ref__[240,50,50,0.5]');
+      const result = transformColorKeyToCss('boxColor--hover::ref__[240,50,50,0.5]');
       const expected: GeneratedCss = {
-        className: 'bgColor--hover::ref',
-        parentClassName: 'bgColor--hover::ref__[240,50,50,0.5]',
+        className: 'boxColor--hover::ref',
+        parentClassName: 'boxColor--hover::ref__[240,50,50,0.5]',
         cssRule:
-          '.bgColor--hover::ref__[240,50,50,0.5]:hover .bgColor--hover::ref { background-color: #4040bf80; }'
+          '.boxColor--hover::ref__[240,50,50,0.5]:hover .boxColor--hover::ref { background-color: #4040bf80; }'
       };
       expect(result).toEqual(expected);
       expect(result).toMatchSnapshot();
     });
 
     it('should transform a key without "::ref" and include ":hover"', () => {
-      const result = transformColorKeyToCss('bgColor--hover__[240,50,50,0.5]');
+      const result = transformColorKeyToCss('boxColor--hover__[240,50,50,0.5]');
       const expected: GeneratedCss = {
-        className: 'bgColor--hover__[240,50,50,0.5]',
-        cssRule: '.bgColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }',
+        className: 'boxColor--hover__[240,50,50,0.5]',
+        cssRule: '.boxColor--hover__[240,50,50,0.5]:hover { background-color: #4040bf80; }',
         parentClassName: undefined
       };
       expect(result).toEqual(expected);
@@ -57,7 +57,7 @@ describe('transformColorKeyToCss', () => {
 
   describe('Error handling', () => {
     it('should throw if "::ref" is used without a state', () => {
-      const key = 'bgColor::ref__[240,50,50,0.5]';
+      const key = 'boxColor::ref__[240,50,50,0.5]';
       const fn = () => transformColorKeyToCss(key);
       expect(fn).toThrowError(ERROR_REF_REQUIRE_STATE);
       expect(fn).toThrowErrorMatchingSnapshot();
@@ -70,7 +70,7 @@ describe('transformColorKeyToCss', () => {
     });
 
     it('should throw when using unsupported state "visited"', () => {
-      const key = 'bgColor--visited::ref__[240,50,50,0.5]';
+      const key = 'boxColor--visited::ref__[240,50,50,0.5]';
       const fn = () => transformColorKeyToCss(key);
       expect(fn).toThrowError(ERROR_REF_REQUIRE_STATE);
       expect(fn).toThrowErrorMatchingSnapshot();

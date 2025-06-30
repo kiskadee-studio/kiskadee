@@ -1,7 +1,7 @@
 import type { ColorSchema } from './palettes.types';
 
 const palettes: ColorSchema = {
-  bgColor: {
+  boxColor: {
     primary: {
       rest: [
         90,

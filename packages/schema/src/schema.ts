@@ -144,7 +144,7 @@ export const schema: Schema = {
             p1: {
               textColor: { rest: [0, 0, 0, 0.5] },
               borderColor: { rest: [0, 0, 0, 0.5] },
-              bgColor: {
+              boxColor: {
                 primary: {
                   rest: [10, 35, 100, 0],
                   hover: [10, 35, 100, 0]
@@ -161,9 +161,7 @@ export const schema: Schema = {
               }
             },
             p2: {
-              // TODO: implement reference to another element
-              // ref: 'e1',
-              bgColor: { rest: [0, 0, 0, 0.5] }
+              boxColor: { rest: [0, 0, 0, 0.5] }
             }
           }
         },

@@ -116,18 +116,18 @@ export type SemanticColorMap = {
   [K in SemanticColor]?: InteractionStateColorMap;
 };
 
-/** The set of color-related properties available */
-export type ColorProperty = 'textColor' | 'bgColor' | 'borderColor';
-
-/** List of all color properties for iteration or validation. */
-export const colorPropertyList: ColorProperty[] = ['textColor', 'bgColor', 'borderColor'];
-
 /** Enumerates corresponding CSS properties for each design system color property. */
 export enum CssColorProperty {
   textColor = 'color',
-  bgColor = 'background-color',
+  boxColor = 'background-color',
   borderColor = 'border-color'
 }
+
+/** The set of color-related properties available */
+export type ColorProperty = keyof typeof CssColorProperty;
+
+/** List of all color properties for iteration or validation. */
+export const colorPropertyList: ColorProperty[] = ['textColor', 'boxColor', 'borderColor'];
 
 /**
  * Union type representing either a simple interaction-state color map or an intent-based color map

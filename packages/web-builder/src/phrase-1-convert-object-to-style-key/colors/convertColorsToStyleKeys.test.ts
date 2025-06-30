@@ -8,7 +8,7 @@ describe('convertColorsToStyleKeys', () => {
 
   it('should process a palette property without ref', () => {
     const palettes: ColorSchema = {
-      bgColor: {
+      boxColor: {
         primary: {
           rest: [45, 100, 50, 1]
         }
@@ -20,7 +20,7 @@ describe('convertColorsToStyleKeys', () => {
     expect(result).toEqual({
       [componentName]: {
         [elementName]: {
-          rest: ['bgColor__[45,100,50,1]']
+          rest: ['boxColor__[45,100,50,1]']
         }
       }
     });
