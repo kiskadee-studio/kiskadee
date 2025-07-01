@@ -1,6 +1,13 @@
-import { type TextDecorationValue, CssTextDecorationValue } from '@kiskadee/schema';
+import {
+  type TextLineTypeValue,
+  CssTextDecorationValue,
+  type DecorationProperty,
+  CssDecorationProperty
+} from '@kiskadee/schema';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { GeneratedCss } from '../phrase2.types';
+
+const { textLineType } = CssDecorationProperty;
 
 /**
  * Converts a text‐decoration style key into a GeneratedCss object.
@@ -24,11 +31,11 @@ import type { GeneratedCss } from '../phrase2.types';
  *   - `cssRule`: the full CSS rule string
  * @throws Error if the property isn’t "textDecoration", the format is wrong or the value is unsupported.
  */
-export function transformTextDecorationKeyToCss(styleKey: string): GeneratedCss {
-  const propertyName = 'textDecoration';
+export function transformTextLineTypeKeyToCss(styleKey: string): GeneratedCss {
+  const propertyName: DecorationProperty = 'textLineType';
   const styleParts = styleKey.split('__');
   const styleProperty = styleParts[0];
-  const styleValue = styleParts[1];
+  const styleValue = styleParts[1] as TextLineTypeValue;
 
   if (styleProperty !== propertyName) {
     throw new Error(UNSUPPORTED_PROPERTY(propertyName, styleKey));
@@ -39,16 +46,16 @@ export function transformTextDecorationKeyToCss(styleKey: string): GeneratedCss 
     throw new Error(UNSUPPORTED_VALUE(propertyName, invalidValue.join('__'), styleKey));
   }
 
-  const cssValue: CssTextDecorationValue | undefined =
-    CssTextDecorationValue[styleValue as TextDecorationValue];
+  const value: CssTextDecorationValue | undefined = CssTextDecorationValue[styleValue];
 
-  if (cssValue === undefined) {
+  if (value === undefined) {
     throw new Error(UNSUPPORTED_VALUE(propertyName, styleValue, styleKey));
   }
 
-  const rule = `.${styleKey} { text-decoration: ${cssValue}; }`;
+  const cssRule = `.${styleKey} { ${textLineType}: ${value}; }`;
+
   return {
     className: styleKey,
-    cssRule: rule
+    cssRule
   };
 }

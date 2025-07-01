@@ -3,7 +3,7 @@ import {
   transformTextItalicKeyToCss,
   transformBorderKeyToCss,
   transformShadowKeyToCss,
-  transformTextDecorationKeyToCss,
+  transformTextLineTypeKeyToCss,
   transformTextWeightKeyToCss
 } from './appearance';
 import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
@@ -45,7 +45,7 @@ export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
   } else if (styleKey.startsWith('textAlign')) {
     generatedCss = transformTextAlignKeyToCss(styleKey);
   } else if (styleKey.startsWith('textDecoration')) {
-    generatedCss = transformTextDecorationKeyToCss(styleKey);
+    generatedCss = transformTextLineTypeKeyToCss(styleKey);
   } else if (styleKey.startsWith('textItalic')) {
     generatedCss = transformTextItalicKeyToCss(styleKey);
   } else if (styleKey.startsWith('textWeight')) {

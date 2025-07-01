@@ -40,8 +40,8 @@ export enum CssTextWeightValue {
 // TODO: Should "underline dotted", "overline" and "underline dotted red" be supported?
 // TODO: Where is the default value defined?
 /** Defines the possible text decoration styles. */
-// TODO: rename it to TextLineType
-export type TextDecorationValue = keyof typeof CssTextDecorationValue;
+export type TextLineTypeProperty = 'textLineType';
+export type TextLineTypeValue = keyof typeof CssTextDecorationValue;
 
 /** Maps custom text decoration values to the standard CSS `text-decoration` property values. */
 export enum CssTextDecorationValue {
@@ -87,6 +87,18 @@ export type ProportionByInteractionState = Partial<Record<InteractionState, Pixe
 
 // Appearance --------------------------------------------------------------------------------------
 
+export enum CssDecorationProperty {
+  textFontFamily = 'font-family',
+  textItalic = 'font-style',
+  textWeight = 'font-weight',
+  textLineType = 'text-decoration',
+  textAlign = 'text-align',
+  borderStyle = 'border-style',
+  shadowBlur = 'box-shadow'
+}
+
+export type DecorationProperty = keyof typeof CssDecorationProperty;
+
 /**
  * Appearance represents style properties that are solid in nature – meaning they do not vary with
  * interaction state (rest, hover, active) nor are they influenced by responsive size or media-query
@@ -106,7 +118,7 @@ export interface DecorationSchema {
   textFontFamily?: TextFontFamilyValue[];
   textItalic?: TextItalicValue;
   textWeight?: TextWeightValue;
-  textDecoration?: TextDecorationValue;
+  textDecoration?: TextLineTypeValue;
   textAlign?: TextAlignValue;
 
   // Border
