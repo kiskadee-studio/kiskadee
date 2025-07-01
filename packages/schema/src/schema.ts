@@ -3,13 +3,14 @@ import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';
 
-export type ComponentKeys = 'button';
+// Nome de todos os componentes suportados
+export type ComponentName = 'button' | 'tab';
 
 // Unique identifier for each color palette variation within a theme
 type PaletteName = string;
 
 // TODO: Does this partial structure make sense?
-type Style = Partial<{
+type ElementStyle = Partial<{
   appearance: Appearance;
   dimensions: ScaleSchema;
   // This layer (Record) allows the Style structure to support multiple color variations within a
@@ -17,12 +18,16 @@ type Style = Partial<{
   palettes: Record<PaletteName, ColorSchema>;
 }>;
 
-type Elements = Record<ElementName, Style>;
+type Elements = Record<ElementName, ElementStyle>;
 
 // -------------------------------------------------------------------------------------------------
 type StyleKey = string;
-type ComponentName = string;
-type ElementName = string;
+
+/**
+ * Element name by component. Initially using generic names like e1, e2, etc, but may need specific
+ * names in the future.
+ */
+export type ElementName = string;
 
 // Mapping of style keys by interaction state per element
 type StyleKeysByInteractionState = Record<InteractionState, StyleKey[]>;
@@ -39,11 +44,11 @@ export interface StyleKeyByElement {
   >;
 }
 
-export interface ComponentStyleKeyMap {
-  [componenteName: ComponentName]: {
+export type ComponentStyleKeyMap = Partial<{
+  [componenteName in ComponentName]: {
     [elementName: ElementName]: StyleKeyByElement;
   };
-}
+}>;
 
 // Legacy, delete it
 export interface ClassNameMap {
@@ -70,7 +75,7 @@ export interface ClassNameMap {
 
 // -------------------------------------------------------------------------------------------------
 
-type Components = Record<ComponentKeys, { elements: Elements }>;
+type Components = Partial<Record<ComponentName, { elements: Elements }>>;
 
 export type Schema = {
   breakpoints: Breakpoints;

@@ -1,4 +1,4 @@
-import type { ComponentKeys, Schema } from '@kiskadee/schema';
+import type { ComponentName, Schema } from '@kiskadee/schema';
 import { convertElementAppearanceToStyleKey } from './appearance/convertElementAppearanceToStyleKey';
 import { convertColorsToStyleKeys } from './colors/convertColorsToStyleKeys';
 import { styleKeyUsageMap } from '../utils';
@@ -14,11 +14,12 @@ import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToSty
  */
 export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: number } {
   // Iterate over each component in the schema.
-  for (const componentName in schema.components) {
-    const component = schema.components[componentName as ComponentKeys];
+  for (const c in schema.components) {
+    const componentName = c as ComponentName;
+    const component = schema.components[componentName];
 
     // Iterate over each element within the component.
-    for (const elementName in component.elements) {
+    for (const elementName in component?.elements) {
       const element = component.elements[elementName];
 
       if (element.appearance) {

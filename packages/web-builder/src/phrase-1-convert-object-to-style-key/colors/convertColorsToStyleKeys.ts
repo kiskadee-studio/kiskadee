@@ -3,7 +3,9 @@ import type {
   SemanticColor,
   InteractionState,
   ColorSchema,
-  ColorProperty
+  ColorProperty,
+  ComponentName,
+  ElementName
 } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 
@@ -33,8 +35,8 @@ import { updateElementStyleKeyMap } from '../../utils';
  */
 
 export function convertColorsToStyleKeys(
-  componentName: string,
-  elementName: string,
+  componentName: ComponentName,
+  elementName: ElementName,
   colorPropertyMap: ColorSchema
 ): ClassNameMap {
   let elementStyleKeyMap: ClassNameMap = {};

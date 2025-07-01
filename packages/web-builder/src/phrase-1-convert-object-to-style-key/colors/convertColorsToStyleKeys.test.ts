@@ -1,10 +1,10 @@
-import type { ColorSchema } from '@kiskadee/schema';
+import type { ColorSchema, ComponentName, ElementName } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { convertColorsToStyleKeys } from './convertColorsToStyleKeys';
 
 describe('convertColorsToStyleKeys', () => {
-  const componentName = 'button';
-  const elementName = 'e1';
+  const componentName: ComponentName = 'button';
+  const elementName: ElementName = 'e1';
 
   it('should process a palette property without ref', () => {
     const palettes: ColorSchema = {
