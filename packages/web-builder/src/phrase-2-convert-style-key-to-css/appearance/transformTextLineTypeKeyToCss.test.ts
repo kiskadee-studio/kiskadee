@@ -56,7 +56,7 @@ describe('transformTextLineTypeKeyToCss', () => {
 
   describe('Error handling', () => {
     describe('Unsupported property errors', () => {
-      it('should throw when style key does not start with "textLineType__"', () => {
+      it('throws error if style key prefix is incorrect', () => {
         const invalidProperty = 'invalidProperty';
         const styleKey = `${invalidProperty}__underline`;
         const expectedMessage = UNSUPPORTED_PROPERTY(propertyName, styleKey);
@@ -74,7 +74,7 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(error.message).toMatchSnapshot();
       });
 
-      it('should throw when the key cannot be split correctly', () => {
+      it('throws error if style key format is invalid', () => {
         const styleKey = 'textLineType-underline';
         const expectedMessage = UNSUPPORTED_PROPERTY(propertyName, styleKey);
 
@@ -93,7 +93,7 @@ describe('transformTextLineTypeKeyToCss', () => {
     });
 
     describe('Unsupported value errors', () => {
-      it('should throw when no text line type value is provided', () => {
+      it('throws error if the value part is missing', () => {
         const styleKey = `${propertyName}__`;
         const expectedMessage = UNSUPPORTED_VALUE(propertyName, '', styleKey);
 
@@ -110,7 +110,7 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(error.message).toMatchSnapshot();
       });
 
-      it('should throw when style key contains extra separators', () => {
+      it('throws error if value contains unexpected separators', () => {
         const invalidValue = 'underline__dotted';
         const styleKey = `${propertyName}__${invalidValue}`;
         const expectedMessage = UNSUPPORTED_VALUE(propertyName, invalidValue, styleKey);
@@ -128,7 +128,7 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(error.message).toMatchSnapshot();
       });
 
-      it('should throw when text line type value is unsupported', () => {
+      it('throws error if value is unsupported', () => {
         const invalidValue = 'overline';
         const styleKey = `${propertyName}__${invalidValue}`;
         const expectedMessage = UNSUPPORTED_VALUE(propertyName, invalidValue, styleKey);
