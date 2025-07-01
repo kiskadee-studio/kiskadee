@@ -40,6 +40,7 @@ export enum CssTextWeightValue {
 // TODO: Should "underline dotted", "overline" and "underline dotted red" be supported?
 // TODO: Where is the default value defined?
 /** Defines the possible text decoration styles. */
+// TODO: rename it to TextLineType
 export type TextDecorationValue = keyof typeof CssTextDecorationValue;
 
 /** Maps custom text decoration values to the standard CSS `text-decoration` property values. */
@@ -99,7 +100,7 @@ export type ProportionByInteractionState = Partial<Record<InteractionState, Pixe
  * color. Shadows are often defined by simple numeric values (blur, offset) and sometimes a color;
  * however, their dynamic behavior is specific to rendering.
  */
-export interface Appearance {
+export interface DecorationSchema {
   // Text
   // TODO: test font family
   textFontFamily?: TextFontFamilyValue[];

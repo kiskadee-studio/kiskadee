@@ -1,4 +1,4 @@
-import type { Appearance } from '@kiskadee/schema';
+import type { DecorationSchema } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { convertElementAppearanceToStyleKey } from './convertElementAppearanceToStyleKey';
 
@@ -8,7 +8,7 @@ describe('convertElementAppearanceToStyleKey', () => {
 
   describe('textItalic', () => {
     it('should generate textItalic true style key', () => {
-      const appearance: Appearance = { textItalic: true };
+      const appearance: DecorationSchema = { textItalic: true };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         button: {
@@ -20,7 +20,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textItalic false style key', () => {
-      const appearance: Appearance = { textItalic: false };
+      const appearance: DecorationSchema = { textItalic: false };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         button: {
@@ -34,7 +34,7 @@ describe('convertElementAppearanceToStyleKey', () => {
 
   describe('textWeight', () => {
     it('should generate textWeight thin style key', () => {
-      const appearance: Appearance = { textWeight: 'thin' };
+      const appearance: DecorationSchema = { textWeight: 'thin' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -46,7 +46,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight extraLight style key', () => {
-      const appearance: Appearance = { textWeight: 'extraLight' };
+      const appearance: DecorationSchema = { textWeight: 'extraLight' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -58,7 +58,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight light style key', () => {
-      const appearance: Appearance = { textWeight: 'light' };
+      const appearance: DecorationSchema = { textWeight: 'light' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -70,7 +70,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight normal style key', () => {
-      const appearance: Appearance = { textWeight: 'normal' };
+      const appearance: DecorationSchema = { textWeight: 'normal' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -82,7 +82,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight medium style key', () => {
-      const appearance: Appearance = { textWeight: 'medium' };
+      const appearance: DecorationSchema = { textWeight: 'medium' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -94,7 +94,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight semiBold style key', () => {
-      const appearance: Appearance = { textWeight: 'semiBold' };
+      const appearance: DecorationSchema = { textWeight: 'semiBold' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -106,7 +106,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight bold style key', () => {
-      const appearance: Appearance = { textWeight: 'bold' };
+      const appearance: DecorationSchema = { textWeight: 'bold' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -118,7 +118,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight extraBold style key', () => {
-      const appearance: Appearance = { textWeight: 'extraBold' };
+      const appearance: DecorationSchema = { textWeight: 'extraBold' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -130,7 +130,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textWeight black style key', () => {
-      const appearance: Appearance = { textWeight: 'black' };
+      const appearance: DecorationSchema = { textWeight: 'black' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -144,7 +144,7 @@ describe('convertElementAppearanceToStyleKey', () => {
 
   describe('textDecoration', () => {
     it('should generate textDecoration none style key', () => {
-      const appearance: Appearance = { textDecoration: 'none' };
+      const appearance: DecorationSchema = { textDecoration: 'none' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -156,7 +156,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textDecoration underline style key', () => {
-      const appearance: Appearance = { textDecoration: 'underline' };
+      const appearance: DecorationSchema = { textDecoration: 'underline' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -168,7 +168,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textDecoration line-through style key', () => {
-      const appearance: Appearance = { textDecoration: 'lineThrough' };
+      const appearance: DecorationSchema = { textDecoration: 'lineThrough' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -182,7 +182,7 @@ describe('convertElementAppearanceToStyleKey', () => {
 
   describe('textAlign', () => {
     it('should generate textAlign left style key', () => {
-      const appearance: Appearance = { textAlign: 'left' };
+      const appearance: DecorationSchema = { textAlign: 'left' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -194,7 +194,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textAlign center style key', () => {
-      const appearance: Appearance = { textAlign: 'center' };
+      const appearance: DecorationSchema = { textAlign: 'center' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -206,7 +206,7 @@ describe('convertElementAppearanceToStyleKey', () => {
     });
 
     it('should generate textAlign right style key', () => {
-      const appearance: Appearance = { textAlign: 'right' };
+      const appearance: DecorationSchema = { textAlign: 'right' };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
       expect(result).toEqual({
         [component]: {
@@ -223,7 +223,7 @@ describe('convertElementAppearanceToStyleKey', () => {
       // "rest" defines all shadow properties.
       // "hover" only defines shadowX.
       // Expected: For hover, the missing properties should come from "rest"
-      const appearance: Appearance = {
+      const appearance: DecorationSchema = {
         shadowX: { rest: 10, hover: 20 },
         shadowY: { rest: 15 },
         shadowBlur: { rest: 5 },
@@ -245,7 +245,7 @@ describe('convertElementAppearanceToStyleKey', () => {
       // Only shadowX is set for "hover".
       // Expected: For "hover" state, shadowY and shadowBlur default to 0, and shadowColor defaults to [0,0,0,1].
       // Also, the "rest" state is processed with default values.
-      const appearance: Appearance = {
+      const appearance: DecorationSchema = {
         shadowX: { hover: 25 }
       };
       const result = convertElementAppearanceToStyleKey(component, element, appearance);
@@ -265,7 +265,7 @@ describe('convertElementAppearanceToStyleKey', () => {
       // "focus" defines its own shadowX and shadowY.
       // "hover" defines shadowY and shadowColor.
       // Expected: missing values inherit from "rest"
-      const appearance: Appearance = {
+      const appearance: DecorationSchema = {
         shadowX: { rest: 5, focus: 12 },
         shadowY: { rest: 8, focus: 16, hover: 10 },
         shadowBlur: { rest: 3 },

@@ -1,6 +1,6 @@
-import type { Appearance } from './appearance.types';
+import type { DecorationSchema } from './appearance.types';
 
-const buttonAppearance: Appearance = {
+const buttonAppearance: DecorationSchema = {
   textItalic: false,
   textWeight: 'semiBold',
   textDecoration: 'none',

@@ -1,4 +1,4 @@
-import type { Appearance } from './types/appearance/appearance.types';
+import type { DecorationSchema } from './types/appearance/appearance.types';
 import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';
@@ -10,13 +10,13 @@ export type ComponentName = 'button' | 'tab';
 type PaletteName = string;
 
 // TODO: Does this partial structure make sense?
-type ElementStyle = Partial<{
-  appearance: Appearance;
-  dimensions: ScaleSchema;
+type ElementStyle = {
+  decorations?: DecorationSchema;
+  scales?: ScaleSchema;
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
-  palettes: Record<PaletteName, ColorSchema>;
-}>;
+  palettes?: Record<PaletteName, ColorSchema>;
+};
 
 type Elements = Record<ElementName, ElementStyle>;
 
@@ -88,7 +88,7 @@ export const schema: Schema = {
     button: {
       elements: {
         e1: {
-          appearance: {
+          decorations: {
             textItalic: true,
             textWeight: 'bold',
             textDecoration: 'underline',
@@ -118,7 +118,7 @@ export const schema: Schema = {
             // overflow: 'hidden',
             // textOverflow: 'ellipsis',
           },
-          dimensions: {
+          scales: {
             textSize: {
               's:sm:1': 12,
               's:md:1': {
@@ -172,7 +172,7 @@ export const schema: Schema = {
           }
         },
         e2: {
-          dimensions: {
+          scales: {
             textSize: 16
           },
           palettes: {

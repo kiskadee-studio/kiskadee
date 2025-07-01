@@ -1,4 +1,9 @@
-import type { Appearance, ClassNameMap, InteractionState, SolidColor } from '@kiskadee/schema';
+import type {
+  DecorationSchema,
+  ClassNameMap,
+  InteractionState,
+  SolidColor
+} from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 
 /**
@@ -35,7 +40,7 @@ function getShadowValue<T>(
 export function convertElementAppearanceToStyleKey(
   componentName: string,
   elementName: string,
-  appearance: Appearance
+  appearance: DecorationSchema
 ): ClassNameMap {
   let elementStyleKeyMap: ClassNameMap = {};
 
