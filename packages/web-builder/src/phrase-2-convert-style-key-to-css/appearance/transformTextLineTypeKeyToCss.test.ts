@@ -59,41 +59,91 @@ describe('transformTextLineTypeKeyToCss', () => {
       it('should throw when style key does not start with "textLineType__"', () => {
         const invalidProperty = 'invalidProperty';
         const styleKey = `${invalidProperty}__underline`;
-        const expectedError = UNSUPPORTED_PROPERTY(propertyName, styleKey);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowError(expectedError);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowErrorMatchingSnapshot();
+        const expectedMessage = UNSUPPORTED_PROPERTY(propertyName, styleKey);
+
+        let caught: unknown;
+        try {
+          transformTextLineTypeKeyToCss(styleKey);
+        } catch (err) {
+          caught = err;
+        }
+
+        expect(caught).toBeInstanceOf(Error);
+        const error = caught as Error;
+        expect(error.message).toBe(expectedMessage);
+        expect(error.message).toMatchSnapshot();
       });
 
       it('should throw when the key cannot be split correctly', () => {
         const styleKey = 'textLineType-underline';
-        const expectedError = UNSUPPORTED_PROPERTY(propertyName, styleKey);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowError(expectedError);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowErrorMatchingSnapshot();
+        const expectedMessage = UNSUPPORTED_PROPERTY(propertyName, styleKey);
+
+        let caught: unknown;
+        try {
+          transformTextLineTypeKeyToCss(styleKey);
+        } catch (err) {
+          caught = err;
+        }
+
+        expect(caught).toBeInstanceOf(Error);
+        const error = caught as Error;
+        expect(error.message).toBe(expectedMessage);
+        expect(error.message).toMatchSnapshot();
       });
     });
 
     describe('Unsupported value errors', () => {
       it('should throw when no text line type value is provided', () => {
         const styleKey = `${propertyName}__`;
-        const expectedError = UNSUPPORTED_VALUE(propertyName, '', styleKey);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowError(expectedError);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowErrorMatchingSnapshot();
+        const expectedMessage = UNSUPPORTED_VALUE(propertyName, '', styleKey);
+
+        let caught: unknown;
+        try {
+          transformTextLineTypeKeyToCss(styleKey);
+        } catch (err) {
+          caught = err;
+        }
+
+        expect(caught).toBeInstanceOf(Error);
+        const error = caught as Error;
+        expect(error.message).toBe(expectedMessage);
+        expect(error.message).toMatchSnapshot();
       });
 
       it('should throw when style key contains extra separators', () => {
         const invalidValue = 'underline__dotted';
         const styleKey = `${propertyName}__${invalidValue}`;
-        const expectedError = UNSUPPORTED_VALUE(propertyName, invalidValue, styleKey);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowError(expectedError);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowErrorMatchingSnapshot();
+        const expectedMessage = UNSUPPORTED_VALUE(propertyName, invalidValue, styleKey);
+
+        let caught: unknown;
+        try {
+          transformTextLineTypeKeyToCss(styleKey);
+        } catch (err) {
+          caught = err;
+        }
+
+        expect(caught).toBeInstanceOf(Error);
+        const error = caught as Error;
+        expect(error.message).toBe(expectedMessage);
+        expect(error.message).toMatchSnapshot();
       });
 
       it('should throw when text line type value is unsupported', () => {
         const invalidValue = 'overline';
         const styleKey = `${propertyName}__${invalidValue}`;
-        const expectedError = UNSUPPORTED_VALUE(propertyName, invalidValue, styleKey);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowError(expectedError);
-        expect(() => transformTextLineTypeKeyToCss(styleKey)).toThrowErrorMatchingSnapshot();
+        const expectedMessage = UNSUPPORTED_VALUE(propertyName, invalidValue, styleKey);
+
+        let caught: unknown;
+        try {
+          transformTextLineTypeKeyToCss(styleKey);
+        } catch (err) {
+          caught = err;
+        }
+
+        expect(caught).toBeInstanceOf(Error);
+        const error = caught as Error;
+        expect(error.message).toBe(expectedMessage);
+        expect(error.message).toMatchSnapshot();
       });
     });
   });
