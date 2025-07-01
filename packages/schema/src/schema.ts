@@ -25,16 +25,16 @@ type ComponentName = string;
 type ElementName = string;
 
 // Mapping of style keys by interaction state per element
-type InteractionStateStyleKeyMap = Record<InteractionState, StyleKey[]>;
+type StyleKeyByInteractionState = Record<InteractionState, StyleKey[]>;
 
 export interface StyleKeyByElement {
-  appearance: InteractionStateStyleKeyMap;
+  appearance: StyleKeyByInteractionState;
   // TODO: add breakpoint map to scale
-  dimensions: InteractionStateStyleKeyMap;
+  dimensions: StyleKeyByInteractionState;
   palettes: Record<
     PaletteName,
     {
-      [K in SemanticColor]?: InteractionStateStyleKeyMap;
+      [K in SemanticColor]?: StyleKeyByInteractionState;
     }
   >;
 }
