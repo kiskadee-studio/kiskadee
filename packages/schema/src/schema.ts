@@ -1,7 +1,7 @@
 import type { Appearance } from './types/appearance/appearance.types';
-import type { ScaleByBreakpoint, ScaleSchema } from './types/dimensions/dimensions.types';
+import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
-import { type Breakpoints, breakpoints } from './breakpoints';
+import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';
 
 export type ComponentKeys = 'button';
 
@@ -17,7 +17,7 @@ type Style = Partial<{
   palettes: Record<PaletteName, ColorSchema>;
 }>;
 
-type Elements = Record<string, Style>;
+type Elements = Record<ElementName, Style>;
 
 // -------------------------------------------------------------------------------------------------
 type StyleKey = string;
@@ -25,16 +25,16 @@ type ComponentName = string;
 type ElementName = string;
 
 // Mapping of style keys by interaction state per element
-type StyleKeyByInteractionState = Record<InteractionState, StyleKey[]>;
+type StyleKeysByInteractionState = Record<InteractionState, StyleKey[]>;
 
 export interface StyleKeyByElement {
-  appearance: StyleKeyByInteractionState;
-  // TODO: add breakpoint map to scale
-  dimensions: StyleKeyByInteractionState;
+  decorations: StyleKey[];
+  effects: StyleKeysByInteractionState;
+  scales: Record<ElementSizeValue, StyleKeysByInteractionState>;
   palettes: Record<
     PaletteName,
     {
-      [K in SemanticColor]?: StyleKeyByInteractionState;
+      [K in SemanticColor]?: StyleKeysByInteractionState;
     }
   >;
 }
