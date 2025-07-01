@@ -7,13 +7,13 @@ import {
   transformTextWeightKeyToCss
 } from './appearance';
 import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
-import { breakpoints, dimensionKeys, schema } from '@kiskadee/schema';
+import {
+  breakpoints,
+  type ColorProperty,
+  CssColorProperty,
+  scaleProperties
+} from '@kiskadee/schema';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
-import { colorPropertyList } from '@kiskadee/schema';
-import postcss from 'postcss';
-import combineMq from 'postcss-combine-media-query';
-import { convertSchemaToStyleKeyList } from '../phrase-1-convert-object-to-style-key/convertSchemaToStyleKeyList';
-import { extractCssClassName } from './utils/extractCssClassName';
 import type { GeneratedCss } from './phrase2.types';
 
 /**
@@ -52,13 +52,14 @@ export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
     generatedCss = transformTextWeightKeyToCss(styleKey);
   } else if (generatedCss === undefined) {
     // Dimensions ----------------------------------------------------------------------------------
-    const matchDim = dimensionKeys.find((dim) => styleKey.startsWith(dim));
+    const matchDim = scaleProperties.find((dim) => styleKey.startsWith(dim));
     if (matchDim) {
       generatedCss = transformDimensionKeyToCss(styleKey, breakpoints);
     } else {
-      // Pallets -------------------------------------------------------------------------------------
-      const matchColor = colorPropertyList.find((color) => styleKey.startsWith(color));
-      if (matchColor) {
+      // Pallets -----------------------------------------------------------------------------------
+      const colorProperties = Object.keys(CssColorProperty) as ColorProperty[];
+      const matchColor = colorProperties.find((color) => styleKey.startsWith(color));
+      if (matchColor !== undefined) {
         generatedCss = transformColorKeyToCss(styleKey);
       }
     }

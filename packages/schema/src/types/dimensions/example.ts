@@ -1,6 +1,6 @@
-import type { Dimensions } from './dimensions.types';
+import type { ScaleSchema } from './dimensions.types';
 
-const dimensions: Dimensions = {
+const scale: ScaleSchema = {
   textSize: {
     // The first-level keys (sm, md, lg) represent different component size variants.
     // For example, a button can be small (sm), medium (md), or large (lg).
@@ -31,4 +31,4 @@ const dimensions: Dimensions = {
   paddingTop: 10 // This means the top padding will always be 10px.
 };
 
-console.log({ dimensions });
+console.log({ scale });

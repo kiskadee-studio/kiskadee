@@ -120,7 +120,9 @@ export type SemanticColorMap = {
 export enum CssColorProperty {
   textColor = 'color',
   boxColor = 'background-color',
-  borderColor = 'border-color'
+  borderColor = 'border-color',
+  // TODO: test it
+  iconColor = 'color'
 }
 
 /** The set of color-related properties available */

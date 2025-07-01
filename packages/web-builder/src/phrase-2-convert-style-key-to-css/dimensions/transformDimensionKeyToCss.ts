@@ -1,11 +1,11 @@
 import type { GeneratedCss } from '../phrase2.types';
 import {
-  type Breakpoints,
-  type SizeProps,
-  sizeProps,
-  dimensionKeys,
-  type BreakpointProps,
-  type DimensionKeys
+  type ElementSizeValue,
+  elementSizeValues,
+  scaleProperties,
+  type BreakpointValue,
+  type ScaleProperty,
+  type Breakpoints
 } from '@kiskadee/schema';
 
 export const ERROR_NO_MATCHING_DIMENSION_KEY = 'No matching dimension key found.';
@@ -20,10 +20,11 @@ export const ERROR_INVALID_STANDARD_PATTERN =
 export const ERROR_INVALID_KEY_FORMAT =
   'Invalid dimension key format; missing required delimiters.';
 
+// TODO: convert to enum
 /**
  * Map of project dimension keys to their corresponding CSS property names.
  */
-const cssPropertyMap: Record<DimensionKeys, string> = {
+const cssPropertyMap: Record<ScaleProperty, string> = {
   borderRadius: 'border-radius',
   borderWidth: 'border-width',
   boxHeight: 'height',
@@ -49,7 +50,7 @@ const cssPropertyMap: Record<DimensionKeys, string> = {
  * @param matchingDimension - The dimension key.
  * @returns The base class name for the CSS rule.
  */
-function getBaseClass(matchingDimension: DimensionKeys): string {
+function getBaseClass(matchingDimension: ScaleProperty): string {
   return matchingDimension.startsWith('box')
     ? cssPropertyMap[matchingDimension]
     : matchingDimension;
@@ -69,21 +70,21 @@ function getBaseClass(matchingDimension: DimensionKeys): string {
  * @returns An object with `className` and `cssRule`.
  */
 export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints): GeneratedCss {
-  let dimensionKey: DimensionKeys | undefined;
+  let dimensionKey: ScaleProperty | undefined;
   let className: string;
   let mediaQuery: string | undefined;
   let valuePortion: string;
 
   if (key.includes('--') === true) {
-    dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}--`));
+    dimensionKey = scaleProperties.find((dim) => key.startsWith(`${dim}--`));
     if (dimensionKey == null) {
       throw new Error(ERROR_NO_MATCHING_DIMENSION_KEY);
     }
     const withoutPrefix = key.slice(`${dimensionKey}--`.length);
 
     if (withoutPrefix.includes('::') === true) {
-      const [customToken, remainder] = withoutPrefix.split('::') as [SizeProps, string];
-      const parts = remainder.split('__') as [BreakpointProps, string];
+      const [customToken, remainder] = withoutPrefix.split('::') as [ElementSizeValue, string];
+      const parts = remainder.split('__') as [BreakpointValue, string];
       if (parts.length !== 2) {
         throw new Error(ERROR_INVALID_MEDIA_QUERY_PATTERN);
       }
@@ -94,14 +95,14 @@ export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints
       }
       mediaQuery = `@media (min-width: ${bpValue}px)`;
       valuePortion = value;
-      if (sizeProps.includes(customToken) === false) {
+      if (elementSizeValues.includes(customToken) === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
       const breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
       className = `${getBaseClass(dimensionKey)}--${breakpointModifier}__${value}`;
     } else {
-      const [token, value] = withoutPrefix.split('__') as [SizeProps, string];
-      const validToken = token != null && sizeProps.includes(token) === true;
+      const [token, value] = withoutPrefix.split('__') as [ElementSizeValue, string];
+      const validToken = token != null && elementSizeValues.includes(token) === true;
       const validValue = value != null;
       if (validToken === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
@@ -113,7 +114,7 @@ export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints
       className = `${getBaseClass(dimensionKey)}__${value}`;
     }
   } else if (key.includes('__') === true) {
-    dimensionKey = dimensionKeys.find((dim) => key.startsWith(`${dim}__`));
+    dimensionKey = scaleProperties.find((dim) => key.startsWith(`${dim}__`));
     if (dimensionKey == null) {
       throw new Error(ERROR_NO_STANDARD_DIMENSION_KEY);
     }

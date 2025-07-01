@@ -1,7 +1,7 @@
-import type { Dimensions } from '@kiskadee/schema';
-import type { ClassNameMap, SizeProps } from '@kiskadee/schema';
+import type { ScaleSchema } from '@kiskadee/schema';
+import type { ClassNameMap, ElementSizeValue } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
-import { sizeProps } from '@kiskadee/schema';
+import { elementSizeValues } from '@kiskadee/schema';
 
 /**
  * Processes the provided Dimensions object and returns a ClassNameMap
@@ -26,7 +26,7 @@ import { sizeProps } from '@kiskadee/schema';
 export function convertDimensionsToStyleKey(
   componentName: string,
   elementName: string,
-  dimensions: Dimensions
+  dimensions: ScaleSchema
 ): ClassNameMap {
   let elementStyleKeyMap: ClassNameMap = {};
 
@@ -43,7 +43,9 @@ export function convertDimensionsToStyleKey(
     } else if (value && typeof value === 'object') {
       for (const [size, sizeValue] of Object.entries(value as Record<string, unknown>)) {
         if (typeof sizeValue === 'number') {
-          const styleKey = (sizeProps as readonly SizeProps[]).includes(size as SizeProps)
+          const styleKey = (elementSizeValues as readonly ElementSizeValue[]).includes(
+            size as ElementSizeValue
+          )
             ? `${property}__${sizeValue}`
             : `${property}--${size}__${sizeValue}`;
           elementStyleKeyMap = updateElementStyleKeyMap(
@@ -58,8 +60,9 @@ export function convertDimensionsToStyleKey(
             sizeValue as Record<string, number>
           )) {
             const styleKey =
-              (sizeProps as readonly SizeProps[]).includes(size as SizeProps) &&
-              breakpoint === 'bp:all'
+              (elementSizeValues as readonly ElementSizeValue[]).includes(
+                size as ElementSizeValue
+              ) && breakpoint === 'bp:all'
                 ? `${property}__${innerVal}`
                 : `${property}--${size}::${breakpoint}__${innerVal}`;
             elementStyleKeyMap = updateElementStyleKeyMap(

@@ -1,51 +1,38 @@
-import type { BreakpointProps, SizeProps } from '../../breakpoints';
+import type { BreakpointValue, ElementSizeValue } from '../../breakpoints';
 
-export type DimensionValue = number; // px
+export type PixelValue = number; // px
 
-// The keys representing individual CSS properties.
-export type DimensionKeys =
+export const SCALE_PROPERTIES = [
   // Text
-  | 'textSize'
-  | 'textHeight'
-  // Padding
-  | 'paddingTop'
-  | 'paddingRight'
-  | 'paddingBottom'
-  | 'paddingLeft'
-  // Margin
-  | 'marginTop'
-  | 'marginRight'
-  | 'marginBottom'
-  | 'marginLeft'
-  // Box
-  | 'boxHeight'
-  | 'boxWidth'
-  // Border
-  | 'borderWidth'
-  | 'borderRadius';
-
-export const dimensionKeys: DimensionKeys[] = [
   'textSize',
   'textHeight',
+  // Padding
   'paddingTop',
   'paddingRight',
   'paddingBottom',
   'paddingLeft',
+  // Margin
   'marginTop',
   'marginRight',
   'marginBottom',
   'marginLeft',
+  // Box
   'boxHeight',
   'boxWidth',
+  // Border
   'borderWidth',
   'borderRadius'
-];
+] as const;
 
-export type DimensionBreakpoints = Partial<Record<BreakpointProps, DimensionValue>>;
+export type ScaleProperty = (typeof SCALE_PROPERTIES)[number];
 
-export type Dimensions = Partial<
+export const scaleProperties: ScaleProperty[] = [...SCALE_PROPERTIES];
+
+export type ScaleByBreakpoint = Partial<Record<BreakpointValue, PixelValue>>;
+
+export type ScaleSchema = Partial<
   Record<
-    DimensionKeys,
-    Partial<Record<SizeProps, DimensionBreakpoints | DimensionValue>> | DimensionValue
+    ScaleProperty,
+    Partial<Record<ElementSizeValue, ScaleByBreakpoint | PixelValue>> | PixelValue
   >
 >;

@@ -1,30 +1,28 @@
 import type { InteractionState, SolidColor } from '../palettes/palettes.types';
+import type { PixelValue } from '../dimensions/dimensions.types';
 
-// Italic ------------------------------------------------------------------------------------------
+// Font Family -------------------------------------------------------------------------------------
 
-export type TextItalic = boolean;
+/** Represents the name of a font family. */
+export type TextFontFamilyValue = string;
 
-export type TextItalicValue = 'true' | 'false';
+// Text Italic -------------------------------------------------------------------------------------
 
+/** Defines whether the text should be italic. */
+export type TextItalicValue = boolean;
+
+/** Represents the boolean value of 'textItalic' in string format, used within a styleKey. */
+export type TextItalicKeyToken = 'true' | 'false';
+
+/** Defines the possible values for the CSS `font-style` property. */
 export type CssFontStyleValue = 'normal' | 'italic';
-
-// -------------------------------------------------------------------------------------------------
-
-// type BackgroundColor = SingleColor;
 
 // Text Weight -------------------------------------------------------------------------------------
 
-export type TextWeightValue =
-  | 'thin'
-  | 'extraLight'
-  | 'light'
-  | 'normal'
-  | 'medium'
-  | 'semiBold'
-  | 'bold'
-  | 'extraBold'
-  | 'black';
+/** Represents the allowed font weight values, derived from the keys of the `CssTextWeightValue` enum. */
+export type TextWeightValue = keyof typeof CssTextWeightValue;
 
+/** Maps human-readable font weight names to their corresponding numeric CSS `font-weight` values. */
 export enum CssTextWeightValue {
   thin = '100',
   extraLight = '200',
@@ -41,25 +39,15 @@ export enum CssTextWeightValue {
 
 // TODO: Should "underline dotted", "overline" and "underline dotted red" be supported?
 // TODO: Where is the default value defined?
-export type TextDecorationValue =
-  | 'none' // default
-  | 'underline'
-  | 'lineThrough';
+/** Defines the possible text decoration styles. */
+export type TextDecorationValue = keyof typeof CssTextDecorationValue;
 
+/** Maps custom text decoration values to the standard CSS `text-decoration` property values. */
 export enum CssTextDecorationValue {
-  none = 'none',
+  none = 'none', // Default
   underline = 'underline',
   lineThrough = 'line-through'
 }
-
-// Text Transform ----------------------------------------------------------------------------------
-
-// TODO: Is it really necessary?
-// export type TextTransform =
-//   | 'none' // default
-//   | 'uppercase'
-//   | 'lowercase'
-//   | 'capitalize';
 
 // Text Align --------------------------------------------------------------------------------------
 
@@ -67,255 +55,36 @@ export enum CssTextDecorationValue {
 // TODO: I'm not sure if the "justify" value will actually be used
 // TODO: What does "default" mean? So far there is no specific treatment for that
 
-export type TextAlignValue =
-  | 'left' // default
-  | 'center'
-  | 'right'
-  | 'justify';
+/** Defines the possible horizontal alignment options for text. */
+export type TextAlignValue = keyof typeof CssTextAlignValue;
 
+/** Maps text alignment values to the standard CSS `text-align` property values. */
 export enum CssTextAlignValue {
-  left = 'left',
+  left = 'left', // Default
   center = 'center',
   right = 'right',
   justify = 'justify'
 }
 
-// -------------------------------------------------------------------------------------------------
+// Border Style ------------------------------------------------------------------------------------
 
-// TODO: Is it really necessary?
-// TODO: maybe it's necessary to create a platform level, as it might not be possible to use the same cursor across all platforms
-export enum CursorValues {
-  /**
-   * Default cursor adjusted based on context.
-   * Supported on Windows (system default arrow), macOS (contextual arrow) and Linux.
-   */
-  auto = 'auto',
+/** Defines the possible styles for a border. */
+export type BorderStyleValue = keyof typeof CssBorderStyleValue;
 
-  /**
-   * System default cursor.
-   * Supported on Windows (arrow), macOS (arrow) and Linux.
-   */
-  default = 'default',
-
-  /**
-   * Hides the cursor.
-   * In native applications on Windows, macOS, and Linux a custom implementation is required.
-   */
-  none = 'none',
-
-  /**
-   * Cursor for context menus.
-   * Not supported natively on Windows, macOS, and Linux (no native equivalent exists).
-   */
-  contextMenu = 'context-menu',
-
-  /**
-   * Help cursor.
-   * On Windows it is equivalent to IDC_HELP; on macOS and Linux, use the default help pointer if available.
-   */
-  help = 'help',
-
-  /**
-   * Pointer cursor for interactive elements.
-   * Supported on Windows (hand icon), macOS (pointing hand), and Linux.
-   */
-  pointer = 'pointer',
-
-  /**
-   * Indicates ongoing progress.
-   * May require a custom implementation on Windows, macOS, and Linux if a native progress cursor is not available.
-   */
-  progress = 'progress',
-
-  /**
-   * Wait (busy) cursor.
-   * Supported on Windows (hourglass or spinning circle), macOS (spinning beach ball) and Linux.
-   */
-  wait = 'wait',
-
-  /**
-   * Cursor for cell selection.
-   * Not commonly mapped on Windows, macOS, and Linux; may require a custom implementation.
-   */
-  cell = 'cell',
-
-  /**
-   * Crosshair cursor for precision targeting.
-   * Supported natively as "crosshair" on Windows, macOS, and Linux.
-   */
-  crosshair = 'crosshair',
-
-  /**
-   * Text cursor.
-   * Supported on Windows (I-beam), macOS (I-beam) and Linux.
-   */
-  text = 'text',
-
-  /**
-   * Vertical text cursor.
-   * Not supported natively on Windows, macOS, and Linux (no direct native equivalent).
-   */
-  verticalText = 'vertical-text',
-
-  /**
-   * Alias cursor.
-   * Not natively supported on Windows, macOS, and Linux; may require custom implementation.
-   */
-  alias = 'alias',
-
-  /**
-   * Copy cursor.
-   * Not natively supported on Windows, macOS, and Linux; may require custom implementation.
-   */
-  copy = 'copy',
-
-  /**
-   * Cursor indicating movement.
-   * Supported on Windows, macOS, and Linux as a move cursor.
-   */
-  move = 'move',
-
-  /**
-   * Indicates that an item cannot be dropped.
-   * Supported on Windows, macOS, and Linux as a "no drop" cursor.
-   */
-  noDrop = 'no-drop',
-
-  /**
-   * Not allowed cursor.
-   * Supported on Windows (circle with a slash), macOS, and Linux.
-   */
-  notAllowed = 'not-allowed',
-
-  /**
-   * Cursor indicating that an element can be grabbed.
-   * On Windows and macOS it is equivalent to an open hand; on Linux, a similar open-hand icon is used.
-   */
-  grab = 'grab',
-
-  /**
-   * Cursor indicating an element is being grabbed.
-   * Often implemented as a closed hand on Windows and macOS; may require a custom implementation on Linux.
-   */
-  grabbing = 'grabbing',
-
-  /**
-   * All-direction scroll cursor.
-   * Supported on Windows, macOS, and Linux as the all-scroll cursor.
-   */
-  allScroll = 'all-scroll',
-
-  /**
-   * Horizontal resize cursor.
-   * Supported on Windows (horizontal double arrow), macOS, and Linux.
-   */
-  colResize = 'col-resize',
-
-  /**
-   * Vertical resize cursor.
-   * Supported on Windows (vertical double arrow), macOS, and Linux.
-   */
-  rowResize = 'row-resize',
-
-  /**
-   * Resize cursor for north direction.
-   * Supported on Windows, macOS, and Linux.
-   */
-  nResize = 'n-resize',
-
-  /**
-   * Resize cursor for east direction.
-   * Supported on Windows, macOS, and Linux.
-   */
-  eResize = 'e-resize',
-
-  /**
-   * Resize cursor for south direction.
-   * Supported on Windows, macOS, and Linux.
-   */
-  sResize = 's-resize',
-
-  /**
-   * Resize cursor for west direction.
-   * Supported on Windows, macOS, and Linux.
-   */
-  wResize = 'w-resize',
-
-  /**
-   * Resize cursor diagonally towards the northeast.
-   * Supported on Windows, macOS, and Linux.
-   */
-  neResize = 'ne-resize',
-
-  /**
-   * Resize cursor diagonally towards the northwest.
-   * Supported on Windows, macOS, and Linux.
-   */
-  nwResize = 'nw-resize',
-
-  /**
-   * Resize cursor diagonally towards the southeast.
-   * Supported on Windows, macOS, and Linux.
-   */
-  seResize = 'se-resize',
-
-  /**
-   * Resize cursor diagonally towards the southwest.
-   * Supported on Windows, macOS, and Linux.
-   */
-  swResize = 'sw-resize',
-
-  /**
-   * Alias for horizontal resize.
-   * Supported on Windows, macOS, and Linux.
-   */
-  ewResize = 'ew-resize',
-
-  /**
-   * Alias for vertical resize.
-   * Supported on Windows, macOS, and Linux.
-   */
-  nsResize = 'ns-resize',
-
-  /**
-   * Diagonal resize cursor for northeast-southwest direction.
-   * Supported on Windows, macOS, and Linux.
-   */
-  neswResize = 'nesw-resize',
-
-  /**
-   * Diagonal resize cursor for northwest-southeast direction.
-   * Supported on Windows, macOS, and Linux.
-   */
-  nwseResize = 'nwse-resize',
-
-  /**
-   * Zoom in cursor.
-   * Not supported natively on Windows, macOS, and Linux (no direct equivalent exists); requires custom implementation.
-   */
-  zoomIn = 'zoom-in',
-
-  /**
-   * Zoom out cursor.
-   * Not supported natively on Windows, macOS, and Linux (no direct equivalent exists); requires custom implementation.
-   */
-  zoomOut = 'zoom-out'
-}
-
-export type BorderStyleValue =
-  | 'none' // default
-  | 'dotted'
-  | 'dashed'
-  | 'solid';
-
+/** Maps border style values to the standard CSS `border-style` property values. */
 export enum CssBorderStyleValue {
-  none = 'none',
+  none = 'none', // Default
   dotted = 'dotted',
   dashed = 'dashed',
   solid = 'solid'
 }
 
-export type ShadowStyle = Partial<Record<InteractionState, number>>;
+// Shadow ------------------------------------------------------------------------------------------
+
+/** Represents a shadow property that can have different numeric values for various interaction states. */
+export type ProportionByInteractionState = Partial<Record<InteractionState, PixelValue>>;
+
+// Appearance --------------------------------------------------------------------------------------
 
 /**
  * Appearance represents style properties that are solid in nature – meaning they do not vary with
@@ -332,21 +101,19 @@ export type ShadowStyle = Partial<Record<InteractionState, number>>;
  */
 export interface Appearance {
   // Text
-  textItalic?: TextItalic;
+  // TODO: test font family
+  textFontFamily?: TextFontFamilyValue[];
+  textItalic?: TextItalicValue;
   textWeight?: TextWeightValue;
   textDecoration?: TextDecorationValue;
   textAlign?: TextAlignValue;
-  // textTransform?: TextTransform;
-
-  // Cursor
-  // cursor?: CursorValues;
 
   // Border
   borderStyle?: BorderStyleValue;
 
   // Shadow
-  shadowBlur?: ShadowStyle;
-  shadowY?: ShadowStyle;
-  shadowX?: ShadowStyle;
+  shadowBlur?: ProportionByInteractionState;
+  shadowY?: ProportionByInteractionState;
+  shadowX?: ProportionByInteractionState;
   shadowColor?: Partial<Record<InteractionState, SolidColor>>;
 }

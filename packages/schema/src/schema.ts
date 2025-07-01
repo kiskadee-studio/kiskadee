@@ -1,5 +1,5 @@
 import type { Appearance } from './types/appearance/appearance.types';
-import type { Dimensions } from './types/dimensions/dimensions.types';
+import type { ScaleByBreakpoint, ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints } from './breakpoints';
 
@@ -11,7 +11,7 @@ type PaletteName = string;
 // TODO: Does this partial structure make sense?
 type Style = Partial<{
   appearance: Appearance;
-  dimensions: Dimensions;
+  dimensions: ScaleSchema;
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
   palettes: Record<PaletteName, ColorSchema>;
@@ -27,8 +27,9 @@ type ElementName = string;
 // Mapping of style keys by interaction state per element
 type InteractionStateStyleKeyMap = Record<InteractionState, StyleKey[]>;
 
-export interface ElementStyleKeyMap {
+export interface StyleKeyByElement {
   appearance: InteractionStateStyleKeyMap;
+  // TODO: add breakpoint map to scale
   dimensions: InteractionStateStyleKeyMap;
   palettes: Record<
     PaletteName,
@@ -40,7 +41,7 @@ export interface ElementStyleKeyMap {
 
 export interface ComponentStyleKeyMap {
   [componenteName: ComponentName]: {
-    [elementName: ElementName]: ElementStyleKeyMap;
+    [elementName: ElementName]: StyleKeyByElement;
   };
 }
 

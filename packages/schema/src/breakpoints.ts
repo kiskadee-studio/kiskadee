@@ -1,21 +1,10 @@
+import type { PixelValue } from './types/dimensions/dimensions.types';
+
 //--------------------------------------------------------------------------------------------------
 // Size
 //--------------------------------------------------------------------------------------------------
 
-export type SizeProps =
-  | 's:sm:5'
-  | 's:sm:4'
-  | 's:sm:3'
-  | 's:sm:2'
-  | 's:sm:1'
-  | 's:md:1' // Default / Must have
-  | 's:lg:1'
-  | 's:lg:2'
-  | 's:lg:3'
-  | 's:lg:4'
-  | 's:lg:5';
-
-export const sizeProps: SizeProps[] = [
+const ELEMENT_SIZE_VALUES = [
   's:sm:5',
   's:sm:4',
   's:sm:3',
@@ -27,9 +16,13 @@ export const sizeProps: SizeProps[] = [
   's:lg:3',
   's:lg:4',
   's:lg:5'
-];
+] as const;
 
-export const textSizes: Record<SizeProps, number> = {
+export type ElementSizeValue = (typeof ELEMENT_SIZE_VALUES)[number];
+
+export const elementSizeValues: ElementSizeValue[] = [...ELEMENT_SIZE_VALUES];
+
+export const textSizes: Record<ElementSizeValue, PixelValue> = {
   's:sm:5': 6, //  0.375rem - not recommended
   's:sm:4': 8, //  0.5rem   - not recommended
   's:sm:3': 10, // 0.625rem
@@ -47,7 +40,7 @@ export const textSizes: Record<SizeProps, number> = {
 // Breakpoint
 //--------------------------------------------------------------------------------------------------
 
-export type BreakpointProps =
+export type BreakpointValue =
   | 'bp:all' //   0px    - Must have (mobile)
   | 'bp:sm:1' //  320px
   | 'bp:sm:2' //  360px
@@ -60,7 +53,7 @@ export type BreakpointProps =
   | 'bp:lg:3' //  1792px
   | 'bp:lg:4'; // 2432px
 
-export type Breakpoints = Partial<Record<BreakpointProps, number>>;
+export type Breakpoints = Partial<Record<BreakpointValue, PixelValue>>;
 
 export const breakpoints: Breakpoints = {
   /*
