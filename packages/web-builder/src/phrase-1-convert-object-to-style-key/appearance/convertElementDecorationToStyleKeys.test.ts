@@ -3,6 +3,16 @@ import { describe, expect, it } from 'vitest';
 import { convertElementDecorationToStyleKeys } from './convertElementDecorationToStyleKeys';
 
 describe('convertElementDecorationToStyleKeys', () => {
+  describe('textFont style key generation', () => {
+    it('should generate the textFont style key for a font family array', () => {
+      const decoration: DecorationSchema = { textFont: ['Arial', 'Helvetica'] };
+      const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
+
+      expect(styleKey).toEqual('textFont__["Arial","Helvetica"]');
+      expect(styleKey).toMatchSnapshot();
+    });
+  });
+
   describe('textItalic style key generation', () => {
     it('generates the textItalic__true style key when italic is enabled', () => {
       const decoration: DecorationSchema = { textItalic: true };

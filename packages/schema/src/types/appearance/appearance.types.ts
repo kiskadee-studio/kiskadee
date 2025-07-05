@@ -4,7 +4,7 @@ import type { PixelValue } from '../dimensions/dimensions.types';
 // Font Family -------------------------------------------------------------------------------------
 
 /** Represents the name of a font family. */
-export type TextFontFamilyValue = string;
+export type TextFontValue = string;
 
 // Text Italic -------------------------------------------------------------------------------------
 
@@ -88,13 +88,12 @@ export type ProportionByInteractionState = Partial<Record<InteractionState, Pixe
 // Appearance --------------------------------------------------------------------------------------
 
 export enum CssDecorationProperty {
-  textFontFamily = 'font-family',
+  textFont = 'font-family',
   textItalic = 'font-style',
   textWeight = 'font-weight',
   textLineType = 'text-decoration',
   textAlign = 'text-align',
-  borderStyle = 'border-style',
-  shadowBlur = 'box-shadow'
+  borderStyle = 'border-style'
 }
 
 export type DecorationProperty = keyof typeof CssDecorationProperty;
@@ -113,20 +112,9 @@ export type DecorationProperty = keyof typeof CssDecorationProperty;
  * however, their dynamic behavior is specific to rendering.
  */
 export interface DecorationSchema {
-  // Text
-  // TODO: test font family
-  textFontFamily?: TextFontFamilyValue[];
+  textFont?: TextFontValue[];
   textItalic?: TextItalicValue;
   textWeight?: TextWeightValue;
   textDecoration?: TextLineTypeValue;
   textAlign?: TextAlignValue;
-
-  // Border
-  borderStyle?: BorderStyleValue;
-
-  // Shadow
-  shadowBlur?: ProportionByInteractionState;
-  shadowY?: ProportionByInteractionState;
-  shadowX?: ProportionByInteractionState;
-  shadowColor?: Partial<Record<InteractionState, SolidColor>>;
 }

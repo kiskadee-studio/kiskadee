@@ -1,5 +1,5 @@
 import type { ComponentName, Schema } from '@kiskadee/schema';
-import { convertElementAppearanceToStyleKey } from './appearance/convertElementAppearanceToStyleKey';
+import { convertElementDecorationToStyleKeys } from './appearance/convertElementDecorationToStyleKeys';
 import { convertColorsToStyleKeys } from './colors/convertColorsToStyleKeys';
 import { styleKeyUsageMap } from '../utils';
 import { convertDimensionsToStyleKey } from './dimensions/convertDimensionsToStyleKey';
@@ -22,21 +22,17 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
     for (const elementName in component?.elements) {
       const element = component.elements[elementName];
 
-      if (element.appearance) {
-        console.log({ appearance: element.appearance });
-        const appearanceClassNameMap = convertElementAppearanceToStyleKey(
-          componentName,
-          elementName,
-          element.appearance
-        );
+      if (element.decorations) {
+        console.log({ appearance: element.decorations });
+        const appearanceClassNameMap = convertElementDecorationToStyleKeys(element.decorations);
         console.log({ appearanceClassNameMap: JSON.stringify(appearanceClassNameMap) });
       }
 
-      if (element.dimensions) {
+      if (element.scales) {
         const dimensionsClassNameMap = convertDimensionsToStyleKey(
           componentName,
           elementName,
-          element.dimensions
+          element.scales
         );
         console.log({ dimensionsClassNameMap: JSON.stringify(dimensionsClassNameMap) });
       }
