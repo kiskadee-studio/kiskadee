@@ -1,4 +1,4 @@
-import type { DecorationSchema } from './types/appearance/appearance.types';
+import type { DecorationSchema } from './types/decoration/decoration.types';
 import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';

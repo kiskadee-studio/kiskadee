@@ -1,4 +1,4 @@
-import type { DecorationSchema } from './appearance.types';
+import type { DecorationSchema } from './decoration.types';
 
 const buttonDecoration: DecorationSchema = {
   textFont: ['Arial', 'Helvetica'],
