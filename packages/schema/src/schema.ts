@@ -2,6 +2,7 @@ import type { DecorationSchema } from './types/appearance/appearance.types';
 import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';
+import type { EffectSchema } from './types/effect/effect.types';
 
 // Nome de todos os componentes suportados
 export type ComponentName = 'button' | 'tab';
@@ -10,13 +11,14 @@ export type ComponentName = 'button' | 'tab';
 type PaletteName = string;
 
 // TODO: Does this partial structure make sense?
-type ElementStyle = {
-  decorations?: DecorationSchema;
-  scales?: ScaleSchema;
+type ElementStyle = Partial<{
+  decorations: DecorationSchema;
+  scales: ScaleSchema;
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
-  palettes?: Record<PaletteName, ColorSchema>;
-};
+  palettes: Record<PaletteName, ColorSchema>;
+  effects: EffectSchema;
+}>;
 
 type Elements = Record<ElementName, ElementStyle>;
 
@@ -91,25 +93,11 @@ export const schema: Schema = {
           decorations: {
             textItalic: true,
             textWeight: 'bold',
-            textDecoration: 'underline',
+            textLineType: 'underline',
             // textTransform: 'uppercase',
             textAlign: 'center',
             // cursor: 'pointer',
-            borderStyle: 'solid',
-            shadowColor: { rest: [0, 0, 0, 0.5] },
-            shadowBlur: {
-              // TODO: setting rest makes sense for shadow?
-              rest: 0,
-              hover: 4
-            },
-            shadowY: {
-              rest: 0,
-              hover: 4
-            },
-            shadowX: {
-              rest: 0,
-              hover: 4
-            }
+            borderStyle: 'solid'
 
             // TODO: maybe
             // verticalAlign: 'middle',
@@ -168,6 +156,24 @@ export const schema: Schema = {
             },
             p2: {
               boxColor: { rest: [0, 0, 0, 0.5] }
+            }
+          },
+          effects: {
+            shadow: {
+              color: { rest: [0, 0, 0, 0.5] },
+              blur: {
+                // TODO: setting rest makes sense for shadow?
+                rest: 0,
+                hover: 4
+              },
+              y: {
+                rest: 0,
+                hover: 4
+              },
+              x: {
+                rest: 0,
+                hover: 4
+              }
             }
           }
         },

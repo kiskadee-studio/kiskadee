@@ -80,11 +80,6 @@ export enum CssBorderStyleValue {
   solid = 'solid'
 }
 
-// Shadow ------------------------------------------------------------------------------------------
-
-/** Represents a shadow property that can have different numeric values for various interaction states. */
-export type ProportionByInteractionState = Partial<Record<InteractionState, PixelValue>>;
-
 // Appearance --------------------------------------------------------------------------------------
 
 export enum CssDecorationProperty {
@@ -115,6 +110,7 @@ export interface DecorationSchema {
   textFont?: TextFontValue[];
   textItalic?: TextItalicValue;
   textWeight?: TextWeightValue;
-  textDecoration?: TextLineTypeValue;
+  textLineType?: TextLineTypeValue;
   textAlign?: TextAlignValue;
+  borderStyle?: BorderStyleValue;
 }
