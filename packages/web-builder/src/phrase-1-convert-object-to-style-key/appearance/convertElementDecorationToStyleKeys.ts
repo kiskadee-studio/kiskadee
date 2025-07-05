@@ -2,7 +2,8 @@ import type {
   DecorationSchema,
   ClassNameMap,
   InteractionState,
-  SolidColor
+  SolidColor,
+  StyleKeyByElement
 } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 
@@ -37,30 +38,22 @@ function getShadowValue<T>(
  *       rest:     shadow__[x,y,blur,[r,g,b,a]]
  *       non-rest: shadow--{state}__[x,y,blur,[r,g,b,a]]
  */
-export function convertElementAppearanceToStyleKey(
-  componentName: string,
-  elementName: string,
-  appearance: DecorationSchema
-): ClassNameMap {
-  let elementStyleKeyMap: ClassNameMap = {};
+export function convertElementDecorationToStyleKeys(
+  decoration: DecorationSchema
+): StyleKeyByElement['decorations'] {
+  const styleKeys: StyleKeyByElement['decorations'] = [];
 
-  for (const [property, value] of Object.entries(appearance)) {
+  for (const [property, v] of Object.entries(decoration)) {
     if (property.startsWith('shadow') === false) {
       if (
-        typeof value === 'boolean' ||
-        typeof value === 'string' ||
-        typeof value === 'number' ||
-        Array.isArray(value)
+        typeof v === 'boolean' ||
+        typeof v === 'string' ||
+        typeof v === 'number' ||
+        Array.isArray(v)
       ) {
-        const formattedValue = Array.isArray(value) ? JSON.stringify(value) : value;
-        const styleKey = `${property}__${formattedValue}`;
-        elementStyleKeyMap = updateElementStyleKeyMap(
-          elementStyleKeyMap,
-          componentName,
-          elementName,
-          'rest',
-          styleKey
-        );
+        const value = Array.isArray(v) ? JSON.stringify(v) : v;
+        const styleKey = `${property}__${value}`;
+        styleKeys.push(styleKey);
       }
     }
   }
@@ -69,13 +62,13 @@ export function convertElementAppearanceToStyleKey(
   // So we need to combine all shadow properties into a unified value for each state.
 
   const hasShadowProperty =
-    'shadowColor' in appearance ||
-    'shadowX' in appearance ||
-    'shadowY' in appearance ||
-    'shadowBlur' in appearance;
+    'shadowColor' in decoration ||
+    'shadowX' in decoration ||
+    'shadowY' in decoration ||
+    'shadowBlur' in decoration;
 
   if (hasShadowProperty === true) {
-    const { shadowX = {}, shadowY = {}, shadowBlur = {}, shadowColor = {} } = appearance;
+    const { shadowX = {}, shadowY = {}, shadowBlur = {}, shadowColor = {} } = decoration;
     const allStates = new Set<InteractionState>([
       ...Object.keys(shadowX),
       ...Object.keys(shadowY),
@@ -94,15 +87,16 @@ export function convertElementAppearanceToStyleKey(
           ? `shadow__[${x},${y},${blur},${JSON.stringify(color)}]`
           : `shadow--${state}__[${x},${y},${blur},${JSON.stringify(color)}]`;
 
-      elementStyleKeyMap = updateElementStyleKeyMap(
-        elementStyleKeyMap,
-        componentName,
-        elementName,
-        state,
-        styleKey
-      );
+      // elementStyleKeyMap = updateElementStyleKeyMap(
+      //   elementStyleKeyMap,
+      //   componentName,
+      //   elementName,
+      //   state,
+      //   styleKey
+      // );
+      styleKeys.push(styleKey);
     }
   }
 
-  return elementStyleKeyMap;
+  return styleKeys;
 }
