@@ -1,5 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`convertElementDecorationToStyleKeys > borderStyle style key generation > generates the borderStyle__dashed style key for dashed border style 1`] = `"borderStyle__dashed"`;
+
+exports[`convertElementDecorationToStyleKeys > borderStyle style key generation > generates the borderStyle__dotted style key for dotted border style 1`] = `"borderStyle__dotted"`;
+
+exports[`convertElementDecorationToStyleKeys > borderStyle style key generation > generates the borderStyle__none style key for none border style 1`] = `"borderStyle__none"`;
+
+exports[`convertElementDecorationToStyleKeys > borderStyle style key generation > generates the borderStyle__solid style key for solid border style 1`] = `"borderStyle__solid"`;
+
 exports[`convertElementDecorationToStyleKeys > textAlign style key generation > generates the textAlign__center style key for center text alignment 1`] = `"textAlign__center"`;
 
 exports[`convertElementDecorationToStyleKeys > textAlign style key generation > generates the textAlign__left style key for left text alignment 1`] = `"textAlign__left"`;

@@ -105,28 +105,28 @@ describe('convertElementDecorationToStyleKeys', () => {
     });
   });
 
-  describe('textDecoration style key generation', () => {
-    it('generates the textDecoration__none style key for none text decoration', () => {
-      const decoration: DecorationSchema = { textDecoration: 'none' };
+  describe('textLineType style key generation', () => {
+    it('generates the textLineType__none style key for none line type', () => {
+      const decoration: DecorationSchema = { textLineType: 'none' };
       const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
 
-      expect(styleKey).toEqual('textDecoration__none');
+      expect(styleKey).toEqual('textLineType__none');
       expect(styleKey).toMatchSnapshot();
     });
 
-    it('generates the textDecoration__underline style key for underline text decoration', () => {
-      const decoration: DecorationSchema = { textDecoration: 'underline' };
+    it('generates the textLineType__underline style key for underline line type', () => {
+      const decoration: DecorationSchema = { textLineType: 'underline' };
       const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
 
-      expect(styleKey).toEqual('textDecoration__underline');
+      expect(styleKey).toEqual('textLineType__underline');
       expect(styleKey).toMatchSnapshot();
     });
 
-    it('generates the textDecoration__lineThrough style key for line-through text decoration', () => {
-      const decoration: DecorationSchema = { textDecoration: 'lineThrough' };
+    it('generates the textLineType__lineThrough style key for lineThrough line type', () => {
+      const decoration: DecorationSchema = { textLineType: 'lineThrough' };
       const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
 
-      expect(styleKey).toEqual('textDecoration__lineThrough');
+      expect(styleKey).toEqual('textLineType__lineThrough');
       expect(styleKey).toMatchSnapshot();
     });
   });
@@ -153,6 +153,40 @@ describe('convertElementDecorationToStyleKeys', () => {
       const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textAlign__right');
+      expect(styleKey).toMatchSnapshot();
+    });
+  });
+
+  describe('borderStyle style key generation', () => {
+    it('generates the borderStyle__none style key for none border style', () => {
+      const decoration: DecorationSchema = { borderStyle: 'none' };
+      const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
+
+      expect(styleKey).toEqual('borderStyle__none');
+      expect(styleKey).toMatchSnapshot();
+    });
+
+    it('generates the borderStyle__dotted style key for dotted border style', () => {
+      const decoration: DecorationSchema = { borderStyle: 'dotted' };
+      const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
+
+      expect(styleKey).toEqual('borderStyle__dotted');
+      expect(styleKey).toMatchSnapshot();
+    });
+
+    it('generates the borderStyle__dashed style key for dashed border style', () => {
+      const decoration: DecorationSchema = { borderStyle: 'dashed' };
+      const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
+
+      expect(styleKey).toEqual('borderStyle__dashed');
+      expect(styleKey).toMatchSnapshot();
+    });
+
+    it('generates the borderStyle__solid style key for solid border style', () => {
+      const decoration: DecorationSchema = { borderStyle: 'solid' };
+      const styleKey = convertElementDecorationToStyleKeys(decoration)[0];
+
+      expect(styleKey).toEqual('borderStyle__solid');
       expect(styleKey).toMatchSnapshot();
     });
   });
