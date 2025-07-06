@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`convertElementDecorationToStyleKeys > shadow > should generate shadow style key with multiple interaction states and proper inheritance 1`] = `
+{
+  "focus": [
+    "shadow--focus__[12,16,3,[10,20,30,0.8]]",
+  ],
+  "hover": [
+    "shadow--hover__[5,10,3,[50,60,70,0.9]]",
+  ],
+  "rest": [
+    "shadow--rest__[5,8,3,[10,20,30,0.8]]",
+  ],
+}
+`;
+
+exports[`convertElementDecorationToStyleKeys > shadow > should generate shadow style keys inheriting missing properties for rest and hover 1`] = `
+{
+  "hover": [
+    "shadow--hover__[20,15,5,[0,0,0,0.5]]",
+  ],
+  "rest": [
+    "shadow--rest__[10,15,5,[0,0,0,0.5]]",
+  ],
+}
+`;
+
+exports[`convertElementDecorationToStyleKeys > shadow > should generate style key with shadow default values for rest and hover states 1`] = `
+{
+  "hover": [
+    "shadow--hover__[25,0,0,[0,0,0,1]]",
+  ],
+  "rest": [
+    "shadow--rest__[0,0,0,[0,0,0,1]]",
+  ],
+}
+`;

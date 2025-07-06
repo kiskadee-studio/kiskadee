@@ -1,5 +1,4 @@
-import type { ShadowByInteractionState } from './shadow.types';
-import type { InteractionState, SolidColor } from '../palettes/palettes.types';
+import type { ShadowSchema } from './shadow.types';
 
 export interface EffectSchema {
   // backgroundBlur: {
@@ -8,10 +7,5 @@ export interface EffectSchema {
   // },
   // resizeOnClick: {},
   // glass: {},
-  shadow?: Partial<{
-    blur: ShadowByInteractionState;
-    color: Partial<Record<InteractionState, SolidColor>>;
-    y: ShadowByInteractionState;
-    x: ShadowByInteractionState;
-  }>;
+  shadow?: Partial<ShadowSchema>;
 }

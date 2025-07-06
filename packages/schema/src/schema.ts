@@ -32,7 +32,7 @@ type StyleKey = string;
 export type ElementName = string;
 
 // Mapping of style keys by interaction state per element
-type StyleKeysByInteractionState = Record<InteractionState, StyleKey[]>;
+export type StyleKeysByInteractionState = Partial<Record<InteractionState, StyleKey[]>>;
 
 export interface StyleKeyByElement {
   decorations: StyleKey[];

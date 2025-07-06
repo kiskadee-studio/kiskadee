@@ -30,6 +30,12 @@ exports[`convertElementDecorationToStyleKeys > textItalic style key generation >
 
 exports[`convertElementDecorationToStyleKeys > textItalic style key generation > generates the textItalic__true style key when italic is enabled 1`] = `"textItalic__true"`;
 
+exports[`convertElementDecorationToStyleKeys > textLineType style key generation > generates the textLineType__lineThrough style key for lineThrough line type 1`] = `"textLineType__lineThrough"`;
+
+exports[`convertElementDecorationToStyleKeys > textLineType style key generation > generates the textLineType__none style key for none line type 1`] = `"textLineType__none"`;
+
+exports[`convertElementDecorationToStyleKeys > textLineType style key generation > generates the textLineType__underline style key for underline line type 1`] = `"textLineType__underline"`;
+
 exports[`convertElementDecorationToStyleKeys > textWeight style key generation > generates the textWeight__black style key for black font weight 1`] = `"textWeight__black"`;
 
 exports[`convertElementDecorationToStyleKeys > textWeight style key generation > generates the textWeight__bold style key for bold font weight 1`] = `"textWeight__bold"`;
