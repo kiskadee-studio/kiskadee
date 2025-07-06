@@ -85,6 +85,7 @@ export type InteractionStateColorMap = {
   rest: Color;
 } & Partial<Record<Exclude<InteractionState, 'rest'>, ColorValue>>;
 
+// TODO: add a new layer of semantic colors
 /**
  * Semantic color tokens that convey the purpose of each color:
  *

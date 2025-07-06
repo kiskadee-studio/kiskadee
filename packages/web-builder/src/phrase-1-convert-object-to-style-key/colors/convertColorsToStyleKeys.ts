@@ -1,77 +1,83 @@
 import type {
-  ClassNameMap,
   SemanticColor,
   InteractionState,
-  ColorSchema,
   ColorProperty,
-  ComponentName,
-  ElementName
+  StyleKeyByElement,
+  ElementStyle,
+  PaletteName
 } from '@kiskadee/schema';
-import { updateElementStyleKeyMap } from '../../utils';
+import { update } from 'lodash';
 
 /**
- * Generates a ClassNameMap of style keys from a Palettes object for each interaction state.
+ * Generates a nested map of style key strings from a given palettes definition.
  *
- * Supports both:
- *  - Direct interaction‐state maps (`InteractionStateColorMap`):
- *      when the value has a 'rest' key, it's treated as a single semantic color under 'primary'.
- *  - Semantic color maps (`SemanticColorMap`): iterate each semantic color (primary, secondary,
- *      danger, etc.).
+ * Each palette contains color properties (e.g., background, text), each either:
+ *   - an InteractionStateColorMap (with 'rest', 'hover', etc.)
+ *   - a map of semantic colors (primary, secondary, danger, etc.), each mapping to InteractionStateColorMap.
  *
- * Style‐key format:
- *  - Rest state:
- *      {property}__[ref::]{JSON-stringified color}
- *  - Other states:
- *      {property}--{state}__[JSON-stringified color][::ref]
+ * For direct interaction‐state maps (those with a 'rest' key), the semantic color is treated as 'neutral'.
+ * Otherwise, all defined semantic colors are iterated.
  *
- * Presence of a reference (`{ ref: Color }`) is encoded as:
- *  - 'ref::' prefix on rest keys
- *  - '::ref' suffix on non-rest keys
+ * For each color property, semantic color, and interaction state, a style key is generated encoding
+ * the property, state, and color value.
  *
- * @param componentName    Name of the component used to namespace style keys.
- * @param elementName      Name of the element within the component.
- * @param colorPropertyMap Palettes object defining colors per property, semantic color, and state.
- * @returns A ClassNameMap mapping component → element → interaction state → style keys array.
+ * Style key format:
+ *   - Rest state:
+ *       "{property}__[<optional 'ref::'>]{JSON-stringified color}"
+ *   - Other states:
+ *       "{property}--{state}[<optional '::ref'>]__{JSON-stringified color}"
+ *
+ * A color reference (an object with a 'ref' field) is indicated by:
+ *   - 'ref::' prefix on rest keys
+ *   - '::ref' suffix on non-rest keys
+ *
+ * @param palettes  Object mapping palette names to color property definitions, each defining
+ *                  either an interaction‐state map or a semantic color map.
+ * @returns A nested map: paletteName → semanticColor → interactionState → array of style keys.
  */
-
 export function convertColorsToStyleKeys(
-  componentName: ComponentName,
-  elementName: ElementName,
-  colorPropertyMap: ColorSchema
-): ClassNameMap {
-  let elementStyleKeyMap: ClassNameMap = {};
+  palettes: ElementStyle['palettes']
+): StyleKeyByElement['palettes'] {
+  const styleKeys: StyleKeyByElement['palettes'] = {};
 
-  for (const p in colorPropertyMap) {
-    const propertyName = p as ColorProperty;
-    const colorEntry = colorPropertyMap[propertyName];
-    if (colorEntry === undefined) continue;
+  for (const p in palettes) {
+    const paletteName = p as PaletteName;
+    const colorSchema = palettes[paletteName];
 
-    const isInteractionState = 'rest' in colorEntry;
-    const semanticColorMap = isInteractionState ? { primary: colorEntry } : colorEntry;
+    for (const c in colorSchema) {
+      const colorProperty = c as ColorProperty;
+      const colorEntry = colorSchema[colorProperty];
+      if (colorEntry === undefined) continue;
 
-    for (const semanticColor in semanticColorMap) {
-      const interactionStateMap = semanticColorMap[semanticColor as SemanticColor];
-      for (const i in interactionStateMap) {
-        const interactionState = i as InteractionState;
-        const colorOrRef = interactionStateMap[interactionState];
-        const hasRef = typeof colorOrRef === 'object' && 'ref' in colorOrRef;
-        const color = JSON.stringify(hasRef ? colorOrRef?.ref : colorOrRef);
+      const isInteractionState = 'rest' in colorEntry;
+      const semanticColorMap = isInteractionState ? { neutral: colorEntry } : colorEntry;
 
-        const styleKey =
-          interactionState === 'rest'
-            ? `${propertyName}__${hasRef ? 'ref::' : ''}${color}`
-            : `${propertyName}--${interactionState}${hasRef ? '::ref' : ''}__${color}`;
+      for (const s in semanticColorMap) {
+        const semanticColor = s as SemanticColor;
+        const interactionStateMap = semanticColorMap[semanticColor];
+        for (const i in interactionStateMap) {
+          const interactionState = i as InteractionState;
+          const colorValue = interactionStateMap[interactionState];
+          const hasRef = typeof colorValue === 'object' && 'ref' in colorValue;
+          const color = JSON.stringify(hasRef ? colorValue?.ref : colorValue);
 
-        elementStyleKeyMap = updateElementStyleKeyMap(
-          elementStyleKeyMap,
-          componentName,
-          elementName,
-          interactionState,
-          styleKey
-        );
+          const styleKey =
+            interactionState === 'rest'
+              ? `${colorProperty}__${hasRef ? 'ref::' : ''}${color}`
+              : `${colorProperty}--${interactionState}${hasRef ? '::ref' : ''}__${color}`;
+
+          update(
+            styleKeys,
+            [paletteName, semanticColor, interactionState],
+            (arr: string[] = []) => {
+              arr.push(styleKey);
+              return arr;
+            }
+          );
+        }
       }
     }
   }
 
-  return elementStyleKeyMap;
+  return styleKeys;
 }

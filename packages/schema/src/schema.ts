@@ -8,15 +8,16 @@ import type { EffectSchema } from './types/effect/effect.types';
 export type ComponentName = 'button' | 'tab';
 
 // Unique identifier for each color palette variation within a theme
-type PaletteName = string;
+export type PaletteName = string;
 
-// TODO: Does this partial structure make sense?
-type ElementStyle = Partial<{
+export type PaletteSchema = Record<PaletteName, ColorSchema>;
+
+export type ElementStyle = Partial<{
   decorations: DecorationSchema;
   scales: ScaleSchema;
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
-  palettes: Record<PaletteName, ColorSchema>;
+  palettes: PaletteSchema;
   effects: EffectSchema;
 }>;
 
@@ -34,16 +35,15 @@ export type ElementName = string;
 // Mapping of style keys by interaction state per element
 export type StyleKeysByInteractionState = Partial<Record<InteractionState, StyleKey[]>>;
 
+export type InteractionStateBySemanticColor = Partial<{
+  [K in SemanticColor]: StyleKeysByInteractionState;
+}>;
+
 export interface StyleKeyByElement {
   decorations: StyleKey[];
   effects: StyleKeysByInteractionState;
   scales: Record<ElementSizeValue, StyleKeysByInteractionState>;
-  palettes: Record<
-    PaletteName,
-    {
-      [K in SemanticColor]?: StyleKeysByInteractionState;
-    }
-  >;
+  palettes: Record<PaletteName, InteractionStateBySemanticColor>;
 }
 
 export type ComponentStyleKeyMap = Partial<{
