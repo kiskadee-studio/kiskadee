@@ -59,7 +59,7 @@ export function convertColorsToStyleKeys(
           const interactionState = i as InteractionState;
           const colorValue = interactionStateMap[interactionState];
           const hasRef = typeof colorValue === 'object' && 'ref' in colorValue;
-          const color = JSON.stringify(hasRef ? colorValue?.ref : colorValue);
+          const color = JSON.stringify(hasRef ? colorValue.ref : colorValue);
 
           const styleKey =
             interactionState === 'rest'
