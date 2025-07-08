@@ -1,9 +1,9 @@
-import type { ColorSchema, PaletteSchema } from '@kiskadee/schema';
+import type { PaletteSchema } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { convertColorsToStyleKeys } from './convertColorsToStyleKeys';
 
 describe('convertColorsToStyleKeys', () => {
-  it('should process a palette property without ref', () => {
+  it('generates style keys for palette property without reference', () => {
     const palettes: PaletteSchema = {
       p1: {
         boxColor: {
@@ -23,9 +23,10 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     });
+    expect(result).toMatchSnapshot();
   });
 
-  it('should process a palette property with a ref value', () => {
+  it('generates style keys for palette property with a reference value', () => {
     const palettes: PaletteSchema = {
       p1: {
         borderColor: {
@@ -47,12 +48,14 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     });
+    expect(result).toMatchSnapshot();
   });
 
-  it('should process multiple palette entries', () => {
+  it('generates style keys for multiple palette entries', () => {
     const palettes: PaletteSchema = {
       p1: {
         textColor: {
+          // propriedade > semantic > state
           primary: {
             rest: [120, 50, 50, 1],
             hover: { ref: [240, 50, 50, 0.5] }
@@ -90,5 +93,30 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     });
+    expect(result).toMatchSnapshot();
+  });
+
+  it('treats direct interaction-state map as neutral semantic color', () => {
+    const palettes: PaletteSchema = {
+      p1: {
+        // Direct interaction‐state map: no semantic keys, should map to "neutral"
+        boxColor: {
+          rest: [0, 128, 255, 1],
+          hover: { ref: [0, 128, 255, 0.5] }
+        }
+      }
+    };
+
+    const result = convertColorsToStyleKeys(palettes);
+
+    expect(result).toEqual({
+      p1: {
+        neutral: {
+          rest: ['boxColor__[0,128,255,1]'],
+          hover: ['boxColor--hover::ref__[0,128,255,0.5]']
+        }
+      }
+    });
+    expect(result).toMatchSnapshot();
   });
 });

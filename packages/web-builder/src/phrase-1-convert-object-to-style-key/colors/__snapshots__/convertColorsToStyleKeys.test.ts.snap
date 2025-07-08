@@ -1,0 +1,72 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`convertColorsToStyleKeys > should process a palette property with a ref value 1`] = `
+{
+  "p1": {
+    "primary": {
+      "hover": [
+        "borderColor--hover::ref__[255,255,255,0.1]",
+      ],
+      "rest": [
+        "borderColor__[255,255,255,1]",
+      ],
+    },
+  },
+}
+`;
+
+exports[`convertColorsToStyleKeys > should process a palette property without ref 1`] = `
+{
+  "p1": {
+    "primary": {
+      "rest": [
+        "boxColor__[45,100,50,1]",
+      ],
+    },
+  },
+}
+`;
+
+exports[`convertColorsToStyleKeys > should process multiple palette entries 1`] = `
+{
+  "p1": {
+    "danger": {
+      "focus": [
+        "borderColor--focus::ref__[10,20,30,0.1]",
+      ],
+      "rest": [
+        "borderColor__[0,0,0,0.02]",
+      ],
+    },
+    "primary": {
+      "hover": [
+        "textColor--hover::ref__[240,50,50,0.5]",
+      ],
+      "rest": [
+        "textColor__[120,50,50,1]",
+        "borderColor__[120,50,50,1]",
+      ],
+    },
+    "secondary": {
+      "rest": [
+        "textColor__[240,50,50,0.5]",
+      ],
+    },
+  },
+}
+`;
+
+exports[`convertColorsToStyleKeys > should treat a direct interaction‐state map as neutral semantic color 1`] = `
+{
+  "p1": {
+    "neutral": {
+      "hover": [
+        "boxColor--hover::ref__[0,128,255,0.5]",
+      ],
+      "rest": [
+        "boxColor__[0,128,255,1]",
+      ],
+    },
+  },
+}
+`;

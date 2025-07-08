@@ -13,13 +13,14 @@ import { update } from 'lodash';
  *
  * Each palette contains color properties (e.g., background, text), each either:
  *   - an InteractionStateColorMap (with 'rest', 'hover', etc.)
- *   - a map of semantic colors (primary, secondary, danger, etc.), each mapping to InteractionStateColorMap.
+ *   - a map of semantic colors (primary, secondary, danger, etc.), each mapping to an InteractionStateColorMap.
  *
- * For direct interaction‐state maps (those with a 'rest' key), the semantic color is treated as 'neutral'.
- * Otherwise, all defined semantic colors are iterated.
+ * A direct InteractionStateColorMap (identified by the presence of 'rest' at the top level)
+ * is treated as a single "neutral" semantic color entry. This ensures that palettes without
+ * explicit semantic variants still produce a consistent structure under the semanticColor key "neutral".
  *
- * For each color property, semantic color, and interaction state, a style key is generated encoding
- * the property, state, and color value.
+ * For each color property, semantic color, and interaction state, a style key is generated
+ * encoding the property, state, and color value.
  *
  * Style key format:
  *   - Rest state:
@@ -32,7 +33,7 @@ import { update } from 'lodash';
  *   - '::ref' suffix on non-rest keys
  *
  * @param palettes  Object mapping palette names to color property definitions, each defining
- *                  either an interaction‐state map or a semantic color map.
+ *                  either an InteractionStateColorMap or a SemanticColorMap.
  * @returns A nested map: paletteName → semanticColor → interactionState → array of style keys.
  */
 export function convertColorsToStyleKeys(
