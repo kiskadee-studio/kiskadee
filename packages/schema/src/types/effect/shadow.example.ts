@@ -1,6 +1,6 @@
-import type { EffectSchema } from './effect.types';
+import type { ElementEffects } from './effect.types';
 
-const buttonEffects: EffectSchema = {
+const buttonEffects: ElementEffects = {
   shadow: {
     color: { rest: [0, 0, 0, 0.5] },
     blur: { rest: 5, hover: 10 },

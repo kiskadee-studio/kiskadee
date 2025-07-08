@@ -1,11 +1,22 @@
 import type { ShadowSchema } from './shadow.types';
+import type { SolidColor } from '../palettes/palettes.types';
 
-export interface EffectSchema {
-  // backgroundBlur: {
+export type ElementEffects = Partial<{
+  // blur: {
   //   intensity: number;
   //   color: string;
   // },
   // resizeOnClick: {},
   // glass: {},
-  shadow?: Partial<ShadowSchema>;
-}
+  // reflect
+  shadow: Partial<ShadowSchema>;
+}>;
+
+export type GlobalEffects = Partial<{
+  trackingFocus: boolean;
+  ripple: {
+    bounded: boolean;
+    origin: 'center' | 'pointer';
+    color: SolidColor;
+  };
+}>;

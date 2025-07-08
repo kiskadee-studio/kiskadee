@@ -2,7 +2,7 @@ import type { DecorationSchema } from './types/decoration/decoration.types';
 import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';
-import type { EffectSchema } from './types/effect/effect.types';
+import type { ElementEffects } from './types/effect/effect.types';
 
 // Nome de todos os componentes suportados
 export type ComponentName = 'button' | 'tab';
@@ -18,7 +18,7 @@ export type ElementStyle = Partial<{
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
   palettes: PaletteSchema;
-  effects: EffectSchema;
+  effects: ElementEffects;
 }>;
 
 type Elements = Record<ElementName, ElementStyle>;
