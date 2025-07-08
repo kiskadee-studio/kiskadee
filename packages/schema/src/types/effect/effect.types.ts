@@ -13,7 +13,9 @@ export type ElementEffects = Partial<{
 }>;
 
 export type GlobalEffects = Partial<{
-  trackingFocus: boolean;
+  focusTrail: {
+    color: SolidColor;
+  };
   ripple: {
     bounded: boolean;
     origin: 'center' | 'pointer';
