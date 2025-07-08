@@ -48,6 +48,11 @@
   until then this remains as a rule.
 - Shadow was already part of appearance, but it became clearer that shadow is an effect, just like
   a blurred background or glass effect.
+- There are global effects like Ripple and Focus as well as element-level effects like Shadow.
+  However, shadows are often only applied to the container element (for example, a card) and not to
+  its internal elements. Future consideration: assess whether shadow should be moved to component-
+  level configuration instead of element-level to better support container shadows.
+
 
 ## 5. Typography
 - Choosing named font weights improves clarity and maintainability by providing semantic context: it
@@ -88,3 +93,10 @@
   `boxColor` (`background-color`). Terms related to text and fonts are standardized as well: instead
   of `fontName` or simply `Color`, we prefix them with `text`, resulting in `textFont`, 
   `textDecoration`, and `textColor`.
+
+## 10. Default Properties
+The default size for elements and consequently components is medium, as is the font size, which is
+16px. The default interaction state is rest, and all other interaction states inherit the style from
+the rest state. The default semantic color is "neutral". The default text alignment is left.
+
+Existem efeitos globais como Ripple e Focus assim como efeitos a nível de elementos como Shadow, porém há a change de sombras não serem de fato usadas dentro de um elemento container, exemplo, um componente card, isto é, a sombra fica no card e os elementos internos ficam sem sombra. Se isso for caso de uso frequente, talvez seja melhor configurar a sombra a nível de componente e não nível de elemento.
