@@ -1,4 +1,5 @@
 import type { DecorationSchema, StyleKeyByElement } from '@kiskadee/schema';
+import { buildStyleKey } from '../utils/buildStyeKey';
 
 /**
  * Generates style key strings from an element's decoration schema.
@@ -19,15 +20,14 @@ export function convertElementDecorationToStyleKeys(
 ): StyleKeyByElement['decorations'] {
   const styleKeys: StyleKeyByElement['decorations'] = [];
 
-  for (const [property, v] of Object.entries(decoration)) {
+  for (const [propertyName, value] of Object.entries(decoration)) {
     if (
-      typeof v === 'boolean' ||
-      typeof v === 'string' ||
-      typeof v === 'number' ||
-      Array.isArray(v)
+      typeof value === 'boolean' ||
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      Array.isArray(value)
     ) {
-      const value = Array.isArray(v) ? JSON.stringify(v) : v;
-      const styleKey = `${property}__${value}`;
+      const styleKey = buildStyleKey({ propertyName, value });
       styleKeys.push(styleKey);
     }
   }

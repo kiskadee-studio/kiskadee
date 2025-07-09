@@ -19,7 +19,7 @@ describe('convertColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['boxColor__[45,100,50,1]']
+          rest: ['boxColor--rest__[45,100,50,1]']
         }
       }
     });
@@ -43,8 +43,8 @@ describe('convertColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['borderColor__[255,255,255,1]'],
-          hover: ['borderColor--hover::ref__[255,255,255,0.1]']
+          rest: ['borderColor--rest__[255,255,255,1]'],
+          hover: ['borderColor==hover__[255,255,255,0.1]']
         }
       }
     });
@@ -55,7 +55,6 @@ describe('convertColorsToStyleKeys', () => {
     const palettes: PaletteSchema = {
       p1: {
         textColor: {
-          // propriedade > semantic > state
           primary: {
             rest: [120, 50, 50, 1],
             hover: { ref: [240, 50, 50, 0.5] }
@@ -81,15 +80,15 @@ describe('convertColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['textColor__[120,50,50,1]', 'borderColor__[120,50,50,1]'],
-          hover: ['textColor--hover::ref__[240,50,50,0.5]']
+          rest: ['textColor--rest__[120,50,50,1]', 'borderColor--rest__[120,50,50,1]'],
+          hover: ['textColor==hover__[240,50,50,0.5]']
         },
         secondary: {
-          rest: ['textColor__[240,50,50,0.5]']
+          rest: ['textColor--rest__[240,50,50,0.5]']
         },
         danger: {
-          rest: ['borderColor__[0,0,0,0.02]'],
-          focus: ['borderColor--focus::ref__[10,20,30,0.1]']
+          rest: ['borderColor--rest__[0,0,0,0.02]'],
+          focus: ['borderColor==focus__[10,20,30,0.1]']
         }
       }
     });
@@ -112,8 +111,8 @@ describe('convertColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         neutral: {
-          rest: ['boxColor__[0,128,255,1]'],
-          hover: ['boxColor--hover::ref__[0,128,255,0.5]']
+          rest: ['boxColor--rest__[0,128,255,1]'],
+          hover: ['boxColor==hover__[0,128,255,0.5]']
         }
       }
     });

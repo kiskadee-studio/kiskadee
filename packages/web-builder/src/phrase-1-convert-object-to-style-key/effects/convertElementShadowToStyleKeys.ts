@@ -7,6 +7,8 @@ import type {
   StyleKeysByInteractionState
 } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
+import { buildStyleKey } from '../utils/buildStyeKey';
+import { update } from 'lodash';
 
 /**
  * Gets a shadow property value for the given interaction state, falling back to 'rest' then to a
@@ -55,10 +57,13 @@ export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeys
       const shadowY = getShadowValue(y, state, 0);
       const shadowBlur = getShadowValue(blur, state, 0);
       const shadowColor: SolidColor = getShadowValue(color, state, [0, 0, 0, 1]);
-      const styleKey = `shadow--${state}__[${shadowX},${shadowY},${shadowBlur},${JSON.stringify(shadowColor)}]`;
+      const styleKey = buildStyleKey({
+        propertyName: 'shadow',
+        interactionState: state,
+        value: [shadowX, shadowY, shadowBlur, shadowColor]
+      });
 
-      styleKeys[state] = styleKeys[state] ?? [];
-      styleKeys[state].push(styleKey);
+      update(styleKeys, state, (arr = []) => [...arr, styleKey]);
     }
   }
 

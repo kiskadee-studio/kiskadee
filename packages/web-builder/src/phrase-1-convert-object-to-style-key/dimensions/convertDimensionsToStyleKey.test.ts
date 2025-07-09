@@ -50,7 +50,7 @@ describe('convertDimensionsToStyleKey', () => {
     expect(result).toEqual({
       button: {
         e1: {
-          rest: ['textSize__16', 'textSize--s:md:1::bp:lg:2__10']
+          rest: ['textSize__16', 'textSize++s:md:1::bp:lg:2__10']
         }
       }
     });
@@ -71,11 +71,11 @@ describe('convertDimensionsToStyleKey', () => {
         e1: {
           rest: [
             'textSize__14',
-            'textSize--s:sm:1::bp:lg:1__12',
+            'textSize++s:sm:1::bp:lg:1__12',
             'textSize__16',
-            'textSize--s:md:1::bp:lg:1__14',
-            'paddingBottom--s:md:1::bp:sm:1__10',
-            'paddingBottom--s:md:1::bp:lg:2__8',
+            'textSize++s:md:1::bp:lg:1__14',
+            'paddingBottom++s:md:1::bp:sm:1__10',
+            'paddingBottom++s:md:1::bp:lg:2__8',
             'marginTop__20'
           ]
         }

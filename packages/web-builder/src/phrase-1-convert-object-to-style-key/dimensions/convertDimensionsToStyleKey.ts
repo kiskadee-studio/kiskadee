@@ -2,6 +2,7 @@ import type { ScaleSchema } from '@kiskadee/schema';
 import type { ClassNameMap, ElementSizeValue } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 import { elementSizeValues } from '@kiskadee/schema';
+import { buildStyleKey } from '../utils/buildStyeKey';
 
 /**
  * Processes the provided Dimensions object and returns a ClassNameMap
@@ -30,9 +31,9 @@ export function convertDimensionsToStyleKey(
 ): ClassNameMap {
   let elementStyleKeyMap: ClassNameMap = {};
 
-  for (const [property, value] of Object.entries(dimensions)) {
-    if (typeof value === 'number') {
-      const styleKey = `${property}__${value}`;
+  for (const [propertyName, propertyValue] of Object.entries(dimensions)) {
+    if (typeof propertyValue === 'number') {
+      const styleKey = `${propertyName}__${propertyValue}`;
       elementStyleKeyMap = updateElementStyleKeyMap(
         elementStyleKeyMap,
         componentName,
@@ -40,14 +41,15 @@ export function convertDimensionsToStyleKey(
         'rest',
         styleKey
       );
-    } else if (value && typeof value === 'object') {
-      for (const [size, sizeValue] of Object.entries(value as Record<string, unknown>)) {
+    } else if (propertyValue && typeof propertyValue === 'object') {
+      for (const [s, sizeValue] of Object.entries(propertyValue as Record<string, unknown>)) {
+        const size = s as ElementSizeValue;
         if (typeof sizeValue === 'number') {
           const styleKey = (elementSizeValues as readonly ElementSizeValue[]).includes(
             size as ElementSizeValue
           )
-            ? `${property}__${sizeValue}`
-            : `${property}--${size}__${sizeValue}`;
+            ? `${propertyName}__${sizeValue}`
+            : `${propertyName}--${size}__${sizeValue}`;
           elementStyleKeyMap = updateElementStyleKeyMap(
             elementStyleKeyMap,
             componentName,
@@ -56,15 +58,21 @@ export function convertDimensionsToStyleKey(
             styleKey
           );
         } else if (sizeValue && typeof sizeValue === 'object') {
-          for (const [breakpoint, innerVal] of Object.entries(
-            sizeValue as Record<string, number>
-          )) {
+          for (const [breakpoint, value] of Object.entries(sizeValue as Record<string, number>)) {
             const styleKey =
-              (elementSizeValues as readonly ElementSizeValue[]).includes(
-                size as ElementSizeValue
-              ) && breakpoint === 'bp:all'
-                ? `${property}__${innerVal}`
-                : `${property}--${size}::${breakpoint}__${innerVal}`;
+              (elementSizeValues as readonly ElementSizeValue[]).includes(size) &&
+              breakpoint === 'bp:all'
+                ? buildStyleKey({
+                    propertyName,
+                    value
+                  })
+                : buildStyleKey({
+                    propertyName,
+                    size,
+                    value,
+                    breakpoint
+                  });
+
             elementStyleKeyMap = updateElementStyleKeyMap(
               elementStyleKeyMap,
               componentName,

@@ -7,6 +7,7 @@ import type {
   PaletteName
 } from '@kiskadee/schema';
 import { update } from 'lodash';
+import { buildStyleKey } from '../utils/buildStyeKey';
 
 /**
  * Generates a nested map of style key strings from a given palettes definition.
@@ -59,13 +60,15 @@ export function convertColorsToStyleKeys(
         for (const i in interactionStateMap) {
           const interactionState = i as InteractionState;
           const colorValue = interactionStateMap[interactionState];
-          const hasRef = typeof colorValue === 'object' && 'ref' in colorValue;
-          const color = JSON.stringify(hasRef ? colorValue.ref : colorValue);
+          const isRef = typeof colorValue === 'object' && 'ref' in colorValue;
+          const color = JSON.stringify(isRef ? colorValue.ref : colorValue);
 
-          const styleKey =
-            interactionState === 'rest'
-              ? `${colorProperty}__${hasRef ? 'ref::' : ''}${color}`
-              : `${colorProperty}--${interactionState}${hasRef ? '::ref' : ''}__${color}`;
+          const styleKey = buildStyleKey({
+            propertyName: colorProperty,
+            interactionState: interactionState,
+            isRef,
+            value: color
+          });
 
           update(
             styleKeys,
