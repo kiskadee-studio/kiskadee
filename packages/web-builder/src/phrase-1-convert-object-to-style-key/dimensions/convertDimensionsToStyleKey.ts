@@ -1,4 +1,4 @@
-import type { ScaleSchema } from '@kiskadee/schema';
+import type { BreakpointValue, ScaleSchema } from '@kiskadee/schema';
 import type { ClassNameMap, ElementSizeValue } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 import { elementSizeValues } from '@kiskadee/schema';
@@ -33,7 +33,10 @@ export function convertDimensionsToStyleKey(
 
   for (const [propertyName, propertyValue] of Object.entries(dimensions)) {
     if (typeof propertyValue === 'number') {
-      const styleKey = `${propertyName}__${propertyValue}`;
+      const styleKey = buildStyleKey({
+        propertyName,
+        value: propertyValue
+      });
       elementStyleKeyMap = updateElementStyleKeyMap(
         elementStyleKeyMap,
         componentName,
@@ -45,11 +48,10 @@ export function convertDimensionsToStyleKey(
       for (const [s, sizeValue] of Object.entries(propertyValue as Record<string, unknown>)) {
         const size = s as ElementSizeValue;
         if (typeof sizeValue === 'number') {
-          const styleKey = (elementSizeValues as readonly ElementSizeValue[]).includes(
-            size as ElementSizeValue
-          )
-            ? `${propertyName}__${sizeValue}`
-            : `${propertyName}--${size}__${sizeValue}`;
+          const styleKey = buildStyleKey({
+            propertyName,
+            value: sizeValue
+          });
           elementStyleKeyMap = updateElementStyleKeyMap(
             elementStyleKeyMap,
             componentName,
@@ -58,7 +60,8 @@ export function convertDimensionsToStyleKey(
             styleKey
           );
         } else if (sizeValue && typeof sizeValue === 'object') {
-          for (const [breakpoint, value] of Object.entries(sizeValue as Record<string, number>)) {
+          for (const [b, value] of Object.entries(sizeValue as Record<string, number>)) {
+            const breakpoint = b as BreakpointValue;
             const styleKey =
               (elementSizeValues as readonly ElementSizeValue[]).includes(size) &&
               breakpoint === 'bp:all'
