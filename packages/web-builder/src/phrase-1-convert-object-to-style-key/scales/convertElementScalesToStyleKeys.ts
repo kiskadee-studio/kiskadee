@@ -8,21 +8,14 @@ import { buildStyleKey } from '../utils/buildStyeKey';
 import { update } from 'lodash';
 
 /**
- * Converts an element's scale schema into its corresponding style keys,
- * organized by size and breakpoint tokens.
+ * Converts an element's scale schema into style keys organized by size and breakpoint.
  *
- * Iterates over each property in `scales` and generates style keys for:
- *  - Direct numeric values: added under the 's:all' size token.
- *  - Size-specific numbers: added under the corresponding size token.
- *  - Nested breakpoint overrides: added under the size and breakpoint tokens.
+ * Iterates over scale properties to handle direct numeric values, size-specific
+ * numbers, and nested breakpoint overrides, generating style keys with
+ * {@link buildStyleKey} for each dimension.
  *
- * Style key generation uses `buildStyleKey` with these signatures:
- *  - buildStyleKey({ propertyName, value })
- *  - buildStyleKey({ propertyName, size, value })
- *  - buildStyleKey({ propertyName, size, breakpoint, value })
- *
- * @param scales - A ScaleSchema defining dimension values for an element.
- * @returns A StyleKeyByElement['scales'] map from size/breakpoint tokens to arrays of style keys.
+ * @param scales - The ScaleSchema defining element dimension scales.
+ * @returns A map from size and breakpoint tokens to arrays of style key strings.
  */
 export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyByElement['scales'] {
   const styleKeys: StyleKeyByElement['scales'] = {};

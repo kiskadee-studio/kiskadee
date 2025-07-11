@@ -2,18 +2,13 @@ import type { DecorationSchema, StyleKeyByElement } from '@kiskadee/schema';
 import { buildStyleKey } from '../utils/buildStyeKey';
 
 /**
- * Generates style key strings from an element's decoration schema.
+ * Converts an element's decoration schema into style keys.
  *
- * This function does not perform property name or value validation; unit tests guarantee that
- * provided properties and values are valid. Any validation errors will surface in the next phase
- * that converts style keys into CSS rules.
+ * Iterates over each decoration property (boolean, string, number, or array)
+ * and generates a style key string using {@link buildStyleKey}.
  *
- * Processes all primitive and array values uniformly:
- *   - boolean, string, number, or array entries produce a style key in the format
- *     "{property}__{value}" (arrays are JSON-stringified).
- *
- * @param decoration - The DecorationSchema object defining decoration properties.
- * @returns An array of style key strings corresponding to the decoration.
+ * @param decoration - The DecorationSchema defining element decorations.
+ * @returns An array of style key strings for the element's decorations.
  */
 export function convertElementDecorationsToStyleKeys(
   decoration: DecorationSchema

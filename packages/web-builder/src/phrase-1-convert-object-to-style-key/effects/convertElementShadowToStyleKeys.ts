@@ -1,12 +1,9 @@
 import type {
-  ClassNameMap,
   InteractionState,
   ShadowSchema,
   SolidColor,
-  StyleKeyByElement,
   StyleKeysByInteractionState
 } from '@kiskadee/schema';
-import { updateElementStyleKeyMap } from '../../utils';
 import { buildStyleKey } from '../utils/buildStyeKey';
 import { update } from 'lodash';
 
@@ -27,14 +24,14 @@ function getShadowValue<T>(
 }
 
 /**
- * Converts an element's shadow settings into a map of style keys for each interaction state.
+ * Converts an element's shadow schema into style keys organized by interaction state.
  *
- * Handles only shadow schema properties (x, y, blur, color):
- *   - Gathers all interaction states present on any of the properties, plus 'rest'.
- *   - For each state, missing values fall back to 'rest', then to defaults
- *     (0 for x/y offsets and blur, [0,0,0,1] for color).
- *   - Produces keys in the format:
- *       shadow--{state}__[x,y,blur,[r,g,b,a]]
+ * Gathers all interaction states present in the shadow properties (x, y, blur, color),
+ * falls back to 'rest' or defaults for missing values, and generates a combined
+ * shadow style key per state using {@link buildStyleKey}.
+ *
+ * @param shadow - The ShadowSchema defining interaction-based shadow settings.
+ * @returns A map from InteractionState to an array of shadow style key strings.
  */
 export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeysByInteractionState {
   const styleKeys: StyleKeysByInteractionState = {};

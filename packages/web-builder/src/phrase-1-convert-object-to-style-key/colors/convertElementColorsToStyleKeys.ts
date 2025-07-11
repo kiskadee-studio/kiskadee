@@ -11,32 +11,14 @@ import { update } from 'lodash';
 import { buildStyleKey } from '../utils/buildStyeKey';
 
 /**
- * Generates a nested map of style key strings from a given palettes definition.
+ * Converts an element's color palettes schema into nested style keys.
  *
- * Each palette contains color properties (e.g., background, text), each either:
- *   - an InteractionStateColorMap (with 'rest', 'hover', etc.)
- *   - a map of semantic colors (primary, secondary, danger, etc.), each mapping to an InteractionStateColorMap.
+ * Processes each palette and color property, handling both raw InteractionStateColorMap
+ * and semantic color groups, and generates style keys for each interaction state,
+ * including reference indicators, via {@link buildStyleKey}.
  *
- * A direct InteractionStateColorMap (identified by the presence of 'rest' at the top level)
- * is treated as a single "neutral" semantic color entry. This ensures that palettes without
- * explicit semantic variants still produce a consistent structure under the semanticColor key "neutral".
- *
- * For each color property, semantic color, and interaction state, a style key is generated
- * encoding the property, state, and color value.
- *
- * Style key format:
- *   - Rest state:
- *       "{property}__[<optional 'ref::'>]{JSON-stringified color}"
- *   - Other states:
- *       "{property}--{state}[<optional '::ref'>]__{JSON-stringified color}"
- *
- * A color reference (an object with a 'ref' field) is indicated by:
- *   - 'ref::' prefix on rest keys
- *   - '::ref' suffix on non-rest keys
- *
- * @param palettes  Object mapping palette names to color property definitions, each defining
- *                  either an InteractionStateColorMap or a SemanticColorMap.
- * @returns A nested map: paletteName → semanticColor → interactionState → array of style keys.
+ * @param palettes - The ElementColors object defining element palettes.
+ * @returns A nested map of style keys organized by palette name and property.
  */
 export function convertElementColorsToStyleKeys(
   palettes: ElementColors
