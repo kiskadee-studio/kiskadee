@@ -1,4 +1,9 @@
-import type { BreakpointValue, ScaleSchema, StyleKeyByElement } from '@kiskadee/schema';
+import type {
+  BreakpointValue,
+  ElementAllSizeValue,
+  ScaleSchema,
+  StyleKeyByElement
+} from '@kiskadee/schema';
 import type { ClassNameMap, ElementSizeValue } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 import { elementSizeValues } from '@kiskadee/schema';
@@ -22,13 +27,13 @@ import { update } from 'lodash';
  *
  * @param componentName - Name of the component to scope the style keys.
  * @param elementName - Name of the element to scope the style keys.
- * @param dimensions - The Dimensions object containing style properties.
+ * @param scales - The Dimensions object containing style properties.
  * @returns A ClassNameMap mapping the computed dimension style keys under 'rest'.
  */
-export function convertDimensionsToStyleKey(dimensions: ScaleSchema): StyleKeyByElement['scales'] {
+export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyByElement['scales'] {
   const styleKeys: StyleKeyByElement['scales'] = {};
 
-  for (const [propertyName, propertyValue] of Object.entries(dimensions)) {
+  for (const [propertyName, propertyValue] of Object.entries(scales)) {
     if (typeof propertyValue === 'number') {
       const styleKey = buildStyleKey({
         propertyName,

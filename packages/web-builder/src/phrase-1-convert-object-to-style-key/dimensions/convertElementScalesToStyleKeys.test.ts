@@ -1,11 +1,11 @@
 import type { ScaleSchema } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
-import { convertDimensionsToStyleKey } from './convertDimensionsToStyleKey';
+import { convertElementScalesToStyleKeys } from './convertElementScalesToStyleKeys';
 
-describe('convertDimensionsToStyleKey', () => {
+describe('convertElementScalesToStyleKeys', () => {
   it('should generate paddingTop 10 style key for numeric value', () => {
     const scale: ScaleSchema = { paddingTop: 10 };
-    const result = convertDimensionsToStyleKey(scale);
+    const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:all': ['paddingTop__10']
     });
@@ -13,7 +13,7 @@ describe('convertDimensionsToStyleKey', () => {
 
   it('should generate textSize 16 style key when provided as a direct number', () => {
     const scale: ScaleSchema = { textSize: 16 };
-    const result = convertDimensionsToStyleKey(scale);
+    const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:all': ['textSize__16']
     });
@@ -21,7 +21,7 @@ describe('convertDimensionsToStyleKey', () => {
 
   it('should generate textSize__14 style key when given as a size token without breakpoints', () => {
     const scale: ScaleSchema = { textSize: { 's:md:1': 14 } };
-    const result = convertDimensionsToStyleKey(scale);
+    const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:md:1': ['textSize__14']
     });
@@ -31,7 +31,7 @@ describe('convertDimensionsToStyleKey', () => {
     const scale: ScaleSchema = {
       textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } }
     };
-    const result = convertDimensionsToStyleKey(scale);
+    const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:md:1': {
         'bp:all': ['textSize__16'],
@@ -49,7 +49,7 @@ describe('convertDimensionsToStyleKey', () => {
       paddingBottom: { 's:md:1': { 'bp:sm:1': 10, 'bp:lg:2': 8 } },
       marginTop: 20
     };
-    const result = convertDimensionsToStyleKey(scale);
+    const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:all': ['marginTop__20'],
       's:sm:1': {
