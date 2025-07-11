@@ -4,7 +4,8 @@ import type {
   ColorProperty,
   StyleKeyByElement,
   ElementStyle,
-  PaletteName
+  PaletteName,
+  PaletteSchema
 } from '@kiskadee/schema';
 import { update } from 'lodash';
 import { buildStyleKey } from '../utils/buildStyeKey';
@@ -37,9 +38,7 @@ import { buildStyleKey } from '../utils/buildStyeKey';
  *                  either an InteractionStateColorMap or a SemanticColorMap.
  * @returns A nested map: paletteName → semanticColor → interactionState → array of style keys.
  */
-export function convertColorsToStyleKeys(
-  palettes: ElementStyle['palettes']
-): StyleKeyByElement['palettes'] {
+export function convertColorsToStyleKeys(palettes: PaletteSchema): StyleKeyByElement['palettes'] {
   const styleKeys: StyleKeyByElement['palettes'] = {};
 
   for (const p in palettes) {
