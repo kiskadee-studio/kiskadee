@@ -23,7 +23,7 @@ describe('convertElementScalesToStyleKeys', () => {
     const scale: ScaleSchema = { textSize: { 's:md:1': 14 } };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
-      's:md:1': ['textSize__14']
+      's:md:1': ['textSize++s:md:1__14']
     });
   });
 
