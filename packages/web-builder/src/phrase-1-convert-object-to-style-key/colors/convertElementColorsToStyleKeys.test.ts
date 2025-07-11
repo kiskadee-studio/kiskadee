@@ -1,10 +1,10 @@
-import type { PaletteSchema } from '@kiskadee/schema';
+import type { ElementColors } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
-import { convertColorsToStyleKeys } from './convertColorsToStyleKeys';
+import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKeys';
 
-describe('convertColorsToStyleKeys', () => {
+describe('convertElementColorsToStyleKeys', () => {
   it('generates style keys for palette property without reference', () => {
-    const palettes: PaletteSchema = {
+    const elementColors: ElementColors = {
       p1: {
         boxColor: {
           primary: {
@@ -13,9 +13,7 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     };
-
-    const result = convertColorsToStyleKeys(palettes);
-
+    const result = convertElementColorsToStyleKeys(elementColors);
     expect(result).toEqual({
       p1: {
         primary: {
@@ -27,7 +25,7 @@ describe('convertColorsToStyleKeys', () => {
   });
 
   it('generates style keys for palette property with a reference value', () => {
-    const palettes: PaletteSchema = {
+    const elementColors: ElementColors = {
       p1: {
         borderColor: {
           primary: {
@@ -37,9 +35,7 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     };
-
-    const result = convertColorsToStyleKeys(palettes);
-
+    const result = convertElementColorsToStyleKeys(elementColors);
     expect(result).toEqual({
       p1: {
         primary: {
@@ -52,7 +48,7 @@ describe('convertColorsToStyleKeys', () => {
   });
 
   it('generates style keys for multiple palette entries', () => {
-    const palettes: PaletteSchema = {
+    const elementColors: ElementColors = {
       p1: {
         textColor: {
           primary: {
@@ -74,9 +70,7 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     };
-
-    const result = convertColorsToStyleKeys(palettes);
-
+    const result = convertElementColorsToStyleKeys(elementColors);
     expect(result).toEqual({
       p1: {
         primary: {
@@ -96,7 +90,7 @@ describe('convertColorsToStyleKeys', () => {
   });
 
   it('treats direct interaction-state map as neutral semantic color', () => {
-    const palettes: PaletteSchema = {
+    const elementColors: ElementColors = {
       p1: {
         // Direct interaction‐state map: no semantic keys, should map to "neutral"
         boxColor: {
@@ -105,9 +99,7 @@ describe('convertColorsToStyleKeys', () => {
         }
       }
     };
-
-    const result = convertColorsToStyleKeys(palettes);
-
+    const result = convertElementColorsToStyleKeys(elementColors);
     expect(result).toEqual({
       p1: {
         neutral: {

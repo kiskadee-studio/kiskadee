@@ -1,6 +1,6 @@
 import type { ComponentName, Schema } from '@kiskadee/schema';
 import { convertElementDecorationToStyleKeys } from './decoration/convertElementDecorationToStyleKeys';
-import { convertColorsToStyleKeys } from './colors/convertColorsToStyleKeys';
+import { convertElementColorsToStyleKeys } from './colors/convertElementColorsToStyleKeys';
 import { styleKeyUsageMap } from '../utils';
 import { convertElementScalesToStyleKeys } from './scales/convertElementScalesToStyleKeys';
 
@@ -35,7 +35,7 @@ export function convertSchemaToStyleKeyList(schema: Schema): { [p: string]: numb
 
       if (element.palettes) {
         for (const palette of Object.values(element.palettes)) {
-          const colorClassNameMap = convertColorsToStyleKeys(palette);
+          const colorClassNameMap = convertElementColorsToStyleKeys(palette);
           console.log({ colorClassNameMap: JSON.stringify(colorClassNameMap) });
         }
       }

@@ -15,14 +15,14 @@ export type ComponentName = 'button' | 'tab';
 // Unique identifier for each color palette variation within a theme
 export type PaletteName = string;
 
-export type PaletteSchema = Record<PaletteName, ColorSchema>;
+export type ElementColors = Record<PaletteName, ColorSchema>;
 
 export type ElementStyle = Partial<{
   decorations: DecorationSchema;
   scales: ScaleSchema;
   // This layer (Record) allows the Style structure to support multiple color variations within a
   // white-label theme
-  palettes: PaletteSchema;
+  palettes: ElementColors;
   effects: ElementEffects;
 }>;
 

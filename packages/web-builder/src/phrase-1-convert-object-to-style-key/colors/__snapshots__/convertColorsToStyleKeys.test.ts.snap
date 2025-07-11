@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`convertColorsToStyleKeys > generates style keys for multiple palette entries 1`] = `
+exports[`convertElementColorsToStyleKeys > generates style keys for multiple palette entries 1`] = `
 {
   "p1": {
     "danger": {
@@ -29,7 +29,7 @@ exports[`convertColorsToStyleKeys > generates style keys for multiple palette en
 }
 `;
 
-exports[`convertColorsToStyleKeys > generates style keys for palette property with a reference value 1`] = `
+exports[`convertElementColorsToStyleKeys > generates style keys for palette property with a reference value 1`] = `
 {
   "p1": {
     "primary": {
@@ -44,7 +44,7 @@ exports[`convertColorsToStyleKeys > generates style keys for palette property wi
 }
 `;
 
-exports[`convertColorsToStyleKeys > generates style keys for palette property without reference 1`] = `
+exports[`convertElementColorsToStyleKeys > generates style keys for palette property without reference 1`] = `
 {
   "p1": {
     "primary": {
@@ -56,7 +56,7 @@ exports[`convertColorsToStyleKeys > generates style keys for palette property wi
 }
 `;
 
-exports[`convertColorsToStyleKeys > should treat a direct interaction‐state map as neutral semantic color 1`] = `
+exports[`convertElementColorsToStyleKeys > should treat a direct interaction‐state map as neutral semantic color 1`] = `
 {
   "p1": {
     "neutral": {
@@ -71,7 +71,7 @@ exports[`convertColorsToStyleKeys > should treat a direct interaction‐state ma
 }
 `;
 
-exports[`convertColorsToStyleKeys > treats direct interaction-state map as neutral semantic color 1`] = `
+exports[`convertElementColorsToStyleKeys > treats direct interaction-state map as neutral semantic color 1`] = `
 {
   "p1": {
     "neutral": {
