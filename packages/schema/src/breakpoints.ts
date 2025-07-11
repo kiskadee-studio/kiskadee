@@ -18,6 +18,11 @@ const ELEMENT_SIZE_VALUES = [
   's:lg:5'
 ] as const;
 
+/*
+  TODO: The s:all value needs special care as it is just a shorthand for the same value that would appear in all size variations, this can be confusing when defining values. A method to optimize this structure should probably be made in the future to handle this.
+ */
+export type ElementAllSizeValue = 's:all';
+
 export type ElementSizeValue = (typeof ELEMENT_SIZE_VALUES)[number];
 
 export const elementSizeValues: ElementSizeValue[] = [...ELEMENT_SIZE_VALUES];

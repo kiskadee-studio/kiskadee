@@ -1,8 +1,9 @@
-import type { BreakpointValue, ScaleSchema } from '@kiskadee/schema';
+import type { BreakpointValue, ScaleSchema, StyleKeyByElement } from '@kiskadee/schema';
 import type { ClassNameMap, ElementSizeValue } from '@kiskadee/schema';
 import { updateElementStyleKeyMap } from '../../utils';
 import { elementSizeValues } from '@kiskadee/schema';
 import { buildStyleKey } from '../utils/buildStyeKey';
+import { update } from 'lodash';
 
 /**
  * Processes the provided Dimensions object and returns a ClassNameMap
@@ -24,12 +25,8 @@ import { buildStyleKey } from '../utils/buildStyeKey';
  * @param dimensions - The Dimensions object containing style properties.
  * @returns A ClassNameMap mapping the computed dimension style keys under 'rest'.
  */
-export function convertDimensionsToStyleKey(
-  componentName: string,
-  elementName: string,
-  dimensions: ScaleSchema
-): ClassNameMap {
-  let elementStyleKeyMap: ClassNameMap = {};
+export function convertDimensionsToStyleKey(dimensions: ScaleSchema): StyleKeyByElement['scales'] {
+  const styleKeys: StyleKeyByElement['scales'] = {};
 
   for (const [propertyName, propertyValue] of Object.entries(dimensions)) {
     if (typeof propertyValue === 'number') {
@@ -37,13 +34,7 @@ export function convertDimensionsToStyleKey(
         propertyName,
         value: propertyValue
       });
-      elementStyleKeyMap = updateElementStyleKeyMap(
-        elementStyleKeyMap,
-        componentName,
-        elementName,
-        'rest',
-        styleKey
-      );
+      update(styleKeys, ['s:all'], (arr: string[] = []) => [...arr, styleKey]);
     } else if (propertyValue && typeof propertyValue === 'object') {
       for (const [s, sizeValue] of Object.entries(propertyValue as Record<string, unknown>)) {
         const size = s as ElementSizeValue;
@@ -52,13 +43,7 @@ export function convertDimensionsToStyleKey(
             propertyName,
             value: sizeValue
           });
-          elementStyleKeyMap = updateElementStyleKeyMap(
-            elementStyleKeyMap,
-            componentName,
-            elementName,
-            'rest',
-            styleKey
-          );
+          update(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
         } else if (sizeValue && typeof sizeValue === 'object') {
           for (const [b, value] of Object.entries(sizeValue as Record<string, number>)) {
             const breakpoint = b as BreakpointValue;
@@ -76,18 +61,12 @@ export function convertDimensionsToStyleKey(
                     breakpoint
                   });
 
-            elementStyleKeyMap = updateElementStyleKeyMap(
-              elementStyleKeyMap,
-              componentName,
-              elementName,
-              'rest',
-              styleKey
-            );
+            update(styleKeys, [size, breakpoint], (arr: string[] = []) => [...arr, styleKey]);
           }
         }
       }
     }
   }
 
-  return elementStyleKeyMap;
+  return styleKeys;
 }

@@ -1,7 +1,12 @@
 import type { DecorationSchema } from './types/decoration/decoration.types';
 import type { ScaleSchema } from './types/dimensions/dimensions.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
-import { type Breakpoints, breakpoints, type ElementSizeValue } from './breakpoints';
+import {
+  type Breakpoints,
+  breakpoints,
+  type ElementAllSizeValue,
+  type ElementSizeValue
+} from './breakpoints';
 import type { ElementEffects } from './types/effect/effect.types';
 
 // Nome de todos os componentes suportados
@@ -42,7 +47,7 @@ export type InteractionStateBySemanticColor = Partial<{
 export interface StyleKeyByElement {
   decorations: StyleKey[];
   effects: StyleKeysByInteractionState;
-  scales: Record<ElementSizeValue, StyleKeysByInteractionState>;
+  scales: Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>;
   palettes: Record<PaletteName, InteractionStateBySemanticColor>;
 }
 
