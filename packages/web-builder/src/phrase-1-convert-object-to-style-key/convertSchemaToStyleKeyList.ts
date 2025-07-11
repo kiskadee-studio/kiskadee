@@ -2,11 +2,11 @@ import type { ComponentName, Schema } from '@kiskadee/schema';
 import { convertElementDecorationToStyleKeys } from './decoration/convertElementDecorationToStyleKeys';
 import { convertColorsToStyleKeys } from './colors/convertColorsToStyleKeys';
 import { styleKeyUsageMap } from '../utils';
-import { convertElementScalesToStyleKeys } from './dimensions/convertElementScalesToStyleKeys';
+import { convertElementScalesToStyleKeys } from './scales/convertElementScalesToStyleKeys';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
- * For each style object, it processes the decoration, dimensions, and colors
+ * For each style object, it processes the decoration, scales, and colors
  * (if defined) using their respective methods. Finally, the accumulated styleUsageMap
  * is logged to the console.
  *
