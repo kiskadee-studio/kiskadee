@@ -15,7 +15,7 @@ import { buildStyleKey } from '../utils/buildStyeKey';
  * @param decoration - The DecorationSchema object defining decoration properties.
  * @returns An array of style key strings corresponding to the decoration.
  */
-export function convertElementDecorationToStyleKeys(
+export function convertElementDecorationsToStyleKeys(
   decoration: DecorationSchema
 ): StyleKeyByElement['decorations'] {
   const styleKeys: StyleKeyByElement['decorations'] = [];
