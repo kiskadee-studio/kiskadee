@@ -1,6 +1,6 @@
 import { schema, type InteractionState } from '@kiskadee/schema';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
-import { generateCssFromStyleKeyList } from './phase-3-convert-style-keys-to-css-rules/generateCss';
+import { generateCssFromStyleKeyList } from './phase-4-convert-style-keys-to-css-rules/generateCss';
 import { mapStyleKeyUsage } from './phase-2-map-style-key-usage/mapStyleKeyUsage';
 import { shortenCssClassNames } from './phase-3-shorten-css-class-names/shortenCssClassNames';
 
