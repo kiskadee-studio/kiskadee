@@ -38,8 +38,7 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
 
         // Case 3: Nested breakpoint overrides
         // e.g. { textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } } }
-        // => 'bp:all' for default size omits the size in the key,
-        //    other breakpoints include both size and breakpoint
+        // => 'bp:all' for default size omits the size in the key
         else if (sizeValue && typeof sizeValue === 'object') {
           for (const [b, value] of Object.entries(sizeValue as Record<string, number>)) {
             const breakpoint = b as BreakpointValue;
@@ -53,7 +52,7 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
               styleKey = buildStyleKey({ propertyName, size, value, breakpoint });
             }
 
-            deepUpdate(styleKeys, [size, breakpoint], (arr: string[] = []) => [...arr, styleKey]);
+            deepUpdate(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
           }
         }
       }

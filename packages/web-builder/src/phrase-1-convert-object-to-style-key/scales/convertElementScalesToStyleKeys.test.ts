@@ -1,4 +1,4 @@
-import type { ScaleSchema } from '@kiskadee/schema';
+import type { ScaleSchema, StyleKeyByElement } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { convertElementScalesToStyleKeys } from './convertElementScalesToStyleKeys';
 
@@ -33,10 +33,7 @@ describe('convertElementScalesToStyleKeys', () => {
     };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
-      's:md:1': {
-        'bp:all': ['textSize__16'],
-        'bp:lg:2': ['textSize++s:md:1::bp:lg:2__10']
-      }
+      's:md:1': ['textSize__16', 'textSize++s:md:1::bp:lg:2__10']
     });
   });
 
@@ -49,19 +46,20 @@ describe('convertElementScalesToStyleKeys', () => {
       paddingBottom: { 's:md:1': { 'bp:sm:1': 10, 'bp:lg:2': 8 } },
       marginTop: 20
     };
-    const result = convertElementScalesToStyleKeys(scale);
-    expect(result).toEqual({
+
+    const expectedResult: StyleKeyByElement['scales'] = {
       's:all': ['marginTop__20'],
-      's:sm:1': {
-        'bp:all': ['textSize__14'],
-        'bp:lg:1': ['textSize++s:sm:1::bp:lg:1__12']
-      },
-      's:md:1': {
-        'bp:all': ['textSize__16'],
-        'bp:lg:1': ['textSize++s:md:1::bp:lg:1__14'],
-        'bp:sm:1': ['paddingBottom++s:md:1::bp:sm:1__10'],
-        'bp:lg:2': ['paddingBottom++s:md:1::bp:lg:2__8']
-      }
-    });
+      's:sm:1': ['textSize__14', 'textSize++s:sm:1::bp:lg:1__12'],
+      's:md:1': [
+        'textSize__16',
+        'textSize++s:md:1::bp:lg:1__14',
+        'paddingBottom++s:md:1::bp:sm:1__10',
+        'paddingBottom++s:md:1::bp:lg:2__8'
+      ]
+    };
+
+    const result = convertElementScalesToStyleKeys(scale);
+
+    expect(result).toEqual(expectedResult);
   });
 });
