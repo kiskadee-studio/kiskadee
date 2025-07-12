@@ -6,8 +6,8 @@ import { generateCssFromStyleKeyList } from './phrase-2-convert-style-key-to-css
 const styleKeyList = convertSchemaToStyleKeyList(schema);
 
 // Phrase 2
-const cssGenerated = await generateCssFromStyleKeyList(styleKeyList);
+// const cssGenerated = await generateCssFromStyleKeyList(styleKeyList);
 
 // Output
 console.log({ styleKeyList });
-console.log({ cssGenerated });
+// console.log({ cssGenerated });

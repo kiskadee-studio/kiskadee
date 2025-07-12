@@ -3,12 +3,10 @@ import type {
   InteractionState,
   ColorProperty,
   StyleKeyByElement,
-  ElementStyle,
   PaletteName,
   ElementColors
 } from '@kiskadee/schema';
-import { update } from 'lodash';
-import { buildStyleKey } from '../utils/buildStyeKey';
+import { buildStyleKey, deepUpdate } from '../../utils';
 
 /**
  * Converts an element's color palettes schema into nested style keys.
@@ -53,13 +51,10 @@ export function convertElementColorsToStyleKeys(
             value: color
           });
 
-          update(
+          deepUpdate(
             styleKeys,
             [paletteName, semanticColor, interactionState],
-            (arr: string[] = []) => {
-              arr.push(styleKey);
-              return arr;
-            }
+            (arr: string[] = []) => [...arr, styleKey]
           );
         }
       }

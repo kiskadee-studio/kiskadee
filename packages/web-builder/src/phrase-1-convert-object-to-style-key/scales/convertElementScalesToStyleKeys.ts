@@ -4,8 +4,7 @@ import type {
   ScaleSchema,
   StyleKeyByElement
 } from '@kiskadee/schema';
-import { buildStyleKey } from '../utils/buildStyeKey';
-import { update } from 'lodash';
+import { deepUpdate, buildStyleKey } from '../../utils';
 
 /**
  * Converts an element's scale schema into style keys organized by size and breakpoint.
@@ -25,7 +24,7 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
     // => always mapped under "s:all"
     if (typeof propertyValue === 'number') {
       const styleKey = buildStyleKey({ propertyName, value: propertyValue });
-      update(styleKeys, ['s:all'], (arr: string[] = []) => [...arr, styleKey]);
+      deepUpdate(styleKeys, ['s:all'], (arr: string[] = []) => [...arr, styleKey]);
     } else if (propertyValue && typeof propertyValue === 'object') {
       for (const [s, sizeValue] of Object.entries(propertyValue as Record<string, unknown>)) {
         const size = s as ElementSizeValue;
@@ -34,7 +33,7 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
           // Case 2: Size-specific number without breakpoint
           // Include the size token in the style key
           const styleKey = buildStyleKey({ propertyName, size, value: sizeValue });
-          update(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
+          deepUpdate(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
         }
 
         // Case 3: Nested breakpoint overrides
@@ -54,7 +53,7 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
               styleKey = buildStyleKey({ propertyName, size, value, breakpoint });
             }
 
-            update(styleKeys, [size, breakpoint], (arr: string[] = []) => [...arr, styleKey]);
+            deepUpdate(styleKeys, [size, breakpoint], (arr: string[] = []) => [...arr, styleKey]);
           }
         }
       }

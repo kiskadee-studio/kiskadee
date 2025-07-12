@@ -4,8 +4,7 @@ import type {
   SolidColor,
   StyleKeysByInteractionState
 } from '@kiskadee/schema';
-import { buildStyleKey } from '../utils/buildStyeKey';
-import { update } from 'lodash';
+import { buildStyleKey, deepUpdate } from '../../utils';
 
 /**
  * Gets a shadow property value for the given interaction state, falling back to 'rest' then to a
@@ -60,7 +59,7 @@ export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeys
         value: [shadowX, shadowY, shadowBlur, shadowColor]
       });
 
-      update(styleKeys, state, (arr = []) => [...arr, styleKey]);
+      deepUpdate(styleKeys, [state], (arr: string[] = []) => [...arr, styleKey]);
     }
   }
 
