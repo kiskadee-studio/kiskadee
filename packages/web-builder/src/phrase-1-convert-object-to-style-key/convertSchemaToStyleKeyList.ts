@@ -32,32 +32,23 @@ export function convertSchemaToStyleKeyList(schema: Schema): ComponentStyleKeyMa
     for (const elementName in component.elements) {
       const element = component.elements[elementName];
 
-      deepUpdate<StyleKeyByElement>(
-        styleKeysByComponent,
-        [componentName, elementName],
-        (
-          el = {
-            decorations: [],
-            scales: {},
-            palettes: {},
-            effects: {}
-          }
-        ) => {
-          if (element.decorations) {
-            el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
-          }
-          if (element.scales) {
-            el.scales = convertElementScalesToStyleKeys(element.scales);
-          }
-          if (element.palettes) {
-            el.palettes = convertElementColorsToStyleKeys(element.palettes);
-          }
-          if (element.effects?.shadow) {
-            el.effects = convertElementShadowToStyleKeys(element.effects.shadow);
-          }
-          return el;
+      deepUpdate<StyleKeyByElement>(styleKeysByComponent, [componentName, elementName], (prev) => {
+        const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
+        if (element.decorations) {
+          el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
         }
-      );
+        if (element.scales) {
+          el.scales = convertElementScalesToStyleKeys(element.scales);
+        }
+        if (element.palettes) {
+          el.palettes = convertElementColorsToStyleKeys(element.palettes);
+        }
+        if (element.effects?.shadow) {
+          el.effects = convertElementShadowToStyleKeys(element.effects.shadow);
+        }
+
+        return el as StyleKeyByElement;
+      });
     }
   }
 
