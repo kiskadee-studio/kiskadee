@@ -6,10 +6,9 @@ import type {
 } from '@kiskadee/schema';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
 import { convertElementColorsToStyleKeys } from './colors/convertElementColorsToStyleKeys';
-import { styleKeyUsageMap } from '../utils';
 import { convertElementScalesToStyleKeys } from './scales/convertElementScalesToStyleKeys';
-import { update } from 'lodash';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
+import { deepUpdate } from '../utils';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
@@ -33,25 +32,36 @@ export function convertSchemaToStyleKeyList(schema: Schema): ComponentStyleKeyMa
     for (const elementName in component.elements) {
       const element = component.elements[elementName];
 
-      update(styleKeysByComponent, [componentName, elementName], (el: StyleKeyByElement) => {
-        if (element.decorations) {
-          el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
+      deepUpdate<StyleKeyByElement>(
+        styleKeysByComponent,
+        [componentName, elementName],
+        (
+          el = {
+            decorations: [],
+            scales: {},
+            palettes: {},
+            effects: {}
+          }
+        ) => {
+          if (element.decorations) {
+            el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
+          }
+          if (element.scales) {
+            el.scales = convertElementScalesToStyleKeys(element.scales);
+          }
+          if (element.palettes) {
+            el.palettes = convertElementColorsToStyleKeys(element.palettes);
+          }
+          if (element.effects?.shadow) {
+            el.effects = convertElementShadowToStyleKeys(element.effects.shadow);
+          }
+          return el;
         }
-        if (element.scales) {
-          el.scales = convertElementScalesToStyleKeys(element.scales);
-        }
-        if (element.palettes) {
-          el.palettes = convertElementColorsToStyleKeys(element.palettes);
-        }
-        if (element.effects?.shadow) {
-          el.effects = convertElementShadowToStyleKeys(element.effects.shadow);
-        }
-        return el;
-      });
+      );
     }
   }
 
-  console.log({ styleKeysByComponent });
+  console.log({ styleKeysByComponent: JSON.stringify(styleKeysByComponent, null, 2) });
 
   return styleKeysByComponent;
 
