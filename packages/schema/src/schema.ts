@@ -29,7 +29,7 @@ export type ElementStyle = Partial<{
 type Elements = Record<ElementName, ElementStyle>;
 
 // -------------------------------------------------------------------------------------------------
-type StyleKey = string;
+export type StyleKey = string;
 
 /**
  * Element name by component. Initially using generic names like e1, e2, etc, but may need specific
@@ -120,7 +120,7 @@ export const schema: Schema = {
               }
             },
             paddingTop: 10,
-            paddingRight: 8, // size "medium" for "all" breakpoints
+            paddingRight: 8,
             paddingBottom: 8,
             paddingLeft: 8,
             marginTop: 8,
@@ -183,6 +183,9 @@ export const schema: Schema = {
           }
         },
         e2: {
+          decorations: {
+            textItalic: true
+          },
           scales: {
             textSize: 16
           },
