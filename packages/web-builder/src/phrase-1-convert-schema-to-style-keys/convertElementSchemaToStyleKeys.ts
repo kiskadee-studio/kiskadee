@@ -19,7 +19,7 @@ import { deepUpdate } from '../utils';
  *
  * @param schema - The Schema object to process.
  */
-export function convertSchemaToStyleKeyList(schema: Schema): ComponentStyleKeyMap {
+export function convertElementSchemaToStyleKeys(schema: Schema): ComponentStyleKeyMap {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
 
   // Iterate over each component in the schema.
