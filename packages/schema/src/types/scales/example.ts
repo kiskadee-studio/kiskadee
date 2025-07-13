@@ -1,4 +1,4 @@
-import type { ScaleSchema } from './dimensions.types';
+import type { ScaleSchema } from './scales.types';
 
 const scale: ScaleSchema = {
   textSize: {
@@ -13,7 +13,7 @@ const scale: ScaleSchema = {
     // • The "all" property sets the default font size (following a mobile-first approach).
     // • Specific media query overrides can be defined, such as "lg1", which adjusts the size when that breakpoint is active.
     's:md:1': {
-      'bp:all': 16, // Default font size for medium components was set to 16px.
+      'bp:all': 16, // The default font size for medium components was set to 16px.
       'bp:lg:1': 14 // When the lg1 media query condition applies, the font size is adjusted to 14px.
     },
 

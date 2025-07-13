@@ -1,5 +1,5 @@
 import type { DecorationSchema } from './types/decoration/decoration.types';
-import type { ScaleSchema } from './types/scales/dimensions.types';
+import type { ScaleSchema } from './types/scales/scales.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import {
   type Breakpoints,

@@ -1,4 +1,4 @@
-import type { PixelValue } from './types/scales/dimensions.types';
+import type { PixelValue } from './types/scales/scales.types';
 
 //--------------------------------------------------------------------------------------------------
 // Size
