@@ -2,7 +2,7 @@ import {
   type ColorProperty,
   CssColorProperty,
   type HLSA,
-  InteractionStateCssMap
+  InteractionStateCssPseudoSelector
 } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 import type { GeneratedCss } from '../phrase2.types';
@@ -42,7 +42,7 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
   const cssProperty = CssColorProperty[colorProperty];
 
   // Prepare interaction state patterns (e.g. "hover", "focus", ...)
-  const states = Object.values(InteractionStateCssMap).map((s) => s.slice(1));
+  const states = Object.values(InteractionStateCssPseudoSelector).map((s) => s.slice(1));
   const inlineStateRegex = new RegExp(`--(${states.join('|')})(?=__)`);
   const refStateRegex = new RegExp(`--(${states.join('|')})(?=::ref)`);
 

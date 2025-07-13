@@ -66,7 +66,7 @@ export type InteractionState =
   | 'readOnly';
 
 /** Mapping from interaction states to CSS pseudo-selectors (default to rest if none). */
-export const InteractionStateCssMap: Record<InteractionState, string> = {
+export const InteractionStateCssPseudoSelector: Record<InteractionState, string> = {
   rest: '',
   hover: ':hover',
   pressed: ':click',
