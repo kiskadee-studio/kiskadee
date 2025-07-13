@@ -1,5 +1,5 @@
 import type { InteractionState, SolidColor } from '../palettes/palettes.types';
-import type { PixelValue } from '../dimensions/dimensions.types';
+import type { PixelValue } from '../scales/dimensions.types';
 
 // Font Family -------------------------------------------------------------------------------------
 
