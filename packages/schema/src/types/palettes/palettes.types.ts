@@ -77,6 +77,37 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   readOnly: ':read-only'
 };
 
+export const classNameCssPseudoSelector = {
+  hover: {
+    parent: '-a', // Used to force "hover" interaction state
+    child: '-b'
+  },
+  pressed: {
+    parent: '-c', // Used to force "pressed" interaction state
+    child: '-d'
+  },
+  selected: {
+    parent: '-e',
+    child: '-f'
+  },
+  focus: {
+    parent: '-g', // Used to force "focus" interaction state
+    child: '-h'
+  },
+  disabled: {
+    // parent: '-i', // Do not necessary
+    child: '-j'
+  },
+  pseudoDisabled: {
+    parent: '-k',
+    child: '-l'
+  },
+  readOnly: {
+    parent: '-m',
+    child: '-n'
+  }
+};
+
 /**
  * Represents how an element’s color varies across its own interaction states (e.g., rest, hover,
  * focus, disabled). Each state maps to either a direct Color definition or a ParentColor reference.
