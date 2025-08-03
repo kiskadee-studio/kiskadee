@@ -11,11 +11,11 @@ export interface BuildStyleKeyParams {
 
 /**
  * Separators used when constructing style keys:
- * - PROPERTY_VALUE: separates property and value
- * - STATE: separates property/scale from interaction state
- * - SCALE: separates property from size (scale)
- * - BREAKPOINT: separates size (scale) from breakpoint
- * - REF_STATE: separates property from state when it’s a reference
+ * - PROPERTY_VALUE: separates the property and its value
+ * - STATE: separates a property/scale from an interaction state
+ * - SCALE: separates the property from a size (scale)
+ * - BREAKPOINT: separates size (scale) from a breakpoint
+ * - REF_STATE: separates the property from its state when it's a reference
  */
 const SEPARATORS = {
   PROPERTY_VALUE: '__',
@@ -36,25 +36,25 @@ export function buildStyleKey({
   const valStr =
     typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
 
-  // 1) Decoration (nenhum state, nenhuma size)
+  // Case 1: Base style (no interaction state or size)
   if (!interactionState && !size) {
     return `${propertyName}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
   }
 
-  // 2) Scale (size presente)
-  // prop++size__value  ou  prop++size::bp__value
+  // Case 2: Scaled style (size provided)
+  // Format: property++size__value or property++size::breakpoint__value
   if (size) {
     const bpPart = breakpoint ? `${SEPARATORS.BREAKPOINT}${breakpoint}` : '';
     return `${propertyName}${SEPARATORS.SCALE}${size}${bpPart}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
   }
 
-  // 3) Shadow / Color sem scale
-  // prop--state__value  ou  prop==state__value (ref=true)
+  // Case 3: Reference style (isRef = true and state is not 'rest')
+  // Format: property==state__value
   if (isRef && interactionState !== 'rest') {
     return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
   }
 
-  // default (shadow, color sem ref ou color rest):
-  // prop--state__value
+  // Default: State-based style (shadow or color without reference, or 'rest' state)
+  // Format: property--state__value
   return `${propertyName}${SEPARATORS.STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
 }
