@@ -1,4 +1,4 @@
-import type { ElementEffects } from './effect.types';
+import type { ElementEffects } from './effects.types';
 
 const buttonEffects: ElementEffects = {
   shadow: {

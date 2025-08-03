@@ -1,4 +1,4 @@
-import type { DecorationSchema } from './types/decoration/decoration.types';
+import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ScaleSchema } from './types/scales/scales.types';
 import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
 import {
@@ -7,7 +7,7 @@ import {
   type ElementAllSizeValue,
   type ElementSizeValue
 } from './breakpoints';
-import type { ElementEffects } from './types/effect/effect.types';
+import type { ElementEffects } from './types/effects/effects.types';
 
 // Nome de todos os componentes suportados
 export type ComponentName = 'button' | 'tab';
