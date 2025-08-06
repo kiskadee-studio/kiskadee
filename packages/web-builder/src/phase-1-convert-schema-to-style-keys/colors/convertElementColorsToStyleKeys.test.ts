@@ -2,6 +2,11 @@ import type { ElementColors } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKeys';
 
+/*------------------------------------------------------------------------------------------------*/
+/* There is no error handling here; errors were handled during the style key to CSS conversion in
+/*   phase 4
+/*------------------------------------------------------------------------------------------------*/
+
 describe('convertElementColorsToStyleKeys', () => {
   it('generates style keys for palette property without reference', () => {
     const elementColors: ElementColors = {
@@ -14,14 +19,14 @@ describe('convertElementColorsToStyleKeys', () => {
       }
     };
     const result = convertElementColorsToStyleKeys(elementColors);
-    expect(result).toEqual({
+    expect(result.element).toEqual({
       p1: {
         primary: {
           rest: ['boxColor--rest__[45,100,50,1]']
         }
       }
     });
-    expect(result).toMatchSnapshot();
+    expect(result.element).toMatchSnapshot();
   });
 
   it('generates style keys for palette property with a reference value', () => {
@@ -36,7 +41,7 @@ describe('convertElementColorsToStyleKeys', () => {
       }
     };
     const result = convertElementColorsToStyleKeys(elementColors);
-    expect(result).toEqual({
+    expect(result.element).toEqual({
       p1: {
         primary: {
           rest: ['borderColor--rest__[255,255,255,1]'],
@@ -44,7 +49,7 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
-    expect(result).toMatchSnapshot();
+    expect(result.element).toMatchSnapshot();
   });
 
   it('generates style keys for multiple palette entries', () => {
@@ -71,7 +76,7 @@ describe('convertElementColorsToStyleKeys', () => {
       }
     };
     const result = convertElementColorsToStyleKeys(elementColors);
-    expect(result).toEqual({
+    expect(result.element).toEqual({
       p1: {
         primary: {
           rest: ['textColor--rest__[120,50,50,1]', 'borderColor--rest__[120,50,50,1]'],
@@ -86,7 +91,7 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
-    expect(result).toMatchSnapshot();
+    expect(result.element).toMatchSnapshot();
   });
 
   it('treats direct interaction-state map as neutral semantic color', () => {
@@ -100,7 +105,7 @@ describe('convertElementColorsToStyleKeys', () => {
       }
     };
     const result = convertElementColorsToStyleKeys(elementColors);
-    expect(result).toEqual({
+    expect(result.element).toEqual({
       p1: {
         neutral: {
           rest: ['boxColor--rest__[0,128,255,1]'],
@@ -108,6 +113,34 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
+    expect(result.element).toMatchSnapshot();
+  });
+
+  it('includes parent style keys when only reference interaction states are provided', () => {
+    const elementColors: ElementColors = {
+      p1: {
+        boxColor: {
+          primary: {
+            rest: [0, 128, 255, 1],
+            hover: { ref: [10, 20, 30, 1] },
+            focus: { ref: [40, 50, 60, 0.5] }
+          }
+        }
+      }
+    };
+    const result = convertElementColorsToStyleKeys(elementColors);
+
+    expect(result.element).toEqual({
+      p1: {
+        primary: {
+          rest: ['boxColor--rest__[0,128,255,1]'],
+          hover: ['boxColor==hover__[10,20,30,1]'],
+          focus: ['boxColor==focus__[40,50,60,0.5]']
+        }
+      }
+    });
+
+    expect(result.parent).toEqual(['==hover', '==focus']);
     expect(result).toMatchSnapshot();
   });
 });

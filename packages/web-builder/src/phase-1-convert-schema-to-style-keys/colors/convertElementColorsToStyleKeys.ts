@@ -4,9 +4,15 @@ import type {
   ColorProperty,
   StyleKeyByElement,
   PaletteName,
-  ElementColors
+  ElementColors,
+  StyleKey
 } from '@kiskadee/schema';
 import { buildStyleKey, deepUpdate } from '../../utils';
+
+type GeneratedCssRules = {
+  element: StyleKeyByElement['palettes'];
+  parent?: StyleKey[];
+};
 
 /**
  * Converts an element's color palettes schema into nested style keys.
@@ -18,10 +24,9 @@ import { buildStyleKey, deepUpdate } from '../../utils';
  * @param palettes - The ElementColors object defining element palettes.
  * @returns A nested map of style keys organized by palette name and property.
  */
-export function convertElementColorsToStyleKeys(
-  palettes: ElementColors
-): StyleKeyByElement['palettes'] {
+export function convertElementColorsToStyleKeys(palettes: ElementColors): GeneratedCssRules {
   const styleKeys: StyleKeyByElement['palettes'] = {};
+  const parentStyleKeys: StyleKey[] = [];
 
   for (const p in palettes) {
     const paletteName = p as PaletteName;
@@ -56,10 +61,22 @@ export function convertElementColorsToStyleKeys(
             [paletteName, semanticColor, interactionState],
             (arr: string[] = []) => [...arr, styleKey]
           );
+
+          if (isRef === true) {
+            parentStyleKeys.push(`==${interactionState}`);
+          }
         }
       }
     }
   }
 
-  return styleKeys;
+  const result: GeneratedCssRules = {
+    element: styleKeys
+  };
+
+  if (Object.keys(parentStyleKeys).length > 0) {
+    result.parent = parentStyleKeys;
+  }
+
+  return result;
 }
