@@ -75,6 +75,17 @@ describe('buildStyleKey', () => {
       };
       expect(buildStyleKey(opts)).toBe('color--hover__#000');
     });
+
+    // Guard against missing interactionState when isRef=true
+    it('no interactionState + isRef=true falls back to base separator', () => {
+      const opts: BuildStyleKeyParams = {
+        propertyName: 'color',
+        value: '#abc',
+        isRef: true
+        // intentionally no interactionState
+      };
+      expect(buildStyleKey(opts)).toBe('color__#abc');
+    });
   });
 
   describe('scale keys (size + optional breakpoint)', () => {

@@ -81,7 +81,7 @@ export function buildStyleKey({
 
   // 3) Reference style (isRef && state ≠ rest)
   //    Format: property==state__value
-  if (isRef === true && interactionState === undefined && interactionState !== 'rest') {
+  if (isRef === true && interactionState !== undefined && interactionState !== 'rest') {
     return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
   }
 
