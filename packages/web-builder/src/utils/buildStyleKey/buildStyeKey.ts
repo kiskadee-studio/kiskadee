@@ -1,12 +1,17 @@
-import type { BreakpointValue, ElementSizeValue, InteractionState } from '@kiskadee/schema';
+import type {
+  BreakpointValue,
+  ElementSizeValue,
+  InteractionState,
+  StyleKey
+} from '@kiskadee/schema';
 
 export interface BuildStyleKeyParams {
   propertyName: string;
   value: unknown;
-  interactionState?: InteractionState;
-  isRef?: boolean;
-  size?: ElementSizeValue;
-  breakpoint?: BreakpointValue;
+  interactionState?: InteractionState | undefined;
+  isRef?: boolean | undefined;
+  size?: ElementSizeValue | undefined;
+  breakpoint?: BreakpointValue | undefined;
 }
 
 /**
@@ -32,29 +37,29 @@ export function buildStyleKey({
   isRef = false,
   size,
   breakpoint
-}: BuildStyleKeyParams): string {
-  const valStr =
+}: BuildStyleKeyParams): StyleKey {
+  const valueString =
     typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
 
   // Case 1: Base style (no interaction state or size)
-  if (!interactionState && !size) {
-    return `${propertyName}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
+  if (interactionState === undefined && size === undefined) {
+    return `${propertyName}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
   }
 
   // Case 2: Scaled style (size provided)
   // Format: property++size__value or property++size::breakpoint__value
-  if (size) {
-    const bpPart = breakpoint ? `${SEPARATORS.BREAKPOINT}${breakpoint}` : '';
-    return `${propertyName}${SEPARATORS.SCALE}${size}${bpPart}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
+  if (size !== undefined) {
+    const bpPart = breakpoint !== undefined ? `${SEPARATORS.BREAKPOINT}${breakpoint}` : '';
+    return `${propertyName}${SEPARATORS.SCALE}${size}${bpPart}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
   }
 
   // Case 3: Reference style (isRef = true and state is not 'rest')
   // Format: property==state__value
-  if (isRef && interactionState !== 'rest') {
-    return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
+  if (isRef === true && interactionState !== 'rest') {
+    return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
   }
 
   // Default: State-based style (shadow or color without reference, or 'rest' state)
   // Format: property--state__value
-  return `${propertyName}${SEPARATORS.STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valStr}`;
+  return `${propertyName}${SEPARATORS.STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
 }
