@@ -8,9 +8,11 @@
     "test": "vitest run",
     "commitlint": "commitlint --edit"
   },
-  "workspaces": ["./packages/*"],
+  "workspaces": [
+    "./packages/*"
+  ],
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.1.4",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "husky": "^9.1.7",
