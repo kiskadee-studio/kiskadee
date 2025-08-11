@@ -11,7 +11,8 @@ import type { GeneratedCss } from '../phrase2.types';
  *     cssRule: ".borderStyle__dashed { border-style: dashed }"
  *   }
  *
- * @param key - The border style property key to process.
+ * @param styleKey - The border style property key to process.
+ * @param className -
  * @returns An object containing:
  *   - className: the CSS class name (without the leading dot).
  *   - cssRule: the full CSS rule string (selector plus declarations).
@@ -19,24 +20,23 @@ import type { GeneratedCss } from '../phrase2.types';
  * @throws An error if the key does not start with the expected prefix "borderStyle__".
  * @throws An error if the extracted border style value is not supported or does not exist in the CssBorderStyleValue mapping.
  */
-export function transformBorderKeyToCss(key: string): GeneratedCss {
+export function transformBorderKeyToCss(styleKey: string): GeneratedCss {
   const propertyName = 'borderStyle';
   const prefix = `${propertyName}__`;
 
-  if (key.startsWith(prefix) === false) {
-    throw new Error(UNSUPPORTED_PROPERTY(prefix, key));
+  if (styleKey.startsWith(prefix) === false) {
+    throw new Error(UNSUPPORTED_PROPERTY(prefix, styleKey));
   }
 
-  const borderStyleValue = key.substring(prefix.length);
+  const borderStyleValue = styleKey.substring(prefix.length);
   const cssValue: CssBorderStyleValue | undefined =
     CssBorderStyleValue[borderStyleValue as BorderStyleValue];
 
   if (cssValue === undefined) {
-    throw new Error(UNSUPPORTED_VALUE(propertyName, borderStyleValue, key));
+    throw new Error(UNSUPPORTED_VALUE(propertyName, borderStyleValue, styleKey));
   }
 
-  const className = key;
-  const cssRule = `.${key} { border-style: ${cssValue} }`;
+  const cssRule = `.${styleKey} { border-style: ${cssValue} }`;
 
-  return { className, cssRule };
+  return { className: styleKey, cssRule };
 }
