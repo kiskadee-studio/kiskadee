@@ -1,4 +1,5 @@
 import {
+  classNameCssPseudoSelector,
   type ColorProperty,
   CssColorProperty,
   type HLSA,
@@ -10,26 +11,27 @@ import type { GeneratedCss } from '../phrase2.types';
 export const ERROR_INVALID_KEY_FORMAT =
   'Invalid key format. Expected value in square brackets at the end.';
 export const ERROR_REF_REQUIRE_STATE =
-  'Invalid key format. "::ref" requires a preceding interaction state.';
+  'Invalid key format. Reference "==" requires a preceding non-rest interaction state.';
 
 /**
  * Transform a style key into its corresponding CSS rule representation.
  *
  * Handles two cases:
- * 1. Simple keys (no "::ref"): generates a class rule, optionally with a pseudo-state
+ * 1. Simple keys (no "=="): generates a class rule, optionally with a pseudo-state
  *    if the key contains an interaction state (e.g. "--hover__").
- * 2. Reference keys ("::ref"): generates a parent rule with a pseudo-state and
- *    a nested rule targeting the child selector.
+ * 2. Reference keys ("=="): generates a parent rule with a pseudo-state and
+ *    a nested rule targeting the child selector. Also supports legacy "::ref".
  *
  * @param styleKey - the style token, e.g. "boxColor--hover__[240,50,50,0.5]" or
- *                   "boxColor--hover::ref__[240,50,50,0.5]"
+ *                   "boxColor==hover__[240,50,50,0.5]"
+ * @param className
  * @returns GeneratedCss containing:
  *   - className: token without dot prefix, for use in HTML
  *   - cssRule: full CSS text including selector(s)
- *   - parentClassName: only for ::ref cases, the full token for the parent selector
+ *   - parentClassName: only for reference cases (== or ::ref), the full token for the parent selector
  */
-export function transformColorKeyToCss(styleKey: string): GeneratedCss {
-  // Extract HSLA values from brackets at end; error if missing.
+export function transformColorKeyToCss(styleKey: string, className: string): string {
+  // Extract HSLA values from brackets at the end; error if missing.
   const hslaMatch = styleKey.match(/\[([^\]]+)]$/);
   if (hslaMatch === null) {
     throw new Error(ERROR_INVALID_KEY_FORMAT);
@@ -38,43 +40,40 @@ export function transformColorKeyToCss(styleKey: string): GeneratedCss {
   const hex = convertHslaToHex(hsla);
 
   // Base color property, e.g. "background-color" or "color"
-  const colorProperty = styleKey.split(/--|__/)[0] as ColorProperty;
+  // Support both non-ref ("--" or "__") and ref ("==") separators
+  const colorProperty = styleKey.split(/==|--|__/)[0] as ColorProperty;
   const cssProperty = CssColorProperty[colorProperty];
 
   // Prepare interaction state patterns (e.g. "hover", "focus", ...)
   const states = Object.values(InteractionStateCssPseudoSelector).map((s) => s.slice(1));
   const inlineStateRegex = new RegExp(`--(${states.join('|')})(?=__)`);
-  const refStateRegex = new RegExp(`--(${states.join('|')})(?=::ref)`);
+  const newRefStateOnChildRegex = new RegExp(`==(${states.join('|')})(?=$)`);
 
-  let className: string;
-  let parentClassName: string | undefined;
   let cssRule: string;
 
-  // Determine if this is a reference style
-  if (!styleKey.includes('::ref')) {
-    // Simple class, may include a pseudo-state
-    className = styleKey;
+  const isRef = styleKey.includes('==');
+
+  if (!isRef) {
+    // Simple class may include a pseudo-state
     const match = styleKey.match(inlineStateRegex);
     if (match !== null) {
-      cssRule = `.${styleKey}:${match[1]} { ${cssProperty}: ${hex}; }`;
+      cssRule = `.${className}:${match[1]} { ${cssProperty}: ${hex}; }`;
     } else {
-      cssRule = `.${styleKey} { ${cssProperty}: ${hex}; }`;
+      cssRule = `.${className} { ${cssProperty}: ${hex}; }`;
     }
-  } else {
-    // Reference state: split out child selector
-    const [child] = styleKey.split('__');
-    className = child;
-    const match = child.match(refStateRegex);
-    if (match === null) {
-      throw new Error(ERROR_REF_REQUIRE_STATE);
-    }
-    parentClassName = styleKey;
-    cssRule = `.${styleKey}:${match[1]} .${child} { ${cssProperty}: ${hex}; }`;
+    return cssRule;
   }
 
-  return {
-    className,
-    cssRule,
-    ...(parentClassName ? { parentClassName } : {})
-  };
+  // Reference state: split out child selector
+  const [child] = styleKey.split('__');
+
+  let state: string | undefined = undefined;
+  const match = child.match(newRefStateOnChildRegex);
+  state = match ? match[1] : undefined;
+
+  if (state === undefined || state === '') {
+    throw new Error(ERROR_REF_REQUIRE_STATE);
+  }
+
+  return `.-a:${state} .${className} { ${cssProperty}: ${hex}; }`;
 }
