@@ -65,7 +65,15 @@ export type InteractionState =
   | 'pseudoDisabled'
   | 'readOnly';
 
-/** Mapping from interaction states to CSS pseudo-selectors (default to rest if none). */
+/**
+ * Map each InteractionState to the browser CSS pseudo-selector that represents it.
+ *
+ * How to read this mapping:
+ *  - If a state has a native CSS pseudo-selector, map to that selector (e.g., ":hover", ":focus").
+ *  - If a state has no native selector, map to an empty string (""). The generator will then rely on
+ *    a class-based fallback (see classNameCssPseudoSelector) to emulate or force that state.
+ *  - "rest" intentionally maps to "" (no pseudo) because it is the baseline state.
+ */
 export const InteractionStateCssPseudoSelector: Record<InteractionState, string> = {
   rest: '',
   hover: ':hover',
@@ -77,35 +85,31 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   readOnly: ':read-only'
 };
 
+/**
+ * Class suffixes used to force or emulate interaction states when:
+ *  1) the state has no native CSS pseudo-selector, or
+ *  2) you need to visually force a state (e.g., in a preview, during tests, or for a parent-driven
+ *     state), regardless of actual user interaction.
+ *
+ * Usage model:
+ *  - Apply the suffix to a container or control element according to your renderer’s convention
+ *    (e.g., ".-h.container" to indicate “force hover” for its children).
+ *  - Your CSS generation may combine the container class with child selectors to activate styles.
+ *
+ * Note:
+ *  - For native states (hover, focus, disabled, readOnly), you generally don't need these suffixes
+ *    unless you want to force the state visually.
+ *  - For custom or contextual states (pseudoDisabled, selected), use these suffixes to trigger the
+ *    desired styles.
+ */
 export const classNameCssPseudoSelector = {
-  hover: {
-    parent: '-a', // Used to force "hover" interaction state
-    child: '-b'
-  },
-  pressed: {
-    parent: '-c', // Used to force "pressed" interaction state
-    child: '-d'
-  },
-  selected: {
-    parent: '-e',
-    child: '-f'
-  },
-  focus: {
-    parent: '-g', // Used to force "focus" interaction state
-    child: '-h'
-  },
-  disabled: {
-    // parent: '-i', // Do not necessary
-    child: '-j'
-  },
-  pseudoDisabled: {
-    parent: '-k',
-    child: '-l'
-  },
-  readOnly: {
-    parent: '-m',
-    child: '-n'
-  }
+  hover: '-h', // Force "hover" appearance without real pointer hover
+  pressed: '-p', // Force "pressed" appearance without a real press/click
+  selected: '-s', // Mark an element as selected/active
+  focus: '-f', // Force focus styles without moving focus
+  disabled: '-d', // Mirror disabled visuals when the attribute cannot be set
+  pseudoDisabled: '-i', // Looks disabled but remains interactive
+  readOnly: '-r' // Force read-only visuals
 };
 
 /**
