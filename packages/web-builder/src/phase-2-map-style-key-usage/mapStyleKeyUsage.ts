@@ -5,7 +5,7 @@ export type StyleKeyUsageMap = Record<StyleKey, number>;
 export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): StyleKeyUsageMap {
   const usage: StyleKeyUsageMap = {};
 
-  const increment = (key: StyleKey) => {
+  const increment = (key: StyleKey): void => {
     usage[key] = (usage[key] ?? 0) + 1;
   };
 
