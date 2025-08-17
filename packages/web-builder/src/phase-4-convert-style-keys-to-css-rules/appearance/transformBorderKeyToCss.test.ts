@@ -40,7 +40,7 @@ describe('transformBorderToCss', () => {
 
     it('should throw if multiple value segments are provided', () => {
       const badKey = `${propertyName}__solid__extra`;
-      const expectedError = UNSUPPORTED_VALUE(propertyName, 'solid', badKey);
+      const expectedError = UNSUPPORTED_VALUE(propertyName, 'solid__extra', badKey);
       expect(() => transformBorderKeyToCss(badKey, className)).toThrowError(expectedError);
     });
   });

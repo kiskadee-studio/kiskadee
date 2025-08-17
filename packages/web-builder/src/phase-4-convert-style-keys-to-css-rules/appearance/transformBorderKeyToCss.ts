@@ -27,30 +27,34 @@ export function transformBorderKeyToCss(styleKey: string, className: string): st
 
   // Split the namespaced key by the configured value separator.
   // Expected shape: ["borderStyle", "<value>"] or invalid variants.
-  const [property, borderStyleValue, ...rest] = styleKey.split(SEPARATORS.VALUE);
+  const [parsedProperty, valueKey, ...extraSegments] = styleKey.split(SEPARATORS.VALUE);
 
   // Validate that the property segment matches the supported property.
-  const unsupportedProperty = property !== propertyName;
+  const isUnsupportedProperty = parsedProperty !== propertyName;
 
-  if (unsupportedProperty === true) {
+  if (isUnsupportedProperty === true) {
     // Surface a descriptive error if the property prefix is not supported.
-    throw new Error(UNSUPPORTED_PROPERTY(property, styleKey));
+    throw new Error(UNSUPPORTED_PROPERTY(parsedProperty, styleKey));
   }
 
   // Map the parsed key (e.g., "solid") to its concrete CSS value via the schema enum.
-  const value: CssBorderStyleValue | undefined =
-    CssBorderStyleValue[borderStyleValue as BorderStyleValue];
+  const value: CssBorderStyleValue | undefined = CssBorderStyleValue[valueKey as BorderStyleValue];
 
   // Consider the value unsupported when:
   // - More than one value part is present (e.g., "borderStyle__solid__extra"), or
   // - The mapped value is not found in the enum (unknown or missing value).
-  const moreThanOneValue = borderStyleValue !== undefined && rest.length > 0;
-  const undefinedValue = value === undefined;
-  const unsupportedValue = moreThanOneValue || undefinedValue;
+  const hasExtraSegments = valueKey !== undefined && extraSegments.length > 0;
+  const isValueUndefined = value === undefined;
+  const isUnsupportedValue = hasExtraSegments || isValueUndefined;
 
-  if (unsupportedValue === true) {
+  if (isUnsupportedValue === true) {
     // Provide a clear error for unknown, missing, or malformed values.
-    throw new Error(UNSUPPORTED_VALUE(propertyName, borderStyleValue, styleKey));
+    const invalidValueForError = hasExtraSegments
+      ? [valueKey, ...extraSegments].join(SEPARATORS.VALUE)
+      : valueKey;
+    throw new Error(
+      UNSUPPORTED_VALUE(propertyName, invalidValueForError as unknown as string, styleKey)
+    );
   }
 
   // Produce a minimal CSS rule targeting the provided class name.
