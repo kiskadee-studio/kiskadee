@@ -1,4 +1,4 @@
-import type { ColorSchema } from './palettes.types';
+import type { ColorSchema } from './colors.types';
 
 const palettes: ColorSchema = {
   boxColor: {

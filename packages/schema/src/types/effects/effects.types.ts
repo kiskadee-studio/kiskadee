@@ -1,5 +1,5 @@
 import type { ShadowSchema } from './shadow.types';
-import type { SolidColor } from '../palettes/palettes.types';
+import type { SolidColor } from '../colors/colors.types';
 
 export type ElementEffects = Partial<{
   // blur: {

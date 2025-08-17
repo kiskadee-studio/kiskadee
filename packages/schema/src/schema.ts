@@ -1,6 +1,6 @@
 import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ScaleSchema } from './types/scales/scales.types';
-import type { InteractionState, ColorSchema, SemanticColor } from './types/palettes/palettes.types';
+import type { InteractionState, ColorSchema, SemanticColor } from './types/colors/colors.types';
 import {
   type Breakpoints,
   breakpoints,
