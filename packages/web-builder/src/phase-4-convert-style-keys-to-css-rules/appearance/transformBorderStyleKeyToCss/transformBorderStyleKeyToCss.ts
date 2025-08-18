@@ -10,7 +10,7 @@ import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
  *
  * Example:
  * ```TypeScript
- * transformBorderKeyToCss('borderStyle__dashed', 'myClass');
+ * transformBorderStyleKeyToCss('borderStyle__dashed', 'myClass');
  * // => ".myClass { border-style: dashed }"
  * ```
  *
@@ -22,7 +22,7 @@ import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
  *   - The key does not start with the expected "borderStyle" property segment.
  *   - The extracted value is missing, unknown, or multiple values are provided.
  */
-export function transformBorderKeyToCss(styleKey: string, className: string): string {
+export function transformBorderStyleKeyToCss(styleKey: string, className: string): string {
   const propertyName = 'borderStyle';
 
   // Split the namespaced key by the configured value separator.
