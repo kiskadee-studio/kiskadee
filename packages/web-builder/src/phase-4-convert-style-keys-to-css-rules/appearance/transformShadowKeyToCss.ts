@@ -44,13 +44,18 @@ export function transformShadowKeyToCss(styleKey: string, className: string): st
   // Matches: shadow--<state>__[x,y,blur,[h,l,s,a]] or shadow__[x,y,blur,[h,l,s,a]]
   const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
   const match = styleKey.match(regex);
-  if (match === null) {
+
+  const isUnsupportedProperty = match === null;
+
+  if (isUnsupportedProperty === true) {
     throw new Error(UNSUPPORTED_PROPERTY('shadow', styleKey));
   }
 
   // Determine interaction state or default to "rest".
   const interactionState = (match[1] ?? 'rest') as InteractionState;
-  if (!(interactionState in InteractionStateCssPseudoSelector)) {
+  const hasUnsupportedInteractionState = !(interactionState in InteractionStateCssPseudoSelector);
+
+  if (hasUnsupportedInteractionState === true) {
     throw new Error(UNSUPPORTED_INTERACTION_STATE(interactionState, styleKey));
   }
 
@@ -60,7 +65,9 @@ export function transformShadowKeyToCss(styleKey: string, className: string): st
   // The inner value should be "x,y,blur,color".
   const shadowValue = match[2];
   const parts = shadowValue.match(/^([\d.]+),([\d.]+),([\d.]+),(.*)$/);
-  if (parts === null) {
+  const hasInvalidFormat = parts === null;
+
+  if (hasInvalidFormat === true) {
     // Invalid format for offsets/blur/color
     throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
   }
