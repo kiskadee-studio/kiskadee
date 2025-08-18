@@ -3,7 +3,7 @@ import { SEPARATORS } from '../../utils';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 
 /**
- * Builds a CSS rule that sets the border-style property from a compact style key.
+ * Builds a CSS rule that sets the border-style property from a style key.
  *
  * The style key must follow the "borderStyle__<value>" convention, where <value>
  * is a supported key of CssBorderStyleValue (e.g., "solid", "dashed").
@@ -58,6 +58,5 @@ export function transformBorderKeyToCss(styleKey: string, className: string): st
   }
 
   // Produce a minimal CSS rule targeting the provided class name.
-  // Note: className should not include a leading dot.
   return `.${className} { border-style: ${value} }`;
 }

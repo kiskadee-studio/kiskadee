@@ -1,16 +1,14 @@
-import { CssBorderStyleValue } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
 import { transformBorderKeyToCss } from './transformBorderKeyToCss';
 
 const propertyName = 'borderStyle';
 const className = 'abc';
-const { dashed, solid, dotted, none }: typeof CssBorderStyleValue = CssBorderStyleValue;
 
 describe('transformBorderToCss', () => {
   describe('Successful operation', () => {
     it('returns expected CSS rule for "borderStyle__none"', () => {
-      const styleKey = `${propertyName}__${none}`;
+      const styleKey = 'borderStyle__none';
       const result = transformBorderKeyToCss(styleKey, className);
 
       expect(result).toEqual('.abc { border-style: none }');
@@ -18,7 +16,7 @@ describe('transformBorderToCss', () => {
     });
 
     it('returns expected CSS rule for "borderStyle__dotted"', () => {
-      const styleKey = `${propertyName}__${dotted}`;
+      const styleKey = 'borderStyle__dotted';
       const result = transformBorderKeyToCss(styleKey, className);
 
       expect(result).toEqual('.abc { border-style: dotted }');
@@ -26,7 +24,7 @@ describe('transformBorderToCss', () => {
     });
 
     it('returns expected CSS rule for "borderStyle__dashed"', () => {
-      const styleKey = `${propertyName}__${dashed}`;
+      const styleKey = 'borderStyle__dashed';
       const result = transformBorderKeyToCss(styleKey, className);
 
       expect(result).toEqual('.abc { border-style: dashed }');
@@ -34,7 +32,7 @@ describe('transformBorderToCss', () => {
     });
 
     it('returns expected CSS rule for "borderStyle__solid"', () => {
-      const styleKey = `${propertyName}__${solid}`;
+      const styleKey = 'borderStyle__solid';
       const result = transformBorderKeyToCss(styleKey, className);
 
       expect(result).toEqual('.abc { border-style: solid }');
