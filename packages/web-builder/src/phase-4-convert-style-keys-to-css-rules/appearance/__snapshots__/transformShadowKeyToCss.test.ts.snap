@@ -1,5 +1,25 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`transformShadowKeyToCss > Error handling > should throw an error for an invalid color value 1`] = `[Error: Invalid shadow color value.]`;
+
+exports[`transformShadowKeyToCss > Error handling > should throw an error for an unsupported interaction state 1`] = `[Error: Unsupported interaction state "unknown" in shadow key "shadow--unknown__[1,1,1,[0,0,0,1]]".]`;
+
+exports[`transformShadowKeyToCss > Error handling > should throw an error when key does not start with "shadow" or format is invalid 1`] = `[Error: Invalid style key "notShadow__[2,4,5,[0,0,0,1]]". Expected the key to be in the format "<property>__<value>" with the property part being "shadow".]`;
+
+exports[`transformShadowKeyToCss > Error handling > should throw an error when key does not start with "shadow" or format is invalid 2`] = `[Error: Invalid style key "shadow__2,4,5,[0,0,0,1]". Expected the key to be in the format "<property>__<value>" with the property part being "shadow".]`;
+
+exports[`transformShadowKeyToCss > Error handling > should throw an error when the shadow values cannot be parsed 1`] = `[Error: Unsupported value "2,4,"invalid"" for property "shadow" in style key "shadow__[2,4,"invalid"]".]`;
+
+exports[`transformShadowKeyToCss > Successful operation > should transform a hover state shadow key with pseudo-selector 1`] = `".abc:hover { box-shadow: 6px 8px 10px #00000080 }"`;
+
+exports[`transformShadowKeyToCss > Successful operation > should transform a pressed state shadow key to use :active pseudo-selector 1`] = `".abc:click { box-shadow: 3px 3px 3px #000 }"`;
+
+exports[`transformShadowKeyToCss > Successful operation > should transform a pressed state shadow key to use :click pseudo-selector 1`] = `".abc:click { box-shadow: 3px 3px 3px #000 }"`;
+
+exports[`transformShadowKeyToCss > Successful operation > should transform default state shadow key using hex color conversion 1`] = `".abc { box-shadow: 2px 4px 5px #000 }"`;
+
+exports[`transformShadowKeyToCss > Successful operation > should treat "pseudo-disabled" as rest (no pseudo-selector) 1`] = `".abc { box-shadow: 5px 5px 5px #000 }"`;
+
 exports[`transformShadowKeyToCss function > Error handling > should throw an error for an invalid color value 1`] = `[Error: Invalid shadow color value.]`;
 
 exports[`transformShadowKeyToCss function > Error handling > should throw an error for an unsupported interaction state 1`] = `[Error: Unsupported interaction state "unknown" in shadow key "shadow--unknown__[1,1,1,[0,0,0,1]]".]`;
@@ -46,30 +66,10 @@ exports[`transformShadowKeyToCss function > Snapshots > should throw error match
 
 exports[`transformShadowKeyToCss function > Snapshots > should throw error matching snapshot for "shadow--unknown__[1,1,1,[0,0,0,1]]" 1`] = `[Error: Unsupported interaction state "unknown" in shadow key "shadow--unknown__[1,1,1,[0,0,0,1]]".]`;
 
-exports[`transformShadowKeyToCss function > Successful operation > should transform a hover state shadow key with pseudo-selector 1`] = `
-{
-  "className": "shadow--hover__[6,8,10,[0,0,0,0.5]]",
-  "cssRule": ".shadow--hover__[6,8,10,[0,0,0,0.5]]:hover { box-shadow: 6px 8px 10px #00000080; }",
-}
-`;
+exports[`transformShadowKeyToCss function > Successful operation > should transform a hover state shadow key with pseudo-selector 1`] = `".abc:hover { box-shadow: 6px 8px 10px #00000080 }"`;
 
-exports[`transformShadowKeyToCss function > Successful operation > should transform a pressed state shadow key to use :active pseudo-selector 1`] = `
-{
-  "className": "shadow--pressed__[3,3,3,[0,0,0,1]]",
-  "cssRule": ".shadow--pressed__[3,3,3,[0,0,0,1]]:click { box-shadow: 3px 3px 3px #000; }",
-}
-`;
+exports[`transformShadowKeyToCss function > Successful operation > should transform a pressed state shadow key to use :active pseudo-selector 1`] = `".abc:click { box-shadow: 3px 3px 3px #000 }"`;
 
-exports[`transformShadowKeyToCss function > Successful operation > should transform default state shadow key using hex color conversion 1`] = `
-{
-  "className": "shadow__[2,4,5,[0,0,0,1]]",
-  "cssRule": ".shadow__[2,4,5,[0,0,0,1]] { box-shadow: 2px 4px 5px #000; }",
-}
-`;
+exports[`transformShadowKeyToCss function > Successful operation > should transform default state shadow key using hex color conversion 1`] = `".abc { box-shadow: 2px 4px 5px #000 }"`;
 
-exports[`transformShadowKeyToCss function > Successful operation > should treat "pseudo-disabled" as rest (no pseudo-selector) 1`] = `
-{
-  "className": "shadow--pseudoDisabled__[5,5,5,[0,0,0,1]]",
-  "cssRule": ".shadow--pseudoDisabled__[5,5,5,[0,0,0,1]] { box-shadow: 5px 5px 5px #000; }",
-}
-`;
+exports[`transformShadowKeyToCss function > Successful operation > should treat "pseudo-disabled" as rest (no pseudo-selector) 1`] = `".abc { box-shadow: 5px 5px 5px #000 }"`;

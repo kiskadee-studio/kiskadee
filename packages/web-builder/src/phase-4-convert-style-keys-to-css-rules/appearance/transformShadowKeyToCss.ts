@@ -1,65 +1,66 @@
 import {
-  UNSUPPORTED_PROPERTY,
-  UNSUPPORTED_VALUE,
-  UNSUPPORTED_INTERACTION_STATE,
-  INVALID_SHADOW_COLOR_VALUE
-} from '../errorMessages';
-import {
   type HLSA,
-  InteractionStateCssPseudoSelector,
-  type InteractionState
+  type InteractionState,
+  InteractionStateCssPseudoSelector
 } from '@kiskadee/schema';
+import {
+  INVALID_SHADOW_COLOR_VALUE,
+  UNSUPPORTED_INTERACTION_STATE,
+  UNSUPPORTED_PROPERTY,
+  UNSUPPORTED_VALUE
+} from '../errorMessages';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
-import type { GeneratedCss } from '../phrase2.types';
 
 /**
- * Transforms a generated shadow style key into a CSS rule.
+ * Builds a CSS rule that sets the box-shadow property from a compact shadow style key.
  *
- * @example
- * ```ts
- * const { className, cssRule } = transformShadowKeyToCss(
- *   "shadow--hover__[2,4,8,[120,50,60,0.3]]"
- * );
- * // className: "shadow--hover__[2,4,8,[120,50,60,0.3]]"
- * // cssRule: ".shadow--hover__[2,4,8,[120,50,60,0.3]]:hover { box-shadow: 2px 4px 8px #RRGGBBAA; }"
- * ```
- *
- * The `styleKey` must match the pattern:
- *   "shadow__[x,y,blur,[h,l,s,a]]"             — default (rest) state
- *   "shadow--<state>__[x,y,blur,[h,l,s,a]]"     — with interaction state
+ * The style key must follow one of these conventions:
+ * - "shadow__[x,y,blur,[h,l,s,a]]"                 — default (rest) state
+ * - "shadow--<state>__[x,y,blur,[h,l,s,a]]"        — with interaction state
  *
  * Where:
- *   - `x`, `y`, `blur` are numeric offsets and blur radius in pixels.
- *   - `[h,l,s,a]` is an HSLA color array (hue, lightness, saturation, alpha).
- *   - `<state>` is one of the supported interaction states (e.g., hover, pressed).
+ * - x, y, blur are numeric values (pixels) representing horizontal offset, vertical offset, and blur radius.
+ * - [h,l,s,a] is an HSLA array for the shadow color, which will be converted to a hex color.
+ * - <state> is one of the supported interaction states in InteractionStateCssPseudoSelector (e.g. "hover", "focus").
  *
- * @param styleKey - Generated shadow key to transform
- * @returns An object with:
- *   - `className`: the original key
- *   - `cssRule`: the corresponding CSS rule string
- * @throws Error if the key format, interaction state, values, or color are invalid
+ * Example:
+ * ```TypeScript
+ * transformShadowKeyToCss('shadow--hover__[2,4,8,[120,50,60,0.3]]', 'myClass');
+ * // => ".myClass:hover { box-shadow: 2px 4px 8px #RRGGBBAA }"
+ * ```
+ *
+ * @param styleKey - The namespaced shadow key to parse (e.g., "shadow__[-2,4,8,[0,0,0,0.5]]").
+ * @param className - The CSS class name to use in the selector (without a leading dot).
+ * @returns The full CSS rule string (selector plus declaration), e.g. ".foo:hover { box-shadow: 0px 2px 4px #000000FF }".
+ *
+ * @throws Error when:
+ *   - The key does not start with the expected "shadow" property segment or the overall format is invalid.
+ *   - The interaction state is unknown.
+ *   - The offsets/blur/color segment cannot be parsed.
+ *   - The HSLA color value is malformed.
  */
-export function transformShadowKeyToCss(styleKey: string): GeneratedCss {
-  // Extract the optional interaction state and the bracketed value
+export function transformShadowKeyToCss(styleKey: string, className: string): string {
+  // Extract the optional interaction state and the bracketed value.
+  // Matches: shadow--<state>__[x,y,blur,[h,l,s,a]] or shadow__[x,y,blur,[h,l,s,a]]
   const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
   const match = styleKey.match(regex);
   if (match === null) {
     throw new Error(UNSUPPORTED_PROPERTY('shadow', styleKey));
   }
 
-  // Determine interaction state or default to "rest"
+  // Determine interaction state or default to "rest".
   const interactionState = (match[1] ?? 'rest') as InteractionState;
   if (!(interactionState in InteractionStateCssPseudoSelector)) {
     throw new Error(UNSUPPORTED_INTERACTION_STATE(interactionState, styleKey));
   }
 
-  // Map to CSS pseudo-selector (empty string for "rest" or states without a pseudo)
+  // Map to CSS pseudo-selector (empty string when "rest" or states without pseudo).
   const cssPseudo = InteractionStateCssPseudoSelector[interactionState] || '';
 
-  // The inner value should be "x,y,blur,color"
+  // The inner value should be "x,y,blur,color".
   const shadowValue = match[2];
   const parts = shadowValue.match(/^([\d.]+),([\d.]+),([\d.]+),(.*)$/);
-  if (!parts) {
+  if (parts === null) {
     // Invalid format for offsets/blur/color
     throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
   }
@@ -80,9 +81,7 @@ export function transformShadowKeyToCss(styleKey: string): GeneratedCss {
     throw new Error(INVALID_SHADOW_COLOR_VALUE);
   }
 
-  // Build CSS rule
-  const className = styleKey;
-  const cssRule = `.${className}${cssPseudo} { box-shadow: ${x}px ${y}px ${blur}px ${hexColor}; }`;
-
-  return { className, cssRule };
+  // Produce a minimal CSS rule targeting the provided class name.
+  // Note: className should not include a leading dot.
+  return `.${className}${cssPseudo} { box-shadow: ${x}px ${y}px ${blur}px ${hexColor} }`;
 }
