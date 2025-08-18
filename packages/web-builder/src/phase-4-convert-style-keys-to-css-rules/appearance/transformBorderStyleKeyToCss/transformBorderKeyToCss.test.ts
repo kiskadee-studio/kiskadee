@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 import { transformBorderKeyToCss } from './transformBorderKeyToCss';
 
 const propertyName = 'borderStyle';

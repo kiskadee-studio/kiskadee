@@ -1,6 +1,6 @@
 import { type BorderStyleValue, CssBorderStyleValue } from '@kiskadee/schema';
-import { SEPARATORS } from '../../utils';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { SEPARATORS } from '../../../utils';
+import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 /**
  * Builds a CSS rule that sets the border-style property from a style key.
