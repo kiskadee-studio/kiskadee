@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   INVALID_SHADOW_COLOR_VALUE,
   UNSUPPORTED_INTERACTION_STATE,
-  UNSUPPORTED_PROPERTY,
+  UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
 } from '../errorMessages';
 import { transformShadowKeyToCss } from './transformShadowKeyToCss';
@@ -48,12 +48,12 @@ describe('transformShadowKeyToCss', () => {
     it('should throw an error when key does not start with "shadow" or format is invalid', () => {
       const invalidKey1 = 'notShadow__[2,4,5,[0,0,0,1]]';
       const fn1 = (): string => transformShadowKeyToCss(invalidKey1, className);
-      expect(fn1).toThrowError(UNSUPPORTED_PROPERTY('shadow', invalidKey1));
+      expect(fn1).toThrowError(UNSUPPORTED_PROPERTY_NAME('shadow', invalidKey1));
       expect(fn1).toThrowErrorMatchingSnapshot();
 
       const invalidKey2 = 'shadow__2,4,5,[0,0,0,1]';
       const fn2 = (): string => transformShadowKeyToCss(invalidKey2, className);
-      expect(fn2).toThrowError(UNSUPPORTED_PROPERTY('shadow', invalidKey2));
+      expect(fn2).toThrowError(UNSUPPORTED_PROPERTY_NAME('shadow', invalidKey2));
       expect(fn2).toThrowErrorMatchingSnapshot();
     });
 

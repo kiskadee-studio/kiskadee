@@ -1,5 +1,5 @@
 import type { CssFontStyleValue, TextItalicKeyToken } from '@kiskadee/schema';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { GeneratedCss } from '../phrase2.types';
 
 /**
@@ -32,7 +32,7 @@ export function transformTextItalicKeyToCss(styleKey: string): GeneratedCss {
   const styleValue: TextItalicKeyToken = styleKeyParts[1] as TextItalicKeyToken;
 
   if (styleProperty !== textItalicProperty) {
-    throw new Error(UNSUPPORTED_PROPERTY(textItalicProperty, styleKey));
+    throw new Error(UNSUPPORTED_PROPERTY_NAME(textItalicProperty, styleKey));
   }
 
   if (styleKeyParts.length !== 2) {

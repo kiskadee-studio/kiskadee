@@ -1,5 +1,5 @@
 import { CssTextWeightValue, type TextWeightValue } from '@kiskadee/schema';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { GeneratedCss } from '../phrase2.types';
 
 /**
@@ -30,7 +30,7 @@ export function transformTextWeightKeyToCss(styleKey: string): GeneratedCss {
   const prefix = `${propertyName}__`;
 
   if (styleKey.startsWith(prefix) === false) {
-    throw new Error(UNSUPPORTED_PROPERTY(propertyName, styleKey));
+    throw new Error(UNSUPPORTED_PROPERTY_NAME(propertyName, styleKey));
   }
 
   const textWeightValue = styleKey.substring(prefix.length);

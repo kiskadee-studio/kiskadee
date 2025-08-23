@@ -6,7 +6,7 @@ import {
 import {
   INVALID_SHADOW_COLOR_VALUE,
   UNSUPPORTED_INTERACTION_STATE,
-  UNSUPPORTED_PROPERTY,
+  UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
 } from '../errorMessages';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
@@ -48,7 +48,7 @@ export function transformShadowKeyToCss(styleKey: string, className: string): st
   const isUnsupportedProperty = match === null;
 
   if (isUnsupportedProperty === true) {
-    throw new Error(UNSUPPORTED_PROPERTY('shadow', styleKey));
+    throw new Error(UNSUPPORTED_PROPERTY_NAME('shadow', styleKey));
   }
 
   // Determine interaction state or default to "rest".

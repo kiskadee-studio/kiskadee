@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformTextAlignKeyToCss } from './transformTextAlignKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 
 describe('transformTextAlignKeyToCss function', () => {
   describe('Successful operation', () => {
@@ -50,7 +50,7 @@ describe('transformTextAlignKeyToCss function', () => {
 
     it('should throw an error for an invalid prefix', () => {
       const call = () => transformTextAlignKeyToCss('alignText__center');
-      expect(call).toThrowError(UNSUPPORTED_PROPERTY('textAlign', 'alignText__center'));
+      expect(call).toThrowError(UNSUPPORTED_PROPERTY_NAME('textAlign', 'alignText__center'));
       expect(call).toThrowErrorMatchingSnapshot();
     });
 
@@ -64,7 +64,7 @@ describe('transformTextAlignKeyToCss function', () => {
 
     it('should throw an error for missing separators', () => {
       const call = () => transformTextAlignKeyToCss('textAlign-center');
-      expect(call).toThrowError(UNSUPPORTED_PROPERTY('textAlign', 'textAlign-center'));
+      expect(call).toThrowError(UNSUPPORTED_PROPERTY_NAME('textAlign', 'textAlign-center'));
       expect(call).toThrowErrorMatchingSnapshot();
     });
   });

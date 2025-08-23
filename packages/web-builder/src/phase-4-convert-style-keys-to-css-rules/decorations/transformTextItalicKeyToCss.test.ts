@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { transformTextItalicKeyToCss } from './transformTextItalicKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { TextItalicKeyToken } from '@kiskadee/schema';
 
 const textItalicProperty = 'textItalic';
@@ -39,7 +39,7 @@ describe('transformTextItalicKeyToCss function', () => {
       const invalidProperty = 'notTextItalic';
       const textItalicValue: TextItalicKeyToken = 'true';
       const styleKey = `${invalidProperty}__${textItalicValue}`;
-      const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
+      const expectedMessage = UNSUPPORTED_PROPERTY_NAME(textItalicProperty, styleKey);
       const result = () => transformTextItalicKeyToCss(styleKey);
 
       expect(result).toThrowError(expectedMessage);
@@ -47,7 +47,7 @@ describe('transformTextItalicKeyToCss function', () => {
 
     it('should throw an error for style keys that are not correctly separated', () => {
       const styleKey = 'textItalictrue';
-      const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
+      const expectedMessage = UNSUPPORTED_PROPERTY_NAME(textItalicProperty, styleKey);
       const result = () => transformTextItalicKeyToCss(styleKey);
 
       expect(result).toThrowError(expectedMessage);
@@ -86,7 +86,7 @@ describe('transformTextItalicKeyToCss function', () => {
 
     it('should throw an error for an empty style key', () => {
       const styleKey = '';
-      const expectedMessage = UNSUPPORTED_PROPERTY(textItalicProperty, styleKey);
+      const expectedMessage = UNSUPPORTED_PROPERTY_NAME(textItalicProperty, styleKey);
       const transform = () => transformTextItalicKeyToCss(styleKey);
 
       expect(transform).toThrowError(expectedMessage);

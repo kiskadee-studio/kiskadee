@@ -1,13 +1,13 @@
 import {
-  type TextLineTypeValue,
+  CssDecorationProperty,
   CssTextDecorationValue,
   type DecorationProperty,
-  CssDecorationProperty
+  type TextLineTypeValue
 } from '@kiskadee/schema';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { GeneratedCss } from '../phrase2.types';
 
-const { textLineType } = CssDecorationProperty;
+const { textLineType }: typeof CssDecorationProperty = CssDecorationProperty;
 
 /**
  * Converts a text‐decoration style key into a GeneratedCss object.
@@ -38,7 +38,7 @@ export function transformTextLineTypeKeyToCss(styleKey: string): GeneratedCss {
   const styleValue = styleParts[1] as TextLineTypeValue;
 
   if (styleProperty !== propertyName) {
-    throw new Error(UNSUPPORTED_PROPERTY(propertyName, styleKey));
+    throw new Error(UNSUPPORTED_PROPERTY_NAME(propertyName, styleKey));
   }
 
   if (styleParts.length !== 2) {

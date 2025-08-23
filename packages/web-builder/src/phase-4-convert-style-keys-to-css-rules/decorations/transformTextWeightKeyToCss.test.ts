@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformTextWeightKeyToCss } from './transformTextWeightKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 import type { TextWeightValue } from '@kiskadee/schema';
 
 const propertyName = 'textWeight';
@@ -94,7 +94,7 @@ describe('transformTextWeightKeyToCss function', () => {
       const invalidProperty = 'invalidProperty';
       const textWeightValue: TextWeightValue = 'bold';
       const styleKey = `${invalidProperty}__${textWeightValue}`;
-      const expectedError = UNSUPPORTED_PROPERTY(propertyName, styleKey);
+      const expectedError = UNSUPPORTED_PROPERTY_NAME(propertyName, styleKey);
       const result = () => transformTextWeightKeyToCss(styleKey);
 
       expect(result).toThrowError(expectedError);

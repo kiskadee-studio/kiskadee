@@ -6,7 +6,7 @@ import {
   type TextLineTypeValue
 } from '@kiskadee/schema';
 import { transformTextLineTypeKeyToCss } from './transformTextLineTypeKeyToCss';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
 
 const propertyName: TextLineTypeProperty = 'textLineType';
 const { textLineType } = CssDecorationProperty;
@@ -59,7 +59,7 @@ describe('transformTextLineTypeKeyToCss', () => {
       it('throws error if style key prefix is incorrect', () => {
         const invalidProperty = 'invalidProperty';
         const styleKey = `${invalidProperty}__underline`;
-        const expectedMessage = UNSUPPORTED_PROPERTY(propertyName, styleKey);
+        const expectedMessage = UNSUPPORTED_PROPERTY_NAME(propertyName, styleKey);
 
         let caught: unknown;
         try {
@@ -76,7 +76,7 @@ describe('transformTextLineTypeKeyToCss', () => {
 
       it('throws error if style key format is invalid', () => {
         const styleKey = 'textLineType-underline';
-        const expectedMessage = UNSUPPORTED_PROPERTY(propertyName, styleKey);
+        const expectedMessage = UNSUPPORTED_PROPERTY_NAME(propertyName, styleKey);
 
         let caught: unknown;
         try {
