@@ -1,5 +1,5 @@
-export const UNSUPPORTED_PROPERTY = (propertyName: string, styleKey: string): string =>
-  `Invalid style key "${styleKey}". Expected the key to be in the format "<property>__<value>" with the property part being "${propertyName}".`;
+export const UNSUPPORTED_PROPERTY_NAME = (propertyName: string, styleKey: string): string =>
+  `Invalid style key "${styleKey}". The property name must be "${propertyName}".`;
 
 export const UNSUPPORTED_VALUE = (
   propertyName: string,
