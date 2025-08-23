@@ -1,79 +1,77 @@
 import { describe, expect, it } from 'vitest';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
 import { transformBorderStyleKeyToCss } from './transformBorderStyleKeyToCss';
 
 const className = 'abc';
 
 describe('transformBorderStyleKeyToCss', () => {
-  describe('Successful operation', () => {
-    it('returns expected CSS rule for "borderStyle__none"', () => {
-      const styleKey = 'borderStyle__none';
+  describe('when value is valid', () => {
+    it.each([
+      ['none', '.abc { border-style: none }'],
+      ['dotted', '.abc { border-style: dotted }'],
+      ['dashed', '.abc { border-style: dashed }'],
+      ['solid', '.abc { border-style: solid }']
+    ])('transforms "%s" into a CSS rule', (value, expected) => {
+      // Given
+      const styleKey = `borderStyle__${value}`;
+
+      // When
       const result = transformBorderStyleKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc { border-style: none }');
-      expect(result).toMatchSnapshot();
-    });
-
-    it('returns expected CSS rule for "borderStyle__dotted"', () => {
-      const styleKey = 'borderStyle__dotted';
-      const result = transformBorderStyleKeyToCss(styleKey, className);
-
-      expect(result).toEqual('.abc { border-style: dotted }');
-      expect(result).toMatchSnapshot();
-    });
-
-    it('returns expected CSS rule for "borderStyle__dashed"', () => {
-      const styleKey = 'borderStyle__dashed';
-      const result = transformBorderStyleKeyToCss(styleKey, className);
-
-      expect(result).toEqual('.abc { border-style: dashed }');
-      expect(result).toMatchSnapshot();
-    });
-
-    it('returns expected CSS rule for "borderStyle__solid"', () => {
-      const styleKey = 'borderStyle__solid';
-      const result = transformBorderStyleKeyToCss(styleKey, className);
-
-      expect(result).toEqual('.abc { border-style: solid }');
-      expect(result).toMatchSnapshot();
+      // Then
+      expect(result).toEqual(expected);
     });
   });
-
-  describe('Error handling', () => {
-    it('throws for unsupported property segment', () => {
+  describe('when key is invalid', () => {
+    it('throws unsupported property error', () => {
+      // Given
       const invalidKey = 'invalidProperty__solid';
-      const expectedError = UNSUPPORTED_PROPERTY('invalidProperty', invalidKey);
 
-      expect(() => transformBorderStyleKeyToCss(invalidKey, className)).toThrowError(expectedError);
-      expect(expectedError).toMatchSnapshot();
-    });
+      // When
+      const act = (): string => transformBorderStyleKeyToCss(invalidKey, className);
 
-    it('throws for unsupported value segment', () => {
-      const invalidKey = 'borderStyle__unknownValue';
-      const expectedError = UNSUPPORTED_VALUE('borderStyle', 'unknownValue', invalidKey);
-
-      expect(() => transformBorderStyleKeyToCss(invalidKey, className)).toThrowError(expectedError);
-      expect(expectedError).toMatchSnapshot();
-    });
-
-    it('throws when value segment is missing', () => {
-      const invalidKey = 'borderStyle';
-      const expectedError = UNSUPPORTED_VALUE(
-        'borderStyle',
-        undefined as unknown as string,
-        invalidKey
+      // Then
+      expect(act).toThrowError(
+        'Invalid style key "invalidProperty__solid". The property name must be "borderStyle".'
       );
-
-      expect(() => transformBorderStyleKeyToCss(invalidKey, className)).toThrowError(expectedError);
-      expect(expectedError).toMatchSnapshot();
     });
 
-    it('throws when multiple value segments are provided', () => {
-      const invalidKey = 'borderStyle__solid__extra';
-      const expectedError = UNSUPPORTED_VALUE('borderStyle', 'solid__extra', invalidKey);
+    it('throws unsupported value error for unknown value segment', () => {
+      // Given
+      const invalidKey = 'borderStyle__unknownValue';
 
-      expect(() => transformBorderStyleKeyToCss(invalidKey, className)).toThrowError(expectedError);
-      expect(expectedError).toMatchSnapshot();
+      // When
+      const act = (): string => transformBorderStyleKeyToCss(invalidKey, className);
+
+      // Then
+      expect(act).toThrowError(
+        'Unsupported value "unknownValue" for property "borderStyle" in style key "borderStyle__unknownValue".'
+      );
+    });
+
+    it('throws unsupported value error for missing value segment', () => {
+      // Given
+      const invalidKey = 'borderStyle';
+
+      // When
+      const act = (): string => transformBorderStyleKeyToCss(invalidKey, className);
+
+      // Then
+      expect(act).toThrowError(
+        'Unsupported value "undefined" for property "borderStyle" in style key "borderStyle".'
+      );
+    });
+
+    it('throws unsupported value error for multiple value segments', () => {
+      // Given
+      const invalidKey = 'borderStyle__solid__extra';
+
+      // When
+      const act = (): string => transformBorderStyleKeyToCss(invalidKey, className);
+
+      // Then
+      expect(act).toThrowError(
+        'Unsupported value "solid__extra" for property "borderStyle" in style key "borderStyle__solid__extra".'
+      );
     });
   });
 });

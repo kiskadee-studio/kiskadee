@@ -1,6 +1,6 @@
 import { type BorderStyleValue, CssBorderStyleValue } from '@kiskadee/schema';
 import { SEPARATORS } from '../../../utils';
-import { UNSUPPORTED_PROPERTY, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 /**
  * Builds a CSS rule that sets the border-style property from a style key.
@@ -34,7 +34,7 @@ export function transformBorderStyleKeyToCss(styleKey: string, className: string
 
   if (isUnsupportedProperty === true) {
     // Surface a descriptive error if the property prefix is not supported.
-    throw new Error(UNSUPPORTED_PROPERTY(parsedProperty, styleKey));
+    throw new Error(UNSUPPORTED_PROPERTY_NAME(propertyName, styleKey));
   }
 
   // Map the parsed key (e.g., "solid") to its concrete CSS value via the schema enum.
