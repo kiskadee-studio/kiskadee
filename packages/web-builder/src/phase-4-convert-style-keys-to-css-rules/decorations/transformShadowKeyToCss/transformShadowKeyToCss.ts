@@ -8,8 +8,8 @@ import {
   UNSUPPORTED_INTERACTION_STATE,
   UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
-} from '../errorMessages';
-import { convertHslaToHex } from '../utils/convertHslaToHex';
+} from '../../errorMessages';
+import { convertHslaToHex } from '../../utils/convertHslaToHex';
 
 /**
  * Builds a CSS rule that sets the box-shadow property from a compact shadow style key.

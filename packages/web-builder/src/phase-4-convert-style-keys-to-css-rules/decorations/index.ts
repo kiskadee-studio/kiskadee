@@ -1,5 +1,5 @@
 export * from './transformBorderStyleKeyToCss/transformBorderStyleKeyToCss';
-export * from './transformShadowKeyToCss';
+export * from './transformShadowKeyToCss/transformShadowKeyToCss';
 export * from './transformTextAlignKeyToCss';
 export * from './transformTextItalicKeyToCss';
 export * from './transformTextLineTypeKeyToCss';
