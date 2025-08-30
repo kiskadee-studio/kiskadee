@@ -1,31 +1,26 @@
 import { CssTextWeightValue, type TextWeightValue } from '@kiskadee/schema';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../errorMessages';
-import type { GeneratedCss } from '../phrase2.types';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 /**
- * Converts a textWeight style key into a GeneratedCss object.
+ * Converts a textWeight style key into a CSS rule string.
  *
  * The key must be in the format "textWeight__<value>", where <value> is one of the
  * values defined in CssTextWeightValue.
  *
  * @example
  * ```ts
- * const result = transformTextWeightKeyToCss("textWeight__bold");
- * // result:
- * // {
- * //   className: "textWeight__bold",
- * //   cssRule: ".textWeight__bold { font-weight: 700 }"
- * // }
+ * const css = transformTextWeightKeyToCss("textWeight__bold", "textWeight__bold");
+ * // css: ".textWeight__bold { font-weight: 700 }"
  * ```
  *
  * @param styleKey - The text weight style key (e.g., "textWeight__bold").
- * @returns A GeneratedCss object containing:
- *   - `className`: the raw key (no leading dot)
- *   - `cssRule`: the full CSS rule string (selector + declaration)
+ * @param className - The class name to use in the generated CSS (without leading dot).
+ *                    Usually the same as styleKey or an optimized short name.
+ * @returns The generated CSS rule string (selector + declaration).
  *
  * @throws An error if the key does not start with "textWeight__" or if the value is unsupported.
  */
-export function transformTextWeightKeyToCss(styleKey: string): GeneratedCss {
+export function transformTextWeightKeyToCss(styleKey: string, className: string): string {
   const propertyName = 'textWeight';
   const prefix = `${propertyName}__`;
 
@@ -41,6 +36,5 @@ export function transformTextWeightKeyToCss(styleKey: string): GeneratedCss {
     throw new Error(UNSUPPORTED_VALUE(propertyName, textWeightValue, styleKey));
   }
 
-  const cssRule = `.${styleKey} { font-weight: ${cssValue} }`;
-  return { className: styleKey, cssRule };
+  return `.${className} { font-weight: ${cssValue} }`;
 }
