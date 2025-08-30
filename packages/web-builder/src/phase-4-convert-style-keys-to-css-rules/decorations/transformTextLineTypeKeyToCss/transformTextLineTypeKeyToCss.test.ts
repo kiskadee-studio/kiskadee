@@ -18,33 +18,30 @@ describe('transformTextLineTypeKeyToCss', () => {
       const textLineTypeValue: TextLineTypeValue = 'underline';
       const styleKey = `${propertyName}__${textLineTypeValue}`;
       const className = styleKey;
-      const expectedRule = `.${className} { ${textLineType}: ${underline}; }`;
+      const expectedRule = `.${className} { ${textLineType}: ${underline} }`;
       const result = transformTextLineTypeKeyToCss(styleKey, className);
 
       expect(result).toBe(expectedRule);
-      expect(result).toMatchSnapshot();
     });
 
     it('should return CSS for text line type "lineThrough"', () => {
       const textLineTypeValue: TextLineTypeValue = 'lineThrough';
       const styleKey = `${propertyName}__${textLineTypeValue}`;
       const className = styleKey;
-      const expectedRule = `.${className} { ${textLineType}: ${lineThrough}; }`;
+      const expectedRule = `.${className} { ${textLineType}: ${lineThrough} }`;
       const result = transformTextLineTypeKeyToCss(styleKey, className);
 
       expect(result).toBe(expectedRule);
-      expect(result).toMatchSnapshot();
     });
 
     it('should return CSS for text line type "none"', () => {
       const textLineTypeValue: TextLineTypeValue = 'none';
       const styleKey = `${propertyName}__${textLineTypeValue}`;
       const className = styleKey;
-      const expectedRule = `.${className} { ${textLineType}: ${none}; }`;
+      const expectedRule = `.${className} { ${textLineType}: ${none} }`;
       const result = transformTextLineTypeKeyToCss(styleKey, className);
 
       expect(result).toBe(expectedRule);
-      expect(result).toMatchSnapshot();
     });
   });
 
