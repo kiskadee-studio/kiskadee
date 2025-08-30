@@ -22,12 +22,5 @@
     "parser": {
       "allowComments": true
     }
-  },
-  "linter": {
-    "rules": {
-      "nursery": {
-        "useExplicitType": "error"
-      }
-    }
   }
 }
