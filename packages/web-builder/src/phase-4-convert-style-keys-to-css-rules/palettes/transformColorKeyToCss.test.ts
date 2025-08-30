@@ -16,10 +16,24 @@ describe('transformColorKeyToCss', () => {
       expect(result).toEqual('.abc { color: #40bf40 }');
     });
 
+    it('should add forced class selector alongside pseudo-class when forceState is true (inline)', () => {
+      const result = transformColorKeyToCss('boxColor--hover__[240,50,50,0.5]', className, true);
+
+      // expects both :hover and forced class (.-h) applied to the same element (i.e. .abc.-h) in the selector list
+      expect(result).toEqual('.abc:hover, .abc.-h { background-color: #4040bf80 }');
+    });
+
     it('should transform a key with "==hover" and include :hover on parent', () => {
       const result = transformColorKeyToCss('boxColor==hover__[240,50,50,0.5]', className);
 
       expect(result).toEqual('.-a:hover .abc { background-color: #4040bf80 }');
+    });
+
+    it('should add forced child class selector alongside parent pseudo-class when forceState is true (ref)', () => {
+      const result = transformColorKeyToCss('boxColor==hover__[240,50,50,0.5]', className, true);
+
+      // expects both parent :hover and forced parent class (.-h) to be combined as selectors
+      expect(result).toEqual('.-a:hover .abc, .-a.-h .abc { background-color: #4040bf80 }');
     });
 
     it('should transform a key without reference and include ":hover"', () => {
