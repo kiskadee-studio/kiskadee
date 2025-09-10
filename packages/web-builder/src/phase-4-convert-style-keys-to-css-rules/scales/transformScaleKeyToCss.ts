@@ -1,4 +1,3 @@
-import type { GeneratedCss } from '../phrase2.types';
 import {
   type ElementSizeValue,
   elementSizeValues,
@@ -142,5 +141,5 @@ export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints
   if (mediaQuery) {
     rule = `${mediaQuery} { ${rule} }`;
   }
-  return { className, cssRule: rule };
+  return rule;
 }

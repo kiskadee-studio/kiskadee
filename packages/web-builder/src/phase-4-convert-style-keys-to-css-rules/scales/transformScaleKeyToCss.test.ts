@@ -18,61 +18,43 @@ describe('transformDimensionKeyToCss', () => {
       it("should convert 'textSize__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('textSize__16', breakpoints);
 
-        expect(result.className).toEqual('textSize__16');
-        expect(result.cssRule).toContain('.textSize__16 {');
-        expect(result.cssRule).toContain('font-size: 1rem');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.textSize__16 {');
+        expect(result).toContain('font-size: 1rem');
       });
 
       it("should convert 'paddingTop__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('paddingTop__16', breakpoints);
+        const result = transformScaleKeyToCss('paddingTop__16', breakpoints);
 
-        expect(result.className).toEqual('paddingTop__16');
-        expect(result.cssRule).toContain('.paddingTop__16 {');
-        expect(result.cssRule).toContain('padding-top: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.paddingTop__16 {');
+        expect(result).toContain('padding-top: 16px');
       });
 
       it("should convert 'marginLeft__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('marginLeft__16', breakpoints);
 
-        expect(result.className).toEqual('marginLeft__16');
-        expect(result.cssRule).toContain('.marginLeft__16 {');
-        expect(result.cssRule).toContain('margin-left: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.marginLeft__16 {');
+        expect(result).toContain('margin-left: 16px');
       });
 
       it("should convert 'borderWidth__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('borderWidth__16', breakpoints);
 
-        expect(result.className).toEqual('borderWidth__16');
-        expect(result.cssRule).toContain('.borderWidth__16 {');
-        expect(result.cssRule).toContain('border-width: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.borderWidth__16 {');
+        expect(result).toContain('border-width: 16px');
       });
 
       it("should convert 'boxWidth__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('boxWidth__16', breakpoints);
 
-        expect(result.className).toEqual('boxWidth__16');
-        expect(result.cssRule).toContain('.boxWidth__16 {');
-        expect(result.cssRule).toContain('width: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.boxWidth__16 {');
+        expect(result).toContain('width: 16px');
       });
 
       it("should convert 'boxHeight__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('boxHeight__16', breakpoints);
 
-        expect(result.className).toEqual('boxHeight__16');
-        expect(result.cssRule).toContain('.boxHeight__16 {');
-        expect(result.cssRule).toContain('height: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.boxHeight__16 {');
+        expect(result).toContain('height: 16px');
       });
     });
 
@@ -80,61 +62,43 @@ describe('transformDimensionKeyToCss', () => {
       it("should convert 'textSize--s:sm:1__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('textSize--s:sm:1__16', breakpoints);
 
-        expect(result.className).toEqual('textSize__16');
-        expect(result.cssRule).toContain('.textSize__16 {');
-        expect(result.cssRule).toContain('font-size: 1rem');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.textSize__16 {');
+        expect(result).toContain('font-size: 1rem');
       });
 
       it("should convert 'paddingRight--s:sm:1__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('paddingRight--s:sm:1__16', breakpoints);
 
-        expect(result.className).toEqual('paddingRight__16');
-        expect(result.cssRule).toContain('.paddingRight__16 {');
-        expect(result.cssRule).toContain('padding-right: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.paddingRight__16 {');
+        expect(result).toContain('padding-right: 16px');
       });
 
       it("should convert 'marginLeft--s:sm:1__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('marginLeft--s:sm:1__16', breakpoints);
 
-        expect(result.className).toEqual('marginLeft__16');
-        expect(result.cssRule).toContain('.marginLeft__16 {');
-        expect(result.cssRule).toContain('margin-left: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.marginLeft__16 {');
+        expect(result).toContain('margin-left: 16px');
       });
 
       it("should convert 'borderWidth--s:sm:1__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('borderWidth--s:sm:1__16', breakpoints);
 
-        expect(result.className).toEqual('borderWidth__16');
-        expect(result.cssRule).toContain('.borderWidth__16 {');
-        expect(result.cssRule).toContain('border-width: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.borderWidth__16 {');
+        expect(result).toContain('border-width: 16px');
       });
 
       it("should convert 'boxWidth--s:sm:1__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('boxWidth--s:sm:1__16', breakpoints);
 
-        expect(result.className).toEqual('width__16');
-        expect(result.cssRule).toContain('.width__16 {');
-        expect(result.cssRule).toContain('width: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.width__16 {');
+        expect(result).toContain('width: 16px');
       });
 
       it("should convert 'boxHeight--s:sm:1__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('boxHeight--s:sm:1__16', breakpoints);
 
-        expect(result.className).toEqual('height__16');
-        expect(result.cssRule).toContain('.height__16 {');
-        expect(result.cssRule).toContain('height: 16px');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain('.height__16 {');
+        expect(result).toContain('height: 16px');
       });
     });
 
@@ -163,15 +127,11 @@ describe('transformDimensionKeyToCss', () => {
       it("should convert 'textSize--s:sm:1::bp:lg:1__16' into a valid CSS rule with media query and rem unit", () => {
         const result = transformDimensionKeyToCss('textSize--s:sm:1::bp:lg:1__16', breakpoints);
 
-        expect(result.className).toEqual('textSize--lg1__16');
         const bpValue = breakpoints['bp:lg:1'];
         expect(bpValue).toBeDefined();
-        expect(result.cssRule).toContain(`@media (min-width: ${bpValue}px)`);
-        expect(result.cssRule).toContain('.textSize--lg1__16');
-        // For textSize values, convert px to rem by dividing the value by 16
-        expect(result.cssRule).toContain('font-size: 1rem');
-
-        expect(result).toMatchSnapshot();
+        expect(result).toContain(`@media (min-width: ${bpValue}px)`);
+        expect(result).toContain('.textSize--lg1__16');
+        expect(result).toContain('font-size: 1rem');
       });
     });
   });
