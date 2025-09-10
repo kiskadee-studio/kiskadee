@@ -1,13 +1,14 @@
 import {
+  type Breakpoints,
+  type BreakpointValue,
   type ElementSizeValue,
   elementSizeValues,
-  scaleProperties,
-  type BreakpointValue,
   type ScaleProperty,
-  type Breakpoints
+  type StyleKey,
+  scaleProperties
 } from '@kiskadee/schema';
 
-export const ERROR_NO_MATCHING_DIMENSION_KEY = 'No matching dimension key found.';
+export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching dimension key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
   'Invalid media query pattern; expected exactly one media token and one value.';
 export const ERROR_INVALID_MEDIA_TOKEN = 'Invalid media query token.';
@@ -61,85 +62,97 @@ function getBaseClass(matchingDimension: ScaleProperty): string {
  * Supports both standard keys (e.g. "paddingTop__16") and keys with size and/or media query support
  * (e.g. "paddingTop--s:sm:1::bp:lg:1__16").
  *
- * When the key includes a media token (after "::") for a breakpoint, the breakpoint token is simplified,
- * for example, "bp:lg:1" becomes "lg1". Also, if the size token is valid (for instance "s:sm:1"), it is dropped.
+ * When the key includes a media token (after "::") for a breakpoint, the breakpoint token is
+ * simplified, for example, "bp:lg:1" becomes "lg1". Also, if the size token is valid (for instance "s:sm:1"),
+ * it is dropped.
  *
- * @param key - The dimension key.
+ * @param styleKey - The scale key.
  * @param breakpoints - Object containing breakpoint definitions.
+ * @param className
  * @returns An object with `className` and `cssRule`.
  */
-export function transformDimensionKeyToCss(key: string, breakpoints: Breakpoints): GeneratedCss {
-  let dimensionKey: ScaleProperty | undefined;
-  let className: string;
+export function transformScaleKeyToCss(
+  styleKey: StyleKey,
+  breakpoints: Breakpoints,
+  className: string
+): string {
+  let scaleProperty: ScaleProperty | undefined;
   let mediaQuery: string | undefined;
-  let valuePortion: string;
+  let valuePortion: string = '';
 
-  if (key.includes('--') === true) {
-    dimensionKey = scaleProperties.find((dim) => key.startsWith(`${dim}--`));
-    if (dimensionKey == null) {
-      throw new Error(ERROR_NO_MATCHING_DIMENSION_KEY);
+  const hasScalePlus = styleKey.includes('++') === true;
+  const hasStandardSeparator = styleKey.includes('__') === true;
+
+  if (hasScalePlus === true) {
+    scaleProperty = scaleProperties.find((dim) => styleKey.startsWith(`${dim}++`));
+    const isScalePropertyValid = scaleProperty != null;
+
+    if (isScalePropertyValid === false) {
+      throw new Error(ERROR_NO_MATCHING_SCALE_PROPERTY);
     }
-    const withoutPrefix = key.slice(`${dimensionKey}--`.length);
 
-    if (withoutPrefix.includes('::') === true) {
-      const [customToken, remainder] = withoutPrefix.split('::') as [ElementSizeValue, string];
+    const withoutPrefix = styleKey.slice(`${scaleProperty}++`.length);
+
+    const hasMediaToken = withoutPrefix.includes('::') === true;
+    if (hasMediaToken === true) {
+      const [sizeToken, remainder] = withoutPrefix.split('::') as [ElementSizeValue, string];
       const parts = remainder.split('__') as [BreakpointValue, string];
       if (parts.length !== 2) {
         throw new Error(ERROR_INVALID_MEDIA_QUERY_PATTERN);
       }
       const [mediaToken, value] = parts;
       const bpValue = breakpoints[mediaToken];
-      if (bpValue == null) {
+      const hasValidBreakpoint = bpValue != null;
+      if (hasValidBreakpoint === false) {
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
+      }
+      const isValidSizeToken = elementSizeValues.includes(sizeToken) === true;
+      if (isValidSizeToken === false) {
+        throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
       mediaQuery = `@media (min-width: ${bpValue}px)`;
       valuePortion = value;
-      if (elementSizeValues.includes(customToken) === false) {
-        throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
-      }
-      const breakpointModifier = mediaToken.replace('bp:', '').replace(/:/g, '');
-      className = `${getBaseClass(dimensionKey)}--${breakpointModifier}__${value}`;
     } else {
-      const [token, value] = withoutPrefix.split('__') as [ElementSizeValue, string];
-      const validToken = token != null && elementSizeValues.includes(token) === true;
-      const validValue = value != null;
-      if (validToken === false) {
+      const [sizeToken, value] = withoutPrefix.split('__') as [ElementSizeValue, string];
+      const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken) === true;
+      const hasValue = value != null;
+      if (isValidToken === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
-      if (validValue === false) {
+      if (hasValue === false) {
         throw new Error(ERROR_MISSING_VALUE);
       }
       valuePortion = value;
-      className = `${getBaseClass(dimensionKey)}__${value}`;
     }
-  } else if (key.includes('__') === true) {
-    dimensionKey = scaleProperties.find((dim) => key.startsWith(`${dim}__`));
-    if (dimensionKey == null) {
+  } else if (hasStandardSeparator === true) {
+    scaleProperty = scaleProperties.find((dim) => styleKey.startsWith(`${dim}__`));
+    if (scaleProperty == null) {
       throw new Error(ERROR_NO_STANDARD_DIMENSION_KEY);
     }
-    const parts = key.split('__');
+    const parts = styleKey.split('__');
     if (parts.length !== 2) {
       throw new Error(ERROR_INVALID_STANDARD_PATTERN);
     }
     const [, value] = parts as [string, string];
-    className = key;
     valuePortion = value;
   } else {
     throw new Error(ERROR_INVALID_KEY_FORMAT);
   }
 
-  const cssProperty = cssPropertyMap[dimensionKey];
+  const cssProperty = cssPropertyMap[scaleProperty as unknown as ScaleProperty];
   let cssValue: string;
-  if (dimensionKey === 'textSize') {
+  if (scaleProperty === 'textSize') {
     const num = Number(valuePortion);
     cssValue = num ? `${num / 16}rem` : valuePortion;
   } else {
     cssValue = `${valuePortion}px`;
   }
 
-  let rule = `.${className} { ${cssProperty}: ${cssValue}; }`;
+  let rule = `.${className} { ${cssProperty}: ${cssValue} }`;
   if (mediaQuery) {
     rule = `${mediaQuery} { ${rule} }`;
   }
+
+  console.log({ cn: className, rule, styleKey });
   return rule;
 }
