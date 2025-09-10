@@ -15,6 +15,7 @@ import {
 } from '@kiskadee/schema';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import type { GeneratedCss } from './phrase2.types';
+import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
 
 export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
   let generatedCss: GeneratedCss | undefined = undefined;
@@ -25,15 +26,15 @@ export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
   } else if (styleKey.startsWith('shadow')) {
     generatedCss = transformShadowKeyToCss(styleKey);
   } else if (styleKey.startsWith('textAlign')) {
-    generatedCss = transformTextAlignKeyToCss(styleKey);
-  } else if (styleKey.startsWith('textDecoration')) {
-    generatedCss = transformTextLineTypeKeyToCss(styleKey);
+    generatedCss = transformTextAlignKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('textLineType')) {
+    generatedCss = transformTextLineTypeKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textItalic')) {
-    generatedCss = transformTextItalicKeyToCss(styleKey);
+    generatedCss = transformTextItalicKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textWeight')) {
-    generatedCss = transformTextWeightKeyToCss(styleKey);
+    generatedCss = transformTextWeightKeyToCss(styleKey, className);
   } else if (generatedCss === undefined) {
-    // Dimensions ----------------------------------------------------------------------------------
+    // Scales --------------------------------------------------------------------------------------
     const matchDim = scaleProperties.find((dim) => styleKey.startsWith(dim));
     if (matchDim) {
       generatedCss = transformDimensionKeyToCss(styleKey, breakpoints);
@@ -100,12 +101,12 @@ export async function generateCssFromStyleKeyList(
     const generatedCss = generateCssRuleFromStyleKey(styleKey);
 
     // const cssRule = extractCssClassName(rule);
-    console.log({ styleKey, generatedCss });
+    // console.log({ styleKey, generatedCss });
 
     // Replace the original class name with the assigned token.
     // const token = tokenMapping[styleKey];
     // rule = rule.replace(new RegExp(`\\.${styleKey}\\b`), `.${token}`);
-    cssRuleList.push(generatedCss.cssRule);
+    cssRuleList.push(generatedCss);
   }
 
   const rawCss = cssRuleList.sort().join('\n');
