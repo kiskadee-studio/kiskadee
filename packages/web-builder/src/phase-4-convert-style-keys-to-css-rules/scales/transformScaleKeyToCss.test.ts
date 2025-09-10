@@ -18,42 +18,42 @@ describe('transformDimensionKeyToCss', () => {
       it("should convert 'textSize__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('textSize__16', breakpoints);
 
-        expect(result).toContain('.textSize__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('font-size: 1rem');
       });
 
       it("should convert 'paddingTop__16' into a valid CSS rule", () => {
-        const result = transformScaleKeyToCss('paddingTop__16', breakpoints);
+        const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc');
 
-        expect(result).toContain('.paddingTop__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('padding-top: 16px');
       });
 
       it("should convert 'marginLeft__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('marginLeft__16', breakpoints);
 
-        expect(result).toContain('.marginLeft__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('margin-left: 16px');
       });
 
       it("should convert 'borderWidth__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('borderWidth__16', breakpoints);
 
-        expect(result).toContain('.borderWidth__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('border-width: 16px');
       });
 
       it("should convert 'boxWidth__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('boxWidth__16', breakpoints);
 
-        expect(result).toContain('.boxWidth__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('width: 16px');
       });
 
       it("should convert 'boxHeight__16' into a valid CSS rule", () => {
         const result = transformDimensionKeyToCss('boxHeight__16', breakpoints);
 
-        expect(result).toContain('.boxHeight__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('height: 16px');
       });
     });
