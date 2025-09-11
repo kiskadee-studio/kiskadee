@@ -50,12 +50,12 @@ export interface BuildStyleKeyParams {
  * - BREAKPOINT: appends a responsive breakpoint to the size
  * - REF_STATE: appends a non-rest interaction state when it's a reference
  */
-const SEPARATORS = {
-  PROPERTY_VALUE: '__',
-  STATE: '--',
-  SCALE: '++',
+export const SEPARATORS = {
   BREAKPOINT: '::',
-  REF_STATE: '=='
+  REF_STATE: '==',
+  SIZE: '++',
+  STATE: '--',
+  VALUE: '__'
 };
 
 /**
@@ -104,14 +104,14 @@ export function buildStyleKey({
   //      - property++size::breakpoint__value (when breakpoint provided)
   if (size !== undefined) {
     const bpSuffix = breakpoint !== undefined ? `${SEPARATORS.BREAKPOINT}${breakpoint}` : '';
-    return `${propertyName}${SEPARATORS.SCALE}${size}${bpSuffix}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
+    return `${propertyName}${SEPARATORS.SIZE}${size}${bpSuffix}${SEPARATORS.VALUE}${valueString}`;
   }
 
   // 2) Reference branch
   //    Format: property==state__value
   //    Requires: isRef===true and interactionState !== undefined and !== 'rest'
   if (isRef === true && interactionState !== undefined && interactionState !== 'rest') {
-    return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
+    return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.VALUE}${valueString}`;
   }
 
   // 3) Invalid reference combination
@@ -122,10 +122,10 @@ export function buildStyleKey({
   // 4) Non-reference state branch
   //    Format: property--state__value
   if (interactionState !== undefined) {
-    return `${propertyName}${SEPARATORS.STATE}${interactionState}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
+    return `${propertyName}${SEPARATORS.STATE}${interactionState}${SEPARATORS.VALUE}${valueString}`;
   }
 
   // 5) Base case (no state, no scale, non-ref)
   //    Format: property__value
-  return `${propertyName}${SEPARATORS.PROPERTY_VALUE}${valueString}`;
+  return `${propertyName}${SEPARATORS.VALUE}${valueString}`;
 }

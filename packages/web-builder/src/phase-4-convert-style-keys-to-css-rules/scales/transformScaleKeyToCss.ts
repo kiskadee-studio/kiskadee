@@ -7,6 +7,7 @@ import {
   type StyleKey,
   scaleProperties
 } from '@kiskadee/schema';
+import { SEPARATORS } from '../../utils/buildStyleKey/buildStyeKey';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
@@ -19,9 +20,8 @@ export const ERROR_INVALID_STANDARD_PATTERN =
   'Invalid standard scale key format; unexpected number of parts.';
 export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing required delimiters.';
 
-// TODO: convert to enum
 /**
- * Map of project dimension keys to their corresponding CSS property names.
+ * Map of project scale keys to their corresponding CSS property names.
  */
 const cssPropertyMap: Record<ScaleProperty, string> = {
   borderRadius: 'border-radius',
@@ -38,22 +38,28 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
   paddingTop: 'padding-top',
   textHeight: 'line-height',
   textSize: 'font-size'
-};
+} as const;
 
 /**
  * Converts a dimension key into a CSS rule.
  *
  * Supports both standard keys (e.g. "paddingTop__16") and keys with size and/or media query support
- * (e.g. "paddingTop--s:sm:1::bp:lg:1__16").
+ * (e.g. "paddingTop++s:sm:1::bp:lg:1__16").
  *
- * When the key includes a media token (after "::") for a breakpoint, the breakpoint token is
- * simplified, for example, "bp:lg:1" becomes "lg1". Also, if the size token is valid (for instance "s:sm:1"),
- * it is dropped.
+ * When the key includes a media token (after the breakpoint separator) for a breakpoint, the breakpoint token is
+ * resolved via the provided breakpoints (e.g. "bp:lg:1" -> lookup of 'bp:lg:1'). If a size token is present
+ * (e.g. "s:sm:1") it is validated against elementSizeValues and otherwise discarded for output.
  *
- * @param styleKey - The scale key.
- * @param breakpoints - Object containing breakpoint definitions.
- * @param className
- * @returns An object with `className` and `cssRule`.
+ * Notes (kept in sync with implementation):
+ *  - Keys using the size separator must start with a known ScaleProperty, followed by SEPARATORS.SIZE.
+ *  - With a breakpoint: format is "<scaleProperty><SIZE><sizeToken><BREAKPOINT><mediaToken><VALUE><value>".
+ *  - Without a breakpoint: format is "<scaleProperty><SIZE><sizeToken><VALUE><value>".
+ *  - Standard keys (no size) use: "<scaleProperty><VALUE><value>".
+ *
+ * @param styleKey - The scale key string to convert (must match one of the supported formats).
+ * @param breakpoints - Object mapping breakpoint tokens to min-width pixel values.
+ * @param className - CSS class name to use in the generated rule.
+ * @returns A single CSS rule string (optionally wrapped in a media query) for the provided key.
  */
 export function transformScaleKeyToCss(
   styleKey: StyleKey,
@@ -64,8 +70,8 @@ export function transformScaleKeyToCss(
   let mediaQuery: string | undefined;
   let scaleValue: string = '';
 
-  const hasSizeSeparator = styleKey.includes('++') === true;
-  const hasValueSeparator = styleKey.includes('__') === true;
+  const hasSizeSeparator = styleKey.includes(SEPARATORS.SIZE) === true;
+  const hasValueSeparator = styleKey.includes(SEPARATORS.VALUE) === true;
 
   if (hasSizeSeparator === true) {
     scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
@@ -75,12 +81,15 @@ export function transformScaleKeyToCss(
       throw new Error(ERROR_NO_MATCHING_SCALE_PROPERTY);
     }
 
-    const withoutPrefix = styleKey.slice(`${scaleProperty}++`.length);
-    const hasBreakpointSeparator = withoutPrefix.includes('::');
+    const withoutPrefix = styleKey.slice(`${scaleProperty}${SEPARATORS.SIZE}`.length);
+    const hasBreakpointSeparator = withoutPrefix.includes(SEPARATORS.BREAKPOINT);
 
     if (hasBreakpointSeparator === true) {
-      const [sizeToken, remainder] = withoutPrefix.split('::') as [ElementSizeValue, string];
-      const parts = remainder.split('__') as [BreakpointValue, string];
+      const [sizeToken, remainder] = withoutPrefix.split(SEPARATORS.BREAKPOINT) as [
+        ElementSizeValue,
+        string
+      ];
+      const parts = remainder.split(SEPARATORS.VALUE) as [BreakpointValue, string];
       if (parts.length !== 2) {
         throw new Error(ERROR_INVALID_MEDIA_QUERY_PATTERN);
       }
@@ -101,7 +110,10 @@ export function transformScaleKeyToCss(
       mediaQuery = `@media (min-width: ${bpValue}px)`;
       scaleValue = value;
     } else {
-      const [sizeToken, value] = withoutPrefix.split('__') as [ElementSizeValue, string];
+      const [sizeToken, value] = withoutPrefix.split(SEPARATORS.VALUE) as [
+        ElementSizeValue,
+        string
+      ];
       const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken);
       const hasValue = value != null;
 
@@ -123,7 +135,7 @@ export function transformScaleKeyToCss(
       throw new Error(ERROR_NO_STANDARD_SCALE_KEY);
     }
 
-    const parts = styleKey.split('__');
+    const parts = styleKey.split(SEPARATORS.VALUE);
 
     if (parts.length !== 2) {
       throw new Error(ERROR_INVALID_STANDARD_PATTERN);
