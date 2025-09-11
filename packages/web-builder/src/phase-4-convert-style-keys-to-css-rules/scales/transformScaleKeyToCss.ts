@@ -8,17 +8,16 @@ import {
   scaleProperties
 } from '@kiskadee/schema';
 
-export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching dimension key found.';
+export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
   'Invalid media query pattern; expected exactly one media token and one value.';
 export const ERROR_INVALID_MEDIA_TOKEN = 'Invalid media query token.';
 export const ERROR_INVALID_CUSTOM_TOKEN = 'Invalid custom size token.';
-export const ERROR_MISSING_VALUE = 'Missing value for dimension.';
-export const ERROR_NO_STANDARD_DIMENSION_KEY = 'No matching standard dimension key found.';
+export const ERROR_MISSING_VALUE = 'Missing value for scale.';
+export const ERROR_NO_STANDARD_SCALE_KEY = 'No matching standard scale key found.';
 export const ERROR_INVALID_STANDARD_PATTERN =
-  'Invalid standard dimension key format; unexpected number of parts.';
-export const ERROR_INVALID_KEY_FORMAT =
-  'Invalid dimension key format; missing required delimiters.';
+  'Invalid standard scale key format; unexpected number of parts.';
+export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing required delimiters.';
 
 // TODO: convert to enum
 /**
@@ -42,21 +41,6 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
 };
 
 /**
- * Returns the base class to be used in the CSS selector.
- *
- * If the dimension is "boxWidth" or "boxHeight", uses the mapped CSS property;
- * otherwise, uses the dimension key.
- *
- * @param matchingDimension - The dimension key.
- * @returns The base class name for the CSS rule.
- */
-function getBaseClass(matchingDimension: ScaleProperty): string {
-  return matchingDimension.startsWith('box')
-    ? cssPropertyMap[matchingDimension]
-    : matchingDimension;
-}
-
-/**
  * Converts a dimension key into a CSS rule.
  *
  * Supports both standard keys (e.g. "paddingTop__16") and keys with size and/or media query support
@@ -78,13 +62,13 @@ export function transformScaleKeyToCss(
 ): string {
   let scaleProperty: ScaleProperty | undefined;
   let mediaQuery: string | undefined;
-  let valuePortion: string = '';
+  let scaleValue: string = '';
 
-  const hasScalePlus = styleKey.includes('++') === true;
-  const hasStandardSeparator = styleKey.includes('__') === true;
+  const hasSizeSeparator = styleKey.includes('++') === true;
+  const hasValueSeparator = styleKey.includes('__') === true;
 
-  if (hasScalePlus === true) {
-    scaleProperty = scaleProperties.find((dim) => styleKey.startsWith(`${dim}++`));
+  if (hasSizeSeparator === true) {
+    scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     const isScalePropertyValid = scaleProperty != null;
 
     if (isScalePropertyValid === false) {
@@ -92,9 +76,9 @@ export function transformScaleKeyToCss(
     }
 
     const withoutPrefix = styleKey.slice(`${scaleProperty}++`.length);
+    const hasBreakpointSeparator = withoutPrefix.includes('::');
 
-    const hasMediaToken = withoutPrefix.includes('::') === true;
-    if (hasMediaToken === true) {
+    if (hasBreakpointSeparator === true) {
       const [sizeToken, remainder] = withoutPrefix.split('::') as [ElementSizeValue, string];
       const parts = remainder.split('__') as [BreakpointValue, string];
       if (parts.length !== 2) {
@@ -103,38 +87,50 @@ export function transformScaleKeyToCss(
       const [mediaToken, value] = parts;
       const bpValue = breakpoints[mediaToken];
       const hasValidBreakpoint = bpValue != null;
+
       if (hasValidBreakpoint === false) {
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
-      const isValidSizeToken = elementSizeValues.includes(sizeToken) === true;
+
+      const isValidSizeToken = elementSizeValues.includes(sizeToken);
+
       if (isValidSizeToken === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
+
       mediaQuery = `@media (min-width: ${bpValue}px)`;
-      valuePortion = value;
+      scaleValue = value;
     } else {
       const [sizeToken, value] = withoutPrefix.split('__') as [ElementSizeValue, string];
-      const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken) === true;
+      const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken);
       const hasValue = value != null;
+
       if (isValidToken === false) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
+
       if (hasValue === false) {
         throw new Error(ERROR_MISSING_VALUE);
       }
-      valuePortion = value;
+
+      scaleValue = value;
     }
-  } else if (hasStandardSeparator === true) {
-    scaleProperty = scaleProperties.find((dim) => styleKey.startsWith(`${dim}__`));
-    if (scaleProperty == null) {
-      throw new Error(ERROR_NO_STANDARD_DIMENSION_KEY);
+  } else if (hasValueSeparator === true) {
+    scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
+    const isScalePropertyValid = scaleProperty != null;
+
+    if (isScalePropertyValid === false) {
+      throw new Error(ERROR_NO_STANDARD_SCALE_KEY);
     }
+
     const parts = styleKey.split('__');
+
     if (parts.length !== 2) {
       throw new Error(ERROR_INVALID_STANDARD_PATTERN);
     }
+
     const [, value] = parts as [string, string];
-    valuePortion = value;
+    scaleValue = value;
   } else {
     throw new Error(ERROR_INVALID_KEY_FORMAT);
   }
@@ -142,17 +138,16 @@ export function transformScaleKeyToCss(
   const cssProperty = cssPropertyMap[scaleProperty as unknown as ScaleProperty];
   let cssValue: string;
   if (scaleProperty === 'textSize') {
-    const num = Number(valuePortion);
-    cssValue = num ? `${num / 16}rem` : valuePortion;
+    cssValue = `${Number(scaleValue) / 16}rem`;
   } else {
-    cssValue = `${valuePortion}px`;
+    cssValue = `${scaleValue}px`;
   }
 
   let rule = `.${className} { ${cssProperty}: ${cssValue} }`;
+
   if (mediaQuery) {
     rule = `${mediaQuery} { ${rule} }`;
   }
 
-  console.log({ cn: className, rule, styleKey });
   return rule;
 }

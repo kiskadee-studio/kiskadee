@@ -128,7 +128,6 @@ describe('transformDimensionKeyToCss', () => {
         const result = transformDimensionKeyToCss('textSize--s:sm:1::bp:lg:1__16', breakpoints);
 
         const bpValue = breakpoints['bp:lg:1'];
-        expect(bpValue).toBeDefined();
         expect(result).toContain(`@media (min-width: ${bpValue}px)`);
         expect(result).toContain('.textSize--lg1__16');
         expect(result).toContain('font-size: 1rem');
