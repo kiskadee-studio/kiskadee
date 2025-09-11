@@ -1,30 +1,31 @@
 import {
-  transformBorderKeyToCss,
-  transformShadowKeyToCss,
-  transformTextAlignKeyToCss,
-  transformTextItalicKeyToCss,
-  transformTextLineTypeKeyToCss,
-  transformTextWeightKeyToCss
-} from './appearance';
-import { transformDimensionKeyToCss } from './dimensions/transformDimensionKeyToCss';
-import {
   breakpoints,
   type ColorProperty,
   CssColorProperty,
   scaleProperties
 } from '@kiskadee/schema';
+import postcss from 'postcss';
+import combineMq from 'postcss-combine-media-query';
+import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
+import {
+  transformBorderStyleKeyToCss,
+  transformShadowKeyToCss,
+  transformTextAlignKeyToCss,
+  transformTextItalicKeyToCss,
+  transformTextLineTypeKeyToCss,
+  transformTextWeightKeyToCss
+} from './decorations';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
-import type { GeneratedCss } from './phrase2.types';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
 
-export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
-  let generatedCss: GeneratedCss | undefined = undefined;
+export function generateCssRuleFromStyleKey(styleKey: string, className: string): string {
+  let generatedCss: string | undefined;
 
   // Appearances ---------------------------------------------------------------------------------
   if (styleKey.startsWith('borderStyle')) {
-    generatedCss = transformBorderKeyToCss(styleKey);
+    generatedCss = transformBorderStyleKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
-    generatedCss = transformShadowKeyToCss(styleKey);
+    generatedCss = transformShadowKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textAlign')) {
     generatedCss = transformTextAlignKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textLineType')) {
@@ -34,16 +35,17 @@ export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
   } else if (styleKey.startsWith('textWeight')) {
     generatedCss = transformTextWeightKeyToCss(styleKey, className);
   } else if (generatedCss === undefined) {
-    // Scales --------------------------------------------------------------------------------------
-    const matchDim = scaleProperties.find((dim) => styleKey.startsWith(dim));
-    if (matchDim) {
-      generatedCss = transformDimensionKeyToCss(styleKey, breakpoints);
+    const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
+    if (matchScale != null) {
+      generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className);
     } else {
-      // Pallets -----------------------------------------------------------------------------------
+      // Colors ------------------------------------------------------------------------------------
       const colorProperties = Object.keys(CssColorProperty) as ColorProperty[];
-      const matchColor = colorProperties.find((color) => styleKey.startsWith(color));
-      if (matchColor !== undefined) {
-        generatedCss = transformColorKeyToCss(styleKey);
+      const matchColor = colorProperties.find((colorProperty) =>
+        styleKey.startsWith(colorProperty)
+      );
+      if (matchColor != null) {
+        generatedCss = transformColorKeyToCss(styleKey, className);
       }
     }
   }
@@ -59,7 +61,6 @@ export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
  * Generates CSS rules from the style object by iterating just once over its keys.
  * Keys are first sorted by their numeric values (descending), then reassigned tokens.
  *
- * @param styleKeyList - The style object with keys and numeric values.
  * @returns A string containing all the generated CSS class rules.
  *
  * Expected Output (using a simple style example):
@@ -79,9 +80,10 @@ export function generateCssRuleFromStyleKey(styleKey: string): GeneratedCss {
  * .a { font-style: italic; }
  * .b { text-align: center; }
  * .c { text-decoration: underline; }
+ * @param cssClassNames
  */
 export async function generateCssFromStyleKeyList(
-  styleKeyList: Record<string, number>
+  cssClassNames: ShortenCssClassNames
 ): Promise<string> {
   const cssRuleList: string[] = [];
 
@@ -97,8 +99,9 @@ export async function generateCssFromStyleKeyList(
   // });
 
   // Iterate over the sorted keys and generate CSS rules using tokens.
-  for (const styleKey of Object.keys(styleKeyList)) {
-    const generatedCss = generateCssRuleFromStyleKey(styleKey);
+  for (const styleKey of Object.keys(cssClassNames)) {
+    const className = cssClassNames[styleKey];
+    const generatedCss = generateCssRuleFromStyleKey(styleKey, className);
 
     // const cssRule = extractCssClassName(rule);
     // console.log({ styleKey, generatedCss });
@@ -110,12 +113,11 @@ export async function generateCssFromStyleKeyList(
   }
 
   const rawCss = cssRuleList.sort().join('\n');
-  return rawCss;
 
-  // // Apply postcss-combine-media-query plugin to combine media queries
-  // const grouped = await postcss([combineMq()]).process(rawCss, {
-  //   from: undefined // avoid source file warning
-  // });
-  //
-  // return grouped.css;
+  // Apply postcss-combine-media-query plugin to combine media queries
+  const grouped = await postcss([combineMq()]).process(rawCss, {
+    from: undefined // avoid source file warning
+  });
+
+  return grouped.css;
 }
