@@ -46,7 +46,7 @@ export interface BuildStyleKeyParams {
  *
  * - PROPERTY_VALUE: separates the property name from its value
  * - STATE: appends an interaction state to the property
- * - SCALE: appends a size/scale identifier to the property
+ * - SIZE: appends a size identifier to the property
  * - BREAKPOINT: appends a responsive breakpoint to the size
  * - REF_STATE: appends a non-rest interaction state when it's a reference
  */
@@ -62,13 +62,13 @@ const SEPARATORS = {
  * Builds a single style key string representing a combination of:
  *   - CSS property name
  *   - optional interaction state (hover, focus, etc.)
- *   - optional size/scale (+ optional breakpoint)
+ *   - optional size (+ optional breakpoint)
  *   - property value (primitive stringified, non-primitive JSON stringified)
  *
  * Examples:
  *   - "margin__16"                          (base value)
- *   - "margin++small__16"                   (with scale)
- *   - "margin++small::md__16"               (with scale + breakpoint)
+ *   - "margin++small__16"                   (with size)
+ *   - "margin++small::md__16"               (with size + breakpoint)
  *   - "color==hover__\"#ff0000\""           (reference color on hover)
  *   - "shadow--focus__[4,4,8,[0,0,0,0.5]]"  (shadow values on focus)
  *
@@ -81,7 +81,7 @@ const SEPARATORS = {
  * @param value            Raw or serializable value
  * @param interactionState Interaction state (e.g., "rest", "hover", "focus")
  * @param isRef            Indicates a reference key; requires non-"rest" interactionState
- * @param size             Scale identifier (e.g., "s:md:1", "s:lg:1")
+ * @param size             Size identifier (e.g., "s:md:1", "s:lg:1")
  * @param breakpoint       Breakpoint identifier (e.g., "bp:sm:1")
  * @returns A unique style key string
  * @throws If isRef is true without a non-"rest" interactionState
