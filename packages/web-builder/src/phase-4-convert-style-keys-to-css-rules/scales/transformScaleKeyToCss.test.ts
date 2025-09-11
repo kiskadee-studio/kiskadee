@@ -1,3 +1,4 @@
+import { breakpoints } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import {
   ERROR_INVALID_CUSTOM_TOKEN,
@@ -7,16 +8,15 @@ import {
   ERROR_INVALID_STANDARD_PATTERN,
   ERROR_MISSING_VALUE,
   ERROR_NO_MATCHING_SCALE_PROPERTY,
-  ERROR_NO_STANDARD_DIMENSION_KEY,
-  transformDimensionKeyToCss
-} from './transformDimensionKeyToCss';
-import { breakpoints } from '@kiskadee/schema';
+  ERROR_NO_STANDARD_SCALE_KEY,
+  transformScaleKeyToCss
+} from './transformScaleKeyToCss';
 
-describe('transformDimensionKeyToCss', () => {
+describe('transformScaleKeyToCss', () => {
   describe('Successful operation', () => {
     describe('Valid Properties (Unique Value)', () => {
       it("should convert 'textSize__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('textSize__16', breakpoints);
+        const result = transformScaleKeyToCss('textSize__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
         expect(result).toContain('font-size: 1rem');
@@ -30,28 +30,28 @@ describe('transformDimensionKeyToCss', () => {
       });
 
       it("should convert 'marginLeft__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('marginLeft__16', breakpoints);
+        const result = transformScaleKeyToCss('marginLeft__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
         expect(result).toContain('margin-left: 16px');
       });
 
       it("should convert 'borderWidth__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('borderWidth__16', breakpoints);
+        const result = transformScaleKeyToCss('borderWidth__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
         expect(result).toContain('border-width: 16px');
       });
 
       it("should convert 'boxWidth__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('boxWidth__16', breakpoints);
+        const result = transformScaleKeyToCss('boxWidth__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
         expect(result).toContain('width: 16px');
       });
 
       it("should convert 'boxHeight__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('boxHeight__16', breakpoints);
+        const result = transformScaleKeyToCss('boxHeight__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
         expect(result).toContain('height: 16px');
@@ -59,77 +59,69 @@ describe('transformDimensionKeyToCss', () => {
     });
 
     describe('Valid Properties (Size Support)', () => {
-      it("should convert 'textSize--s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('textSize--s:sm:1__16', breakpoints);
+      it("should convert 'textSize++s:sm:1__16' into a valid CSS rule", () => {
+        const result = transformScaleKeyToCss('textSize++s:sm:1__16', breakpoints, 'abc');
 
-        expect(result).toContain('.textSize__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('font-size: 1rem');
       });
 
-      it("should convert 'paddingRight--s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('paddingRight--s:sm:1__16', breakpoints);
+      it("should convert 'paddingRight++s:sm:1__16' into a valid CSS rule", () => {
+        const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc');
 
-        expect(result).toContain('.paddingRight__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('padding-right: 16px');
       });
 
-      it("should convert 'marginLeft--s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('marginLeft--s:sm:1__16', breakpoints);
+      it("should convert 'marginLeft++s:sm:1__16' into a valid CSS rule", () => {
+        const result = transformScaleKeyToCss('marginLeft++s:sm:1__16', breakpoints, 'abc');
 
-        expect(result).toContain('.marginLeft__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('margin-left: 16px');
       });
 
-      it("should convert 'borderWidth--s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('borderWidth--s:sm:1__16', breakpoints);
+      it("should convert 'borderWidth++s:sm:1__16' into a valid CSS rule", () => {
+        const result = transformScaleKeyToCss('borderWidth++s:sm:1__16', breakpoints, 'abc');
 
-        expect(result).toContain('.borderWidth__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('border-width: 16px');
       });
 
-      it("should convert 'boxWidth--s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('boxWidth--s:sm:1__16', breakpoints);
+      it("should convert 'boxWidth++s:sm:1__16' into a valid CSS rule", () => {
+        const result = transformScaleKeyToCss('boxWidth++s:sm:1__16', breakpoints, 'abc');
 
-        expect(result).toContain('.width__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('width: 16px');
       });
 
-      it("should convert 'boxHeight--s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformDimensionKeyToCss('boxHeight--s:sm:1__16', breakpoints);
+      it("should convert 'boxHeight++s:sm:1__16' into a valid CSS rule", () => {
+        const result = transformScaleKeyToCss('boxHeight++s:sm:1__16', breakpoints, 'abc');
 
-        expect(result).toContain('.height__16 {');
+        expect(result).toContain('.abc {');
         expect(result).toContain('height: 16px');
       });
     });
 
     describe('Valid Properties (Media Query Support)', () => {
-      it("should convert 'paddingTop--s:sm:1::bp:lg:1__16' into a valid CSS rule with media query", () => {
-        const result = transformDimensionKeyToCss('paddingTop--s:sm:1::bp:lg:1__16', breakpoints);
-        expect(result.className).toEqual('paddingTop--lg1__16');
-
-        // Retrieve the breakpoint value for the media token.
-        // The token should match exactly what is provided (e.g. "bp:lg:1")
-        const bpValue = breakpoints['bp:lg:1'];
-        expect(bpValue).toBeDefined();
-        expect(result.cssRule).toContain(`@media (min-width: ${bpValue}px)`);
-
-        // Based on the conversion logic, the custom size token is dropped so that the
-        // resulting class name contains only the base property and a simplified breakpoint modifier.
-        // For "paddingTop", the converted class name should be: ".paddingTop--lg1__16".
-        expect(result.cssRule).toContain('.paddingTop--lg1__16');
-
-        // Checks that the CSS rule contains the correct property and value.
-        expect(result.cssRule).toContain('padding-top: 16px');
-
-        expect(result).toMatchSnapshot();
-      });
-
-      it("should convert 'textSize--s:sm:1::bp:lg:1__16' into a valid CSS rule with media query and rem unit", () => {
-        const result = transformDimensionKeyToCss('textSize--s:sm:1::bp:lg:1__16', breakpoints);
+      it("should convert 'paddingTop++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query", () => {
+        const result = transformScaleKeyToCss(
+          'paddingTop++s:sm:1::bp:lg:1__16',
+          breakpoints,
+          'abc'
+        );
 
         const bpValue = breakpoints['bp:lg:1'];
         expect(result).toContain(`@media (min-width: ${bpValue}px)`);
-        expect(result).toContain('.textSize--lg1__16');
+        expect(result).toContain('.abc {');
+        expect(result).toContain('padding-top: 16px');
+      });
+
+      it("should convert 'textSize++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query and rem unit", () => {
+        const result = transformScaleKeyToCss('textSize++s:sm:1::bp:lg:1__16', breakpoints, 'abc');
+
+        const bpValue = breakpoints['bp:lg:1'];
+        expect(result).toContain(`@media (min-width: ${bpValue}px)`);
+        expect(result).toContain('.abc {');
         expect(result).toContain('font-size: 1rem');
       });
     });
@@ -138,43 +130,43 @@ describe('transformDimensionKeyToCss', () => {
   describe('Error handling', () => {
     it('Exception 1 - should throw error when no matching dimension key is found', () => {
       expect(() =>
-        transformDimensionKeyToCss('invalidKey--s:sm:1::bp:lg:1__16', breakpoints)
-      ).toThrowError(ERROR_NO_MATCHING_DIMENSION_KEY);
+        transformScaleKeyToCss('invalidKey++s:sm:1::bp:lg:1__16', breakpoints, 'abc')
+      ).toThrowError(ERROR_NO_MATCHING_SCALE_PROPERTY);
     });
 
     it('Exception 2 - should throw error when the media query pattern has too many parts', () => {
       expect(() =>
-        transformDimensionKeyToCss('textSize--s:sm:1::bp:lg:1__16__extra', breakpoints)
+        transformScaleKeyToCss('textSize++s:sm:1::bp:lg:1__16__extra', breakpoints, 'abc')
       ).toThrowError(ERROR_INVALID_MEDIA_QUERY_PATTERN);
     });
 
     it('Exception 3 - should throw error when the media query token format is invalid', () => {
       expect(() =>
-        transformDimensionKeyToCss('textSize--s:sm:1::lg:1__16', breakpoints)
+        transformScaleKeyToCss('textSize++s:sm:1::lg:1__16', breakpoints, 'abc')
       ).toThrowError(ERROR_INVALID_MEDIA_TOKEN);
     });
 
     it('Exception 4 - should throw error when the custom token is not a valid size prop', () => {
       expect(() =>
-        transformDimensionKeyToCss('paddingTop--foo::bp:lg:1__16', breakpoints)
+        transformScaleKeyToCss('paddingTop++foo::bp:lg:1__16', breakpoints, 'abc')
       ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
     });
 
     describe('Exception 5 - Invalid Format Cases for Custom Token and Missing Value', () => {
       it("should throw error when a non-valid custom token is provided for 'textSize'", () => {
-        expect(() => transformDimensionKeyToCss('textSize--invalid__16', breakpoints)).toThrowError(
-          ERROR_INVALID_CUSTOM_TOKEN
-        );
+        expect(() =>
+          transformScaleKeyToCss('textSize++invalid__16', breakpoints, 'abc')
+        ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
       });
 
       it("should throw error when the custom token is missing (empty) for 'textSize'", () => {
-        expect(() => transformDimensionKeyToCss('textSize--__16', breakpoints)).toThrowError(
+        expect(() => transformScaleKeyToCss('textSize++__16', breakpoints, 'abc')).toThrowError(
           ERROR_INVALID_CUSTOM_TOKEN
         );
       });
 
       it("should throw error when the value part is missing for 'textSize'", () => {
-        expect(() => transformDimensionKeyToCss('textSize--s:sm:1', breakpoints)).toThrowError(
+        expect(() => transformScaleKeyToCss('textSize++s:sm:1', breakpoints, 'abc')).toThrowError(
           ERROR_MISSING_VALUE
         );
       });
@@ -182,15 +174,15 @@ describe('transformDimensionKeyToCss', () => {
 
     describe('Exception 6 - Unrecognized Dimension Key', () => {
       it("should throw error when provided with an invalid dimension key (e.g. 'paddingCenter__16')", () => {
-        expect(() => transformDimensionKeyToCss('paddingCenter__16', breakpoints)).toThrowError(
-          ERROR_NO_STANDARD_DIMENSION_KEY
+        expect(() => transformScaleKeyToCss('paddingCenter__16', breakpoints, 'abc')).toThrowError(
+          ERROR_NO_STANDARD_SCALE_KEY
         );
       });
     });
 
     describe('Exception 7 - Dimension Key with Extra Separators', () => {
       it("should throw error when the dimension key has extra '__' delimiters (e.g. 'paddingTop__16__16')", () => {
-        expect(() => transformDimensionKeyToCss('paddingTop__16__16', breakpoints)).toThrowError(
+        expect(() => transformScaleKeyToCss('paddingTop__16__16', breakpoints, 'abc')).toThrowError(
           ERROR_INVALID_STANDARD_PATTERN
         );
       });
@@ -198,19 +190,19 @@ describe('transformDimensionKeyToCss', () => {
 
     describe('Exception 8 - Invalid Dimension Identifier Format', () => {
       it('should throw error when the dimension key does not include any expected delimiters', () => {
-        expect(() => transformDimensionKeyToCss('invalidKey', breakpoints)).toThrowError(
+        expect(() => transformScaleKeyToCss('invalidKey', breakpoints, 'abc')).toThrowError(
           ERROR_INVALID_KEY_FORMAT
         );
       });
 
       it('should throw error when the dimension key is only partially formatted', () => {
-        expect(() => transformDimensionKeyToCss('textSize-16', breakpoints)).toThrowError(
+        expect(() => transformScaleKeyToCss('textSize-16', breakpoints, 'abc')).toThrowError(
           ERROR_INVALID_KEY_FORMAT
         );
       });
 
       it('should throw error when provided with an empty string as the dimension key', () => {
-        expect(() => transformDimensionKeyToCss('', breakpoints)).toThrowError(
+        expect(() => transformScaleKeyToCss('', breakpoints, 'abc')).toThrowError(
           ERROR_INVALID_KEY_FORMAT
         );
       });
