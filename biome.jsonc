@@ -21,6 +21,9 @@
   "json": {
     "parser": {
       "allowComments": true
+    },
+    "assist": {
+      "enabled": false
     }
   }
 }
