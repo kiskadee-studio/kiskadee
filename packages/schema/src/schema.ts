@@ -1,13 +1,8 @@
+import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
+import type { ColorSchema, InteractionState, SemanticColor } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
-import type { ScaleSchema } from './types/scales/scales.types';
-import type { InteractionState, ColorSchema, SemanticColor } from './types/colors/colors.types';
-import {
-  type Breakpoints,
-  breakpoints,
-  type ElementAllSizeValue,
-  type ElementSizeValue
-} from './breakpoints';
 import type { ElementEffects } from './types/effects/effects.types';
+import type { ScaleSchema } from './types/scales/scales.types';
 
 // Nome de todos os componentes suportados
 export type ComponentName = 'button' | 'tab';
@@ -32,7 +27,7 @@ type Elements = Record<ElementName, ElementStyle>;
 export type StyleKey = string;
 
 /**
- * Element name by component. Initially using generic names like e1, e2, etc, but may need specific
+ * Element name by component. Initially using generic names like e1, e2, etc., but may need specific
  * names in the future.
  */
 export type ElementName = string;
@@ -89,118 +84,15 @@ export type Schema = {
   components: Components;
 };
 
-export const schema: Schema = {
-  breakpoints,
-  components: {
-    button: {
-      elements: {
-        e1: {
-          decorations: {
-            textItalic: true,
-            textWeight: 'bold',
-            textLineType: 'underline',
-            // textTransform: 'uppercase',
-            textAlign: 'center',
-            // cursor: 'pointer',
-            borderStyle: 'solid'
-
-            // TODO: maybe
-            // verticalAlign: 'middle',
-            // userSelect: 'none',
-            // whiteSpace: 'nowrap',
-            // overflow: 'hidden',
-            // textOverflow: 'ellipsis',
-          },
-          scales: {
-            textSize: {
-              's:sm:1': 12,
-              's:md:1': {
-                'bp:all': 16,
-                'bp:lg:1': 14
-              }
-            },
-            paddingTop: 10,
-            paddingRight: 8,
-            paddingBottom: 8,
-            paddingLeft: 8,
-            marginTop: 8,
-            marginRight: 16,
-            marginBottom: 8,
-            marginLeft: 16,
-            boxHeight: {
-              's:md:1': 40,
-              's:lg:1': {
-                'bp:all': 48,
-                'bp:lg:1': 44
-              }
-            },
-            boxWidth: 120,
-            borderWidth: 1,
-            borderRadius: 4,
-            textHeight: 24
-          },
-          palettes: {
-            p1: {
-              textColor: { rest: [0, 0, 0, 0.5] },
-              borderColor: { rest: [0, 0, 0, 0.5] },
-              boxColor: {
-                primary: {
-                  rest: [10, 35, 100, 0],
-                  hover: [10, 35, 100, 0]
-                },
-                danger: {
-                  rest: [10, 35, 100, 0],
-                  hover: [10, 35, 100, 0]
-                }
-                // instagram: {
-                //   rest: [10, 35, 100, 0],
-                //   hover: [10, 35, 100, 0],
-                //   active: [10, 35, 100, 0]
-                // }
-              }
-            },
-            p2: {
-              boxColor: { rest: [0, 0, 0, 0.5] }
-            }
-          },
-          effects: {
-            shadow: {
-              color: { rest: [0, 0, 0, 0.5] },
-              blur: {
-                // TODO: setting rest makes sense for shadow?
-                rest: 0,
-                hover: 4
-              },
-              y: {
-                rest: 0,
-                hover: 4
-              },
-              x: {
-                rest: 0,
-                hover: 4
-              }
-            }
-          }
-        },
-        e2: {
-          decorations: {
-            textItalic: true
-          },
-          scales: {
-            textSize: 16
-          },
-          palettes: {
-            p1: {
-              textColor: {
-                primary: {
-                  rest: [0, 0, 0, 0.5],
-                  hover: { ref: [0, 0, 0, 0.5] }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+// Types describing the JSON artifact produced by web-builder (classNamesMap.json)
+export type ClassNamesByInteractionStateJSON = Partial<Record<string, string[]>>;
+export type ClassNameByElementJSON = {
+  decorations?: string[];
+  effects?: ClassNamesByInteractionStateJSON;
+  scales?: Partial<Record<string, string[]>>;
+  palettes?: Record<string, Partial<Record<string, ClassNamesByInteractionStateJSON>>>;
 };
+
+export type ComponentClassNameMapJSON = Partial<
+  Record<string, Record<string, ClassNameByElementJSON>>
+>;

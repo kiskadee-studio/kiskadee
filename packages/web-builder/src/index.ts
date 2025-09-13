@@ -1,4 +1,5 @@
-import { type ComponentStyleKeyMap, schema } from '@kiskadee/schema';
+import { type ComponentStyleKeyMap } from '@kiskadee/schema';
+import { schema } from '@kiskadee/schema/src/templates/template-1';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
