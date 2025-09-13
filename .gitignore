@@ -6,6 +6,7 @@ pnpm-debug.log*
 # Runtime data
 node_modules
 dist
+build
 *.local
 
 # Editor directories and files
