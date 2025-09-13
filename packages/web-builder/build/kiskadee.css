@@ -1,0 +1,30 @@
+.-a:hover .z { color: #00000080 }
+.a:hover { background-color: #fff0 }
+.aa { line-height: 24px }
+.ab { text-decoration: underline }
+.ad { font-size: 0.75rem }
+.ae { font-weight: 700 }
+.b { background-color: #fff0 }
+.c { color: #00000080 }
+.d { font-style: italic; }
+.e { font-size: 1rem }
+.f { border-color: #00000080 }
+.g { border-radius: 4px }
+.h { border-style: solid }
+.i { border-width: 1px }
+.j { background-color: #00000080 }
+.k { height: 48px }
+.m { height: 40px }
+.n { width: 120px }
+.o { margin-bottom: 8px }
+.p { margin-left: 16px }
+.q { margin-right: 16px }
+.r { margin-top: 8px }
+.s { padding-bottom: 8px }
+.t { padding-left: 8px }
+.u { padding-right: 8px }
+.v { padding-top: 10px }
+.w:hover { box-shadow: 4px 4px 4px #00000080 }
+.x { box-shadow: 0px 0px 0px #00000080 }
+.y { text-align: center }
+@media (min-width: 1152px) { .ac { font-size: 0.875rem } .l { height: 44px } }
