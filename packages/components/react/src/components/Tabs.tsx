@@ -12,11 +12,7 @@ export default function Tabs(props: HeadlessTabsProps) {
 
   const computed = useMemo<NonNullable<HeadlessTabsProps['classNames']>>(() => {
     const pal = palette;
-
-    const tabsE1 = classesMap?.tabs?.e1; // element e1: root
-    const listE1 = classesMap?.tabs?.e2; // element e2: list
-    const tabE1 = classesMap?.tabs?.e3; // element e3: tab
-    const panelE1 = classesMap?.tabs?.e4; // element e4: panel
+    const { e1: tabsE1, e2: listE1, e3: tabE1, e4: panelE1 } = classesMap?.tabs ?? {};
 
     const rootParts: string[] = [];
     if (tabsE1?.decorations) rootParts.push(...tabsE1.decorations);
