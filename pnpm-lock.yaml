@@ -23,6 +23,9 @@ importers:
 
   packages/components/react:
     dependencies:
+      '@kiskadee/react-headless':
+        specifier: workspace:^
+        version: link:../../react-headless
       '@kiskadee/schema':
         specifier: workspace:^
         version: link:../../schema
@@ -51,6 +54,22 @@ importers:
       vite:
         specifier: ^7.1.2
         version: 7.1.5(@types/node@24.3.1)(jiti@2.5.1)
+
+  packages/react-headless:
+    dependencies:
+      react:
+        specifier: '>=18'
+        version: 19.1.1
+      react-dom:
+        specifier: '>=18'
+        version: 19.1.1(react@19.1.1)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.12
+        version: 19.1.12
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.2
 
   packages/schema:
     devDependencies:
