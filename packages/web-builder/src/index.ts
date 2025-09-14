@@ -1,5 +1,5 @@
-import { type ComponentStyleKeyMap } from '@kiskadee/schema';
-import { schema } from '@kiskadee/schema/src/templates/template-1';
+import type { ComponentStyleKeyMap } from '@kiskadee/schema';
+import { schema } from '@kiskadee/schema/src/templates/template-2';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -10,7 +10,10 @@ import {
   shortenCssClassNames
 } from './phase-3-shorten-css-class-names/shortenCssClassNames';
 import { generateCssFromStyleKeyList } from './phase-4-convert-style-keys-to-css-rules/generateCss';
-import { generateClassNamesMap, type ComponentClassNameMap } from './phase-5-generate-class-names-map/generateClassNamesMap';
+import {
+  type ComponentClassNameMap,
+  generateClassNamesMap
+} from './phase-5-generate-class-names-map/generateClassNamesMap';
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 
 // Phase 1 - Convert Element Schema to Style Keys
@@ -30,7 +33,10 @@ const cssGenerated: string = await generateCssFromStyleKeyList(shortenCssClassNa
 console.log({ cssGenerated });
 
 // Phase 5 - Generate class names map from style keys using shortened class names
-const classNamesMap: ComponentClassNameMap = generateClassNamesMap(styleKeys, shortenCssClassNameMap);
+const classNamesMap: ComponentClassNameMap = generateClassNamesMap(
+  styleKeys,
+  shortenCssClassNameMap
+);
 
 // Phase 6 - Persist build artifacts (CSS and class names map)
 await persistBuildArtifacts(cssGenerated, classNamesMap);
