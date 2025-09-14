@@ -2,77 +2,51 @@ import { useMemo } from 'react';
 import { Tabs as HeadlessTabs } from '@kiskadee/react-headless';
 import type { TabsProps as HeadlessTabsProps } from '@kiskadee/react-headless';
 export type { TabItem, TabsProps } from '@kiskadee/react-headless';
-import type { ComponentClassNameMapJSON } from '@kiskadee/schema';
 import { useStyleClasses } from '../contexts/StyleClassesContext';
-
-// Local minimal typings to safely access the schema without using `any`
-// Element classes hold optional decorations and palette-driven class lists.
-type PaletteClasses = {
-  decorations?: string[];
-  palettes?: Record<string, { primary?: { rest?: string[]; selected?: string[] } }>;
-};
-
-// Each component (e.g., "tabs", "tabsList", "tab", "tabPanel") maps e-keys to PaletteClasses
-type ComponentElements = Partial<Record<'e1' | 'e2' | 'e3' | 'e3a' | 'e5', PaletteClasses>>;
-
-// The full classes map is an index of components by key
-type ClassesMapIndex = Record<string, ComponentElements>;
-
-function getComponent(map: ComponentClassNameMapJSON, key: string): ComponentElements | undefined {
-  return (map as unknown as ClassesMapIndex)[key];
-}
 
 export default function Tabs(props: HeadlessTabsProps) {
   const { classNames: userClassNames } = props;
   const { classesMap, palette } = useStyleClasses();
 
   const computed = useMemo<NonNullable<HeadlessTabsProps['classNames']>>(() => {
-    const partsRoot: string[] = [];
-    const partsList: string[] = [];
-    const partsPanel: string[] = [];
-    const partsTabRest: string[] = [];
-    const partsTabSelected: string[] = [];
+    const pal = palette;
 
-    const tabsComp = getComponent(classesMap, 'tabs');
-    const e1 = tabsComp?.e1;
-    const e2 = tabsComp?.e2;
-    if (e1?.decorations) partsRoot.push(...e1.decorations);
-    const p1 = e1?.palettes?.[palette]?.primary?.rest ?? [];
-    const p2 = e2?.palettes?.[palette]?.primary?.rest ?? [];
-    partsRoot.push(...p1, ...p2);
+    const tabsE1 = classesMap?.tabs?.e1;
+    const tabsE2 = classesMap?.tabs?.e2;
+    const listE1 = classesMap?.tabsList?.e1;
+    const tabE1 = classesMap?.tab?.e1;
+    const panelE1 = classesMap?.tabPanel?.e1;
 
-    const list = getComponent(classesMap, 'tabsList')?.e1;
-    if (list?.decorations) partsList.push(...list.decorations);
-    if (list?.palettes?.[palette]?.primary?.rest)
-      partsList.push(...list.palettes[palette]!.primary!.rest!);
+    const rootParts: string[] = [];
+    if (tabsE1?.decorations) rootParts.push(...tabsE1.decorations);
+    if (tabsE1?.palettes?.[pal]?.primary?.rest) rootParts.push(...tabsE1.palettes[pal]!.primary!.rest!);
+    if (tabsE2?.palettes?.[pal]?.primary?.rest) rootParts.push(...tabsE2.palettes[pal]!.primary!.rest!);
 
-    const tab = getComponent(classesMap, 'tab')?.e1;
-    if (tab?.decorations) {
-      partsTabRest.push(...tab.decorations);
-      partsTabSelected.push(...tab.decorations);
+    const listParts: string[] = [];
+    if (listE1?.decorations) listParts.push(...listE1.decorations);
+    if (listE1?.palettes?.[pal]?.primary?.rest) listParts.push(...listE1.palettes[pal]!.primary!.rest!);
+
+    const tabRestParts: string[] = [];
+    const tabSelectedParts: string[] = [];
+    if (tabE1?.decorations) {
+      tabRestParts.push(...tabE1.decorations);
+      tabSelectedParts.push(...tabE1.decorations);
     }
-    const tabPrimary = tab?.palettes?.[palette]?.primary;
-    if (tabPrimary?.rest) partsTabRest.push(...tabPrimary.rest);
-    if (tabPrimary?.selected) partsTabSelected.push(...tabPrimary.selected);
-    else if (tabPrimary?.rest) partsTabSelected.push(...tabPrimary.rest);
+    const tabPrimary = tabE1?.palettes?.[pal]?.primary;
+    if (tabPrimary?.rest) tabRestParts.push(...tabPrimary.rest);
+    if (tabPrimary?.selected) tabSelectedParts.push(...tabPrimary.selected);
+    else if (tabPrimary?.rest) tabSelectedParts.push(...tabPrimary.rest);
 
-    const panel = getComponent(classesMap, 'tabPanel')?.e1;
-    if (panel?.decorations) partsPanel.push(...panel.decorations);
-    if (panel?.palettes?.[palette]?.primary?.rest)
-      partsPanel.push(...panel.palettes[palette]!.primary!.rest!);
-
-    const e1Str = [partsRoot.join(' '), userClassNames?.e1].filter(Boolean).join(' ');
-    const e2Str = [partsList.join(' '), userClassNames?.e2].filter(Boolean).join(' ');
-    const e3Str = [partsTabRest.join(' '), userClassNames?.e3].filter(Boolean).join(' ');
-    const e3aStr = [partsTabSelected.join(' '), userClassNames?.e3a].filter(Boolean).join(' ');
-    const e5Str = [partsPanel.join(' '), userClassNames?.e5].filter(Boolean).join(' ');
+    const panelParts: string[] = [];
+    if (panelE1?.decorations) panelParts.push(...panelE1.decorations);
+    if (panelE1?.palettes?.[pal]?.primary?.rest) panelParts.push(...panelE1.palettes[pal]!.primary!.rest!);
 
     return {
-      e1: e1Str,
-      e2: e2Str,
-      e3: e3Str,
-      e3a: e3aStr,
-      e5: e5Str
+      e1: (`${rootParts.join(' ')} ${userClassNames?.e1 ?? ''}`).trim(),
+      e2: (`${listParts.join(' ')} ${userClassNames?.e2 ?? ''}`).trim(),
+      e3: (`${tabRestParts.join(' ')} ${userClassNames?.e3 ?? ''}`).trim(),
+      e3a: (`${tabSelectedParts.join(' ')} ${userClassNames?.e3a ?? ''}`).trim(),
+      e5: (`${panelParts.join(' ')} ${userClassNames?.e5 ?? ''}`).trim()
     };
   }, [classesMap, palette, userClassNames]);
 
