@@ -16,12 +16,16 @@ export type TabsProps = {
   orientation?: 'horizontal' | 'vertical';
   activationMode?: 'automatic' | 'manual'; // automatic: focus changes selection; manual: Enter/Space selects
   idPrefix?: string; // helpful when multiple Tabs on the page
-  // Optional className overrides (headless keeps them as pass-through)
-  className?: string;
-  listClassName?: string;
-  tabClassName?: string;
-  tabActiveClassName?: string;
-  panelClassName?: string;
+  /**
+   * Class names by simplified element keys for size optimization.
+   * Mapping (de-para):
+   * - e1: root container (div)
+   * - e2: tab list (role=tablist)
+   * - e3: tab (role=tab) — estado "rest"
+   * - e3a: tab (role=tab) — estado "selected" (ativo)
+   * - e5: tab panel (role=tabpanel)
+   */
+  classNames?: Partial<Record<'e1' | 'e2' | 'e3' | 'e3a' | 'e5', string>>;
 };
 
 /**
@@ -38,11 +42,7 @@ export function Tabs({
   orientation = 'horizontal',
   activationMode = 'automatic',
   idPrefix,
-  className,
-  listClassName,
-  tabClassName,
-  tabActiveClassName,
-  panelClassName
+  classNames
 }: TabsProps) {
   const internalId = useId();
   const baseId = idPrefix ?? `tabs-${internalId}`;
@@ -167,20 +167,20 @@ export function Tabs({
   }, [items, selected, setSelected]);
 
   return (
-    <div className={className}>
+    <div className={classNames?.e1}>
       <div
         role="tablist"
         aria-orientation={orientation}
-        className={listClassName}
+        className={classNames?.e2}
         onKeyDown={onKeyDown}
       >
         {items.map((item) => {
           const isSelected = item.id === selected;
           const tabId = `${baseId}-tab-${item.id}`;
           const panelId = `${baseId}-panel-${item.id}`;
-          const classes = [tabClassName, isSelected ? tabActiveClassName : undefined]
-            .filter(Boolean)
-            .join(' ');
+          const classes = isSelected
+            ? (classNames?.e3a ?? classNames?.e3 ?? '')
+            : (classNames?.e3 ?? '');
 
           return (
             <button
@@ -215,7 +215,7 @@ export function Tabs({
             id={panelId}
             aria-labelledby={tabId}
             hidden={!isSelected}
-            className={panelClassName}
+            className={classNames?.e5}
           >
             {isSelected ? item.content : null}
           </div>
