@@ -15,6 +15,10 @@
     "./tabs": {
       "types": "./src/tabs/Tabs.tsx",
       "import": "./src/tabs/Tabs.tsx"
+    },
+    "./button": {
+      "types": "./src/button/Button.tsx",
+      "import": "./src/button/Button.tsx"
     }
   },
   "peerDependencies": {

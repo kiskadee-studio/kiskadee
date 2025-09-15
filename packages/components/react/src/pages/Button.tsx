@@ -5,7 +5,20 @@ export default function ButtonPage() {
     <section>
       <h2>Button</h2>
       <p>Exemplo simples do componente Button:</p>
-      <Button />
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <Button label="Button" onClick={() => alert('Button clicado!')} />
+        <Button
+          label="Com ícone"
+          icon={<span aria-hidden>⭐</span>}
+          onClick={() => alert('Com ícone')}
+        />
+        <Button
+          aria-label="Icon only"
+          icon={<span aria-hidden>🔔</span>}
+          onClick={() => alert('Somente ícone')}
+        />
+        <Button label="Disabled" disabled />
+      </div>
     </section>
   );
 }

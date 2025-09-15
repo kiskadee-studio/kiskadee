@@ -1,37 +1,44 @@
+import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
+import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { useMemo } from 'react';
 import { useStyleClasses } from '../contexts/StyleClassesContext';
 
-export default function Button() {
+export type { ButtonProps } from '@kiskadee/react-headless';
+
+export default function Button(props: HeadlessButtonProps) {
+  const { classNames: userClassNames } = props;
   const { classesMap, palette } = useStyleClasses();
 
-  const buttonClassName = useMemo(() => {
-    const parts: string[] = [];
-    const e1 = classesMap?.button?.['e1'];
-    const e2 = classesMap?.button?.['e2'];
+  const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
+    const pal = palette;
+    const e1 = classesMap?.button?.e1; // element e1: root
+    const e2 = classesMap?.button?.e2; // element e2: label
+    const e3 = classesMap?.button?.e3; // element e3: icon
 
-    if (e1?.decorations) parts.push(...e1.decorations);
-    if (e1?.palettes?.[palette]?.primary?.rest) parts.push(...e1.palettes[palette]!.primary!.rest!);
-    if (e2?.palettes?.[palette]?.primary?.rest) parts.push(...e2.palettes[palette]!.primary!.rest!);
+    const rootParts: string[] = [];
+    if (e1?.decorations) rootParts.push(...e1.decorations);
+    if (e1?.scales?.['s:all']) rootParts.push(...e1.scales['s:all']);
+    if (e1?.palettes?.[pal]?.primary?.rest) rootParts.push(...e1.palettes[pal].primary.rest);
 
-    return parts.join(' ');
-  }, [classesMap, palette]);
+    const labelParts: string[] = [];
+    if (e2?.decorations) labelParts.push(...e2.decorations);
+    if (e2?.palettes?.[pal]?.primary?.rest) labelParts.push(...e2.palettes[pal].primary.rest);
 
-  const handleClick = () => {
-    // Demonstrate access to the global classes map
-    // In the next steps we'll use it to style the component
-    console.log('[Button] classesMap', classesMap, 'palette', palette);
-    alert('Button clicado!');
+    const iconParts: string[] = [];
+    if (e3?.decorations) iconParts.push(...e3.decorations);
+    if (e3?.palettes?.[pal]?.primary?.rest) iconParts.push(...e3.palettes[pal].primary.rest);
 
-    console.log(classesMap?.button?.e1?.palettes?.[palette]?.primary?.rest);
-  };
+    const u = userClassNames ?? {};
+    type CN = NonNullable<HeadlessButtonProps['classNames']>;
+    const join = (baseParts: string[], key: keyof CN) =>
+      `${baseParts.join(' ')} ${u[key] ?? ''}`.trim();
 
-  return (
-    <button type="button" onClick={handleClick} className={buttonClassName}>
-      Button
-    </button>
-  );
+    return {
+      e1: join(rootParts, 'e1'),
+      e2: join(labelParts, 'e2'),
+      e3: join(iconParts, 'e3')
+    };
+  }, [classesMap, palette, userClassNames]);
+
+  return <HeadlessButton {...props} classNames={computed} />;
 }
-
-/*
- * TODO: The button's border-style should be "none" by default, otherwise it will load the browser's default border
- */
