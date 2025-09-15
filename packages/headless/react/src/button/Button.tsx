@@ -21,25 +21,36 @@ export type ButtonProps = {
  * - Supports optional icon and label content.
  * - Exposes compact classNames mapping (e1 root, e2 label, e3 icon) to integrate with styled wrappers.
  * - Accepts native attributes like disabled and ARIA props (aria-pressed, aria-disabled) directly.
+ * - Optimization: when there is NO icon (e3), the label (e2) is merged into the root (e1):
+ *   - e2 classes are appended to e1 and the label is rendered directly without an extra <span>.
+ *   - When there IS an icon, the label continues to be wrapped in a <span> with e2 classes.
  */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { classNames, label, icon, type = 'button', ...rest },
   ref
 ) {
-  const rootClass = `${classNames?.e1 ?? ''}`.trim();
+  const hasIcon = !!icon;
+  // Element e1 — Root button element (button)
+  // If there is no icon, unify e2 with e1 so we avoid an extra span for the label.
+  const rootClass = `${classNames?.e1 ?? ''} ${!hasIcon ? (classNames?.e2 ?? '') : ''}`.trim();
 
   return (
-    // Element e1 — Root button element (button)
     <button {...rest} ref={ref} type={type} className={rootClass}>
-      {icon ? (
+      {hasIcon ? (
         // Element e3 — Icon wrapper (span)
         <span className={classNames?.e3} aria-hidden={true}>
           {icon}
         </span>
       ) : null}
+
       {label !== undefined ? (
-        // Element e2 — Label text wrapper (span)
-        <span className={classNames?.e2}>{label}</span>
+        hasIcon ? (
+          // Element e2 — Label text wrapper (span) (only when the icon exists)
+          <span className={classNames?.e2}>{label}</span>
+        ) : (
+          // When there is no icon, render the label directly (merged into e1)
+          label
+        )
       ) : null}
     </button>
   );
