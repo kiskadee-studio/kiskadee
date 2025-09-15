@@ -10,35 +10,40 @@ export default function Tabs(props: HeadlessTabsProps) {
   const { classNames: userClassNames } = props;
   const { classesMap, palette } = useStyleClasses();
 
+  console.log({ classesMap, palette });
+
   const computed = useMemo<NonNullable<HeadlessTabsProps['classNames']>>(() => {
     const pal = palette;
-    const { e1: tabsE1, e2: listE1, e3: tabE1, e4: panelE1 } = classesMap?.tabs ?? {};
+    const { e1: tabsE1, e2: listE2, e3: tabE3, e4: panelE4 } = classesMap?.tabs ?? {};
 
     const rootParts: string[] = [];
     if (tabsE1?.decorations) rootParts.push(...tabsE1.decorations);
-    if (tabsE1?.palettes?.[pal]?.primary?.rest)
-      rootParts.push(...tabsE1.palettes[pal].primary.rest);
+    if (tabsE1?.scales?.['s:all']) rootParts.push(...tabsE1.scales['s:all']);
+    if (tabsE1?.palettes?.[pal]?.neutral?.rest)
+      rootParts.push(...tabsE1.palettes[pal].neutral.rest);
 
     const listParts: string[] = [];
-    if (listE1?.decorations) listParts.push(...listE1.decorations);
-    if (listE1?.palettes?.[pal]?.primary?.rest)
-      listParts.push(...listE1.palettes[pal].primary.rest);
+    if (listE2?.decorations) listParts.push(...listE2.decorations);
+    if (listE2?.palettes?.[pal]?.primary?.rest)
+      listParts.push(...listE2.palettes[pal].primary.rest);
 
     const tabRestParts: string[] = [];
     const tabSelectedParts: string[] = [];
-    if (tabE1?.decorations) {
-      tabRestParts.push(...tabE1.decorations);
-      tabSelectedParts.push(...tabE1.decorations);
+    if (tabE3?.decorations) {
+      tabRestParts.push(...tabE3.decorations);
+      tabSelectedParts.push(...tabE3.decorations);
     }
-    const tabPrimary = tabE1?.palettes?.[pal]?.primary;
-    if (tabPrimary?.rest) tabRestParts.push(...tabPrimary.rest);
-    if (tabPrimary?.selected) tabSelectedParts.push(...tabPrimary.selected);
-    else if (tabPrimary?.rest) tabSelectedParts.push(...tabPrimary.rest);
+    const tabPrimary = tabE3?.palettes?.[pal];
+    if (tabPrimary?.neutral?.rest) tabRestParts.push(...tabPrimary.neutral.rest);
+    if (tabPrimary?.neutral?.hover) tabRestParts.push(...tabPrimary.neutral.hover);
+    if (tabPrimary?.primary?.selected) tabSelectedParts.push(...tabPrimary.primary.selected);
+    if (tabPrimary?.primary?.hover) tabSelectedParts.push(...tabPrimary.primary.hover);
+    else if (tabPrimary?.neutral?.rest) tabSelectedParts.push(...tabPrimary.neutral.rest);
 
     const panelParts: string[] = [];
-    if (panelE1?.decorations) panelParts.push(...panelE1.decorations);
-    if (panelE1?.palettes?.[pal]?.primary?.rest)
-      panelParts.push(...panelE1.palettes[pal].primary.rest);
+    if (panelE4?.decorations) panelParts.push(...panelE4.decorations);
+    if (panelE4?.palettes?.[pal]?.primary?.rest)
+      panelParts.push(...panelE4.palettes[pal].primary.rest);
 
     const u = userClassNames ?? {};
     type CN = NonNullable<HeadlessTabsProps['classNames']>;

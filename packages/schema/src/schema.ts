@@ -5,7 +5,7 @@ import type { ElementEffects } from './types/effects/effects.types';
 import type { ScaleSchema } from './types/scales/scales.types';
 
 // Nome de todos os componentes suportados
-export type ComponentName = 'button' | 'tab';
+export type ComponentName = 'button' | 'tabs';
 
 // Unique identifier for each color palette variation within a theme
 export type PaletteName = string;
