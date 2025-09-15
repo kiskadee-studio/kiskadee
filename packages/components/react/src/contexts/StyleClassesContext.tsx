@@ -1,6 +1,5 @@
 import type { ComponentClassNameMapJSON } from '@kiskadee/schema';
 import { createContext, useContext } from 'react';
-import classNamesMap from '../../../../web-builder/build/classNamesMap.json';
 
 export type StyleClassesContextValue = {
   classesMap: ComponentClassNameMapJSON;
@@ -8,9 +7,9 @@ export type StyleClassesContextValue = {
   setPalette: (value: string) => void;
 };
 
-// Default context value: classes map from build, palette 'p1', and noop setter.
+// Default context value: empty classes map, palette 'p1', and noop setter.
 export const StyleClassesContext = createContext<StyleClassesContextValue>({
-  classesMap: classNamesMap as ComponentClassNameMapJSON,
+  classesMap: {},
   palette: 'p1',
   setPalette: () => {}
 });

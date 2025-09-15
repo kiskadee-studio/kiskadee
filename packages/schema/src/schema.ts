@@ -80,6 +80,9 @@ export interface ClassNameMap {
 type Components = Partial<Record<ComponentName, { elements: Elements }>>;
 
 export type Schema = {
+  name: string;
+  version: [number, number, number];
+  author: string;
   breakpoints: Breakpoints;
   components: Components;
 };

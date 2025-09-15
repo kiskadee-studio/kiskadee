@@ -10,13 +10,15 @@ import type { ComponentClassNameMap } from '../phase-5-generate-class-names-map/
  */
 export async function persistBuildArtifacts(
   cssGenerated: string,
-  classNamesMap: ComponentClassNameMap
+  classNamesMap: ComponentClassNameMap,
+  outDirName?: string
 ): Promise<void> {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
 
   // Ensure build dir exists
-  const buildDir = resolve(__dirname, '..', '..', 'build');
+  const baseBuildDir = resolve(__dirname, '..', '..', 'build');
+  const buildDir = outDirName ? resolve(baseBuildDir, outDirName) : baseBuildDir;
   await mkdir(buildDir, { recursive: true });
 
   // Persist CSS

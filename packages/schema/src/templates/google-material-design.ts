@@ -2,9 +2,9 @@ import { breakpoints } from '../breakpoints';
 import type { Schema } from '../schema';
 
 export const schema: Schema = {
-  name: 'template-2',
+  name: 'material-design',
   version: [0, 0, 1],
-  author: 'Rodrigo Mello',
+  author: 'Google',
   breakpoints,
   components: {
     button: {

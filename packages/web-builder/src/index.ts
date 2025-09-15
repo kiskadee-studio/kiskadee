@@ -1,5 +1,5 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/schema';
-import { schema } from '@kiskadee/schema/src/templates/template-2';
+import { schema } from '@kiskadee/schema/src/templates/google-material-design';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -39,4 +39,4 @@ const classNamesMap: ComponentClassNameMap = generateClassNamesMap(
 );
 
 // Phase 6 - Persist build artifacts (CSS and class names map)
-await persistBuildArtifacts(cssGenerated, classNamesMap);
+await persistBuildArtifacts(cssGenerated, classNamesMap, schema.name);

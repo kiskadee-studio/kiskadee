@@ -1,6 +1,5 @@
 import { Link, Route, Routes } from 'react-router';
 import './App.css';
-import '../../../web-builder/build/kiskadee.css';
 import ButtonPage from './pages/Button';
 import TextPage from './pages/Text';
 import TabsPage from './pages/Tabs';
