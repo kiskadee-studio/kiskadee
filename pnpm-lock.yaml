@@ -57,6 +57,9 @@ importers:
 
   packages/headless/react:
     dependencies:
+      '@kiskadee/schema':
+        specifier: workspace:^
+        version: link:../../schema
       react:
         specifier: '>=18'
         version: 19.1.1

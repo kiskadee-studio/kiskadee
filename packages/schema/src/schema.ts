@@ -4,7 +4,7 @@ import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ElementEffects } from './types/effects/effects.types';
 import type { ScaleSchema } from './types/scales/scales.types';
 
-// Nome de todos os componentes suportados
+// Names of all supported components
 export type ComponentName = 'button' | 'tabs';
 
 // Unique identifier for each color palette variation within a theme

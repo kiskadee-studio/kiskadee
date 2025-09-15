@@ -2,11 +2,18 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { useMemo } from 'react';
 import { useStyleClasses } from '../contexts/StyleClassesContext';
+import { classNameCssPseudoSelector } from '@kiskadee/schema';
 
-export type { ButtonProps } from '@kiskadee/react-headless';
+export type ButtonStatus = keyof typeof classNameCssPseudoSelector;
+export type ButtonProps = HeadlessButtonProps & {
+  /** Force Kiskadee visual/interaction state on the root element (e1). */
+  status?: ButtonStatus;
+  /** Marks this button as a semantic toggle (Following vs Follow). */
+  toggle?: boolean;
+};
 
-export default function Button(props: HeadlessButtonProps) {
-  const { classNames: userClassNames } = props;
+export default function Button(props: ButtonProps) {
+  const { classNames: userClassNames, status, toggle, ...rest } = props;
   const { classesMap, palette } = useStyleClasses();
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
@@ -33,12 +40,32 @@ export default function Button(props: HeadlessButtonProps) {
     const join = (baseParts: string[], key: keyof CN) =>
       `${baseParts.join(' ')} ${u[key] ?? ''}`.trim();
 
-    return {
+    const base = {
       e1: join(rootParts, 'e1'),
       e2: join(labelParts, 'e2'),
       e3: join(iconParts, 'e3')
-    };
-  }, [classesMap, palette, userClassNames]);
+    } as const;
 
-  return <HeadlessButton {...props} classNames={computed} />;
+    const suffix = status ? classNameCssPseudoSelector[status] : '';
+
+    return {
+      ...base,
+      e1: `${base.e1} ${suffix}`.trim()
+    };
+  }, [classesMap, palette, userClassNames, status]);
+
+  // Map Kiskadee status to native/ARIA attributes
+  const disabled = rest.disabled ?? (status === 'disabled' ? true : undefined);
+  const ariaDisabled = rest['aria-disabled'] ?? (status === 'pseudoDisabled' ? true : undefined);
+  const ariaPressed = rest['aria-pressed'] ?? (toggle && status === 'selected' ? true : undefined);
+
+  return (
+    <HeadlessButton
+      {...rest}
+      disabled={disabled}
+      aria-disabled={ariaDisabled}
+      aria-pressed={ariaPressed}
+      classNames={computed}
+    />
+  );
 }

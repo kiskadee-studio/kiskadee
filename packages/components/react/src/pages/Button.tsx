@@ -17,7 +17,7 @@ export default function ButtonPage() {
           icon={<span aria-hidden>🔔</span>}
           onClick={() => alert('Somente ícone')}
         />
-        <Button label="Disabled" disabled />
+        <Button label="Disabled" status="disabled" />
       </div>
     </section>
   );

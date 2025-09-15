@@ -29,7 +29,5 @@
     "@types/react": "^19.1.12",
     "typescript": "^5.0.0"
   },
-  "dependencies": {
-    "@kiskadee/schema": "workspace:^"
-  }
+  "dependencies": {}
 }
