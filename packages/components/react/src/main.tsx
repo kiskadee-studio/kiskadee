@@ -37,7 +37,14 @@ const templates: Record<TemplateKey, { map: ComponentClassNameMapJSON; cssUrl: s
 
 function Root() {
   const [palette, setPalette] = useState<string>('p1');
-  const [template, setTemplate] = useState<TemplateKey>('template-2');
+  const [template, setTemplate] = useState<TemplateKey>(() => {
+    const saved =
+      typeof localStorage !== 'undefined'
+        ? (localStorage.getItem('kiskadee.template') as TemplateKey | null)
+        : null;
+    if (saved && saved in templates) return saved as TemplateKey;
+    return 'template-2';
+  });
 
   // Load/swap CSS for the selected template
   useEffect(() => {
@@ -50,6 +57,13 @@ function Root() {
       document.head.appendChild(link);
     }
     link.href = templates[template].cssUrl;
+  }, [template]);
+
+  // Persist the selected template to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('kiskadee.template', template);
+    } catch {}
   }, [template]);
 
   const classesMap = useMemo(() => templates[template].map, [template]);

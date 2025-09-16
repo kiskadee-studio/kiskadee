@@ -1,8 +1,8 @@
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
+import { classNameCssPseudoSelector } from '@kiskadee/schema';
 import { useMemo } from 'react';
 import { useStyleClasses } from '../contexts/StyleClassesContext';
-import { classNameCssPseudoSelector } from '@kiskadee/schema';
 
 export type ButtonStatus = keyof typeof classNameCssPseudoSelector;
 export type ButtonProps = HeadlessButtonProps & {
@@ -29,6 +29,7 @@ export default function Button(props: ButtonProps) {
 
     const labelParts: string[] = [];
     if (e2?.decorations) labelParts.push(...e2.decorations);
+    if (e2?.scales?.['s:all']) labelParts.push(...e2.scales['s:all']);
     if (e2?.palettes?.[pal]?.primary?.rest) labelParts.push(...e2.palettes[pal].primary.rest);
 
     const iconParts: string[] = [];
