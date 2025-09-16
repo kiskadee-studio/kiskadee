@@ -4,3 +4,4 @@ export * from './transformTextAlignKeyToCss/transformTextAlignKeyToCss';
 export * from './transformTextItalicKeyToCss/transformTextItalicKeyToCss';
 export * from './transformTextLineTypeKeyToCss/transformTextLineTypeKeyToCss';
 export * from './transformTextWeightKeyToCss/transformTextWeightKeyToCss';
+export * from './transformTextFontKeyToCss/transformTextFontKeyToCss';

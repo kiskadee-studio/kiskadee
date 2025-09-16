@@ -13,7 +13,8 @@ import {
   transformTextAlignKeyToCss,
   transformTextItalicKeyToCss,
   transformTextLineTypeKeyToCss,
-  transformTextWeightKeyToCss
+  transformTextWeightKeyToCss,
+  transformTextFontKeyToCss
 } from './decorations';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
@@ -34,6 +35,8 @@ export function generateCssRuleFromStyleKey(styleKey: string, className: string)
     generatedCss = transformTextItalicKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textWeight')) {
     generatedCss = transformTextWeightKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('textFont')) {
+    generatedCss = transformTextFontKeyToCss(styleKey, className);
   } else if (generatedCss === undefined) {
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     if (matchScale != null) {
