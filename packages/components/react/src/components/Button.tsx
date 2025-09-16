@@ -24,6 +24,7 @@ export default function Button(props: ButtonProps) {
 
     const rootParts: string[] = [];
     if (e1?.decorations) rootParts.push(...e1.decorations);
+    // TODO: tratar diferentes tamanhos
     if (e1?.scales?.['s:all']) rootParts.push(...e1.scales['s:all']);
     // TODO: unificar todas as classes simples numa string só
     // TODO: Todos os estados de suporte nativos devem ser unificados
@@ -54,7 +55,7 @@ export default function Button(props: ButtonProps) {
     } as const;
 
     const suffix =
-      status !== 'rest' && status !== 'disabled' ? classNameCssPseudoSelector[status] : '';
+      status !== 'rest' && status !== 'disabled' ? `${classNameCssPseudoSelector[status]} -a` : '';
 
     return {
       ...base,
