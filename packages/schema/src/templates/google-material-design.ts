@@ -3,7 +3,7 @@ import type { Schema } from '../schema';
 
 export const schema: Schema = {
   name: 'material-design',
-  version: [0, 0, 1],
+  version: [3, 0, 0],
   author: 'Google',
   breakpoints,
   components: {
@@ -13,17 +13,28 @@ export const schema: Schema = {
           decorations: {
             borderStyle: 'none'
           },
+          scales: {
+            paddingTop: 10,
+            paddingBottom: 10,
+            paddingLeft: 16,
+            paddingRight: 16,
+            borderRadius: 20
+          },
           palettes: {
             p1: {
               boxColor: {
                 primary: {
-                  rest: [219, 100, 50, 1]
+                  rest: [256.43, 34.43, 47.84, 1],
+                  disabled: [256.43, 34.43, 47.84, 0.5]
                 }
               }
             }
           }
         },
         e2: {
+          decorations: {
+            textFont: ['Roboto', 'sans-serif']
+          },
           palettes: {
             p1: {
               textColor: {
@@ -32,6 +43,10 @@ export const schema: Schema = {
                 }
               }
             }
+          },
+          scales: {
+            textSize: 14,
+            textHeight: 20
           }
         }
       }
