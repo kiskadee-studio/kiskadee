@@ -13,7 +13,7 @@ export type ButtonProps = HeadlessButtonProps & {
 };
 
 export default function Button(props: ButtonProps) {
-  const { classNames: userClassNames, status, toggle, ...rest } = props;
+  const { classNames: userClassNames, status = 'rest', toggle, ...rest } = props;
   const { classesMap, palette } = useStyleClasses();
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
@@ -25,7 +25,13 @@ export default function Button(props: ButtonProps) {
     const rootParts: string[] = [];
     if (e1?.decorations) rootParts.push(...e1.decorations);
     if (e1?.scales?.['s:all']) rootParts.push(...e1.scales['s:all']);
-    if (e1?.palettes?.[pal]?.primary?.rest) rootParts.push(...e1.palettes[pal].primary.rest);
+    // TODO: unificar todas as classes simples numa string só
+    // TODO: Todos os estados de suporte nativos devem ser unificados
+    // TODO: Tratar quando forem estados não nativos
+    // TODO: Tratar quando for para forçar estado nativo sem evento nativo
+    // TODO: extrair as paletas em arquivos diferentes
+    // TODO: onde vão ficar estilos fixos dos componentes?
+    if (e1?.palettes?.[pal]?.primary?.[status]) rootParts.push(...e1.palettes[pal].primary[status]);
 
     const labelParts: string[] = [];
     if (e2?.decorations) labelParts.push(...e2.decorations);
@@ -47,7 +53,8 @@ export default function Button(props: ButtonProps) {
       e3: join(iconParts, 'e3')
     } as const;
 
-    const suffix = status ? classNameCssPseudoSelector[status] : '';
+    const suffix =
+      status !== 'rest' && status !== 'disabled' ? classNameCssPseudoSelector[status] : '';
 
     return {
       ...base,
