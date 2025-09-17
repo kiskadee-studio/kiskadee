@@ -33,6 +33,17 @@
 - The first element/layer of a component will serve as the component’s reference for interaction  
   states triggered through the parent element, such as hover, disabled, etc.
 
+### 2.1 Pseudo Disabled (pseudoDisabled)
+- Not an InteractionState: pseudoDisabled is not a first‑class interaction state. It only reuses the
+  visual style of “disabled”.
+- Visual: identical to disabled.
+- Activation: there is no native CSS selector for a “fake disabled”. Use the forced classes
+  "-d" (disabled) together with the activator "-a" on the element (e.g., `.button.-d.-a`).
+- CSS reuse: any rule generated for `disabled` also applies when you add `-d` + `-a` (including
+  parent‑reference cases).
+- Accessibility: when visually pseudo disabled, set `aria-disabled="true"` (do not set the `disabled`
+  attribute) so the control can remain focusable/clickable if needed while announcing the state to AT.
+
 ## 3. Dimensions and Units
 - The only unit of measurement and thus the standard for properties related to dimensions is the
   pixel.
