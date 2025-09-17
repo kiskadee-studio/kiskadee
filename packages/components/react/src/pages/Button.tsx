@@ -17,9 +17,12 @@ export default function ButtonPage() {
           icon={<span aria-hidden>🔔</span>}
           onClick={() => alert('Somente ícone')}
         />
+        <Button label="Rest" />
+        <Button label="Hover" status="hover" />
+        <Button label="Focus" status="focus" />
+        <Button label="Pressed" status="pressed" />
         <Button label="Disabled" status="disabled" />
         <Button label="Pseudo Disabled" status="pseudoDisabled" />
-        <Button label="Focus" status="focus" />
       </div>
     </section>
   );

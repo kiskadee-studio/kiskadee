@@ -77,11 +77,16 @@ export default function Button(props: ButtonProps) {
     // - Here we append both the forced state class (e.g., -h, -f, -s, etc.) and the activator -a
     //   to the root element when a non-rest/non-disabled status is requested, so the previewed
     //   component visually matches that state even without user interaction.
-    // pseudoDisabled, selected, readOnly are not natively supported by buttons
-    const activationClasses =
-      status === 'pseudoDisabled' || status === 'selected' || status === 'readOnly'
-        ? ` ${classNameCssPseudoSelector[status as keyof typeof classNameCssPseudoSelector]} -a`
-        : '';
+    // If a non-native or forced state is requested via `status`, append its forced class plus
+    // the activator "-a" so visuals are applied without needing the native pseudo-class event.
+    // We skip "disabled" because the native :disabled can be applied via the disabled attribute.
+    // For "rest" we add nothing.
+    const activationClasses = (() => {
+      if (status === 'rest' || status === 'disabled') return '';
+      const forced = classNameCssPseudoSelector[status as keyof typeof classNameCssPseudoSelector];
+      // Only append when we actually have a forced suffix to use
+      return forced ? ` ${forced} -a` : '';
+    })();
 
     return {
       ...base,
