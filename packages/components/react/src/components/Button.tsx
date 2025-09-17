@@ -27,12 +27,13 @@ export default function Button(props: ButtonProps) {
     // TODO: tratar diferentes tamanhos
     if (e1?.scales?.['s:all']) rootParts.push(...e1.scales['s:all']);
     // TODO: unificar todas as classes simples numa string só
-    // TODO: Todos os estados de suporte nativos devem ser unificados
-    // TODO: Tratar quando forem estados não nativos
+    // TODO: [WP] Todos os estados de suporte nativos devem ser unificados
+    // TODO: [WP] Tratar quando forem estados não nativos
     // TODO: Tratar quando for para forçar estado nativo sem evento nativo
     // TODO: extrair as paletas em arquivos diferentes
     // TODO: onde vão ficar estilos fixos dos componentes?
     if (e1?.palettes?.[pal]?.primary?.[status]) rootParts.push(...e1.palettes[pal].primary[status]);
+    if (e1?.palettes?.[pal]?.primary?.hover) rootParts.push(...e1.palettes[pal].primary.hover);
 
     const labelParts: string[] = [];
     if (e2?.decorations) labelParts.push(...e2.decorations);
