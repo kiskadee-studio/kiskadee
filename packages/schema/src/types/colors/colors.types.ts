@@ -62,7 +62,6 @@ export type InteractionState =
   | 'selected'
   | 'focus'
   | 'disabled'
-  | 'pseudoDisabled'
   | 'readOnly';
 
 /**
@@ -81,7 +80,6 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   selected: '',
   focus: ':focus',
   disabled: ':disabled',
-  pseudoDisabled: '',
   readOnly: ':read-only'
 };
 
@@ -107,8 +105,8 @@ export const classNameCssPseudoSelector = {
   pressed: '-p', // Force "pressed" appearance without a real press/click
   selected: '-s', // Mark an element as selected/active
   focus: '-f', // Force focus styles without moving focus
-  disabled: '-d', // Mirror disabled visuals when the attribute cannot be set
-  pseudoDisabled: '-i', // Looks disabled but remains interactive
+  disabled: '',
+  pseudoDisabled: '-d',
   readOnly: '-r' // Force read-only visuals
 };
 

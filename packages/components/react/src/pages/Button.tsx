@@ -18,6 +18,7 @@ export default function ButtonPage() {
           onClick={() => alert('Somente ícone')}
         />
         <Button label="Disabled" status="disabled" />
+        <Button label="Pseudo Disabled" status="pseudoDisabled" />
         <Button label="Focus" status="focus" />
       </div>
     </section>

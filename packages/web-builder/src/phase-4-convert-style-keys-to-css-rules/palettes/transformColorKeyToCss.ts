@@ -88,6 +88,7 @@ export function transformColorKeyToCss(
         }
       }
 
+
       const selector = selectors.join(', ');
       cssRule = `${selector} { ${colorProperty}: ${hex} }`;
     } else {
@@ -124,6 +125,7 @@ export function transformColorKeyToCss(
       parentSelectors.push(`.-a.${forcedSuffix} .${className}`);
     }
   }
+
 
   const selector = parentSelectors.join(', ');
   return `${selector} { ${colorProperty}: ${hex} }`;

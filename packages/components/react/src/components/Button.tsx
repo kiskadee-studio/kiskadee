@@ -32,8 +32,14 @@ export default function Button(props: ButtonProps) {
     // TODO: Tratar quando for para forçar estado nativo sem evento nativo
     // TODO: extrair as paletas em arquivos diferentes
     // TODO: onde vão ficar estilos fixos dos componentes?
-    if (e1?.palettes?.[pal]?.primary?.[status]) rootParts.push(...e1.palettes[pal].primary[status]);
+
+    // rest, hover, pressed, focus, disabled são todos os estados nativos
+    if (e1?.palettes?.[pal]?.primary?.rest) rootParts.push(...e1.palettes[pal].primary.rest);
     if (e1?.palettes?.[pal]?.primary?.hover) rootParts.push(...e1.palettes[pal].primary.hover);
+    if (e1?.palettes?.[pal]?.primary?.pressed) rootParts.push(...e1.palettes[pal].primary.pressed);
+    if (e1?.palettes?.[pal]?.primary?.focus) rootParts.push(...e1.palettes[pal].primary.focus);
+    if (e1?.palettes?.[pal]?.primary?.disabled)
+      rootParts.push(...e1.palettes[pal].primary.disabled);
 
     const labelParts: string[] = [];
     if (e2?.decorations) labelParts.push(...e2.decorations);
@@ -68,15 +74,18 @@ export default function Button(props: ButtonProps) {
     //   other states that cannot be forced natively, an element can be programmatically disabled. Doing so
     //   naturally triggers the native ":disabled" selector. For this reason we deliberately skip appending
     //   any forced classes when status === 'disabled'.
-    // - Here we append both the forced state suffix (e.g., -h, -f, -s, etc.) and the activator -a
+    // - Here we append both the forced state class (e.g., -h, -f, -s, etc.) and the activator -a
     //   to the root element when a non-rest/non-disabled status is requested, so the previewed
     //   component visually matches that state even without user interaction.
-    const suffix =
-      status !== 'rest' && status !== 'disabled' ? `${classNameCssPseudoSelector[status]} -a` : '';
+    // pseudoDisabled, selected, readOnly are not natively supported by buttons
+    const activationClasses =
+      status === 'pseudoDisabled' || status === 'selected' || status === 'readOnly'
+        ? ` ${classNameCssPseudoSelector[status as keyof typeof classNameCssPseudoSelector]} -a`
+        : '';
 
     return {
       ...base,
-      e1: `${base.e1} ${suffix}`.trim()
+      e1: `${base.e1}${activationClasses}`
     };
   }, [classesMap, palette, userClassNames, status]);
 
