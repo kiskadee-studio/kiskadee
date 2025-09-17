@@ -11,10 +11,10 @@ import {
   transformBorderStyleKeyToCss,
   transformShadowKeyToCss,
   transformTextAlignKeyToCss,
+  transformTextFontKeyToCss,
   transformTextItalicKeyToCss,
   transformTextLineTypeKeyToCss,
-  transformTextWeightKeyToCss,
-  transformTextFontKeyToCss
+  transformTextWeightKeyToCss
 } from './decorations';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
@@ -48,7 +48,7 @@ export function generateCssRuleFromStyleKey(styleKey: string, className: string)
         styleKey.startsWith(colorProperty)
       );
       if (matchColor != null) {
-        generatedCss = transformColorKeyToCss(styleKey, className);
+        generatedCss = transformColorKeyToCss(styleKey, className, true);
       }
     }
   }

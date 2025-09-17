@@ -16,11 +16,11 @@ describe('transformColorKeyToCss', () => {
       expect(result).toEqual('.abc { color: #40bf40 }');
     });
 
-    it('should add forced class selector alongside pseudo-class when forceState is true (inline)', () => {
+    it('should add forced class selector gated by activator alongside pseudo-class when forceState is true (inline)', () => {
       const result = transformColorKeyToCss('boxColor--hover__[240,50,50,0.5]', className, true);
 
-      // expects both :hover and forced class (.-h) applied to the same element (i.e. .abc.-h) in the selector list
-      expect(result).toEqual('.abc:hover, .abc.-h { background-color: #4040bf80 }');
+      // expects both :hover and forced class (.-h) gated by activator (.-a) applied to the same element (i.e. .abc.-h.-a)
+      expect(result).toEqual('.abc:hover, .abc.-h.-a { background-color: #4040bf80 }');
     });
 
     it('should transform a key with "==hover" and include :hover on parent', () => {

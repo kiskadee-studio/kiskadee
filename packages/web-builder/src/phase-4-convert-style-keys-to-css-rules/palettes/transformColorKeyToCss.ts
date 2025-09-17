@@ -82,8 +82,9 @@ export function transformColorKeyToCss(
         const forcedSuffix = (classNameCssPseudoSelector as Record<string, string>)[pseudoClass];
         const hasForcedSuffix = forcedSuffix !== undefined && forcedSuffix !== '';
         if (hasForcedSuffix === true) {
-          // forcedSuffix already contains the short token (e.g. "-h"); apply as a separate class on the same element
-          selectors.push(`.${className}.${forcedSuffix}`);
+          // forcedSuffix already contains the short token (e.g. "-h"); apply it gated by activator "-a" on the same element
+          // Requirement: the forced state class alone must NOT activate styles; it must be combined with "-a".
+          selectors.push(`.${className}.${forcedSuffix}.-a`);
         }
       }
 

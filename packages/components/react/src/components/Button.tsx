@@ -54,6 +54,22 @@ export default function Button(props: ButtonProps) {
       e3: join(iconParts, 'e3')
     } as const;
 
+    // Activator pattern for forced states:
+    // - Kiskadee generates two forms of state selectors for colors and similar rules:
+    //   1) Native pseudo-class (e.g., :hover)
+    //   2) A forced class (e.g., -h for hover) that can emulate the state without a real event
+    // - To avoid the forced class applying styles unintentionally just by being present in the DOM,
+    //   all forced selectors are gated by an activator class "-a". This means:
+    //     .<class>:hover, .<class>.-h.-a { ... }
+    //   or, for parent-driven refs:
+    //     .-a:hover .<class>, .-a.-h .<class> { ... }
+    // - Exception (disabled): the "disabled" state does not need the activator "-a" because, unlike
+    //   other states that cannot be forced natively, an element can be programmatically disabled. Doing so
+    //   naturally triggers the native ":disabled" selector. For this reason we deliberately skip appending
+    //   any forced classes when status === 'disabled'.
+    // - Here we append both the forced state suffix (e.g., -h, -f, -s, etc.) and the activator -a
+    //   to the root element when a non-rest/non-disabled status is requested, so the previewed
+    //   component visually matches that state even without user interaction.
     const suffix =
       status !== 'rest' && status !== 'disabled' ? `${classNameCssPseudoSelector[status]} -a` : '';
 
