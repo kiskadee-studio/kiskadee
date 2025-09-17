@@ -1,10 +1,10 @@
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
-import { classNameCssPseudoSelector } from '@kiskadee/schema';
+import { classNameCssPseudoSelector as cn } from '@kiskadee/schema';
 import { useMemo } from 'react';
 import { useStyleClasses } from '../contexts/StyleClassesContext';
 
-export type ButtonStatus = keyof typeof classNameCssPseudoSelector;
+export type ButtonStatus = keyof typeof cn;
 export type ButtonProps = HeadlessButtonProps & {
   /** Force Kiskadee visual/interaction state on the root element (e1). */
   status?: ButtonStatus;
@@ -13,7 +13,7 @@ export type ButtonProps = HeadlessButtonProps & {
 };
 
 export default function Button(props: ButtonProps) {
-  const { classNames: userClassNames, status = 'rest', toggle, ...rest } = props;
+  const { classNames: userClassNames, status = 'rest', toggle, ...restProps } = props;
   const { classesMap, palette } = useStyleClasses();
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
@@ -81,12 +81,8 @@ export default function Button(props: ButtonProps) {
     // the activator "-a" so visuals are applied without needing the native pseudo-class event.
     // We skip "disabled" because the native :disabled can be applied via the disabled attribute.
     // For "rest" we add nothing.
-    const activationClasses = (() => {
-      if (status === 'rest' || status === 'disabled') return '';
-      const forced = classNameCssPseudoSelector[status as keyof typeof classNameCssPseudoSelector];
-      // Only append when we actually have a forced suffix to use
-      return forced ? ` ${forced} -a` : '';
-    })();
+    // Compute forced activation classes without an IIFE and avoid extra concat when unnecessary
+    const activationClasses = status !== 'rest' && status !== 'disabled' ? ` ${cn[status]} -a` : '';
 
     return {
       ...base,
@@ -95,13 +91,15 @@ export default function Button(props: ButtonProps) {
   }, [classesMap, palette, userClassNames, status]);
 
   // Map Kiskadee status to native/ARIA attributes
-  const disabled = rest.disabled ?? (status === 'disabled' ? true : undefined);
-  const ariaDisabled = rest['aria-disabled'] ?? (status === 'pseudoDisabled' ? true : undefined);
-  const ariaPressed = rest['aria-pressed'] ?? (toggle && status === 'selected' ? true : undefined);
+  const disabled = restProps.disabled ?? (status === 'disabled' ? true : undefined);
+  const ariaDisabled =
+    restProps['aria-disabled'] ?? (status === 'pseudoDisabled' ? true : undefined);
+  const ariaPressed =
+    restProps['aria-pressed'] ?? (toggle && status === 'selected' ? true : undefined);
 
   return (
     <HeadlessButton
-      {...rest}
+      {...restProps}
       disabled={disabled}
       aria-disabled={ariaDisabled}
       aria-pressed={ariaPressed}
