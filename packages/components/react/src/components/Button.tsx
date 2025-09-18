@@ -14,13 +14,16 @@ export type ButtonProps = HeadlessButtonProps & {
 
 export default function Button(props: ButtonProps) {
   const { classNames: userClassNames, status = 'rest', toggle, ...restProps } = props;
-  const { classesMap, palette } = useStyleClasses();
+  const {
+    classesMap: { button },
+    palette
+  } = useStyleClasses();
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
     const pal = palette;
-    const e1 = classesMap?.button?.e1; // element e1: root
-    const e2 = classesMap?.button?.e2; // element e2: label
-    const e3 = classesMap?.button?.e3; // element e3: icon
+    const e1 = button?.e1; // element e1: root
+    const e2 = button?.e2; // element e2: label
+    const e3 = button?.e3; // element e3: icon
 
     const rootParts: string[] = [];
     if (e1?.decorations) rootParts.push(...e1.decorations);
@@ -88,7 +91,7 @@ export default function Button(props: ButtonProps) {
       ...base,
       e1: `${base.e1}${activationClasses}`
     };
-  }, [classesMap, palette, userClassNames, status]);
+  }, [button, palette, userClassNames, status]);
 
   // Map Kiskadee status to native/ARIA attributes
   const disabled = restProps.disabled ?? (status === 'disabled' ? true : undefined);
