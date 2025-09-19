@@ -85,20 +85,24 @@ export default function Button(props: ButtonProps) {
   }, [button, palette, userClassNames, status]);
 
   // Map Kiskadee status to native/ARIA attributes
-  // Behavior:
-  // - If consumer passes `disabled`, always respect it.
-  // - Else if `status === 'disabled'` and consumer explicitly passes `aria-disabled={true}`,
-  //   do NOT set the native `disabled` attribute (keep it interactive), but keep visual classes.
-  // - Else if `status === 'disabled'`, set `disabled={true}` (native disabled).
+  // Current behavior:
+  // - If the consumer passes `disabled`, we use that value as-is (takes precedence over `status`).
+  // - Else if `status === 'disabled'`:
+  //     - When `aria-disabled === true`, do NOT set the native `disabled` attribute (element remains interactive).
+  //       Visual "disabled" styling is still forced via the activator classes added above.
+  //     - Otherwise set `disabled={true}` to use the native disabled state.
+  // - In any other case, we leave `disabled` undefined.
   const ariaDisabled = restProps['aria-disabled'];
-  const disabled =
-    d !== undefined
-      ? d
-      : status === 'disabled' && ariaDisabled === true
-        ? undefined
-        : status === 'disabled'
-          ? true
-          : undefined;
+  let disabled: boolean | undefined;
+  if (d !== undefined) {
+    // Always respect the consumer-provided `disabled` prop
+    disabled = d;
+  } else if (status === 'disabled') {
+    // If aria-disabled is explicitly true, keep the element interactive
+    disabled = ariaDisabled === true ? undefined : true;
+  } else {
+    disabled = undefined;
+  }
 
   const ariaPressed =
     restProps['aria-pressed'] ?? (toggle && status === 'selected' ? true : undefined);
