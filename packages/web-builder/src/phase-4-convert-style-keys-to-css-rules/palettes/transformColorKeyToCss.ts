@@ -57,10 +57,18 @@ export function transformColorKeyToCss(
   const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
   const colorProperty = CssColorProperty[propertyName];
 
-  // Prepare interaction state patterns (e.g. "hover", "focus", ...)
-  const states = Object.values(InteractionStateCssPseudoSelector).map((s) => s.slice(1));
-  const inlinePseudoClassRegex = new RegExp(`--(${states.join('|')})(?=__)`);
-  const newRefStateOnChildRegex = new RegExp(`==(${states.join('|')})(?=$)`);
+  // Prepare interaction state patterns using known state keys rather than pseudo map,
+  // so we can support states that intentionally have no native pseudo (e.g., disabled).
+  const stateKeys = [
+    'hover',
+    'pressed',
+    'selected',
+    'focus',
+    'disabled',
+    'readOnly'
+  ];
+  const inlinePseudoClassRegex = new RegExp(`--(${stateKeys.join('|')})(?=__)`);
+  const newRefStateOnChildRegex = new RegExp(`==(${stateKeys.join('|')})(?=$)`);
 
   let cssRule: string;
 
@@ -70,24 +78,31 @@ export function transformColorKeyToCss(
   if (hasRef === false) {
     // Simple class may include a pseudo-state
     const match = styleKey.match(inlinePseudoClassRegex);
-    const pseudoClass = match ? match[1] : undefined;
+    const pseudoClass = match ? (match[1] as string) : undefined;
     const hasPseudoClass = pseudoClass !== undefined;
     if (hasPseudoClass === true) {
-      // build selectors list: native pseudo-class plus optional forced-class
+      // build selectors list: prefer native pseudo when available; use forced class for disabled
       const selectors: string[] = [];
-      selectors.push(`.${className}:${pseudoClass}`);
 
-      const shouldForce = forceState === true;
-      if (shouldForce === true) {
-        const forcedSuffix = (classNameCssPseudoSelector as Record<string, string>)[pseudoClass];
-        const hasForcedSuffix = forcedSuffix !== undefined && forcedSuffix !== '';
-        if (hasForcedSuffix === true) {
-          // forcedSuffix already contains the short token (e.g. "-h"); apply it gated by activator "-a" on the same element
-          // Requirement: the forced state class alone must NOT activate styles; it must be combined with "-a".
-          selectors.push(`.${className}.${forcedSuffix}.-a`);
-        }
+      const nativePseudo = (InteractionStateCssPseudoSelector as Record<string, string>)[
+        pseudoClass
+      ] as string | undefined;
+      if (nativePseudo && nativePseudo !== '') {
+        selectors.push(`.${className}${nativePseudo}`);
       }
 
+      const forcedSuffixFor = (state: string): string => {
+        return (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
+      };
+      const forcedSuffix = forcedSuffixFor(pseudoClass);
+      const hasForcedSuffix = forcedSuffix !== '';
+
+      const shouldAddForced = pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
+      if (shouldAddForced && hasForcedSuffix) {
+        // forcedSuffix already contains the short token (e.g. "-h"); apply it gated by activator "-a" on the same element
+        // Requirement: the forced state class alone must NOT activate styles; it must be combined with "-a".
+        selectors.push(`.${className}.${forcedSuffix}.-a`);
+      }
 
       const selector = selectors.join(', ');
       cssRule = `${selector} { ${colorProperty}: ${hex} }`;
@@ -112,18 +127,23 @@ export function transformColorKeyToCss(
 
   // parent selector with native pseudo-class and optional forced-class variant
   const parentSelectors: string[] = [];
-  parentSelectors.push(`.-a:${pseudoClass} .${className}`);
+  const nativePseudo = (InteractionStateCssPseudoSelector as Record<string, string>)[
+    pseudoClass
+  ] as string | undefined;
+  if (nativePseudo && nativePseudo !== '') {
+    parentSelectors.push(`.-a${nativePseudo} .${className}`);
+  }
 
-  const shouldForceRef = forceState === true;
-  if (shouldForceRef === true) {
-    const forcedSuffix = (classNameCssPseudoSelector as Record<string, string>)[
-      pseudoClass as unknown as string
-    ];
-    const hasForcedSuffix = forcedSuffix !== undefined && forcedSuffix !== '';
-    if (hasForcedSuffix === true) {
-      // forced class applied on the parent (parent will have both -a and forcedSuffix classes), e.g. ".-a.-h .abc"
-      parentSelectors.push(`.-a.${forcedSuffix} .${className}`);
-    }
+  const forcedSuffixFor = (state: string): string => {
+    return (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
+  };
+  const forcedSuffix = forcedSuffixFor(pseudoClass);
+  const hasForcedSuffix = forcedSuffix !== '';
+
+  const shouldAddForcedRef = pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
+  if (shouldAddForcedRef && hasForcedSuffix) {
+    // forced class applied on the parent (parent will have both -a and forcedSuffix classes), e.g. ".-a.-h .abc"
+    parentSelectors.push(`.-a.${forcedSuffix} .${className}`);
   }
 
 

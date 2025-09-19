@@ -79,7 +79,12 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   pressed: ':click',
   selected: '',
   focus: ':focus',
-  disabled: ':disabled',
+  // Disabled no longer uses the native pseudo selector. We intentionally map it to an empty
+  // string and rely on the activator class ("-a") combined with the disabled visual class
+  // ("-d"; same class used for pseudoDisabled) to style the disabled state.
+  // Rationale: using only the activator+class shortens selectors and keeps a single
+  // activation path for both disabled and pseudoDisabled visuals.
+  disabled: '',
   readOnly: ':read-only'
 };
 
@@ -105,8 +110,9 @@ export const classNameCssPseudoSelector = {
   pressed: '-p', // Force "pressed" appearance without a real press/click
   selected: '-s', // Mark an element as selected/active
   focus: '-f', // Force focus styles without moving focus
-  disabled: '',
-  pseudoDisabled: '-d',
+  // Disabled uses the same visual class suffix as the former pseudoDisabled ("-d").
+  // We no longer keep a separate key for pseudoDisabled here; use the "disabled" entry instead.
+  disabled: '-d',
   readOnly: '-r' // Force read-only visuals
 };
 

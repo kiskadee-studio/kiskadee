@@ -8,12 +8,12 @@ export type ButtonStatus = keyof typeof cn;
 export type ButtonProps = HeadlessButtonProps & {
   /** Force Kiskadee visual/interaction state on the root element (e1). */
   status?: ButtonStatus;
-  /** Marks this button as a semantic toggle (Following vs Follow). */
+  /** Marks this button as a semantic toggle (Following vs. Follow). */
   toggle?: boolean;
 };
 
 export default function Button(props: ButtonProps) {
-  const { classNames: userClassNames, status = 'rest', toggle, ...restProps } = props;
+  const { classNames: userClassNames, status = 'rest', toggle, disabled: d, ...restProps } = props;
   const {
     classesMap: { button },
     palette
@@ -73,19 +73,10 @@ export default function Button(props: ButtonProps) {
     //     .<class>:hover, .<class>.-h.-a { ... }
     //   or, for parent-driven refs:
     //     .-a:hover .<class>, .-a.-h .<class> { ... }
-    // - Exception (disabled): the "disabled" state does not need the activator "-a" because, unlike
-    //   other states that cannot be forced natively, an element can be programmatically disabled. Doing so
-    //   naturally triggers the native ":disabled" selector. For this reason we deliberately skip appending
-    //   any forced classes when status === 'disabled'.
-    // - Here we append both the forced state class (e.g., -h, -f, -s, etc.) and the activator -a
-    //   to the root element when a non-rest/non-disabled status is requested, so the previewed
-    //   component visually matches that state even without user interaction.
-    // If a non-native or forced state is requested via `status`, append its forced class plus
-    // the activator "-a" so visuals are applied without needing the native pseudo-class event.
-    // We skip "disabled" because the native :disabled can be applied via the disabled attribute.
-    // For "rest" we add nothing.
-    // Compute forced activation classes without an IIFE and avoid extra concat when unnecessary
-    const activationClasses = status !== 'rest' && status !== 'disabled' ? ` ${cn[status]} -a` : '';
+    // Update: Disabled visuals are now applied via activator class instead of :disabled.
+    // We always gate forced visuals with the activator "-a" to avoid accidental activation.
+    const shouldForce = status !== 'rest' && cn[status] !== '';
+    const activationClasses = shouldForce ? ` ${cn[status]} -a` : '';
 
     return {
       ...base,
@@ -94,9 +85,21 @@ export default function Button(props: ButtonProps) {
   }, [button, palette, userClassNames, status]);
 
   // Map Kiskadee status to native/ARIA attributes
-  const disabled = restProps.disabled ?? (status === 'disabled' ? true : undefined);
-  const ariaDisabled =
-    restProps['aria-disabled'] ?? (status === 'pseudoDisabled' ? true : undefined);
+  // Behavior:
+  // - If consumer passes `disabled`, always respect it.
+  // - Else if `status === 'disabled'` and consumer explicitly passes `aria-disabled={true}`,
+  //   do NOT set the native `disabled` attribute (keep it interactive), but keep visual classes.
+  // - Else if `status === 'disabled'`, set `disabled={true}` (native disabled).
+  const ariaDisabled = restProps['aria-disabled'];
+  const disabled =
+    d !== undefined
+      ? d
+      : status === 'disabled' && ariaDisabled === true
+        ? undefined
+        : status === 'disabled'
+          ? true
+          : undefined;
+
   const ariaPressed =
     restProps['aria-pressed'] ?? (toggle && status === 'selected' ? true : undefined);
 

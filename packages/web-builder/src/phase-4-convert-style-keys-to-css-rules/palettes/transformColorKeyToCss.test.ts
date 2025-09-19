@@ -51,14 +51,14 @@ describe('transformColorKeyToCss', () => {
     it('should include forced disabled selector gated by activator (inline)', () => {
       const result = transformColorKeyToCss('boxColor--disabled__[240,50,50,0.5]', className, true);
       expect(result).toEqual(
-        '.abc:disabled, .abc.-d.-a { background-color: #4040bf80 }'
+        '.abc.-d.-a { background-color: #4040bf80 }'
       );
     });
 
     it('should include forced disabled selector gated by activator (ref)', () => {
       const result = transformColorKeyToCss('textColor==disabled__[0,0,0,0.3]', className, true);
       expect(result).toEqual(
-        '.-a:disabled .abc, .-a.-d .abc { color: #0000004d }'
+        '.-a.-d .abc { color: #0000004d }'
       );
     });
   });

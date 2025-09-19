@@ -22,7 +22,7 @@ export default function ButtonPage() {
         <Button label="Focus" status="focus" />
         <Button label="Pressed" status="pressed" />
         <Button label="Disabled" status="disabled" />
-        <Button label="Pseudo Disabled" status="pseudoDisabled" />
+        <Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />
       </div>
     </section>
   );
