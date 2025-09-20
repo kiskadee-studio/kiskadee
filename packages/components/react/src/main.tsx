@@ -126,6 +126,7 @@ function Root() {
     };
   }, [template, palette]);
 
+  // TODO: remove any
   const classesMap = useMemo(() => {
     const core = templates[template].core;
     if (!paletteMap) return core;
@@ -138,10 +139,10 @@ function Root() {
       for (const el in compEl) {
         (merged as any)[comp][el] = (merged as any)[comp][el] || {};
         const elObj = compEl[el];
-        if (elObj && elObj.palettes) {
-          (merged as any)[comp][el].palettes = {
-            ...((merged as any)[comp][el].palettes || {}),
-            ...elObj.palettes
+        if (elObj && elObj.p) {
+          (merged as any)[comp][el].p = {
+            ...((merged as any)[comp][el].p || {}),
+            ...elObj.p
           };
         }
       }

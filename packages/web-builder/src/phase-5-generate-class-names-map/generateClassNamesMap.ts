@@ -1,18 +1,24 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/schema';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 
+// TODO: review it and remove "any" types
+
+// Shortened keys for optimization:
+// d = decorations, e = effects, s = scales, p = palettes (colors)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>;
 export type ClassNameByElement = {
-  decorations?: string[];
-  effects?: ClassNamesByInteractionState;
-  scales?: Partial<Record<string, string[]>>;
-  palettes?: Record<string, Partial<Record<string, ClassNamesByInteractionState>>>;
+  d?: string[];
+  e?: ClassNamesByInteractionState;
+  s?: Partial<Record<string, string[]>>;
+  // For split palette JSONs, `p` is flattened: semantic -> state -> classes
+  // For any non-split full map (if used), `p` may still contain palette names.
+  p?: any;
 };
 export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
 
 export type ComponentClassNameMapSplit = {
   core: ComponentClassNameMap; // no palettes included
-  palettes: Record<string, ComponentClassNameMap>; // each contains only palettes for that name
+  palettes: Record<string, ComponentClassNameMap>; // each contains only flattened `p` for that palette
 };
 
 function mapArray(
@@ -32,7 +38,8 @@ function mapInteractionState(obj: any, shortenMap: ShortenCssClassNames): any {
   return out;
 }
 
-function mapPalettes(palettes: any, shortenMap: ShortenCssClassNames): any {
+function mapPalettesFull(palettes: any, shortenMap: ShortenCssClassNames): any {
+  // Helper used only by the non-split generator (if needed).
   if (!palettes) return palettes;
   const out: any = {};
   for (const paletteName in palettes) {
@@ -57,9 +64,9 @@ export function generateClassNamesMap(
     for (const elementName in elements) {
       const el = elements[elementName];
       (result as any)[componentName][elementName] = {
-        decorations: mapArray(el.decorations, shortenMap),
-        effects: mapInteractionState(el.effects, shortenMap),
-        scales: el.scales
+        d: mapArray(el.decorations, shortenMap),
+        e: mapInteractionState(el.effects, shortenMap),
+        s: el.scales
           ? Object.fromEntries(
               Object.entries(el.scales).map(([k, arr]: [string, any]) => [
                 k,
@@ -67,7 +74,8 @@ export function generateClassNamesMap(
               ])
             )
           : undefined,
-        palettes: mapPalettes(el.palettes, shortenMap)
+        // keep full palettes structure only for the non-split map (if someone consumes it)
+        p: mapPalettesFull(el.palettes, shortenMap)
       };
     }
   }
@@ -89,9 +97,9 @@ export function generateClassNamesMapSplit(
 
       // Core (no palettes)
       (core as any)[componentName][elementName] = {
-        decorations: mapArray(el.decorations, shortenMap),
-        effects: mapInteractionState(el.effects, shortenMap),
-        scales: el.scales
+        d: mapArray(el.decorations, shortenMap),
+        e: mapInteractionState(el.effects, shortenMap),
+        s: el.scales
           ? Object.fromEntries(
               Object.entries(el.scales).map(([k, arr]: [string, any]) => [
                 k,
@@ -101,7 +109,7 @@ export function generateClassNamesMapSplit(
           : undefined
       };
 
-      // Palettes split per palette name
+      // Palettes split per palette name; flatten so that per-palette JSON has only `p` (no paletteName level)
       if (el.palettes) {
         for (const paletteName in el.palettes) {
           if (!palettes[paletteName]) palettes[paletteName] = {};
@@ -109,18 +117,18 @@ export function generateClassNamesMapSplit(
             (palettes as any)[paletteName][componentName] = {};
           }
           const bySemantic = el.palettes[paletteName];
-          // ensure element record exists
-          const elemRecord = ((palettes as any)[paletteName][componentName][elementName] =
-            (palettes as any)[paletteName][componentName][elementName] || {});
-          (elemRecord as any).palettes = {
-            [paletteName]: (() => {
-              const mappedSemantic: any = {};
-              for (const sem in bySemantic) {
-                mappedSemantic[sem] = mapInteractionState(bySemantic[sem], shortenMap);
-              }
-              return mappedSemantic;
-            })()
-          };
+          // ensure element record exists (avoid assignment inside expression per Biome rule)
+          if (!(palettes as any)[paletteName][componentName][elementName]) {
+            (palettes as any)[paletteName][componentName][elementName] = {};
+          }
+          const elemRecord = (palettes as any)[paletteName][componentName][elementName] as any;
+          (elemRecord as any).p = (() => {
+            const mappedSemantic: any = {};
+            for (const sem in bySemantic) {
+              mappedSemantic[sem] = mapInteractionState(bySemantic[sem], shortenMap);
+            }
+            return mappedSemantic;
+          })();
         }
       }
     }

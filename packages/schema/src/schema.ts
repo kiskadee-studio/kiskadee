@@ -90,10 +90,12 @@ export type Schema = {
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNamesByInteractionStateJSON = Partial<Record<string, string[]>>;
 export type ClassNameByElementJSON = {
-  decorations?: string[];
-  effects?: ClassNamesByInteractionStateJSON;
-  scales?: Partial<Record<string, string[]>>;
-  palettes?: Record<string, Partial<Record<string, ClassNamesByInteractionStateJSON>>>;
+  // d = decorations, e = effects, s = scales, p = palettes (colors)
+  d?: string[];
+  e?: ClassNamesByInteractionStateJSON;
+  s?: Partial<Record<string, string[]>>;
+  // Flattened palettes: semantic -> interactionState -> class names
+  p?: Partial<Record<string, ClassNamesByInteractionStateJSON>>;
 };
 
 export type ComponentClassNameMapJSON = Partial<

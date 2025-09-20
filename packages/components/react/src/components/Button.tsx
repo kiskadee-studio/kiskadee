@@ -15,20 +15,15 @@ export type ButtonProps = HeadlessButtonProps & {
 export default function Button(props: ButtonProps) {
   const { classNames: userClassNames, status = 'rest', toggle, disabled: d, ...restProps } = props;
   const {
-    classesMap: { button },
-    palette
+    // e1 (root), e2 (label), e3 (icon)
+    classesMap: { button: { e1, e2, e3 } = {} }
   } = useKiskadee();
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    const pal = palette;
-    const e1 = button?.e1; // element e1: root
-    const e2 = button?.e2; // element e2: label
-    const e3 = button?.e3; // element e3: icon
-
     const rootParts: string[] = [];
-    if (e1?.decorations) rootParts.push(...e1.decorations);
+    if (e1?.d) rootParts.push(...e1.d);
     // TODO: tratar diferentes tamanhos
-    if (e1?.scales?.['s:all']) rootParts.push(...e1.scales['s:all']);
+    if (e1?.s?.['s:all']) rootParts.push(...(e1.s['s:all'] as string[]));
     // TODO: unificar todas as classes simples numa string só
     // TODO: [WP] Todos os estados de suporte nativos devem ser unificados
     // TODO: [WP] Tratar quando forem estados não nativos
@@ -37,22 +32,22 @@ export default function Button(props: ButtonProps) {
     // TODO: onde vão ficar estilos fixos dos componentes?
 
     // rest, hover, pressed, focus, disabled são todos os estados nativos
-    if (e1?.palettes?.[pal]?.primary?.rest) rootParts.push(...e1.palettes[pal].primary.rest);
-    if (e1?.palettes?.[pal]?.primary?.hover) rootParts.push(...e1.palettes[pal].primary.hover);
-    if (e1?.palettes?.[pal]?.primary?.pressed) rootParts.push(...e1.palettes[pal].primary.pressed);
-    if (e1?.palettes?.[pal]?.primary?.focus) rootParts.push(...e1.palettes[pal].primary.focus);
-    if (e1?.palettes?.[pal]?.primary?.disabled)
-      rootParts.push(...e1.palettes[pal].primary.disabled);
+    if (e1?.p?.primary?.rest) rootParts.push(...e1.p.primary.rest);
+    if (e1?.p?.primary?.hover) rootParts.push(...e1.p.primary.hover);
+    if (e1?.p?.primary?.pressed) rootParts.push(...e1.p.primary.pressed);
+    if (e1?.p?.primary?.focus) rootParts.push(...e1.p.primary.focus);
+    if (e1?.p?.primary?.disabled) rootParts.push(...e1.p.primary.disabled);
 
     const labelParts: string[] = [];
-    if (e2?.decorations) labelParts.push(...e2.decorations);
-    if (e2?.scales?.['s:all']) labelParts.push(...e2.scales['s:all']);
-    if (e2?.palettes?.[pal]?.primary?.rest) labelParts.push(...e2.palettes[pal].primary.rest);
+    if (e2?.d) labelParts.push(...e2.d);
+    if (e2?.s?.['s:all']) labelParts.push(...(e2.s['s:all'] as string[]));
+    if (e2?.p?.primary?.rest) labelParts.push(...e2.p.primary.rest);
 
     const iconParts: string[] = [];
-    if (e3?.decorations) iconParts.push(...e3.decorations);
-    if (e3?.palettes?.[pal]?.primary?.rest) iconParts.push(...e3.palettes[pal].primary.rest);
+    if (e3?.d) iconParts.push(...e3.d);
+    if (e3?.p?.primary?.rest) iconParts.push(...e3.p.primary.rest);
 
+    // TODO: what is "u"?
     const u = userClassNames ?? {};
     type CN = NonNullable<HeadlessButtonProps['classNames']>;
     const join = (baseParts: string[], key: keyof CN) =>
@@ -82,7 +77,7 @@ export default function Button(props: ButtonProps) {
       ...base,
       e1: `${base.e1}${activationClasses}`
     };
-  }, [button, palette, userClassNames, status]);
+  }, [e1, e2, e3, status, userClassNames]);
 
   // Map Kiskadee status to native/ARIA attributes
   // Current behavior:
