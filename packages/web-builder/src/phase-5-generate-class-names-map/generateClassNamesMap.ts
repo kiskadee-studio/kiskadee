@@ -10,6 +10,11 @@ export type ClassNameByElement = {
 };
 export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
 
+export type ComponentClassNameMapSplit = {
+  core: ComponentClassNameMap; // no palettes included
+  palettes: Record<string, ComponentClassNameMap>; // each contains only palettes for that name
+};
+
 function mapArray(
   keys: string[] | undefined,
   shortenMap: ShortenCssClassNames
@@ -67,4 +72,59 @@ export function generateClassNamesMap(
     }
   }
   return result;
+}
+
+export function generateClassNamesMapSplit(
+  styleKeys: ComponentStyleKeyMap,
+  shortenMap: ShortenCssClassNames
+): ComponentClassNameMapSplit {
+  const core: ComponentClassNameMap = {};
+  const palettes: Record<string, ComponentClassNameMap> = {};
+
+  for (const componentName in styleKeys) {
+    const elements = (styleKeys as any)[componentName];
+    (core as any)[componentName] = {};
+    for (const elementName in elements) {
+      const el = elements[elementName];
+
+      // Core (no palettes)
+      (core as any)[componentName][elementName] = {
+        decorations: mapArray(el.decorations, shortenMap),
+        effects: mapInteractionState(el.effects, shortenMap),
+        scales: el.scales
+          ? Object.fromEntries(
+              Object.entries(el.scales).map(([k, arr]: [string, any]) => [
+                k,
+                mapArray(arr, shortenMap) ?? []
+              ])
+            )
+          : undefined
+      };
+
+      // Palettes split per palette name
+      if (el.palettes) {
+        for (const paletteName in el.palettes) {
+          if (!palettes[paletteName]) palettes[paletteName] = {};
+          if (!(palettes as any)[paletteName][componentName]) {
+            (palettes as any)[paletteName][componentName] = {};
+          }
+          const bySemantic = el.palettes[paletteName];
+          // ensure element record exists
+          const elemRecord = ((palettes as any)[paletteName][componentName][elementName] =
+            (palettes as any)[paletteName][componentName][elementName] || {});
+          (elemRecord as any).palettes = {
+            [paletteName]: (() => {
+              const mappedSemantic: any = {};
+              for (const sem in bySemantic) {
+                mappedSemantic[sem] = mapInteractionState(bySemantic[sem], shortenMap);
+              }
+              return mappedSemantic;
+            })()
+          };
+        }
+      }
+    }
+  }
+
+  return { core, palettes };
 }

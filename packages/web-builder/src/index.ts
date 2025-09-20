@@ -10,9 +10,11 @@ import {
   shortenCssClassNames
 } from './phase-3-shorten-css-class-names/shortenCssClassNames';
 import { generateCssFromStyleKeyList } from './phase-4-convert-style-keys-to-css-rules/generateCss';
+import { generateCssSplit } from './phase-4-convert-style-keys-to-css-rules/generateCssSplit';
 import {
   type ComponentClassNameMap,
-  generateClassNamesMap
+  type ComponentClassNameMapSplit,
+  generateClassNamesMapSplit
 } from './phase-5-generate-class-names-map/generateClassNamesMap';
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 
@@ -28,15 +30,15 @@ const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys);
 const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage);
 console.log({ shortenCssClassNameMap });
 
-// Phase 4 - Convert Style Keys to CSS rules
-const cssGenerated: string = await generateCssFromStyleKeyList(shortenCssClassNameMap);
+// Phase 4 - Convert Style Keys to CSS rules, split core vs palette bundles
+const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap);
 console.log({ cssGenerated });
 
-// Phase 5 - Generate class names map from style keys using shortened class names
-const classNamesMap: ComponentClassNameMap = generateClassNamesMap(
+// Phase 5 - Generate class names map split (core + per-palette)
+const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSplit(
   styleKeys,
   shortenCssClassNameMap
 );
 
-// Phase 6 - Persist build artifacts (CSS and class names map)
-await persistBuildArtifacts(cssGenerated, classNamesMap, schema.name);
+// Phase 6 - Persist build artifacts (CSS and class names map split)
+await persistBuildArtifacts(cssGenerated, classNamesMapSplit, schema.name);

@@ -88,6 +88,20 @@ export const schema: Schema = {
                   // hover: [0, 0, 95, 1]
                 }
               }
+            },
+            p2: {
+              boxColor: {
+                primary: {
+                  // TODO: rest is mandatory, but in this case it's not needed
+                  rest: [207, 90, 54, 1],
+                  selected: [207, 90, 54, 1]
+                  // hover: [207, 90, 64, 1]
+                },
+                neutral: {
+                  rest: [0, 0, 75, 1]
+                  // hover: [0, 0, 95, 1]
+                }
+              }
             }
           }
         }
