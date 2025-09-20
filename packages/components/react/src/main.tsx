@@ -10,7 +10,7 @@ import classNamesMaterialCore from '../../../web-builder/build/material-design/c
 import classNamesTemplate1Core from '../../../web-builder/build/template-1/classNamesMap.json';
 import classNamesTemplate2Core from '../../../web-builder/build/template-2/classNamesMap.json';
 import App from './App.tsx';
-import { StyleClassesContext } from './contexts/StyleClassesContext';
+import { KiskadeeContext } from './contexts/KiskadeeContext.tsx';
 
 // Compute CSS URLs for the three templates without injecting them automatically
 const cssUrlTemplate1 = new URL(
@@ -167,7 +167,7 @@ function Root() {
         </label>
       </div>
       <BrowserRouter>
-        <StyleClassesContext.Provider
+        <KiskadeeContext.Provider
           value={{
             classesMap,
             palette,
@@ -175,7 +175,7 @@ function Root() {
           }}
         >
           <App />
-        </StyleClassesContext.Provider>
+        </KiskadeeContext.Provider>
       </BrowserRouter>
     </StrictMode>
   );

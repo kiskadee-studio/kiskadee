@@ -1,14 +1,14 @@
 import { Link, Route, Routes } from 'react-router';
 import './App.css';
 
-import { useStyleClasses } from './contexts/StyleClassesContext';
+import { useKiskadee } from './contexts/KiskadeeContext.tsx';
 import ButtonPage from './pages/Button';
 import TabsPage from './pages/Tabs';
 import TextPage from './pages/Text';
 
 function App() {
   // TODO: rename it with useKiskadee()
-  const { palette, setPalette } = useStyleClasses();
+  const { palette, setPalette } = useKiskadee();
 
   return (
     <>

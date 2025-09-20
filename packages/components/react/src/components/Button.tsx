@@ -2,7 +2,7 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { classNameCssPseudoSelector as cn } from '@kiskadee/schema';
 import { useMemo } from 'react';
-import { useStyleClasses } from '../contexts/StyleClassesContext';
+import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 
 export type ButtonStatus = keyof typeof cn;
 export type ButtonProps = HeadlessButtonProps & {
@@ -17,7 +17,7 @@ export default function Button(props: ButtonProps) {
   const {
     classesMap: { button },
     palette
-  } = useStyleClasses();
+  } = useKiskadee();
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
     const pal = palette;

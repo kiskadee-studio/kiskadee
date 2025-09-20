@@ -4,11 +4,11 @@ import { useMemo } from 'react';
 
 export type { TabItem, TabsProps } from '@kiskadee/react-headless';
 
-import { useStyleClasses } from '../contexts/StyleClassesContext';
+import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 
 export default function Tabs(props: HeadlessTabsProps) {
   const { classNames: userClassNames } = props;
-  const { classesMap, palette } = useStyleClasses();
+  const { classesMap, palette } = useKiskadee();
 
   console.log({ classesMap, palette });
 
