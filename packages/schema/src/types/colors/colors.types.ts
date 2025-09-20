@@ -76,7 +76,7 @@ export type InteractionState =
 export const InteractionStateCssPseudoSelector: Record<InteractionState, string> = {
   rest: '',
   hover: ':hover',
-  pressed: ':click',
+  pressed: ':active',
   selected: '',
   focus: ':focus',
   // Disabled no longer uses the native pseudo selector. We intentionally map it to an empty

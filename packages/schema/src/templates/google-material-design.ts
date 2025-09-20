@@ -25,7 +25,9 @@ export const schema: Schema = {
               boxColor: {
                 primary: {
                   rest: [256.43, 34.43, 47.84, 1],
-                  hover: [256, 34, 48, 1],
+                  // hover: [256, 34, 48, 1], // official
+                  hover: [256, 34, 65, 1],
+                  pressed: [256, 34, 35, 1],
                   disabled: [256.43, 34.43, 47.84, 0.5],
                   focus: [339.61, 82.19, 51.57, 1]
                 }

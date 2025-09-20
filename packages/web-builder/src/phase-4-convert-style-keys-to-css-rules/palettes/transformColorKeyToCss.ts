@@ -59,14 +59,7 @@ export function transformColorKeyToCss(
 
   // Prepare interaction state patterns using known state keys rather than pseudo map,
   // so we can support states that intentionally have no native pseudo (e.g., disabled).
-  const stateKeys = [
-    'hover',
-    'pressed',
-    'selected',
-    'focus',
-    'disabled',
-    'readOnly'
-  ];
+  const stateKeys = ['hover', 'pressed', 'selected', 'focus', 'disabled', 'readOnly'];
   const inlinePseudoClassRegex = new RegExp(`--(${stateKeys.join('|')})(?=__)`);
   const newRefStateOnChildRegex = new RegExp(`==(${stateKeys.join('|')})(?=$)`);
 
@@ -97,7 +90,8 @@ export function transformColorKeyToCss(
       const forcedSuffix = forcedSuffixFor(pseudoClass);
       const hasForcedSuffix = forcedSuffix !== '';
 
-      const shouldAddForced = pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
+      const shouldAddForced =
+        pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
       if (shouldAddForced && hasForcedSuffix) {
         // forcedSuffix already contains the short token (e.g. "-h"); apply it gated by activator "-a" on the same element
         // Requirement: the forced state class alone must NOT activate styles; it must be combined with "-a".
@@ -128,7 +122,8 @@ export function transformColorKeyToCss(
   // parent selector with native pseudo-class and optional forced-class variant
   const parentSelectors: string[] = [];
   const nativePseudo = (InteractionStateCssPseudoSelector as Record<string, string>)[
-    pseudoClass
+    // biome-ignore lint/style/noNonNullAssertion: ...
+    pseudoClass!
   ] as string | undefined;
   if (nativePseudo && nativePseudo !== '') {
     parentSelectors.push(`.-a${nativePseudo} .${className}`);
@@ -137,7 +132,8 @@ export function transformColorKeyToCss(
   const forcedSuffixFor = (state: string): string => {
     return (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
   };
-  const forcedSuffix = forcedSuffixFor(pseudoClass);
+  // biome-ignore lint/style/noNonNullAssertion: ...
+  const forcedSuffix = forcedSuffixFor(pseudoClass!);
   const hasForcedSuffix = forcedSuffix !== '';
 
   const shouldAddForcedRef = pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
@@ -145,7 +141,6 @@ export function transformColorKeyToCss(
     // forced class applied on the parent (parent will have both -a and forcedSuffix classes), e.g. ".-a.-h .abc"
     parentSelectors.push(`.-a.${forcedSuffix} .${className}`);
   }
-
 
   const selector = parentSelectors.join(', ');
   return `${selector} { ${colorProperty}: ${hex} }`;
