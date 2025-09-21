@@ -10,14 +10,14 @@ type Saturation = number;
 /** Represents an alpha value (opacity) ranging from 0 to 1 (e.g., 0.02). */
 type Alpha = number;
 
-/** Represents a color in HLSA format: [hue, lightness, saturation, alpha]. */
-export type HLSA = [hue: Hue, lightness: Lightness, saturation: Saturation, alpha: Alpha];
+/** Represents a color in HSLA format: [hue, saturation, lightness, alpha]. */
+export type HSLA = [hue: Hue, saturation: Saturation, lightness: Lightness, alpha: Alpha];
 
 /** Represents a color in hexadecimal format (e.g., "#ff0000" or "#ff0000ff"). */
 export type Hex = string;
 
-/** Represents a single solid color in HLSA format. */
-export type SolidColor = HLSA;
+/** Represents a single solid color in HSLA format. */
+export type SolidColor = HSLA;
 
 /** Represents the position of a color stop in a CSS gradient as a percentage (0–100). */
 type GradientStopPosition = number;

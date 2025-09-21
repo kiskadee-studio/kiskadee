@@ -1,4 +1,4 @@
-import type { Hex, HLSA } from '@kiskadee/schema';
+import type { Hex, HSLA } from '@kiskadee/schema';
 import { toShortHex } from './toShortHex';
 
 /**
@@ -12,7 +12,7 @@ import { toShortHex } from './toShortHex';
  *
  * Throws an error if the hsla parameter is not a valid array of 3 or 4 numbers.
  */
-export function convertHslaToHex(hsla: HLSA): Hex {
+export function convertHslaToHex(hsla: HSLA): Hex {
   if (!Array.isArray(hsla)) {
     throw new Error(`Invalid hsla value: expected an array, received ${typeof hsla}`);
   }

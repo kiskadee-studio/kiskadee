@@ -2,7 +2,7 @@ import {
   type ColorProperty,
   CssColorProperty,
   classNameCssPseudoSelector,
-  type HLSA,
+  type HSLA,
   InteractionStateCssPseudoSelector,
   type StyleKey
 } from '@kiskadee/schema';
@@ -49,7 +49,7 @@ export function transformColorKeyToCss(
   if (hasHslaMatch === false) {
     throw new Error(ERROR_INVALID_KEY_FORMAT);
   }
-  const hsla = hslaMatch[1].split(',').map(Number) as HLSA;
+  const hsla = hslaMatch[1].split(',').map(Number) as HSLA;
   const hex = convertHslaToHex(hsla);
 
   // Base color property, e.g. "background-color" or "color"

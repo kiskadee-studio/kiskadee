@@ -1,5 +1,5 @@
 import {
-  type HLSA,
+  type HSLA,
   type InteractionState,
   InteractionStateCssPseudoSelector
 } from '@kiskadee/schema';
@@ -81,7 +81,7 @@ export function transformShadowKeyToCss(styleKey: string, className: string): st
   // Convert HSLA array to hexadecimal string
   let hexColor: string;
   try {
-    const hsla = JSON.parse(colorPart) as HLSA;
+    const hsla = JSON.parse(colorPart) as HSLA;
     hexColor = convertHslaToHex(hsla);
   } catch {
     // Malformed HSLA value
