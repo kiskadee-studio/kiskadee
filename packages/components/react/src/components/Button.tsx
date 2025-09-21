@@ -1,6 +1,6 @@
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
-import { classNameCssPseudoSelector as cn } from '@kiskadee/schema';
+import { type ClassNameByElementJSON, classNameCssPseudoSelector as cn } from '@kiskadee/schema';
 import { useMemo } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 
@@ -21,7 +21,7 @@ export default function Button(props: ButtonProps) {
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
     // Helper to collect class parts for each element across all interaction states
-    const collect = (el: any | undefined): string[] => {
+    const collect = (el: ClassNameByElementJSON): string[] => {
       const parts: string[] = [];
       if (!el) return parts;
       if (el.d) parts.push(...el.d);
@@ -39,7 +39,6 @@ export default function Button(props: ButtonProps) {
     const labelParts = collect(e2);
     const iconParts = collect(e3);
 
-    // TODO: what is "u"?
     type CN = NonNullable<HeadlessButtonProps['classNames']>;
     const join = (baseParts: string[], key: keyof CN) =>
       `${baseParts.join(' ')} ${classNames[key] ?? ''}`.trim();
