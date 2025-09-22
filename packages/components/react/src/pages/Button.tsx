@@ -21,6 +21,7 @@ export default function ButtonPage() {
         <Button label="Hover" status="hover" />
         <Button label="Focus" status="focus" />
         <Button label="Pressed" status="pressed" />
+        <Button label="Selected" status="selected" />
         <Button label="Disabled" status="disabled" />
         <Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />
       </div>

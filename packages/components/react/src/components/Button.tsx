@@ -32,6 +32,7 @@ export default function Button(props: ButtonProps) {
       if (p?.pressed) parts.push(...p.pressed);
       if (p?.focus) parts.push(...p.focus);
       if (p?.disabled) parts.push(...p.disabled);
+      if (p?.selected) parts.push(...p.selected);
       return parts;
     };
 
