@@ -120,9 +120,39 @@ export const classNameCssPseudoSelector = {
  * Represents how an element’s color varies across its own interaction states (e.g., rest, hover,
  * focus, disabled). Each state maps to either a direct Color definition or a ParentColor reference.
  */
+// Submap for the "selected" (on) control state. It defines its own interaction variants.
+// Notes:
+// - Requires "rest" (on/rest) as baseline when selected is active.
+// - Allows hover/pressed/focus within the selected scope.
+// - Does NOT include nested selected/disabled/readOnly to avoid combinatorial explosion;
+//   disabled/readOnly remain top-level with global precedence.
+export type SelectedInteractionSubMap = {
+  rest: Color; // on/rest
+  hover?: ColorValue; // on/hover
+  pressed?: ColorValue; // on/pressed
+  focus?: ColorValue; // on/focus
+};
+
+/**
+ * Represents how an element’s color varies across its own interaction states (e.g., rest, hover,
+ * focus, disabled). Each state maps to either a direct Color definition or a ParentColor reference.
+ * When the element supports a persistent control state (selected/on), the "selected" key contains
+ * a submap with its own interaction variants.
+ */
 export type InteractionStateColorMap = {
+  // Off scope (not selected)
   rest: Color;
-} & Partial<Record<Exclude<InteractionState, 'rest'>, ColorValue>>;
+  hover?: ColorValue;
+  pressed?: ColorValue;
+  focus?: ColorValue;
+
+  // On scope (selected)
+  selected?: SelectedInteractionSubMap;
+
+  // Global precedence states
+  disabled?: ColorValue;
+  readOnly?: ColorValue;
+};
 
 // TODO: add a new layer of semantic colors
 /**

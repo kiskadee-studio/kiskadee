@@ -30,7 +30,7 @@ export const schema: Schema = {
                   pressed: [256, 34, 35, 1],
                   disabled: [256.43, 34.43, 47.84, 0.5],
                   focus: [339.61, 82.19, 51.57, 1],
-                  selected: [210, 98.33, 47.06, 1]
+                  selected: { rest: [210, 98.33, 47.06, 1] }
                 }
               }
             }
@@ -83,7 +83,7 @@ export const schema: Schema = {
                 primary: {
                   // TODO: rest is mandatory, but in this case it's not needed
                   rest: [207, 90, 54, 1],
-                  selected: [207, 90, 54, 1]
+                  selected: { rest: [207, 90, 54, 1] }
                   // hover: [207, 90, 64, 1]
                 },
                 neutral: {
@@ -97,7 +97,7 @@ export const schema: Schema = {
                 primary: {
                   // TODO: rest is mandatory, but in this case it's not needed
                   rest: [207, 90, 54, 1],
-                  selected: [207, 90, 54, 1]
+                  selected: { rest: [207, 90, 54, 1] }
                   // hover: [207, 90, 64, 1]
                 },
                 neutral: {

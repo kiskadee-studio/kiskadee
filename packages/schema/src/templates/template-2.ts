@@ -62,7 +62,7 @@ export const schema: Schema = {
                 primary: {
                   // TODO: rest is mandatory, but in this case it's not needed
                   rest: [207, 90, 54, 1],
-                  selected: [207, 90, 54, 1],
+                  selected: { rest: [207, 90, 54, 1] },
                   hover: [207, 90, 64, 1]
                 },
                 neutral: {
