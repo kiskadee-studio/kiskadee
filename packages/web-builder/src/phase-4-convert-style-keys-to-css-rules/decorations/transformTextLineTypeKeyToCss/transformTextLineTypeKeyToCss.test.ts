@@ -63,7 +63,6 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(caught).toBeInstanceOf(Error);
         const error = caught as Error;
         expect(error.message).toBe(expectedMessage);
-        expect(error.message).toMatchSnapshot();
       });
 
       it('throws error if style key format is invalid', () => {
@@ -81,7 +80,6 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(caught).toBeInstanceOf(Error);
         const error = caught as Error;
         expect(error.message).toBe(expectedMessage);
-        expect(error.message).toMatchSnapshot();
       });
     });
 
@@ -101,7 +99,6 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(caught).toBeInstanceOf(Error);
         const error = caught as Error;
         expect(error.message).toBe(expectedMessage);
-        expect(error.message).toMatchSnapshot();
       });
 
       it('throws error if value contains unexpected separators', () => {
@@ -120,7 +117,6 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(caught).toBeInstanceOf(Error);
         const error = caught as Error;
         expect(error.message).toBe(expectedMessage);
-        expect(error.message).toMatchSnapshot();
       });
 
       it('throws error if value is unsupported', () => {
@@ -139,7 +135,6 @@ describe('transformTextLineTypeKeyToCss', () => {
         expect(caught).toBeInstanceOf(Error);
         const error = caught as Error;
         expect(error.message).toBe(expectedMessage);
-        expect(error.message).toMatchSnapshot();
       });
     });
   });

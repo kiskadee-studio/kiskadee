@@ -1,7 +1,81 @@
-import { describe, it, expect } from 'vitest';
-import { buildStyleKey, type BuildStyleKeyParams } from './buildStyeKey';
+import { describe, expect, it } from 'vitest';
+import { type BuildStyleKeyParams, buildStyleKey } from './buildStyleKey';
 
 describe('buildStyleKey', () => {
+  describe('selected control via controlState + interactionState', () => {
+    it('generates non-ref key for selected:rest', () => {
+      const key = buildStyleKey({
+        propertyName: 'boxColor',
+        value: '[1,2,3,1]',
+        controlState: true,
+        interactionState: 'rest'
+      });
+      expect(key).toBe('boxColor--selected:rest__[1,2,3,1]');
+    });
+
+    it('generates ref key for selected:hover', () => {
+      const key = buildStyleKey({
+        propertyName: 'boxColor',
+        value: '[2,3,4,1]',
+        controlState: true,
+        interactionState: 'hover',
+        isRef: true
+      });
+      expect(key).toBe('boxColor==selected:hover__[2,3,4,1]');
+    });
+
+    it('throws when isRef=true with selected:rest', () => {
+      let caught: unknown;
+      try {
+        buildStyleKey({
+          propertyName: 'boxColor',
+          value: '[1,1,1,1]',
+          controlState: true,
+          interactionState: 'rest',
+          isRef: true
+        });
+      } catch (err) {
+        caught = err;
+      }
+      expect(caught).toBeInstanceOf(Error);
+      const msg = (caught as Error).message;
+      expect(msg).toMatch(/when isRef=true you must supply a non-'rest' interaction state/);
+    });
+
+    it('throws when controlState=true with disabled', () => {
+      let caught: unknown;
+      try {
+        buildStyleKey({
+          propertyName: 'boxColor',
+          value: '[1,1,1,1]',
+          controlState: true,
+          interactionState: 'disabled'
+        } as any);
+      } catch (err) {
+        caught = err;
+      }
+      expect(caught).toBeInstanceOf(Error);
+      const msg = (caught as Error).message;
+      expect(msg).toMatch(/is not supported when controlState=true/);
+    });
+
+    it("throws when controlState=true with interactionState 'selected'", () => {
+      let caught: unknown;
+      try {
+        buildStyleKey({
+          propertyName: 'boxColor',
+          value: '[1,1,1,1]',
+          controlState: true,
+          interactionState: 'selected'
+        });
+      } catch (err) {
+        caught = err;
+      }
+      expect(caught).toBeInstanceOf(Error);
+      const msg = (caught as Error).message;
+      expect(msg).toMatch(/interactionState 'selected' is redundant/);
+    });
+  });
   describe('Successful operation', () => {
     describe('decoration keys (no suffix)', () => {
       it('serializes a number value', () => {
@@ -98,7 +172,7 @@ describe('buildStyleKey', () => {
         isRef: true
       };
       expect(() => buildStyleKey(opts)).toThrowError(
-        "buildStyleKey: when isRef=true you must supply a non-'rest' interactionState"
+        "buildStyleKey: when isRef=true you must supply a non-'rest' interaction state (got undefined)"
       );
     });
 
@@ -110,7 +184,7 @@ describe('buildStyleKey', () => {
         value: '#ffffff'
       };
       expect(() => buildStyleKey(opts)).toThrowError(
-        "buildStyleKey: when isRef=true you must supply a non-'rest' interactionState"
+        "buildStyleKey: when isRef=true you must supply a non-'rest' interaction state (got rest)"
       );
     });
 
@@ -121,7 +195,7 @@ describe('buildStyleKey', () => {
         isRef: true
       };
       expect(() => buildStyleKey(opts)).toThrowError(
-        "buildStyleKey: when isRef=true you must supply a non-'rest' interactionState"
+        "buildStyleKey: when isRef=true you must supply a non-'rest' interaction state (got undefined)"
       );
     });
   });

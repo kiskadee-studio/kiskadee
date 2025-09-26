@@ -26,7 +26,6 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
-    expect(result).toMatchSnapshot();
   });
 
   it('generates style keys for palette property with a reference value', (): void => {
@@ -49,7 +48,6 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
-    expect(result).toMatchSnapshot();
   });
 
   it('generates style keys for multiple palette entries', (): void => {
@@ -91,7 +89,6 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
-    expect(result).toMatchSnapshot();
   });
 
   it('treats direct interaction-state map as neutral semantic color', (): void => {
@@ -113,6 +110,36 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
-    expect(result).toMatchSnapshot();
+  });
+  it('handles selected submap: emits selected/rest and selected:hover keys', (): void => {
+    const elementColors: ElementColors = {
+      p1: {
+        boxColor: {
+          primary: {
+            rest: [10, 20, 30, 0.9],
+            hover: [15, 25, 35, 0.9],
+            selected: {
+              rest: [200, 50, 50, 1],
+              hover: { ref: [210, 55, 55, 0.8] }
+            },
+            disabled: [0, 0, 50, 0.5]
+          }
+        }
+      }
+    };
+
+    const result = convertElementColorsToStyleKeys(elementColors);
+
+    expect(result).toEqual({
+      p1: {
+        primary: {
+          rest: ['boxColor--rest__[10,20,30,0.9]'],
+          hover: ['boxColor--hover__[15,25,35,0.9]'],
+          'selected:rest': ['boxColor--selected:rest__[200,50,50,1]'],
+          'selected:hover': ['boxColor==selected:hover__[210,55,55,0.8]'],
+          disabled: ['boxColor--disabled__[0,0,50,0.5]']
+        }
+      }
+    });
   });
 });

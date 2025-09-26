@@ -9,7 +9,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textFont__["Arial","Helvetica"]');
-      expect(styleKey).toMatchSnapshot();
     });
   });
 
@@ -19,7 +18,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textItalic__true');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textItalic__false style key when italic is disabled', () => {
@@ -27,7 +25,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textItalic__false');
-      expect(styleKey).toMatchSnapshot();
     });
   });
 
@@ -37,7 +34,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__thin');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__extraLight style key for extraLight font weight', () => {
@@ -45,7 +41,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__extraLight');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__light style key for light font weight', () => {
@@ -53,7 +48,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__light');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__normal style key for normal font weight', () => {
@@ -61,7 +55,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__normal');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__medium style key for medium font weight', () => {
@@ -69,7 +62,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__medium');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__semiBold style key for semiBold font weight', () => {
@@ -77,7 +69,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__semiBold');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__bold style key for bold font weight', () => {
@@ -85,7 +76,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__bold');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__extraBold style key for extraBold font weight', () => {
@@ -93,7 +83,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__extraBold');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textWeight__black style key for black font weight', () => {
@@ -101,7 +90,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textWeight__black');
-      expect(styleKey).toMatchSnapshot();
     });
   });
 
@@ -111,7 +99,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textLineType__none');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textLineType__underline style key for underline line type', () => {
@@ -119,7 +106,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textLineType__underline');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textLineType__lineThrough style key for lineThrough line type', () => {
@@ -127,7 +113,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textLineType__lineThrough');
-      expect(styleKey).toMatchSnapshot();
     });
   });
 
@@ -137,7 +122,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textAlign__left');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textAlign__center style key for center text alignment', () => {
@@ -145,7 +129,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textAlign__center');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the textAlign__right style key for right text alignment', () => {
@@ -153,7 +136,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('textAlign__right');
-      expect(styleKey).toMatchSnapshot();
     });
   });
 
@@ -163,7 +145,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('borderStyle__none');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the borderStyle__dotted style key for dotted border style', () => {
@@ -171,7 +152,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('borderStyle__dotted');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the borderStyle__dashed style key for dashed border style', () => {
@@ -179,7 +159,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('borderStyle__dashed');
-      expect(styleKey).toMatchSnapshot();
     });
 
     it('generates the borderStyle__solid style key for solid border style', () => {
@@ -187,7 +166,6 @@ describe('convertElementDecorationsToStyleKeys', () => {
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
       expect(styleKey).toEqual('borderStyle__solid');
-      expect(styleKey).toMatchSnapshot();
     });
   });
 });

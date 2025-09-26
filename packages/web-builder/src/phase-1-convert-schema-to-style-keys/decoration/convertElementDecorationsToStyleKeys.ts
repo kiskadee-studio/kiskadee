@@ -1,5 +1,5 @@
 import type { DecorationSchema, StyleKeyByElement } from '@kiskadee/schema';
-import { buildStyleKey } from '../../utils/buildStyleKey/buildStyeKey';
+import { buildStyleKey } from '../../utils/buildStyleKey/buildStyleKey';
 
 /**
  * Converts an element's decoration schema into style keys.

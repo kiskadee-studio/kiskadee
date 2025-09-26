@@ -5,6 +5,8 @@ import type {
   StyleKey
 } from '@kiskadee/schema';
 
+export type InteractionStateSelected = 'selected:rest' | 'selected:hover' | 'selected:pressed' | 'selected:focus';
+
 export interface BuildStyleKeyParams {
   /**
    * CSS property name (e.g. "margin", "color", "shadow").
@@ -18,14 +20,22 @@ export interface BuildStyleKeyParams {
   value: unknown;
 
   /**
-   * Optional interaction state (e.g., "rest", "hover", "focus", etc.).
-   * Required when isRef is true (and must not be "rest").
+   * Optional flag to indicate this key belongs to the control (selected/on) scope.
+   * When true, interactionState must be one of: 'rest' | 'hover' | 'pressed' | 'focus'.
+   */
+  controlState?: boolean | undefined;
+
+  /**
+   * Optional interaction state.
+   * - If controlState is true: must be 'rest' | 'hover' | 'pressed' | 'focus'.
+   * - Otherwise: a base InteractionState (e.g., 'rest' | 'hover' | 'pressed' | 'focus' | 'disabled' | 'readOnly' | 'selected').
+   * Required when isRef is true (and must not be a rest variant: 'rest' or, when controlState is true, 'rest').
    */
   interactionState?: InteractionState | undefined;
 
   /**
    * Whether this key is a "reference" variant. When true, a non-"rest"
-   * interactionState must be provided; otherwise an error is thrown.
+   * interaction state must be provided; otherwise an error is thrown.
    */
   isRef?: boolean | undefined;
 
@@ -79,8 +89,10 @@ export const SEPARATORS = {
  *
  * @param propertyName     CSS property name (e.g. "margin", "color", "shadow")
  * @param value            Raw or serializable value
- * @param interactionState Interaction state (e.g., "rest", "hover", "focus")
- * @param isRef            Indicates a reference key; requires non-"rest" interactionState
+ * @param interactionState Interaction state. When controlState is true, it must be one of
+ *                         'selected:rest' | 'selected:hover' | 'selected:pressed' | 'selected:focus'.
+ *                         Otherwise it must be a base InteractionState (e.g., 'rest', 'hover').
+ * @param isRef            Indicates a reference key; requires a non-'rest' variant ('hover', 'pressed', 'focus', or 'selected:hover/pressed/focus')
  * @param size             Size identifier (e.g., "s:md:1", "s:lg:1")
  * @param breakpoint       Breakpoint identifier (e.g., "bp:sm:1")
  * @returns A unique style key string
@@ -90,6 +102,7 @@ export function buildStyleKey({
   propertyName,
   value,
   interactionState,
+  controlState,
   isRef = false,
   size,
   breakpoint
@@ -107,25 +120,68 @@ export function buildStyleKey({
     return `${propertyName}${SEPARATORS.SIZE}${size}${bpSuffix}${SEPARATORS.VALUE}${valueString}`;
   }
 
-  // 2) Reference branch
+  // 2) State normalization and validation
+  let effectiveState: string | undefined;
+
+  if (controlState === true) {
+    // In control (selected) scope. interactionState must be rest|hover|pressed|focus.
+    if (interactionState === undefined) {
+      throw new Error(
+        'buildStyleKey: when controlState=true you must provide interactionState as one of rest|hover|pressed|focus'
+      );
+    }
+
+    if (interactionState === 'selected') {
+      throw new Error(
+        `buildStyleKey: interactionState 'selected' is redundant when controlState=true; use rest|hover|pressed|focus`
+      );
+    }
+
+    if (interactionState === 'disabled' || interactionState === 'readOnly') {
+      throw new Error(
+        `buildStyleKey: interactionState '${interactionState}' is not supported when controlState=true`
+      );
+    }
+
+    if (
+      interactionState !== 'rest' &&
+      interactionState !== 'hover' &&
+      interactionState !== 'pressed' &&
+      interactionState !== 'focus'
+    ) {
+      throw new Error(
+        `buildStyleKey: invalid interactionState for controlState=true (got ${interactionState}); expected one of rest|hover|pressed|focus`
+      );
+    }
+
+    effectiveState = `selected:${interactionState}`;
+  } else {
+    // Not in control scope. Use the provided base InteractionState as-is.
+    effectiveState = interactionState;
+  }
+
+  // 3) Reference branch
   //    Format: property==state__value
-  //    Requires: isRef===true and interactionState !== undefined and !== 'rest'
-  if (isRef === true && interactionState !== undefined && interactionState !== 'rest') {
-    return `${propertyName}${SEPARATORS.REF_STATE}${interactionState}${SEPARATORS.VALUE}${valueString}`;
+  //    Requires: isRef===true and effectiveState !== undefined and not a 'rest' variant
+  const isRestVariant = effectiveState === 'rest' || effectiveState === 'selected:rest';
+  if (isRef === true && effectiveState !== undefined && !isRestVariant) {
+    return `${propertyName}${SEPARATORS.REF_STATE}${effectiveState}${SEPARATORS.VALUE}${valueString}`;
   }
 
-  // 3) Invalid reference combination
+  // 4) Invalid reference combination
   if (isRef === true) {
-    throw new Error(`buildStyleKey: when isRef=true you must supply a non-'rest' interactionState`);
+    throw new Error(
+      `buildStyleKey: when isRef=true you must supply a non-'rest' interaction state (got ${effectiveState ?? 'undefined'})`
+    );
   }
 
-  // 4) Non-reference state branch
+  // 5) Non-reference state branch
   //    Format: property--state__value
-  if (interactionState !== undefined) {
-    return `${propertyName}${SEPARATORS.STATE}${interactionState}${SEPARATORS.VALUE}${valueString}`;
+  if (effectiveState !== undefined) {
+    return `${propertyName}${SEPARATORS.STATE}${effectiveState}${SEPARATORS.VALUE}${valueString}`;
   }
 
-  // 5) Base case (no state, no scale, non-ref)
+  // 6) Base case (no state, no scale, non-ref)
   //    Format: property__value
   return `${propertyName}${SEPARATORS.VALUE}${valueString}`;
 }
