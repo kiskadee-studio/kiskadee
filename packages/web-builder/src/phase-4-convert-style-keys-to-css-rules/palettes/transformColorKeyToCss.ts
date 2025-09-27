@@ -57,89 +57,144 @@ export function transformColorKeyToCss(
   const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
   const colorProperty = CssColorProperty[propertyName];
 
-  // Prepare interaction state patterns using known state keys rather than pseudo map,
-  // so we can support states that intentionally have no native pseudo (e.g., disabled).
-  const stateKeys = ['hover', 'pressed', 'selected', 'focus', 'disabled', 'readOnly'];
-  const inlinePseudoClassRegex = new RegExp(`--(${stateKeys.join('|')})(?=__)`);
-  const newRefStateOnChildRegex = new RegExp(`==(${stateKeys.join('|')})(?=$)`);
-
-  let cssRule: string;
+  // Known interaction states (in order of precedence if needed)
+  const stateKeys = ['hover', 'pressed', 'selected', 'focus', 'disabled', 'readOnly'] as const;
 
   const isRef = styleKey.includes('==');
-  const hasRef = isRef === true;
 
-  if (hasRef === false) {
-    // Simple class may include a pseudo-state
-    const match = styleKey.match(inlinePseudoClassRegex);
-    const pseudoClass = match ? (match[1] as string) : undefined;
-    const hasPseudoClass = pseudoClass !== undefined;
-    if (hasPseudoClass === true) {
-      // build selectors list: prefer native pseudo when available; use forced class for disabled
-      const selectors: string[] = [];
-
-      const nativePseudo = (InteractionStateCssPseudoSelector as Record<string, string>)[
-        pseudoClass
-      ] as string | undefined;
-      if (nativePseudo && nativePseudo !== '') {
-        selectors.push(`.${className}${nativePseudo}`);
-      }
-
-      const forcedSuffixFor = (state: string): string => {
-        return (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
-      };
-      const forcedSuffix = forcedSuffixFor(pseudoClass);
-      const hasForcedSuffix = forcedSuffix !== '';
-
-      const shouldAddForced =
-        pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
-      if (shouldAddForced && hasForcedSuffix) {
-        // forcedSuffix already contains the short token (e.g. "-h"); apply it gated by activator "-a" on the same element
-        // Requirement: the forced state class alone must NOT activate styles; it must be combined with "-a".
-        selectors.push(`.${className}.${forcedSuffix}.-a`);
-      }
-
-      const selector = selectors.join(', ');
-      cssRule = `${selector} { ${colorProperty}: ${hex} }`;
-    } else {
-      cssRule = `.${className} { ${colorProperty}: ${hex} }`;
+  const extractStates = (): string[] => {
+    // Capture the full state segment which may be compound, e.g., "selected:hover"
+    if (isRef) {
+      // child is before "__"; state segment is after "=="
+      const child = styleKey.split('__')[0] ?? '';
+      const idx = child.indexOf('==');
+      if (idx === -1) return [];
+      const seg = child.slice(idx + 2);
+      return seg ? seg.split(':') : [];
     }
-    return cssRule;
+    // non-ref: state segment is between "--" and "__" (if present)
+    const start = styleKey.indexOf('--');
+    if (start === -1) return [];
+    const rest = styleKey.slice(start + 2);
+    const end = rest.indexOf('__');
+    const seg = end === -1 ? rest : rest.slice(0, end);
+    return seg ? seg.split(':') : [];
+  };
+
+  // Build all selector alternatives for a list of states on the same element
+  type Opt = { kind: 'native' | 'forced'; value: string };
+  const optionsForState = (state: string): Opt[] => {
+    if (state === 'rest') return []; // no condition
+    // only accept known keys, but still allow if custom exists in maps
+    const native = (InteractionStateCssPseudoSelector as Record<string, string>)[state];
+    const forced = (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
+
+    const opts: Opt[] = [];
+    if (native && native !== '') {
+      opts.push({ kind: 'native', value: native });
+    }
+    const allowForced = state === 'disabled' || (forceState === true && forced !== '');
+    if (allowForced && forced !== '') {
+      opts.push({ kind: 'forced', value: forced });
+    }
+    return opts;
+  };
+
+  const cartesian = (arrs: Opt[][]): Opt[][] => {
+    return arrs.reduce<Opt[][]>((acc, curr) => {
+      if (acc.length === 0) return curr.map((v) => [v]);
+      const next: Opt[][] = [];
+      for (const a of acc) {
+        if (curr.length === 0) {
+          next.push(a);
+        } else {
+          for (const b of curr) next.push([...a, b]);
+        }
+      }
+      return next;
+    }, []);
+  };
+
+  const states = extractStates();
+  const filteredStates = states.filter((s) => s !== 'rest' && s !== '');
+
+  if (!isRef) {
+    if (filteredStates.length === 0) {
+      return `.${className} { ${colorProperty}: ${hex} }`;
+    }
+
+    // Split states by availability of native pseudo
+    const nativeTokens = filteredStates
+      .map((s) => (InteractionStateCssPseudoSelector as Record<string, string>)[s] || '')
+      .filter((v) => v !== '');
+    const nonNativeForcedSuffixes = filteredStates
+      .filter((s) => !((InteractionStateCssPseudoSelector as Record<string, string>)[s]))
+      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .filter((v) => v !== '');
+    const allForcedSuffixes = filteredStates
+      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .filter((v) => v !== '');
+
+    const selectors: string[] = [];
+
+    // Native branch: only use native pseudos; include non-native state classes but NEVER add activator
+    if (nativeTokens.length > 0) {
+      const nativeChunk = nativeTokens.join('');
+      const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+      selectors.push(`.${className}${nativeChunk}${nonNativeChunk}`);
+    }
+
+    // Forced branch: include all forced classes for every state, gated by activator
+    const allowForced = allForcedSuffixes.length > 0 && (forceState === true || filteredStates.includes('disabled'));
+    if (allowForced) {
+      selectors.push(`.${className}.${allForcedSuffixes.join('.')}.-a`);
+    }
+
+    if (selectors.length === 0) {
+      // No way to express the states; fallback to base
+      return `.${className} { ${colorProperty}: ${hex} }`;
+    }
+
+    const selector = selectors.join(', ');
+    return `${selector} { ${colorProperty}: ${hex} }`;
   }
 
-  // Reference pseudo-class: split out child selector
-  const [child] = styleKey.split('__');
-
-  let pseudoClass: string | undefined;
-  const match = child.match(newRefStateOnChildRegex);
-  pseudoClass = match ? match[1] : undefined;
-
-  const isInvalidState = pseudoClass === undefined || pseudoClass === '';
-
-  if (isInvalidState === true) {
+  // Ref (parent state gating child .className)
+  const parentStates = filteredStates;
+  if (parentStates.length === 0) {
+    // The new structure requires a preceding non-rest interaction state for refs
     throw new Error(ERROR_REF_REQUIRE_STATE);
   }
 
-  // parent selector with native pseudo-class and optional forced-class variant
+  // Split states for parent
+  const nativeTokens = parentStates
+    .map((s) => (InteractionStateCssPseudoSelector as Record<string, string>)[s] || '')
+    .filter((v) => v !== '');
+  const nonNativeForcedSuffixes = parentStates
+    .filter((s) => !((InteractionStateCssPseudoSelector as Record<string, string>)[s]))
+    .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+    .filter((v) => v !== '');
+  const allForcedSuffixes = parentStates
+    .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+    .filter((v) => v !== '');
+
   const parentSelectors: string[] = [];
-  const nativePseudo = (InteractionStateCssPseudoSelector as Record<string, string>)[
-    // biome-ignore lint/style/noNonNullAssertion: ...
-    pseudoClass!
-  ] as string | undefined;
-  if (nativePseudo && nativePseudo !== '') {
-    parentSelectors.push(`.-a${nativePseudo} .${className}`);
+
+  // Native parent branch: parent always gated by activator; add pseudos and non-native class suffixes
+  // Only emit this branch when there is at least one native pseudo; otherwise it duplicates the forced-only case.
+  if (nativeTokens.length > 0) {
+    const nativeChunk = nativeTokens.join('');
+    const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+    parentSelectors.push(`.-a${nativeChunk}${nonNativeChunk} .${className}`);
   }
 
-  const forcedSuffixFor = (state: string): string => {
-    return (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
-  };
-  // biome-ignore lint/style/noNonNullAssertion: ...
-  const forcedSuffix = forcedSuffixFor(pseudoClass!);
-  const hasForcedSuffix = forcedSuffix !== '';
+  // Forced parent branch: activator + all forced suffixes
+  if (allForcedSuffixes.length > 0 && (forceState === true || parentStates.includes('disabled'))) {
+    parentSelectors.push(`.-a.${allForcedSuffixes.join('.')} .${className}`);
+  }
 
-  const shouldAddForcedRef = pseudoClass === 'disabled' || (forceState === true && hasForcedSuffix);
-  if (shouldAddForcedRef && hasForcedSuffix) {
-    // forced class applied on the parent (parent will have both -a and forcedSuffix classes), e.g. ".-a.-h .abc"
-    parentSelectors.push(`.-a.${forcedSuffix} .${className}`);
+  if (parentSelectors.length === 0) {
+    throw new Error(ERROR_REF_REQUIRE_STATE);
   }
 
   const selector = parentSelectors.join(', ');

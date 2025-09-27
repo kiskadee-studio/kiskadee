@@ -10,64 +10,15 @@ export const schema: Schema = {
     button: {
       elements: {
         e1: {
-          decorations: {
-            borderStyle: 'none'
-          },
           palettes: {
             p1: {
               boxColor: {
                 primary: {
-                  rest: [219, 100, 50, 1]
-                }
-              }
-            }
-          }
-        },
-        e2: {
-          palettes: {
-            p1: {
-              textColor: {
-                primary: {
-                  rest: [0, 0, 100, 1]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    tabs: {
-      elements: {
-        e1: {
-          palettes: {
-            p1: {
-              boxColor: {
-                neutral: {
-                  rest: [207, 90, 54, 1]
-                }
-              }
-            }
-          },
-          scales: {
-            borderRadius: 8
-          }
-        },
-        e3: {
-          decorations: {
-            borderStyle: 'none'
-          },
-          palettes: {
-            p1: {
-              boxColor: {
-                primary: {
-                  // TODO: rest is mandatory, but in this case it's not needed
-                  rest: [207, 90, 54, 1],
-                  selected: { rest: [207, 90, 54, 1] },
-                  hover: [207, 90, 64, 1]
-                },
-                neutral: {
-                  rest: [0, 0, 75, 1],
-                  hover: [0, 0, 95, 1]
+                  rest: [210, 98.33, 47.06, 1],
+                  selected: {
+                    rest: [210, 98.33, 47.06, 1],
+                    hover: [256.43, 34.43, 47.84, 0.5]
+                  }
                 }
               }
             }
