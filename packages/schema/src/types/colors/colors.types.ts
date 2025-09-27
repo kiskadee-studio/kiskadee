@@ -122,7 +122,7 @@ export const classNameCssPseudoSelector = {
  */
 // Submap for the "selected" (on) control state. It defines its own interaction variants.
 // Notes:
-// - Requires "rest" (on/rest) as baseline when selected is active.
+// - Requires "rest" (on/rest) as a baseline when selected is active.
 // - Allows hover/pressed/focus within the selected scope.
 // - Does NOT include nested selected/disabled/readOnly to avoid combinatorial explosion;
 //   disabled/readOnly remain top-level with global precedence.
