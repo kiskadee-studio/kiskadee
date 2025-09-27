@@ -21,9 +21,16 @@ export default function ButtonPage() {
         <Button label="Hover" status="hover" />
         <Button label="Focus" status="focus" />
         <Button label="Pressed" status="pressed" />
-        <Button label="Selected" status="selected" />
+        <Button label="Selected" controlState={true} />
         <Button label="Disabled" status="disabled" />
         <Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />
+        <div>
+          <h3>Selected</h3>
+          <Button label="Rest" controlState={true} />
+          <Button label="Hover" status="hover" controlState={true} />
+          <Button label="Focus" status="focus" controlState={true} />
+          <Button label="Pressed" status="pressed" controlState={true} />
+        </div>
       </div>
     </section>
   );

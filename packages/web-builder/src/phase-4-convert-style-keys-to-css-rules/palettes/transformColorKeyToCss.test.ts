@@ -26,9 +26,9 @@ describe('transformColorKeyToCss', () => {
 
       it('should combine compound states inline using native and forced selectors when forceState is true', () => {
         const result = transformColorKeyToCss('boxColor--selected:hover__[240,50,50,0.5]', className, true);
-        // native selector must NOT include activator, but must include non-native state marker (-s)
+        // native selector MUST include activator when non-native state marker (-s) is present and forceState=true
         // forced selector includes all forced classes (-s and -h) gated by activator (-a)
-        expect(result).toEqual('.abc:hover.-s, .abc.-s.-h.-a { background-color: #4040bf80 }');
+        expect(result).toEqual('.abc:hover.-s.-a, .abc.-s.-h.-a { background-color: #4040bf80 }');
       });
 
       it('should transform a key without reference and include ":hover"', () => {

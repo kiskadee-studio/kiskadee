@@ -1,6 +1,6 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/schema';
-// import { schema } from '@kiskadee/schema/src/templates/google-material-design';
-import { schema } from '@kiskadee/schema/src/templates/template-2';
+import { schema } from '@kiskadee/schema/src/templates/google-material-design';
+// import { schema } from '@kiskadee/schema/src/templates/template-2';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,

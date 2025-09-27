@@ -134,5 +134,7 @@ export function generateClassNamesMapSplit(
     }
   }
 
+  console.log({ core, palettes: JSON.stringify(palettes) });
+
   return { core, palettes };
 }

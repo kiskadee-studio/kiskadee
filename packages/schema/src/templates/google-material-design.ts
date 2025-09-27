@@ -32,7 +32,7 @@ export const schema: Schema = {
                   focus: [339.61, 82.19, 51.57, 1],
                   selected: {
                     rest: [210, 98.33, 47.06, 1],
-                    hover: [256.43, 34.43, 47.84, 0.5]
+                    hover: [210, 98.33, 62, 1]
                   }
                 }
               }

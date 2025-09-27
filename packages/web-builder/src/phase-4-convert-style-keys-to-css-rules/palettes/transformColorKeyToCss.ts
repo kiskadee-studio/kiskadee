@@ -141,7 +141,8 @@ export function transformColorKeyToCss(
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
       const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
-      selectors.push(`.${className}${nativeChunk}${nonNativeChunk}`);
+      const activatorChunk = nonNativeForcedSuffixes.length > 0 && forceState === true ? '.-a' : '';
+      selectors.push(`.${className}${nativeChunk}${nonNativeChunk}${activatorChunk}`);
     }
 
     // Forced branch: include all forced classes for every state, gated by activator

@@ -4,16 +4,18 @@ import { type ClassNameByElementJSON, classNameCssPseudoSelector as cn } from '@
 import { useMemo } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 
-export type ButtonStatus = keyof typeof cn;
+export type ButtonStatus = Exclude<keyof typeof cn, 'selected'>;
 export type ButtonProps = HeadlessButtonProps & {
-  /** Force Kiskadee visual/interaction state on the root element (e1). */
+  /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected'. */
   status?: ButtonStatus;
   /** Marks this button as a semantic toggle (Following vs. Follow). */
   toggle?: boolean;
+  /** Semantic control state (selected/active/checked). When true, selected styles are applied. */
+  controlState?: boolean;
 };
 
 export default function Button(props: ButtonProps) {
-  const { classNames = {}, status = 'rest', toggle, disabled, ...restProps } = props;
+  const { classNames = {}, status = 'rest', toggle, controlState, disabled, ...restProps } = props;
   const {
     // e1 (root), e2 (label), e3 (icon)
     classesMap: { button: { e1, e2, e3 } = {} }
@@ -32,9 +34,14 @@ export default function Button(props: ButtonProps) {
       if (p?.pressed) parts.push(...p.pressed);
       if (p?.focus) parts.push(...p.focus);
       if (p?.disabled) parts.push(...p.disabled);
-      if (p?.selected) parts.push(...p.selected);
+      if (p?.['selected:rest']) parts.push(...p['selected:rest']);
+      if (p?.['selected:hover']) parts.push(...p['selected:hover']);
+      if (p?.['selected:pressed']) parts.push(...p['selected:pressed']);
+      if (p?.['selected:focus']) parts.push(...p['selected:focus']);
       return parts;
     };
+
+    console.log({ e1 });
 
     const rootParts = collect(e1);
     const labelParts = collect(e2);
@@ -51,14 +58,20 @@ export default function Button(props: ButtonProps) {
     } as const;
 
     // Activator pattern for forced states applies to the root (e1) only.
-    const shouldForce = status !== 'rest' && cn[status] !== '';
-    const activationClasses = shouldForce ? ` ${cn[status]} -a` : '';
+    // We support two sources of forced classes:
+    // - status (hover/focus/pressed/disabled/readOnly)
+    // - controlState (selected)
+    const forcedParts: string[] = [];
+    if (status !== 'rest' && cn[status] !== '') forcedParts.push(cn[status]);
+    if (controlState) forcedParts.push(cn.selected);
+
+    const activationClasses = forcedParts.length > 0 ? ` ${forcedParts.join(' ')} -a` : '';
 
     return {
       ...base,
       e1: `${base.e1}${activationClasses}`
     };
-  }, [e1, e2, e3, status, classNames]);
+  }, [e1, e2, e3, status, controlState, classNames]);
 
   // Map Kiskadee status to native/ARIA attributes
   // Current behavior:
@@ -81,7 +94,7 @@ export default function Button(props: ButtonProps) {
   }
 
   const ariaPressed =
-    restProps['aria-pressed'] ?? (toggle && status === 'selected' ? true : undefined);
+    restProps['aria-pressed'] ?? (toggle ? (controlState === true ? true : undefined) : undefined);
 
   return (
     <HeadlessButton
