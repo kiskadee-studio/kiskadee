@@ -3,7 +3,7 @@ import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { type ClassNameByElementJSON, classNameCssPseudoSelector as cn } from '@kiskadee/schema';
 import { memo, useMemo } from 'react';
 import { useKiskadee } from '../../contexts/KiskadeeContext.tsx';
-import s from './Button.module.scss';
+import './Button.scss';
 
 export type ButtonStatus = Exclude<keyof typeof cn, 'selected'>;
 export type ButtonProps = HeadlessButtonProps & {
@@ -40,7 +40,7 @@ function Button(props: ButtonProps) {
     const el3 = collectStr(e3);
 
     // Base strings with optional consumer overrides (no arrays, no trims)
-    const e1Base = s.button + (el1 ? ` ${el1}` : '') + (classNames.e1 ? ` ${classNames.e1}` : '');
+    const e1Base = (el1 ? ` ${el1}` : '') + (classNames.e1 ? ` ${classNames.e1}` : '');
     const e2Base = (el2 || '') + (classNames.e2 ? (el2 ? ' ' : '') + classNames.e2 : '');
     const e3Base = (el3 || '') + (classNames.e3 ? (el3 ? ' ' : '') + classNames.e3 : '');
 
@@ -54,7 +54,7 @@ function Button(props: ButtonProps) {
     if (activation) activation += ' -a';
 
     return {
-      e1: e1Base + activation,
+      e1: `${e1Base + activation} btn kd-transition`,
       e2: e2Base,
       e3: e3Base
     };
@@ -87,4 +87,5 @@ function Button(props: ButtonProps) {
   );
 }
 
-export default memo(Button);
+const MemoButton = memo(Button);
+export { MemoButton as Button };

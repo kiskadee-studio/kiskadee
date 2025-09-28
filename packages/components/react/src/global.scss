@@ -1,0 +1,22 @@
+:root {
+  /* Reserved for future global CSS variables */
+}
+
+/* Generic transition utility applied opt-in by components */
+.kd-transition {
+  transition:
+    background-color 120ms ease,
+    padding 120ms ease,
+    margin 120ms ease,
+    border-color 120ms ease,
+    border-width 120ms ease,
+    border-radius 120ms ease;
+}
+
+/* Disable all transitions/animations while the app is booting to avoid initial flare */
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+}

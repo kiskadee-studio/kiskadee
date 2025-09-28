@@ -1,0 +1,10 @@
+.btn {
+  /* UX niceties */
+  cursor: pointer;
+  user-select: none;
+
+  /* Respect disabled/aria-disabled states for cursor affordance (non-visual) */
+  &[disabled], &[aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}

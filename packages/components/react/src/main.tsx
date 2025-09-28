@@ -2,6 +2,7 @@ import { StrictMode, useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import './index.css';
+import './global.scss';
 import type { ComponentClassNameMapJSON } from '@kiskadee/schema';
 // TODO: increase therms
 // TODO: increase dynamic imports
@@ -11,6 +12,13 @@ import classNamesTemplate1Core from '../../../web-builder/build/template-1/class
 import classNamesTemplate2Core from '../../../web-builder/build/template-2/classNamesMap.json';
 import App from './App.tsx';
 import { KiskadeeContext } from './contexts/KiskadeeContext.tsx';
+
+// Initial transition blocker: disable CSS transitions until initial CSS is fully loaded
+let __kiskadeeInitialBlockerActive = true;
+let __kiskadeeInitialCssPending = 2; // core + palette
+if (typeof document !== 'undefined') {
+  document.documentElement.classList.add('no-transitions');
+}
 
 // Compute CSS URLs for the three templates without injecting them automatically
 const cssUrlTemplate1 = new URL(
@@ -55,7 +63,7 @@ function Root() {
         ? (localStorage.getItem('kiskadee.template') as TemplateKey | null)
         : null;
     if (saved && saved in templates) return saved as TemplateKey;
-    return 'template-2';
+    return 'material-design';
   });
 
   // Load/swap CSS for the selected template
@@ -68,6 +76,16 @@ function Root() {
       link.id = id;
       link.rel = 'stylesheet';
       document.head.appendChild(link);
+    }
+    if (__kiskadeeInitialBlockerActive) {
+      const onLoad = () => {
+        __kiskadeeInitialCssPending -= 1;
+        if (__kiskadeeInitialCssPending <= 0) {
+          document.documentElement.classList.remove('no-transitions');
+          __kiskadeeInitialBlockerActive = false;
+        }
+      };
+      link.addEventListener('load', onLoad, { once: true });
     }
     link.href = templates[template].cssUrl;
   }, [template]);
@@ -82,6 +100,16 @@ function Root() {
       link.id = id;
       link.rel = 'stylesheet';
       document.head.appendChild(link);
+    }
+    if (__kiskadeeInitialBlockerActive) {
+      const onLoad = () => {
+        __kiskadeeInitialCssPending -= 1;
+        if (__kiskadeeInitialCssPending <= 0) {
+          document.documentElement.classList.remove('no-transitions');
+          __kiskadeeInitialBlockerActive = false;
+        }
+      };
+      link.addEventListener('load', onLoad, { once: true });
     }
     const href = new URL(
       `../../../web-builder/build/${template}/${palette}.css`,
