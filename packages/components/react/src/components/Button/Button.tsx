@@ -22,23 +22,17 @@ export default function Button(props: ButtonProps) {
     classesMap: { button: { e1, e2, e3 } = {} }
   } = useKiskadee();
 
+  console.log({ e1 });
+
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    // Helper to collect class parts for each element across all interaction states
+    // Helper to collect class parts for each element using flattened `p` (string)
     const collect = (el: ClassNameByElementJSON): string[] => {
       const parts: string[] = [];
       if (!el) return parts;
       if (el.d) parts.push(...el.d);
       if (el.s?.['s:all']) parts.push(...(el.s['s:all'] as string[]));
-      const p = el.p?.primary;
-      if (p?.rest) parts.push(...p.rest);
-      if (p?.hover) parts.push(...p.hover);
-      if (p?.pressed) parts.push(...p.pressed);
-      if (p?.focus) parts.push(...p.focus);
-      if (p?.disabled) parts.push(...p.disabled);
-      if (p?.['selected:rest']) parts.push(...p['selected:rest']);
-      if (p?.['selected:hover']) parts.push(...p['selected:hover']);
-      if (p?.['selected:pressed']) parts.push(...p['selected:pressed']);
-      if (p?.['selected:focus']) parts.push(...p['selected:focus']);
+      const p = (el as any).p;
+      if (typeof p === 'string' && p.trim()) parts.push(...p.trim().split(/\s+/));
       return parts;
     };
 

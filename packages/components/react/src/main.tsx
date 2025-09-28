@@ -139,11 +139,9 @@ function Root() {
       for (const el in compEl) {
         (merged as any)[comp][el] = (merged as any)[comp][el] || {};
         const elObj = compEl[el];
-        if (elObj && elObj.p) {
-          (merged as any)[comp][el].p = {
-            ...((merged as any)[comp][el].p || {}),
-            ...elObj.p
-          };
+        // Since `p` is now a flattened string, just assign it directly
+        if (elObj && typeof elObj.p === 'string') {
+          (merged as any)[comp][el].p = elObj.p;
         }
       }
     }

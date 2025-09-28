@@ -94,8 +94,9 @@ export type ClassNameByElementJSON = {
   d?: string[];
   e?: ClassNamesByInteractionStateJSON;
   s?: Partial<Record<string, string[]>>;
-  // Flattened palettes: semantic -> interactionState -> class names
-  p?: Partial<Record<string, ClassNamesByInteractionStateJSON>>;
+  // NEW: Flattened palettes aggregated into a single space-separated string of class names
+  // This string already includes all relevant classes from all palettes/semantics/interaction states.
+  p?: string;
 };
 
 export type ComponentClassNameMapJSON = Partial<

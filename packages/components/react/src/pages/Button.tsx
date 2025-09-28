@@ -1,4 +1,4 @@
-import Button from '../components/Button';
+import Button from '../components/Button/Button.tsx';
 
 export default function ButtonPage() {
   return (

@@ -1,7 +1,11 @@
-import type { ComponentStyleKeyMap } from '@kiskadee/schema';
+import type {
+  ComponentName,
+  ComponentStyleKeyMap,
+  InteractionState,
+  SemanticColor,
+  StyleKeysByInteractionState
+} from '@kiskadee/schema';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-
-// TODO: review it and remove "any" types
 
 // Shortened keys for optimization:
 // d = decorations, e = effects, s = scales, p = palettes (colors)
@@ -10,9 +14,8 @@ export type ClassNameByElement = {
   d?: string[];
   e?: ClassNamesByInteractionState;
   s?: Partial<Record<string, string[]>>;
-  // For split palette JSONs, `p` is flattened: semantic -> state -> classes
-  // For any non-split full map (if used), `p` may still contain palette names.
-  p?: any;
+  // NEW: Flattened palettes aggregated into a single space-separated string of class names
+  p?: string;
 };
 export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
 
@@ -29,57 +32,16 @@ function mapArray(
   return keys.map((k) => shortenMap[k] ?? k);
 }
 
-function mapInteractionState(obj: any, shortenMap: ShortenCssClassNames): any {
-  if (!obj) return obj;
-  const out: any = {};
-  for (const st in obj) {
-    out[st] = mapArray(obj[st], shortenMap);
-  }
-  return out;
-}
-
-function mapPalettesFull(palettes: any, shortenMap: ShortenCssClassNames): any {
-  // Helper used only by the non-split generator (if needed).
-  if (!palettes) return palettes;
-  const out: any = {};
-  for (const paletteName in palettes) {
-    const bySemantic = palettes[paletteName];
-    const mappedSemantic: any = {};
-    for (const sem in bySemantic) {
-      mappedSemantic[sem] = mapInteractionState(bySemantic[sem], shortenMap);
-    }
-    out[paletteName] = mappedSemantic;
-  }
-  return out;
-}
-
-export function generateClassNamesMap(
-  styleKeys: ComponentStyleKeyMap,
+function mapInteractionState(
+  obj: StyleKeysByInteractionState | undefined,
   shortenMap: ShortenCssClassNames
-): ComponentClassNameMap {
-  const result: ComponentClassNameMap = {};
-  for (const componentName in styleKeys) {
-    const elements = (styleKeys as any)[componentName];
-    (result as any)[componentName] = {};
-    for (const elementName in elements) {
-      const el = elements[elementName];
-      (result as any)[componentName][elementName] = {
-        d: mapArray(el.decorations, shortenMap),
-        e: mapInteractionState(el.effects, shortenMap),
-        s: el.scales
-          ? Object.fromEntries(
-              Object.entries(el.scales).map(([k, arr]: [string, any]) => [
-                k,
-                mapArray(arr, shortenMap) ?? []
-              ])
-            )
-          : undefined,
-        // keep full palettes structure only for the non-split map (if someone consumes it)
-        p: mapPalettesFull(el.palettes, shortenMap)
-      };
-    }
+): ClassNamesByInteractionState | undefined {
+  if (!obj) return undefined;
+  const out: ClassNamesByInteractionState = {};
+  for (const st of Object.keys(obj)) {
+    out[st] = mapArray(obj[st as InteractionState], shortenMap);
   }
-  return result;
+  return out;
 }
 
 export function generateClassNamesMapSplit(
@@ -89,19 +51,20 @@ export function generateClassNamesMapSplit(
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
 
-  for (const componentName in styleKeys) {
-    const elements = (styleKeys as any)[componentName];
-    (core as any)[componentName] = {};
-    for (const elementName in elements) {
+  for (const componentName of Object.keys(styleKeys)) {
+    const elements = styleKeys[componentName as ComponentName];
+    if (!elements) continue;
+    core[componentName] = {};
+    for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
 
       // Core (no palettes)
-      (core as any)[componentName][elementName] = {
+      core[componentName][elementName] = {
         d: mapArray(el.decorations, shortenMap),
         e: mapInteractionState(el.effects, shortenMap),
         s: el.scales
           ? Object.fromEntries(
-              Object.entries(el.scales).map(([k, arr]: [string, any]) => [
+              Object.entries(el.scales).map(([k, arr]: [string, string[] | undefined]) => [
                 k,
                 mapArray(arr, shortenMap) ?? []
               ])
@@ -111,30 +74,33 @@ export function generateClassNamesMapSplit(
 
       // Palettes split per palette name; flatten so that per-palette JSON has only `p` (no paletteName level)
       if (el.palettes) {
-        for (const paletteName in el.palettes) {
+        for (const paletteName of Object.keys(el.palettes)) {
           if (!palettes[paletteName]) palettes[paletteName] = {};
-          if (!(palettes as any)[paletteName][componentName]) {
-            (palettes as any)[paletteName][componentName] = {};
+          if (!palettes[paletteName][componentName]) {
+            palettes[paletteName][componentName] = {};
           }
           const bySemantic = el.palettes[paletteName];
           // ensure element record exists (avoid assignment inside expression per Biome rule)
-          if (!(palettes as any)[paletteName][componentName][elementName]) {
-            (palettes as any)[paletteName][componentName][elementName] = {};
+          if (!palettes[paletteName][componentName][elementName]) {
+            palettes[paletteName][componentName][elementName] = {};
           }
-          const elemRecord = (palettes as any)[paletteName][componentName][elementName] as any;
-          (elemRecord as any).p = (() => {
-            const mappedSemantic: any = {};
-            for (const sem in bySemantic) {
-              mappedSemantic[sem] = mapInteractionState(bySemantic[sem], shortenMap);
+          const elemRecord = palettes[paletteName][componentName][elementName];
+          // Flatten only this palette into a single string
+          const set = new Set<string>();
+          for (const sem of Object.keys(bySemantic)) {
+            const byState = bySemantic[sem as SemanticColor];
+            for (const st of Object.keys(byState ?? {})) {
+              const mapped = mapArray(byState?.[st as InteractionState], shortenMap);
+              mapped?.forEach((c) => {
+                set.add(c);
+              });
             }
-            return mappedSemantic;
-          })();
+          }
+          elemRecord.p = set.size > 0 ? Array.from(set).join(' ') : undefined;
         }
       }
     }
   }
-
-  console.log({ core, palettes: JSON.stringify(palettes) });
 
   return { core, palettes };
 }
