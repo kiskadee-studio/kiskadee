@@ -31,7 +31,7 @@ export default function Button(props: ButtonProps) {
       if (!el) return parts;
       if (el.d) parts.push(...el.d);
       if (el.s?.['s:all']) parts.push(...(el.s['s:all'] as string[]));
-      const p = (el as any).p;
+      const p = el.p;
       if (typeof p === 'string' && p.trim()) parts.push(...p.trim().split(/\s+/));
       return parts;
     };
