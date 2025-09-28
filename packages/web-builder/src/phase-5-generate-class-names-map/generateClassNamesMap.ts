@@ -11,7 +11,8 @@ import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/sh
 // d = decorations, e = effects, s = scales, p = palettes (colors)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>;
 export type ClassNameByElement = {
-  d?: string[];
+  // NEW: `d` flattened into a single space-separated string of class names
+  d?: string;
   e?: ClassNamesByInteractionState;
   s?: Partial<Record<string, string[]>>;
   // NEW: Flattened palettes aggregated into a single space-separated string of class names
@@ -60,7 +61,7 @@ export function generateClassNamesMapSplit(
 
       // Core (no palettes)
       core[componentName][elementName] = {
-        d: mapArray(el.decorations, shortenMap),
+        d: (mapArray(el.decorations, shortenMap)?.join(' ') || undefined),
         e: mapInteractionState(el.effects, shortenMap),
         s: el.scales
           ? Object.fromEntries(

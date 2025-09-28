@@ -22,32 +22,30 @@ export default function Button(props: ButtonProps) {
     classesMap: { button: { e1, e2, e3 } = {} }
   } = useKiskadee();
 
-  console.log({ e1 });
-
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    // Helper to collect class parts for each element using flattened `p` (string)
-    const collect = (el: ClassNameByElementJSON): string[] => {
-      const parts: string[] = [];
-      if (!el) return parts;
-      if (el.d) parts.push(...el.d);
-      if (el.s?.['s:all']) parts.push(...(el.s['s:all'] as string[]));
+    // Helper to collect class parts for each element using flattened `d`/`p` (strings) and `s['s:all']` (array)
+    const collect = (el: ClassNameByElementJSON): string => {
+      if (!el) return '';
+      const chunks: string[] = [];
+      if (el.d) chunks.push(el.d);
+      const sAll = el.s?.['s:all'];
+      if (Array.isArray(sAll) && sAll.length > 0) chunks.push(sAll.join(' '));
       const p = el.p;
-      if (typeof p === 'string' && p.trim()) parts.push(...p.trim().split(/\s+/));
-      return parts;
+      if (typeof p === 'string' && p.trim()) chunks.push(p.trim());
+      return chunks.join(' ');
     };
 
-    const rootParts = collect(e1);
-    const labelParts = collect(e2);
-    const iconParts = collect(e3);
+    const rootStr = collect(e1);
+    const labelStr = collect(e2);
+    const iconStr = collect(e3);
 
     type CN = NonNullable<HeadlessButtonProps['classNames']>;
-    const join = (baseParts: string[], key: keyof CN) =>
-      `${baseParts.join(' ')} ${classNames[key] ?? ''}`.trim();
+    const append = (base: string, key: keyof CN) => `${base} ${classNames[key] ?? ''}`.trim();
 
     const base = {
-      e1: join([styles.button, ...rootParts], 'e1'),
-      e2: join(labelParts, 'e2'),
-      e3: join(iconParts, 'e3')
+      e1: append(`${styles.button} ${rootStr}`.trim(), 'e1'),
+      e2: append(labelStr, 'e2'),
+      e3: append(iconStr, 'e3')
     } as const;
 
     // Activator pattern for forced states applies to the root (e1) only.

@@ -91,7 +91,8 @@ export type Schema = {
 export type ClassNamesByInteractionStateJSON = Partial<Record<string, string[]>>;
 export type ClassNameByElementJSON = {
   // d = decorations, e = effects, s = scales, p = palettes (colors)
-  d?: string[];
+  // NEW: `d` flattened into a single space-separated string of class names
+  d?: string;
   e?: ClassNamesByInteractionStateJSON;
   s?: Partial<Record<string, string[]>>;
   // NEW: Flattened palettes aggregated into a single space-separated string of class names
