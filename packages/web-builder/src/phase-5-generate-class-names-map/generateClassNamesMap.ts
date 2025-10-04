@@ -1,6 +1,8 @@
 import type {
   ComponentName,
   ComponentStyleKeyMap,
+  ElementAllSizeValue,
+  ElementSizeValue,
   InteractionState,
   SemanticColor,
   StyleKeysByInteractionState
@@ -14,7 +16,8 @@ export type ClassNameByElement = {
   // NEW: `d` flattened into a single space-separated string of class names
   d?: string;
   e?: ClassNamesByInteractionState;
-  s?: Partial<Record<string, string[]>>;
+  // OPTIMIZED: `s` values are pre-joined into a single space-separated string (no arrays)
+  s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // NEW: Flattened palettes aggregated into a single space-separated string of class names
   p?: string;
 };
@@ -61,14 +64,14 @@ export function generateClassNamesMapSplit(
 
       // Core (no palettes)
       core[componentName][elementName] = {
-        d: (mapArray(el.decorations, shortenMap)?.join(' ') || undefined),
+        d: mapArray(el.decorations, shortenMap)?.join(' ') || undefined,
         e: mapInteractionState(el.effects, shortenMap),
         s: el.scales
           ? Object.fromEntries(
-              Object.entries(el.scales).map(([k, arr]: [string, string[] | undefined]) => [
-                k,
-                mapArray(arr, shortenMap) ?? []
-              ])
+              Object.entries(el.scales).map(([k, arr]: [string, string[] | undefined]) => {
+                const joined = mapArray(arr, shortenMap)?.join(' ');
+                return [k, joined || undefined];
+              })
             )
           : undefined
       };

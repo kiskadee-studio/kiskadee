@@ -31,6 +31,12 @@ export default function ButtonPage() {
           <Button label="Focus" status="focus" controlState={true} />
           <Button label="Pressed" status="pressed" controlState={true} />
         </div>
+        <div>
+          <h3>Scale</h3>
+          <Button label="Small" scale="s:sm:1" />
+          <Button label="Medium" scale="s:md:1" />
+          <Button label="Large" scale="s:lg:1" />
+        </div>
       </div>
     </section>
   );

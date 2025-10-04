@@ -14,10 +14,26 @@ export const schema: Schema = {
             borderStyle: 'none'
           },
           scales: {
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingLeft: 16,
-            paddingRight: 16,
+            paddingTop: {
+              's:sm:1': 10,
+              's:md:1': 12,
+              's:lg:1': 14
+            },
+            paddingBottom: {
+              's:sm:1': 10,
+              's:md:1': 12,
+              's:lg:1': 14
+            },
+            paddingLeft: {
+              's:sm:1': 16,
+              's:md:1': 18,
+              's:lg:1': 20
+            },
+            paddingRight: {
+              's:sm:1': 16,
+              's:md:1': 18,
+              's:lg:1': 20
+            },
             borderRadius: 20
           },
           palettes: {

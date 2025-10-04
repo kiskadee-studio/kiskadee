@@ -94,7 +94,8 @@ export type ClassNameByElementJSON = {
   // NEW: `d` flattened into a single space-separated string of class names
   d?: string;
   e?: ClassNamesByInteractionStateJSON;
-  s?: Partial<Record<string, string[]>>;
+  // OPTIMIZED: `s` values are pre-joined into a single space-separated string (no arrays)
+  s?: Partial<Record<string, string>>;
   // NEW: Flattened palettes aggregated into a single space-separated string of class names
   // This string already includes all relevant classes from all palettes/semantics/interaction states.
   p?: string;
