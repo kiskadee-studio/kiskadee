@@ -7,6 +7,7 @@ import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 
 export type SplitCssBundles = {
   coreCss: string;
+  effectsCss: string; // new: effects separated from core
   palettes: Record<string, string>;
 };
 
@@ -19,6 +20,7 @@ export async function generateCssSplit(
   shortenMap: ShortenCssClassNames
 ): Promise<SplitCssBundles> {
   const coreRules: string[] = [];
+  const effectsRules: string[] = []; // collect effects separately
   const paletteRules: Record<string, string[]> = {};
 
   // Walk through all style keys by component/element to preserve palette grouping
@@ -47,12 +49,13 @@ export async function generateCssSplit(
       }
 
       // effects: by interaction state -> string[]
+      // Move effects into a dedicated bundle so they can be imported last for precedence
       if (el.effects) {
         for (const st in el.effects) {
           const arr: string[] = el.effects[st] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            addRule(coreRules, generateCssRuleFromStyleKey(key, cn));
+            addRule(effectsRules, generateCssRuleFromStyleKey(key, cn));
           }
         }
       }
@@ -82,6 +85,23 @@ export async function generateCssSplit(
   const coreRaw = coreRules.sort().join('\n');
   const coreOut = await postcss([combineMq()]).process(coreRaw, { from: undefined });
 
+  // Custom order for effects: ensure native pseudo rules (e.g., :hover, :focus, :active)
+  // appear AFTER forced-only class rules (e.g., .-s.-a) to win ties in specificity by cascade.
+  const weight = (rule: string): number => {
+    // Look for native interaction pseudos anywhere in the rule (works with @media wrappers too)
+    const hasNative = /:(hover|focus|active)\b/.test(rule);
+    return hasNative ? 2 : 0; // higher weight → later in sort
+  };
+  const effectsRaw = effectsRules
+    .sort((a, b) => {
+      const wa = weight(a);
+      const wb = weight(b);
+      if (wa !== wb) return wa - wb; // ascending: non-native first, native last
+      return a.localeCompare(b);
+    })
+    .join('\n');
+  const effectsOut = await postcss([combineMq()]).process(effectsRaw, { from: undefined });
+
   const palettes: Record<string, string> = {};
   for (const p in paletteRules) {
     const raw = paletteRules[p].sort().join('\n');
@@ -89,5 +109,5 @@ export async function generateCssSplit(
     palettes[p] = out.css;
   }
 
-  return { coreCss: coreOut.css, palettes };
+  return { coreCss: coreOut.css, effectsCss: effectsOut.css, palettes };
 }

@@ -3,6 +3,7 @@ import type {
   ElementColors,
   InteractionState,
   PaletteName,
+  SelectedInteractionStateToken,
   SemanticColor,
   StyleKeyByElement
 } from '@kiskadee/schema';
@@ -70,18 +71,28 @@ export function convertElementColorsToStyleKeys(
           const rawValue = (interactionStateMap as any)[interactionState];
 
           // Handle the enriched "selected" submap shape: { rest, hover?, pressed?, focus? }.
-          if (interactionState === 'selected' && rawValue && typeof rawValue === 'object' && 'rest' in rawValue) {
-            const sub = rawValue as { rest: unknown; hover?: unknown; pressed?: unknown; focus?: unknown };
+          if (
+            interactionState === 'selected' &&
+            rawValue &&
+            typeof rawValue === 'object' &&
+            'rest' in rawValue
+          ) {
+            const sub = rawValue as {
+              rest: unknown;
+              hover?: unknown;
+              pressed?: unknown;
+              focus?: unknown;
+            };
 
             // Helper to push a key under a given state label
             const push = (
-              stateLabel: InteractionState | 'selected:rest' | 'selected:hover' | 'selected:pressed' | 'selected:focus',
+              stateLabel: InteractionState | SelectedInteractionStateToken,
               val: unknown
             ) => {
               const isRef = typeof val === 'object' && val !== null && 'ref' in (val as any);
               const color = JSON.stringify(isRef ? (val as any).ref : val);
 
-              // For selected scope, we pass controlState=true and the base interaction (rest/hover/pressed/focus)
+              // For the selected scope, we pass controlState=true and the base interaction (rest/hover/pressed/focus)
               if (stateLabel.startsWith('selected:')) {
                 const baseInteraction = stateLabel.split(':')[1] as InteractionState; // 'rest' | 'hover' | 'pressed' | 'focus'
                 const styleKey = buildStyleKey({
@@ -91,10 +102,11 @@ export function convertElementColorsToStyleKeys(
                   isRef,
                   value: color
                 });
-                deepUpdate(styleKeys, [paletteName, semanticColor, stateLabel as any], (arr: string[] = []) => [
-                  ...arr,
-                  styleKey
-                ]);
+                deepUpdate(
+                  styleKeys,
+                  [paletteName, semanticColor, stateLabel as any],
+                  (arr: string[] = []) => [...arr, styleKey]
+                );
               } else {
                 const styleKey = buildStyleKey({
                   propertyName: colorProperty,
@@ -102,10 +114,11 @@ export function convertElementColorsToStyleKeys(
                   isRef,
                   value: color
                 });
-                deepUpdate(styleKeys, [paletteName, semanticColor, stateLabel as any], (arr: string[] = []) => [
-                  ...arr,
-                  styleKey
-                ]);
+                deepUpdate(
+                  styleKeys,
+                  [paletteName, semanticColor, stateLabel as any],
+                  (arr: string[] = []) => [...arr, styleKey]
+                );
               }
             };
 
@@ -123,7 +136,8 @@ export function convertElementColorsToStyleKeys(
 
           // A reference has the shape { ref: <color> }. We pass isRef accordingly and serialize
           // the "inner" color when a ref is present.
-          const isRef = typeof rawValue === 'object' && rawValue !== null && 'ref' in (rawValue as any);
+          const isRef =
+            typeof rawValue === 'object' && rawValue !== null && 'ref' in (rawValue as any);
           const color = JSON.stringify(isRef ? (rawValue as any).ref : rawValue);
 
           // Build the style key including the interaction state and whether this is a ref.

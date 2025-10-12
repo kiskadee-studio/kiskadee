@@ -116,6 +116,9 @@ export const classNameCssPseudoSelector = {
   readOnly: '-r' // Force read-only visuals
 };
 
+export type SelectedInteractionState = keyof SelectedInteractionSubMap;
+export type SelectedInteractionStateToken = `selected:${SelectedInteractionState}`;
+
 /**
  * Represents how an element’s color varies across its own interaction states (e.g., rest, hover,
  * focus, disabled). Each state maps to either a direct Color definition or a ParentColor reference.

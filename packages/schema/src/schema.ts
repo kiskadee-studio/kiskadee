@@ -1,7 +1,7 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
 import type { ColorSchema, InteractionState, SemanticColor } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
-import type { ElementEffects } from './types/effects/effects.types';
+import type { ElementEffects } from './types/effects';
 import type { ScaleSchema } from './types/scales/scales.types';
 
 // Names of all supported components

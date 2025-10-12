@@ -1,5 +1,6 @@
-import type { ShadowSchema } from './shadow.types';
 import type { SolidColor } from '../colors/colors.types';
+import type { BorderRadiusEffectSchema } from './border-radius/border-radius.types';
+import type { ShadowSchema } from './shadow/shadow.types';
 
 export type ElementEffects = Partial<{
   // blur: {
@@ -10,6 +11,8 @@ export type ElementEffects = Partial<{
   // glass: {},
   // reflect
   shadow: Partial<ShadowSchema>;
+  // NEW: dynamic border-radius effect with interaction states and selected support
+  borderRadius: BorderRadiusEffectSchema;
 }>;
 
 export type GlobalEffects = Partial<{

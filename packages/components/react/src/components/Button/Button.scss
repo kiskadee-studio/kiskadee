@@ -2,6 +2,7 @@
   /* UX niceties */
   cursor: pointer;
   user-select: none;
+  text-wrap: nowrap;
 
   /* Respect disabled/aria-disabled states for cursor affordance (non-visual) */
   &[disabled], &[aria-disabled="true"] {

@@ -13,9 +13,11 @@ import classNamesTemplate2Core from '../../../web-builder/build/template-2/class
 import App from './App.tsx';
 import { KiskadeeContext } from './contexts/KiskadeeContext.tsx';
 
-// Initial transition blocker: disable CSS transitions until initial CSS is fully loaded
+// Initial transition blocker: disable CSS transitions until the core CSS, palette CSS,
+// and any effect-specific CSS are loaded. This avoids jarring animations during the
+// first paint while stylesheets are still being swapped.
 let __kiskadeeInitialBlockerActive = true;
-let __kiskadeeInitialCssPending = 2; // core + palette
+let __kiskadeeInitialCssPending = 3; // core + palette + effects
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('no-transitions');
 }
@@ -117,6 +119,33 @@ function Root() {
     ).toString();
     link.href = href;
   }, [template, palette]);
+
+  // Load Effects CSS last (per template)
+  useEffect(() => {
+    const id = 'kiskadee-effects-css';
+    let link = document.getElementById(id) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.id = id;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    if (__kiskadeeInitialBlockerActive) {
+      const onLoad = () => {
+        __kiskadeeInitialCssPending -= 1;
+        if (__kiskadeeInitialCssPending <= 0) {
+          document.documentElement.classList.remove('no-transitions');
+          __kiskadeeInitialBlockerActive = false;
+        }
+      };
+      link.addEventListener('load', onLoad, { once: true });
+    }
+    const href = new URL(
+      `../../../web-builder/build/${template}/effects.css`,
+      import.meta.url
+    ).toString();
+    link.href = href;
+  }, [template]);
 
   // Persist the selected template to localStorage
   useEffect(() => {

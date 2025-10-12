@@ -2,10 +2,9 @@ import type {
   BreakpointValue,
   ElementSizeValue,
   InteractionState,
+  SelectedInteractionStateToken,
   StyleKey
 } from '@kiskadee/schema';
-
-export type InteractionStateSelected = 'selected:rest' | 'selected:hover' | 'selected:pressed' | 'selected:focus';
 
 export interface BuildStyleKeyParams {
   /**
@@ -21,7 +20,7 @@ export interface BuildStyleKeyParams {
 
   /**
    * Optional flag to indicate this key belongs to the control (selected/on) scope.
-   * When true, interactionState must be one of: 'rest' | 'hover' | 'pressed' | 'focus'.
+   * When true, the interactionState must be one of: 'rest' | 'hover' | 'pressed' | 'focus'.
    */
   controlState?: boolean | undefined;
 
@@ -91,7 +90,8 @@ export const SEPARATORS = {
  * @param value            Raw or serializable value
  * @param interactionState Interaction state. When controlState is true, it must be one of
  *                         'selected:rest' | 'selected:hover' | 'selected:pressed' | 'selected:focus'.
- *                         Otherwise it must be a base InteractionState (e.g., 'rest', 'hover').
+ *                         Otherwise, it must be a base InteractionState (e.g., 'rest', 'hover').
+ * @param controlState
  * @param isRef            Indicates a reference key; requires a non-'rest' variant ('hover', 'pressed', 'focus', or 'selected:hover/pressed/focus')
  * @param size             Size identifier (e.g., "s:md:1", "s:lg:1")
  * @param breakpoint       Breakpoint identifier (e.g., "bp:sm:1")
@@ -111,17 +111,8 @@ export function buildStyleKey({
   const valueString =
     typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
 
-  // 1) Size/scale branch
-  //    Formats:
-  //      - property++size__value
-  //      - property++size::breakpoint__value (when breakpoint provided)
-  if (size !== undefined) {
-    const bpSuffix = breakpoint !== undefined ? `${SEPARATORS.BREAKPOINT}${breakpoint}` : '';
-    return `${propertyName}${SEPARATORS.SIZE}${size}${bpSuffix}${SEPARATORS.VALUE}${valueString}`;
-  }
-
-  // 2) State normalization and validation
-  let effectiveState: string | undefined;
+  // 1) State normalization and validation (done first so size branch can include state)
+  let effectiveState: InteractionState | SelectedInteractionStateToken | undefined;
 
   if (controlState === true) {
     // In control (selected) scope. interactionState must be rest|hover|pressed|focus.
@@ -160,7 +151,22 @@ export function buildStyleKey({
     effectiveState = interactionState;
   }
 
-  // 3) Reference branch
+  // 2) Size/scale branch
+  //    Support combining state + size, omitting "--rest" for the base non-selected case.
+  //    Formats:
+  //      - property++size__value (when no state or base rest)
+  //      - property--state++size__value (when a non-rest state or selected:* is provided)
+  //      - property--state++size::breakpoint__value (with breakpoint)
+  if (size !== undefined) {
+    const bpSuffix = breakpoint !== undefined ? `${SEPARATORS.BREAKPOINT}${breakpoint}` : '';
+    const isRestVariant = effectiveState === undefined || effectiveState === 'rest';
+    if (isRestVariant) {
+      return `${propertyName}${SEPARATORS.SIZE}${size}${bpSuffix}${SEPARATORS.VALUE}${valueString}`;
+    }
+    return `${propertyName}${SEPARATORS.STATE}${effectiveState}${SEPARATORS.SIZE}${size}${bpSuffix}${SEPARATORS.VALUE}${valueString}`;
+  }
+
+  // 3) Reference branch (only for non-size keys)
   //    Format: property==state__value
   //    Requires: isRef===true and effectiveState !== undefined and not a 'rest' variant
   const isRestVariant = effectiveState === 'rest' || effectiveState === 'selected:rest';
@@ -178,6 +184,10 @@ export function buildStyleKey({
   // 5) Non-reference state branch
   //    Format: property--state__value
   if (effectiveState !== undefined) {
+    // Omit '--rest' for base non-selected
+    if (effectiveState === 'rest') {
+      return `${propertyName}${SEPARATORS.VALUE}${valueString}`;
+    }
     return `${propertyName}${SEPARATORS.STATE}${effectiveState}${SEPARATORS.VALUE}${valueString}`;
   }
 

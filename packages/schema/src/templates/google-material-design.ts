@@ -54,6 +54,23 @@ export const schema: Schema = {
                 }
               }
             }
+          },
+          effects: {
+            // Material Design 3 interaction-driven shape. Border radius decreases as interaction intensifies
+            // (rest > hover/focus > pressed), emulating MD3 "animated corners". This enables Kiskadee to
+            // generate stateful CSS for rounded corners.
+            borderRadius: {
+              rest: 20,
+              hover: 14,
+              pressed: 8,
+              focus: 14
+              // selected: {
+              //   rest: 0,
+              //   hover: 12,
+              //   pressed: 0,
+              //   focus: 24
+              // }
+            }
           }
         },
         e2: {
