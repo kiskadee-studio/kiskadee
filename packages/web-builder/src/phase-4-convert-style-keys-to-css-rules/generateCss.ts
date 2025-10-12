@@ -16,6 +16,7 @@ import {
   transformTextLineTypeKeyToCss,
   transformTextWeightKeyToCss
 } from './decorations';
+import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
 
@@ -37,6 +38,11 @@ export function generateCssRuleFromStyleKey(styleKey: string, className: string)
     generatedCss = transformTextWeightKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textFont')) {
     generatedCss = transformTextFontKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('borderRadius')) {
+    // Border-radius effect: transform both inline and reference keys, including responsive variants.
+    // We pass forceState=true to also emit class-forced selectors (e.g., ".-h", ".-s") in addition to
+    // native pseudos, matching the color pipeline behavior and enabling preview/testing states.
+    generatedCss = transformBorderRadiusKeyToCss(styleKey, className, true);
   } else if (generatedCss === undefined) {
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     if (matchScale != null) {

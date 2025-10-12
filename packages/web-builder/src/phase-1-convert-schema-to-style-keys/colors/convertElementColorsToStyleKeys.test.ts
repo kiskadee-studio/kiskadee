@@ -22,7 +22,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['boxColor--rest__[45,100,50,1]']
+          rest: ['boxColor__[45,100,50,1]']
         }
       }
     });
@@ -43,7 +43,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['borderColor--rest__[255,255,255,1]'],
+          rest: ['borderColor__[255,255,255,1]'],
           hover: ['borderColor==hover__[255,255,255,0.1]']
         }
       }
@@ -77,14 +77,14 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['textColor--rest__[120,50,50,1]', 'borderColor--rest__[120,50,50,1]'],
+          rest: ['textColor__[120,50,50,1]', 'borderColor__[120,50,50,1]'],
           hover: ['textColor==hover__[240,50,50,0.5]']
         },
         secondary: {
-          rest: ['textColor--rest__[240,50,50,0.5]']
+          rest: ['textColor__[240,50,50,0.5]']
         },
         danger: {
-          rest: ['borderColor--rest__[0,0,0,0.02]'],
+          rest: ['borderColor__[0,0,0,0.02]'],
           focus: ['borderColor==focus__[10,20,30,0.1]']
         }
       }
@@ -105,7 +105,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         neutral: {
-          rest: ['boxColor--rest__[0,128,255,1]'],
+          rest: ['boxColor__[0,128,255,1]'],
           hover: ['boxColor==hover__[0,128,255,0.5]']
         }
       }
@@ -133,7 +133,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result).toEqual({
       p1: {
         primary: {
-          rest: ['boxColor--rest__[10,20,30,0.9]'],
+          rest: ['boxColor__[10,20,30,0.9]'],
           hover: ['boxColor--hover__[15,25,35,0.9]'],
           'selected:rest': ['boxColor--selected:rest__[200,50,50,1]'],
           'selected:hover': ['boxColor==selected:hover__[210,55,55,0.8]'],

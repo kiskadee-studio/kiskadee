@@ -8,6 +8,7 @@ import { deepUpdate } from '../utils';
 import { convertElementColorsToStyleKeys } from './colors/convertElementColorsToStyleKeys';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
+import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys';
 import { convertElementScalesToStyleKeys } from './scales/convertElementScalesToStyleKeys';
 
 /**
@@ -43,8 +44,28 @@ export function convertElementSchemaToStyleKeys(schema: Schema): ComponentStyleK
         if (element.palettes) {
           el.palettes = convertElementColorsToStyleKeys(element.palettes);
         }
-        if (element.effects?.shadow) {
-          el.effects = convertElementShadowToStyleKeys(element.effects.shadow);
+        // Effects: merge multiple effect maps (shadow, borderRadius, ...)
+        // Each converter returns a map of InteractionState -> StyleKey[].
+        // We concatenate arrays per state to produce a single `effects` map.
+        if (element.effects) {
+          const effectsMap: StyleKeyByElement['effects'] = {} as any;
+          if (element.effects.shadow) {
+            const shadowMap = convertElementShadowToStyleKeys(element.effects.shadow);
+            for (const st in shadowMap) {
+              const arr = (shadowMap as any)[st] as string[];
+              deepUpdate(effectsMap, [st], (prev: string[] = []) => [...prev, ...arr]);
+            }
+          }
+          if ((element.effects as any).borderRadius) {
+            const brMap = convertElementBorderRadiusToStyleKeys((element.effects as any).borderRadius);
+            for (const st in brMap) {
+              const arr = (brMap as any)[st] as string[];
+              deepUpdate(effectsMap, [st], (prev: string[] = []) => [...prev, ...arr]);
+            }
+          }
+          if (Object.keys(effectsMap).length > 0) {
+            el.effects = effectsMap;
+          }
         }
 
         return el as StyleKeyByElement;

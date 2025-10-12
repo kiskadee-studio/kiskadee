@@ -107,7 +107,7 @@ describe('buildStyleKey', () => {
           interactionState: 'rest',
           value: [10, 5, 3]
         };
-        expect(buildStyleKey(opts)).toBe('shadow--rest__[10,5,3]');
+        expect(buildStyleKey(opts)).toBe('shadow__[10,5,3]');
       });
 
       it('appends --hover suffix for hover state', () => {

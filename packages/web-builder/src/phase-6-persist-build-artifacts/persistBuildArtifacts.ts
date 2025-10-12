@@ -16,6 +16,7 @@ export async function persistBuildArtifacts(
     | string
     | {
         coreCss: string;
+        effectsCss?: string;
         palettes: Record<string, string>;
       },
   classNamesMap: ComponentClassNameMap | ComponentClassNameMapSplit,
@@ -38,6 +39,13 @@ export async function persistBuildArtifacts(
     const outCssFile = resolve(buildDir, 'kiskadee.css');
     await writeFile(outCssFile, cssGenerated.coreCss, 'utf8');
     console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
+
+    // Optionally write effects CSS as a separate file to be imported last
+    if (cssGenerated.effectsCss && cssGenerated.effectsCss.trim() !== '') {
+      const effectsFile = resolve(buildDir, `effects.css`);
+      await writeFile(effectsFile, cssGenerated.effectsCss, 'utf8');
+      console.log(`[web-builder] Effects CSS written to: ${effectsFile}`);
+    }
 
     // Write palette CSS files as p1.css, p2.css, ...
     for (const paletteName in cssGenerated.palettes) {

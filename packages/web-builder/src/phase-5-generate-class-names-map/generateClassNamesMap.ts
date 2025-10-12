@@ -10,15 +10,14 @@ import type {
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 
 // Shortened keys for optimization:
-// d = decorations, e = effects, s = scales, p = palettes (colors)
+// d = decorations (incl. effects without size), s = scales (incl. effects with size), p = palettes (colors)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>;
 export type ClassNameByElement = {
-  // NEW: `d` flattened into a single space-separated string of class names
+  // Flattened decorations + non-size effects
   d?: string;
-  e?: ClassNamesByInteractionState;
-  // OPTIMIZED: `s` values are pre-joined into a single space-separated string (no arrays)
+  // Scales aggregated per size as flattened strings
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // NEW: Flattened palettes aggregated into a single space-separated string of class names
+  // Flattened palettes aggregated into a single space-separated string of class names
   p?: string;
 };
 export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
@@ -48,6 +47,28 @@ function mapInteractionState(
   return out;
 }
 
+function extractSizeFromKey(styleKey: string): string | undefined {
+  const head = styleKey.split('__')[0] ?? '';
+  const plusIdx = head.indexOf('++');
+  if (plusIdx === -1) return undefined;
+  const after = head.slice(plusIdx + 2);
+  // cut at first of '::', '--', '==', '__' if present
+  const cuts = [after.indexOf('::'), after.indexOf('--'), after.indexOf('=='), after.indexOf('__')]
+    .filter((i) => i !== -1) as number[];
+  const cut = cuts.length > 0 ? Math.min(...cuts) : -1;
+  const seg = cut === -1 ? after : after.slice(0, cut);
+  return seg || undefined;
+}
+
+/**
+ * Produces two JSON-friendly maps of class names from the aggregated StyleKeys:
+ * - core: decorations + effects (non-size) in `d`, and scales/effects (size-bound) in `s`.
+ * - palettes: one object per palette name, each containing only the flattened `p` string per element.
+ *
+ * Notes:
+ * - Keys are shortened via ShortenCssClassNames map.
+ * - Effects with responsive size tokens ("++s:*") are grouped into `s` per size; otherwise they go into `d`.
+ */
 export function generateClassNamesMapSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames
@@ -62,18 +83,51 @@ export function generateClassNamesMapSplit(
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
 
-      // Core (no palettes)
+      // Core (no palettes) — aggregate decorations + effects (no size) into d, and
+      // scales + effects (with size) into s.
+      const dSet = new Set<string>();
+      const sMap = new Map<string, Set<string>>();
+
+      // decorations → d
+      mapArray(el.decorations, shortenMap)?.forEach((c) => dSet.add(c));
+
+      // effects → d (no size) or s[size] (with size)
+      if (el.effects) {
+        for (const st of Object.keys(el.effects)) {
+          const arr = (el.effects as any)[st] as string[] | undefined;
+          if (!arr) continue;
+          for (const key of arr) {
+            const size = extractSizeFromKey(key);
+            const cls = shortenMap[key] ?? key;
+            if (size) {
+              if (!sMap.has(size)) sMap.set(size, new Set());
+              sMap.get(size)!.add(cls);
+            } else {
+              dSet.add(cls);
+            }
+          }
+        }
+      }
+
+      // scales → s[size]
+      if (el.scales) {
+        for (const [size, arr] of Object.entries(el.scales)) {
+          const mapped = mapArray(arr, shortenMap);
+          if (!mapped || mapped.length === 0) continue;
+          if (!sMap.has(size)) sMap.set(size, new Set());
+          const set = sMap.get(size)!;
+          mapped.forEach((c) => set.add(c));
+        }
+      }
+
       core[componentName][elementName] = {
-        d: mapArray(el.decorations, shortenMap)?.join(' ') || undefined,
-        e: mapInteractionState(el.effects, shortenMap),
-        s: el.scales
-          ? Object.fromEntries(
-              Object.entries(el.scales).map(([k, arr]: [string, string[] | undefined]) => {
-                const joined = mapArray(arr, shortenMap)?.join(' ');
-                return [k, joined || undefined];
-              })
-            )
-          : undefined
+        d: dSet.size ? Array.from(dSet).join(' ') : undefined,
+        s:
+          sMap.size > 0
+            ? Object.fromEntries(
+                Array.from(sMap.entries()).map(([k, set]) => [k, set.size ? Array.from(set).join(' ') : undefined])
+              )
+            : undefined
       };
 
       // Palettes split per palette name; flatten so that per-palette JSON has only `p` (no paletteName level)

@@ -15,7 +15,7 @@ describe('convertElementShadowToStyleKeys', () => {
       const result = convertElementShadowToStyleKeys(shadowEffect);
 
       expect(result).toEqual({
-        rest: ['shadow--rest__[10,15,5,[0,0,0,0.5]]'],
+        rest: ['shadow__[10,15,5,[0,0,0,0.5]]'],
         hover: ['shadow--hover__[20,15,5,[0,0,0,0.5]]']
       });
     });
@@ -28,7 +28,7 @@ describe('convertElementShadowToStyleKeys', () => {
       const result = convertElementShadowToStyleKeys(shadowEffect);
 
       expect(result).toEqual({
-        rest: ['shadow--rest__[0,0,0,[0,0,0,1]]'],
+        rest: ['shadow__[0,0,0,[0,0,0,1]]'],
         hover: ['shadow--hover__[25,0,0,[0,0,0,1]]']
       });
     });
@@ -44,7 +44,7 @@ describe('convertElementShadowToStyleKeys', () => {
       const result = convertElementShadowToStyleKeys(shadowEffect);
 
       expect(result).toEqual({
-        rest: ['shadow--rest__[5,8,3,[10,20,30,0.8]]'],
+        rest: ['shadow__[5,8,3,[10,20,30,0.8]]'],
         focus: ['shadow--focus__[12,16,3,[10,20,30,0.8]]'],
         hover: ['shadow--hover__[5,10,3,[50,60,70,0.9]]']
       });
