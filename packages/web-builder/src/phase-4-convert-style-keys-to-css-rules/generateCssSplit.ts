@@ -11,18 +11,14 @@ export type SplitCssBundles = {
   palettes: Record<string, string>;
 };
 
-function addRule(rules: string[], rule: string | undefined) {
-  if (rule && rule.trim() !== '') rules.push(rule);
-}
-
 export async function generateCssSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
   forceState?: boolean
 ): Promise<SplitCssBundles> {
-  const coreRules: string[] = [];
-  const effectsRules: string[] = []; // collect effects separately
-  const paletteRules: Record<string, string[]> = {};
+  const coreRules: Set<string> = new Set();
+  const effectsRules: Set<string> = new Set(); // collect effects separately
+  const paletteRules: Record<string, Set<string>> = {};
 
   // Walk through all style keys by component/element to preserve palette grouping
   for (const componentName in styleKeys) {
@@ -34,7 +30,8 @@ export async function generateCssSplit(
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
           const cn = shortenMap[key] ?? key;
-          addRule(coreRules, generateCssRuleFromStyleKey(key, cn, forceState));
+          const rule = generateCssRuleFromStyleKey(key, cn, forceState);
+          if (rule && rule.trim() !== '') coreRules.add(rule);
         }
       }
 
@@ -44,7 +41,8 @@ export async function generateCssSplit(
           const arr: string[] = el.scales[scaleKey] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            addRule(coreRules, generateCssRuleFromStyleKey(key, cn, forceState));
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState);
+            if (rule && rule.trim() !== '') coreRules.add(rule);
           }
         }
       }
@@ -56,7 +54,8 @@ export async function generateCssSplit(
           const arr: string[] = el.effects[st] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            addRule(effectsRules, generateCssRuleFromStyleKey(key, cn, forceState));
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState);
+            if (rule && rule.trim() !== '') effectsRules.add(rule);
           }
         }
       }
@@ -65,7 +64,7 @@ export async function generateCssSplit(
       if (el.palettes) {
         for (const paletteName in el.palettes) {
           const bySemantic = el.palettes[paletteName];
-          if (!paletteRules[paletteName]) paletteRules[paletteName] = [];
+          if (!paletteRules[paletteName]) paletteRules[paletteName] = new Set();
           for (const sem in bySemantic) {
             const byState = bySemantic[sem];
             for (const st in byState) {
@@ -73,7 +72,8 @@ export async function generateCssSplit(
               for (const key of arr) {
                 const cn = shortenMap[key] ?? key;
                 // Only color keys are expected here; call color transformer directly and pass forceState flag
-                addRule(paletteRules[paletteName], transformColorKeyToCss(key as any, cn, forceState));
+                const rule = transformColorKeyToCss(key as any, cn, forceState);
+                if (rule && rule.trim() !== '') paletteRules[paletteName].add(rule);
               }
             }
           }
@@ -83,7 +83,7 @@ export async function generateCssSplit(
   }
 
   // Build strings, sort for stability, and post-process media queries per bundle
-  const coreRaw = coreRules.sort().join('\n');
+  const coreRaw = Array.from(coreRules).sort().join('\n');
   const coreOut = await postcss([combineMq()]).process(coreRaw, { from: undefined });
 
   // Custom order for effects: ensure native pseudo rules (e.g., :hover, :focus, :active)
@@ -93,7 +93,7 @@ export async function generateCssSplit(
     const hasNative = /:(hover|focus|active)\b/.test(rule);
     return hasNative ? 2 : 0; // higher weight → later in sort
   };
-  const effectsRaw = effectsRules
+  const effectsRaw = Array.from(effectsRules)
     .sort((a, b) => {
       const wa = weight(a);
       const wb = weight(b);
@@ -105,7 +105,7 @@ export async function generateCssSplit(
 
   const palettes: Record<string, string> = {};
   for (const p in paletteRules) {
-    const raw = paletteRules[p]
+    const raw = Array.from(paletteRules[p])
       .sort((a, b) => {
         const wa = weight(a);
         const wb = weight(b);
