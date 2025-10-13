@@ -11,7 +11,8 @@
     border-color 120ms ease,
     border-width 120ms ease,
     border-radius 120ms ease,
-    box-shadow 120ms ease;
+    box-shadow 120ms ease,
+    outline 120ms ease;
 }
 
 /* Disable all transitions/animations while the app is booting to avoid initial flare */
@@ -20,4 +21,10 @@
 .no-transitions *::after {
   transition: none !important;
   animation: none !important;
+}
+
+:focus-visible, .-f.-a {
+  outline: solid 2px #0059b1;
+  outline-offset: 1px;
+  position: relative;
 }

@@ -53,8 +53,12 @@ function extractSizeFromKey(styleKey: string): string | undefined {
   if (plusIdx === -1) return undefined;
   const after = head.slice(plusIdx + 2);
   // cut at first of '::', '--', '==', '__' if present
-  const cuts = [after.indexOf('::'), after.indexOf('--'), after.indexOf('=='), after.indexOf('__')]
-    .filter((i) => i !== -1) as number[];
+  const cuts = [
+    after.indexOf('::'),
+    after.indexOf('--'),
+    after.indexOf('=='),
+    after.indexOf('__')
+  ].filter((i) => i !== -1) as number[];
   const cut = cuts.length > 0 ? Math.min(...cuts) : -1;
   const seg = cut === -1 ? after : after.slice(0, cut);
   return seg || undefined;
@@ -89,7 +93,9 @@ export function generateClassNamesMapSplit(
       const sMap = new Map<string, Set<string>>();
 
       // decorations → d
-      mapArray(el.decorations, shortenMap)?.forEach((c) => dSet.add(c));
+      mapArray(el.decorations, shortenMap)?.forEach((c) => {
+        dSet.add(c);
+      });
 
       // effects → d (no size) or s[size] (with size)
       if (el.effects) {
@@ -116,7 +122,9 @@ export function generateClassNamesMapSplit(
           if (!mapped || mapped.length === 0) continue;
           if (!sMap.has(size)) sMap.set(size, new Set());
           const set = sMap.get(size)!;
-          mapped.forEach((c) => set.add(c));
+          mapped.forEach((c) => {
+            set.add(c);
+          });
         }
       }
 
@@ -125,7 +133,10 @@ export function generateClassNamesMapSplit(
         s:
           sMap.size > 0
             ? Object.fromEntries(
-                Array.from(sMap.entries()).map(([k, set]) => [k, set.size ? Array.from(set).join(' ') : undefined])
+                Array.from(sMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
               )
             : undefined
       };

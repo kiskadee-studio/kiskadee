@@ -78,7 +78,7 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   hover: ':hover',
   pressed: ':active',
   selected: '',
-  focus: ':focus',
+  focus: ':focus-visible',
   // Disabled no longer uses the native pseudo selector. We intentionally map it to an empty
   // string and rely on the activator class ("-a") combined with the disabled visual class
   // ("-d"; same class used for pseudoDisabled) to style the disabled state.

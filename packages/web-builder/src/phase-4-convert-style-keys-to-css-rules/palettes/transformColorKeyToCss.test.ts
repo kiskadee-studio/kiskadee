@@ -31,12 +31,20 @@ describe('transformColorKeyToCss', () => {
       describe('hover', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('boxColor--hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor--hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           expect(result).toEqual('.abc:hover { background-color: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('boxColor--hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor--hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           // expects both :hover and forced class (.-h) gated by activator (.-a) applied to the same element (i.e. .abc.-h.-a)
           expect(result).toEqual('.abc:hover, .abc.-h.-a { background-color: #4040bf80 }');
         });
@@ -45,12 +53,20 @@ describe('transformColorKeyToCss', () => {
       describe('selected:hover', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('boxColor--selected:hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor--selected:hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           expect(result).toEqual('.abc:hover.-s { background-color: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('boxColor--selected:hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor--selected:hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           // native selector must NOT include activator (-a); forced selector remains gated by activator (-a)
           expect(result).toEqual('.abc:hover.-s, .abc.-s.-h.-a { background-color: #4040bf80 }');
         });
@@ -59,12 +75,20 @@ describe('transformColorKeyToCss', () => {
       describe('disabled (forced branch always present)', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('boxColor--disabled__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor--disabled__[240,50,50,0.5]',
+            className,
+            force
+          );
           expect(result).toEqual('.abc.-d.-a { background-color: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('boxColor--disabled__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor--disabled__[240,50,50,0.5]',
+            className,
+            force
+          );
           expect(result).toEqual('.abc.-d.-a { background-color: #4040bf80 }');
         });
       });
@@ -86,12 +110,20 @@ describe('transformColorKeyToCss', () => {
       describe('==hover', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('boxColor==hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor==hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           expect(result).toEqual('.-a:hover .abc { background-color: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('boxColor==hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor==hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           // expects both parent :hover and forced parent class (.-h) to be combined as selectors
           expect(result).toEqual('.-a:hover .abc, .-a.-h .abc { background-color: #4040bf80 }');
         });
@@ -101,38 +133,59 @@ describe('transformColorKeyToCss', () => {
         it('forceState=false', () => {
           const force = false as const;
           const result = transformColorKeyToCss('textColor==focus__[0,0,0,0.3]', className, force);
-          expect(result).toEqual('.-a:focus .abc { color: #0000004d }');
+          expect(result).toEqual('.-a:focus-visible .abc { color: #0000004d }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const result = transformColorKeyToCss('textColor==focus__[0,0,0,0.3]', className, force);
-          expect(result).toEqual('.-a:focus .abc, .-a.-f \.abc { color: #0000004d }'.replace(' \\.', ' .'));
+          expect(result).toEqual('.-a:focus-visible .abc, .-a.-f .abc { color: #0000004d }');
         });
       });
 
       describe('==selected:hover', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('boxColor==selected:hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor==selected:hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           expect(result).toEqual('.-a:hover.-s .abc { background-color: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('boxColor==selected:hover__[240,50,50,0.5]', className, force);
+          const result = transformColorKeyToCss(
+            'boxColor==selected:hover__[240,50,50,0.5]',
+            className,
+            force
+          );
           // parent gets activator always; selected forced class (.-s) and hover native/forced variations
-          expect(result).toEqual('.-a:hover.-s .abc, .-a.-s.-h \.abc { background-color: #4040bf80 }'.replace(' \\.', ' .'));
+          expect(result).toEqual(
+            '.-a:hover.-s .abc, .-a.-s.-h \.abc { background-color: #4040bf80 }'.replace(
+              ' \\.',
+              ' .'
+            )
+          );
         });
       });
 
       describe('==disabled (forced branch always present)', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('textColor==disabled__[0,0,0,0.3]', className, force);
+          const result = transformColorKeyToCss(
+            'textColor==disabled__[0,0,0,0.3]',
+            className,
+            force
+          );
           expect(result).toEqual('.-a.-d \.abc { color: #0000004d }'.replace(' \\.', ' .'));
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('textColor==disabled__[0,0,0,0.3]', className, force);
+          const result = transformColorKeyToCss(
+            'textColor==disabled__[0,0,0,0.3]',
+            className,
+            force
+          );
           expect(result).toEqual('.-a.-d .abc { color: #0000004d }');
         });
       });

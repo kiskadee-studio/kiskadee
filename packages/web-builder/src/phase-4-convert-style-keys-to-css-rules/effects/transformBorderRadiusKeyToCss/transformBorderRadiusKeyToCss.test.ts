@@ -114,14 +114,16 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadius--focus++s:lg:1::bp:md:3__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('@media (min-width: 1024px) { .abc:focus { border-radius: 18px } }');
+          expect(out).toEqual(
+            '@media (min-width: 1024px) { .abc:focus-visible { border-radius: 18px } }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadius--focus++s:lg:1::bp:md:3__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1024px) { .abc:focus, .abc.-f.-a { border-radius: 18px } }'
+            '@media (min-width: 1024px) { .abc:focus-visible, .abc.-f.-a { border-radius: 18px } }'
           );
         });
       });
@@ -257,13 +259,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadius==focus__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:focus .abc { border-radius: 6px }');
+          expect(out).toEqual('.-a:focus-visible .abc { border-radius: 6px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadius==focus__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:focus .abc, .-a.-f .abc { border-radius: 6px }');
+          expect(out).toEqual('.-a:focus-visible .abc, .-a.-f .abc { border-radius: 6px }');
         });
       });
 
@@ -342,7 +344,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==focus++s:lg:1::bp:md:2__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus .abc { border-radius: 10px } }'
+            '@media (min-width: 768px) { .-a:focus-visible .abc { border-radius: 10px } }'
           );
         });
         it('forceState=true', () => {
@@ -350,7 +352,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==focus++s:lg:1::bp:md:2__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus .abc, .-a.-f .abc { border-radius: 10px } }'
+            '@media (min-width: 768px) { .-a:focus-visible .abc, .-a.-f .abc { border-radius: 10px } }'
           );
         });
       });
@@ -361,7 +363,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==selected:focus++s:sm:1::bp:md:2__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus.-s .abc { border-radius: 8px } }'
+            '@media (min-width: 768px) { .-a:focus-visible.-s .abc { border-radius: 8px } }'
           );
         });
         it('forceState=true', () => {
@@ -369,7 +371,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==selected:focus++s:sm:1::bp:md:2__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus.-s .abc, .-a.-s.-f .abc { border-radius: 8px } }'
+            '@media (min-width: 768px) { .-a:focus-visible.-s .abc, .-a.-s.-f .abc { border-radius: 8px } }'
           );
         });
       });
