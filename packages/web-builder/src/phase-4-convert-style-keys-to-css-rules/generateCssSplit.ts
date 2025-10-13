@@ -1,4 +1,11 @@
-import type { ComponentStyleKeyMap } from '@kiskadee/schema';
+import type {
+  ComponentName,
+  ComponentStyleKeyMap,
+  ElementAllSizeValue,
+  ElementSizeValue,
+  InteractionState,
+  SemanticColor
+} from '@kiskadee/schema';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
@@ -20,11 +27,22 @@ export async function generateCssSplit(
   const effectsRules: Set<string> = new Set(); // collect effects separately
   const paletteRules: Record<string, Set<string>> = {};
 
+  // Helper: detect if a CSS rule uses complex selectors (pseudo-classes or forced state classes)
+  const isComplexSelector = (rule: string): boolean => {
+    // Check for native pseudo-classes (:hover, :focus, :focus-visible, :focus-within, :active, :disabled, :read-only)
+    if (/:(hover|focus|focus-visible|focus-within|active|disabled|read-only)\b/.test(rule))
+      return true;
+
+    // Check for forced state class patterns (.-a, .-h, .-f, .-p, .-s, .-d, .-r)
+    // These appear as chained classes: .someClass.-h.-a, .-a.-h .someClass, etc.
+    return /\.-[a-z]\b/.test(rule);
+  };
+
   // Walk through all style keys by component/element to preserve palette grouping
   for (const componentName in styleKeys) {
-    const elements = (styleKeys as any)[componentName];
+    const elements = styleKeys[componentName as ComponentName];
     for (const elementName in elements) {
-      const el = elements[elementName] as any;
+      const el = elements[elementName];
 
       // decorations: string[]
       if (Array.isArray(el.decorations)) {
@@ -38,7 +56,7 @@ export async function generateCssSplit(
       // scales: Record<string, string[]>
       if (el.scales) {
         for (const scaleKey in el.scales) {
-          const arr: string[] = el.scales[scaleKey] ?? [];
+          const arr: string[] = el.scales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
             const rule = generateCssRuleFromStyleKey(key, cn, forceState);
@@ -48,14 +66,21 @@ export async function generateCssSplit(
       }
 
       // effects: by interaction state -> string[]
-      // Move effects into a dedicated bundle so they can be imported last for precedence
+      // Route effects based on selector complexity: simple selectors go to core, complex to effects
       if (el.effects) {
         for (const st in el.effects) {
-          const arr: string[] = el.effects[st] ?? [];
+          const arr: string[] = el.effects[st as InteractionState] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
             const rule = generateCssRuleFromStyleKey(key, cn, forceState);
-            if (rule && rule.trim() !== '') effectsRules.add(rule);
+            if (rule && rule.trim() !== '') {
+              // Route based on selector complexity
+              if (isComplexSelector(rule)) {
+                effectsRules.add(rule); // → effects.css
+              } else {
+                coreRules.add(rule); // → kiskadee.css
+              }
+            }
           }
         }
       }
@@ -66,13 +91,13 @@ export async function generateCssSplit(
           const bySemantic = el.palettes[paletteName];
           if (!paletteRules[paletteName]) paletteRules[paletteName] = new Set();
           for (const sem in bySemantic) {
-            const byState = bySemantic[sem];
+            const byState = bySemantic[sem as SemanticColor];
             for (const st in byState) {
-              const arr: string[] = byState[st] ?? [];
+              const arr: string[] = byState[st as InteractionState] ?? [];
               for (const key of arr) {
                 const cn = shortenMap[key] ?? key;
-                // Only color keys are expected here; call color transformer directly and pass forceState flag
-                const rule = transformColorKeyToCss(key as any, cn, forceState);
+                // Only color keys are expected here; call color transformer directly and pass the forceState flag
+                const rule = transformColorKeyToCss(key, cn, forceState);
                 if (rule && rule.trim() !== '') paletteRules[paletteName].add(rule);
               }
             }
