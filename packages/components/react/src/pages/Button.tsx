@@ -37,6 +37,14 @@ export default function ButtonPage() {
           <Button label="Medium" scale="s:md:1" />
           <Button label="Large" scale="s:lg:1" />
         </div>
+        <div>
+          <h3>Shadow</h3>
+          <Button label="Rest" shadow={true} />
+          <Button label="Hover" shadow={true} status={'hover'} />
+          <Button label="Focus" shadow={true} status={'focus'} />
+          <Button label="Pressed" shadow={true} status={'pressed'} />
+          <Button label="Disabled" shadow={true} status={'disabled'} />
+        </div>
       </div>
     </section>
   );

@@ -29,8 +29,8 @@ console.log('phase  2', { styleKeyUsage });
 const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage);
 console.log('phase 3', { shortenCssClassNameMap });
 
-// Phase 4 - Convert Style Keys to CSS rules, split core vs palette bundles
-const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap);
+// Phase 4 - Convert Style Keys to CSS rules, split core vs. palette bundles
+const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, true);
 console.log('phase 4', { cssGenerated });
 
 // Phase 5 - Generate class names map split (core + per-palette)

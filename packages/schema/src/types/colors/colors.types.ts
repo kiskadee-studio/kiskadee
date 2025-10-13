@@ -113,7 +113,8 @@ export const classNameCssPseudoSelector = {
   // Disabled uses the same visual class suffix as the former pseudoDisabled ("-d").
   // We no longer keep a separate key for pseudoDisabled here; use the "disabled" entry instead.
   disabled: '-d',
-  readOnly: '-r' // Force read-only visuals
+  readOnly: '-r', // Force read-only visuals
+  shadow: '-e' // Activation class for shadow/elevation
 };
 
 export type SelectedInteractionState = keyof SelectedInteractionSubMap;

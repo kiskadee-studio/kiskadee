@@ -15,21 +15,21 @@ describe('transformShadowKeyToCss', () => {
       const styleKey = 'shadow__[2,4,5,[0,0,0,1]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc { box-shadow: 2px 4px 5px #000 }');
+      expect(result).toEqual('.abc.-e { box-shadow: 2px 4px 5px #000 }');
     });
 
     it('should transform a hover state shadow key with pseudo-selector', () => {
       const styleKey = 'shadow--hover__[6,8,10,[0,0,0,0.5]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc:hover { box-shadow: 6px 8px 10px #00000080 }');
+      expect(result).toEqual('.abc.-e:hover { box-shadow: 6px 8px 10px #00000080 }');
     });
 
     it('should transform a pressed state shadow key to use :active pseudo-selector', () => {
       const styleKey = 'shadow--pressed__[3,3,3,[0,0,0,1]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc:active { box-shadow: 3px 3px 3px #000 }');
+      expect(result).toEqual('.abc.-e:active { box-shadow: 3px 3px 3px #000 }');
     });
   });
 

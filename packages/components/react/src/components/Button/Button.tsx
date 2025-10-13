@@ -9,9 +9,9 @@ import { memo, useMemo } from 'react';
 import { useKiskadee } from '../../contexts/KiskadeeContext.tsx';
 import './Button.scss';
 
-export type ButtonStatus = Exclude<keyof typeof cn, 'selected'>;
+export type ButtonStatus = Exclude<keyof typeof cn, 'selected' | 'shadow'>;
 export type ButtonProps = HeadlessButtonProps & {
-  /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected'. */
+  /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected' and 'shadow'. */
   status?: ButtonStatus;
   /** Marks this button as a semantic toggle (Following vs. Follow). */
   toggle?: boolean;
@@ -22,6 +22,8 @@ export type ButtonProps = HeadlessButtonProps & {
    * If not provided, Button defaults to the median scale 's:md:1'.
    */
   scale?: ElementSizeValue;
+  /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
+  shadow?: boolean;
 };
 
 // Build a single space-separated class string from flattened d/p only (sizes handled in e1)
@@ -42,6 +44,7 @@ function Button(props: ButtonProps) {
     controlState,
     scale = 's:md:1',
     disabled,
+    shadow = false,
     ...restProps
   } = props;
   const {
@@ -77,12 +80,15 @@ function Button(props: ButtonProps) {
     if (controlState) activation += ` ${cn.selected}`;
     if (activation) activation += ' -a';
 
+    // Shadow activation flag (does not imply activator -a)
+    const shadowFlag = shadow ? ` ${cn.shadow}` : '';
+
     return {
-      e1: `${e1Base + activation} btn kd-transition`,
+      e1: `${e1Base}${shadowFlag}${activation} btn kd-transition`,
       e2: e2Base,
       e3: e3Base
     };
-  }, [e1, e2, e3, status, controlState, scale, classNames.e1, classNames.e2, classNames.e3]);
+  }, [e1, e2, e3, status, controlState, scale, shadow, classNames.e1, classNames.e2, classNames.e3]);
 
   // Map Kiskadee status to native/ARIA attributes
   const ariaDisabled = restProps['aria-disabled'];

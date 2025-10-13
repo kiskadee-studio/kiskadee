@@ -17,7 +17,8 @@ function addRule(rules: string[], rule: string | undefined) {
 
 export async function generateCssSplit(
   styleKeys: ComponentStyleKeyMap,
-  shortenMap: ShortenCssClassNames
+  shortenMap: ShortenCssClassNames,
+  forceState?: boolean
 ): Promise<SplitCssBundles> {
   const coreRules: string[] = [];
   const effectsRules: string[] = []; // collect effects separately
@@ -33,7 +34,7 @@ export async function generateCssSplit(
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
           const cn = shortenMap[key] ?? key;
-          addRule(coreRules, generateCssRuleFromStyleKey(key, cn));
+          addRule(coreRules, generateCssRuleFromStyleKey(key, cn, forceState));
         }
       }
 
@@ -43,7 +44,7 @@ export async function generateCssSplit(
           const arr: string[] = el.scales[scaleKey] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            addRule(coreRules, generateCssRuleFromStyleKey(key, cn));
+            addRule(coreRules, generateCssRuleFromStyleKey(key, cn, forceState));
           }
         }
       }
@@ -55,7 +56,7 @@ export async function generateCssSplit(
           const arr: string[] = el.effects[st] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            addRule(effectsRules, generateCssRuleFromStyleKey(key, cn));
+            addRule(effectsRules, generateCssRuleFromStyleKey(key, cn, forceState));
           }
         }
       }
@@ -71,8 +72,8 @@ export async function generateCssSplit(
               const arr: string[] = byState[st] ?? [];
               for (const key of arr) {
                 const cn = shortenMap[key] ?? key;
-                // Only color keys are expected here; call color transformer directly with forceState=true
-                addRule(paletteRules[paletteName], transformColorKeyToCss(key as any, cn, true));
+                // Only color keys are expected here; call color transformer directly and pass forceState flag
+                addRule(paletteRules[paletteName], transformColorKeyToCss(key as any, cn, forceState));
               }
             }
           }

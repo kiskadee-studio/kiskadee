@@ -20,14 +20,14 @@ import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKe
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
 
-export function generateCssRuleFromStyleKey(styleKey: string, className: string): string {
+export function generateCssRuleFromStyleKey(styleKey: string, className: string, forceState?: boolean): string {
   let generatedCss: string | undefined;
 
   // Appearances ---------------------------------------------------------------------------------
   if (styleKey.startsWith('borderStyle')) {
     generatedCss = transformBorderStyleKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
-    generatedCss = transformShadowKeyToCss(styleKey, className);
+    generatedCss = transformShadowKeyToCss(styleKey, className, forceState);
   } else if (styleKey.startsWith('textAlign')) {
     generatedCss = transformTextAlignKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textLineType')) {
@@ -39,10 +39,8 @@ export function generateCssRuleFromStyleKey(styleKey: string, className: string)
   } else if (styleKey.startsWith('textFont')) {
     generatedCss = transformTextFontKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('borderRadius')) {
-    // Border-radius effect: transform both inline and reference keys, including responsive variants.
-    // We pass forceState=true to also emit class-forced selectors (e.g., ".-h", ".-s") in addition to
-    // native pseudos, matching the color pipeline behavior and enabling preview/testing states.
-    generatedCss = transformBorderRadiusKeyToCss(styleKey, className, true);
+    // Border-radius effect: supports native and forced selectors controlled by forceState.
+    generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState);
   } else if (generatedCss === undefined) {
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     if (matchScale != null) {
@@ -54,7 +52,7 @@ export function generateCssRuleFromStyleKey(styleKey: string, className: string)
         styleKey.startsWith(colorProperty)
       );
       if (matchColor != null) {
-        generatedCss = transformColorKeyToCss(styleKey, className, true);
+        generatedCss = transformColorKeyToCss(styleKey, className, forceState);
       }
     }
   }
@@ -110,7 +108,7 @@ export async function generateCssFromStyleKeyList(
   // Iterate over the sorted keys and generate CSS rules using tokens.
   for (const styleKey of Object.keys(cssClassNames)) {
     const className = cssClassNames[styleKey];
-    const generatedCss = generateCssRuleFromStyleKey(styleKey, className);
+    const generatedCss = generateCssRuleFromStyleKey(styleKey, className, true);
 
     // const cssRule = extractCssClassName(rule);
     // console.log({ styleKey, generatedCss });
