@@ -104,7 +104,14 @@ export async function generateCssSplit(
 
   const palettes: Record<string, string> = {};
   for (const p in paletteRules) {
-    const raw = paletteRules[p].sort().join('\n');
+    const raw = paletteRules[p]
+      .sort((a, b) => {
+        const wa = weight(a);
+        const wb = weight(b);
+        if (wa !== wb) return wa - wb; // non-native first, native last
+        return a.localeCompare(b);
+      })
+      .join('\n');
     const out = await postcss([combineMq()]).process(raw, { from: undefined });
     palettes[p] = out.css;
   }
