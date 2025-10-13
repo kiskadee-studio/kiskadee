@@ -1,8 +1,9 @@
 import {
-  classNameCssPseudoSelector,
   type HSLA,
-  type InteractionState,
-  InteractionStateCssPseudoSelector
+  InteractionStateCssPseudoSelector,
+  type PseudoSelectorKeys,
+  type StateActivatorKeys,
+  stateActivator
 } from '@kiskadee/schema';
 import {
   INVALID_SHADOW_COLOR_VALUE,
@@ -39,14 +40,14 @@ export function transformShadowKeyToCss(
   if (isUnsupportedProperty) throw new Error(UNSUPPORTED_PROPERTY_NAME('shadow', styleKey));
 
   // Determine interaction state or default to "rest".
-  const interactionState = (match![1] ?? 'rest') as InteractionState;
+  const interactionState = match![1] ?? 'rest';
   const hasUnsupportedInteractionState = !(interactionState in InteractionStateCssPseudoSelector);
   if (hasUnsupportedInteractionState) {
     throw new Error(UNSUPPORTED_INTERACTION_STATE(interactionState, styleKey));
   }
 
   // Map to CSS pseudo (empty when rest or non-native states like disabled/selected).
-  const cssPseudo = InteractionStateCssPseudoSelector[interactionState] || '';
+  const cssPseudo = InteractionStateCssPseudoSelector[interactionState as PseudoSelectorKeys] || '';
 
   // Parse value: x,y,blur,color
   const shadowValue = match![2];
@@ -71,7 +72,7 @@ export function transformShadowKeyToCss(
 
   // Build selectors
   const selectors: string[] = [];
-  const eSuffix = (classNameCssPseudoSelector as Record<string, string>).shadow || '-e';
+  const eSuffix = stateActivator.shadow;
 
   // Native branch when a native pseudo exists — always gate with shadow activation class
   if (cssPseudo) {
@@ -82,10 +83,11 @@ export function transformShadowKeyToCss(
   }
 
   // Forced branch uses classNameCssPseudoSelector + activator (.-a), and is also gated by shadow activation
-  const suffix = (classNameCssPseudoSelector as Record<string, string>)[interactionState] || '';
+  const suffix = stateActivator[interactionState as StateActivatorKeys] || '';
   const allowForced = suffix !== '' && (forceState === true || interactionState === 'disabled');
   if (allowForced) {
-    selectors.push(`.${className}.${eSuffix}.${suffix}.-a`);
+    const activator = stateActivator.activator;
+    selectors.push(`.${className}.${eSuffix}.${suffix}.${activator}`);
   }
 
   // Fallback: if nothing collected (e.g., non-native state without force enabled but should still style)

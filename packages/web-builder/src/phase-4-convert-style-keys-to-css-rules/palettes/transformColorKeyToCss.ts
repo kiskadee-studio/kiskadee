@@ -1,10 +1,13 @@
 import {
   type ColorProperty,
   CssColorProperty,
-  classNameCssPseudoSelector,
   type HSLA,
+  type InteractionState,
   InteractionStateCssPseudoSelector,
-  type StyleKey
+  type PseudoSelectorKeys,
+  type StateActivatorKeys,
+  type StyleKey,
+  stateActivator
 } from '@kiskadee/schema';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
@@ -57,15 +60,12 @@ export function transformColorKeyToCss(
   const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
   const colorProperty = CssColorProperty[propertyName];
 
-  // Known interaction states (in order of precedence if needed)
-  const stateKeys = ['hover', 'pressed', 'selected', 'focus', 'disabled', 'readOnly'] as const;
-
   const isRef = styleKey.includes('==');
 
   const extractStates = (): string[] => {
     // Capture the full state segment which may be compound, e.g., "selected:hover"
     if (isRef) {
-      // child is before "__"; state segment is after "=="
+      // the child is before "__"; a state segment is after "=="
       const child = styleKey.split('__')[0] ?? '';
       const idx = child.indexOf('==');
       if (idx === -1) return [];
@@ -81,40 +81,6 @@ export function transformColorKeyToCss(
     return seg ? seg.split(':') : [];
   };
 
-  // Build all selector alternatives for a list of states on the same element
-  type Opt = { kind: 'native' | 'forced'; value: string };
-  const optionsForState = (state: string): Opt[] => {
-    if (state === 'rest') return []; // no condition
-    // only accept known keys, but still allow if custom exists in maps
-    const native = (InteractionStateCssPseudoSelector as Record<string, string>)[state];
-    const forced = (classNameCssPseudoSelector as Record<string, string>)[state] ?? '';
-
-    const opts: Opt[] = [];
-    if (native && native !== '') {
-      opts.push({ kind: 'native', value: native });
-    }
-    const allowForced = state === 'disabled' || (forceState === true && forced !== '');
-    if (allowForced && forced !== '') {
-      opts.push({ kind: 'forced', value: forced });
-    }
-    return opts;
-  };
-
-  const cartesian = (arrs: Opt[][]): Opt[][] => {
-    return arrs.reduce<Opt[][]>((acc, curr) => {
-      if (acc.length === 0) return curr.map((v) => [v]);
-      const next: Opt[][] = [];
-      for (const a of acc) {
-        if (curr.length === 0) {
-          next.push(a);
-        } else {
-          for (const b of curr) next.push([...a, b]);
-        }
-      }
-      return next;
-    }, []);
-  };
-
   const states = extractStates();
   const filteredStates = states.filter((s) => s !== 'rest' && s !== '');
 
@@ -125,14 +91,14 @@ export function transformColorKeyToCss(
 
     // Split states by availability of native pseudo
     const nativeTokens = filteredStates
-      .map((s) => (InteractionStateCssPseudoSelector as Record<string, string>)[s] || '')
+      .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = filteredStates
-      .filter((s) => !((InteractionStateCssPseudoSelector as Record<string, string>)[s]))
-      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
+      .map((s) => stateActivator[s as StateActivatorKeys] || '')
       .filter((v) => v !== '');
     const allForcedSuffixes = filteredStates
-      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .map((s) => stateActivator[s as StateActivatorKeys] || '')
       .filter((v) => v !== '');
 
     const selectors: string[] = [];
@@ -140,15 +106,18 @@ export function transformColorKeyToCss(
     // Native branch: only use native pseudos; include non-native state classes but NEVER add activator
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
-      const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
-      // Do not append activator (.-a) to the native branch; activator only gates the forced branch
+      const nonNativeChunk =
+        nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+      // Do not append activator to the native branch; activator only gates the forced branch
       selectors.push(`.${className}${nativeChunk}${nonNativeChunk}`);
     }
 
     // Forced branch: include all forced classes for every state, gated by activator
-    const allowForced = allForcedSuffixes.length > 0 && (forceState === true || filteredStates.includes('disabled'));
+    const allowForced =
+      allForcedSuffixes.length > 0 && (forceState === true || filteredStates.includes('disabled'));
     if (allowForced) {
-      selectors.push(`.${className}.${allForcedSuffixes.join('.')}.-a`);
+      const activator = stateActivator.activator;
+      selectors.push(`.${className}.${allForcedSuffixes.join('.')}.${activator}`);
     }
 
     if (selectors.length === 0) {
@@ -169,14 +138,14 @@ export function transformColorKeyToCss(
 
   // Split states for parent
   const nativeTokens = parentStates
-    .map((s) => (InteractionStateCssPseudoSelector as Record<string, string>)[s] || '')
+    .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
     .filter((v) => v !== '');
   const nonNativeForcedSuffixes = parentStates
-    .filter((s) => !((InteractionStateCssPseudoSelector as Record<string, string>)[s]))
-    .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+    .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
+    .map((s) => stateActivator[s as StateActivatorKeys] || '')
     .filter((v) => v !== '');
   const allForcedSuffixes = parentStates
-    .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+    .map((s) => stateActivator[s as StateActivatorKeys] || '')
     .filter((v) => v !== '');
 
   const parentSelectors: string[] = [];
@@ -185,13 +154,18 @@ export function transformColorKeyToCss(
   // Only emit this branch when there is at least one native pseudo; otherwise it duplicates the forced-only case.
   if (nativeTokens.length > 0) {
     const nativeChunk = nativeTokens.join('');
-    const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
-    parentSelectors.push(`.-a${nativeChunk}${nonNativeChunk} .${className}`);
+    const nonNativeChunk =
+      nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+    {
+      const activator = stateActivator.activator;
+      parentSelectors.push(`.${activator}${nativeChunk}${nonNativeChunk} .${className}`);
+    }
   }
 
   // Forced parent branch: activator + all forced suffixes
   if (allForcedSuffixes.length > 0 && (forceState === true || parentStates.includes('disabled'))) {
-    parentSelectors.push(`.-a.${allForcedSuffixes.join('.')} .${className}`);
+    const activator = stateActivator.activator;
+    parentSelectors.push(`.${activator}.${allForcedSuffixes.join('.')} .${className}`);
   }
 
   if (parentSelectors.length === 0) {

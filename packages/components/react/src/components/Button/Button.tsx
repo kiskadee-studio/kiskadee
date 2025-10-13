@@ -2,14 +2,15 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import {
   type ClassNameByElementJSON,
-  classNameCssPseudoSelector as cn,
-  type ElementSizeValue
+  stateActivator as cn,
+  type ElementSizeValue,
+  type StateActivatorKeys
 } from '@kiskadee/schema';
 import { memo, useMemo } from 'react';
 import { useKiskadee } from '../../contexts/KiskadeeContext.tsx';
 import './Button.scss';
 
-export type ButtonStatus = Exclude<keyof typeof cn, 'selected' | 'shadow'>;
+export type ButtonStatus = Exclude<StateActivatorKeys, 'selected' | 'shadow'>;
 export type ButtonProps = HeadlessButtonProps & {
   /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected' and 'shadow'. */
   status?: ButtonStatus;
@@ -78,7 +79,7 @@ function Button(props: ButtonProps) {
       if (forced) activation += ` ${forced}`;
     }
     if (controlState) activation += ` ${cn.selected}`;
-    if (activation) activation += ' -a';
+    if (activation) activation += ` ${cn.activator}`;
 
     // Shadow activation flag (does not imply activator -a)
     const shadowFlag = shadow ? ` ${cn.shadow}` : '';
@@ -88,7 +89,18 @@ function Button(props: ButtonProps) {
       e2: e2Base,
       e3: e3Base
     };
-  }, [e1, e2, e3, status, controlState, scale, shadow, classNames.e1, classNames.e2, classNames.e3]);
+  }, [
+    e1,
+    e2,
+    e3,
+    status,
+    controlState,
+    scale,
+    shadow,
+    classNames.e1,
+    classNames.e2,
+    classNames.e3
+  ]);
 
   // Map Kiskadee status to native/ARIA attributes
   const ariaDisabled = restProps['aria-disabled'];

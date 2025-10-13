@@ -1,7 +1,16 @@
-import { breakpoints as schemaBreakpoints, classNameCssPseudoSelector, InteractionStateCssPseudoSelector, type StyleKey } from '@kiskadee/schema';
+import {
+  InteractionStateCssPseudoSelector,
+  type PseudoSelectorKeys,
+  type StateActivatorKeys,
+  type StyleKey,
+  breakpoints as schemaBreakpoints,
+  stateActivator
+} from '@kiskadee/schema';
 
-export const ERROR_INVALID_NUMERIC_KEY_FORMAT = 'Invalid key format. Expected numeric value in square brackets at the end.';
-export const ERROR_REF_REQUIRE_STATE_NUMERIC = 'Invalid key format. Reference "==" requires a preceding non-rest interaction state.';
+export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
+  'Invalid key format. Expected numeric value in square brackets at the end.';
+export const ERROR_REF_REQUIRE_STATE_NUMERIC =
+  'Invalid key format. Reference "==" requires a preceding non-rest interaction state.';
 
 /**
  * Transform a borderRadius style key into a CSS rule string.
@@ -18,7 +27,7 @@ export const ERROR_REF_REQUIRE_STATE_NUMERIC = 'Invalid key format. Reference "=
  *
  * States use two kinds of selectors:
  * - Native pseudo-classes (hover, focus, active for "pressed"), sourced from InteractionStateCssPseudoSelector
- * - Forced class suffixes (e.g., -h for hover, -f for focus, -s for selected), sourced from classNameCssPseudoSelector
+ * - Forced class suffixes (e.g., -h for hover, -f for focus, -s for selected), sourced from classNameStateClassMap (which also exposes the global activator and other utility classes)
  *
  * Selector emission rules (aligned with transformColorKeyToCss):
  * - Inline (no "==")
@@ -37,7 +46,11 @@ export const ERROR_REF_REQUIRE_STATE_NUMERIC = 'Invalid key format. Reference "=
  * The function only constructs selectors and the "border-radius" declaration; it does not validate
  * whether specific state combinations are semantically meaningful.
  */
-export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: string, forceState?: boolean): string {
+export function transformBorderRadiusKeyToCss(
+  styleKey: StyleKey,
+  className: string,
+  forceState?: boolean
+): string {
   // 1) Parse the numeric radius after "__". Accept both plain ("__18") and bracketed ("__[18]").
   const afterValueSep = styleKey.split('__')[1] ?? '';
   let raw = afterValueSep.trim();
@@ -72,7 +85,8 @@ export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: str
     const endDoubleUnderscore = rest.indexOf('__');
     const endPlusPlus = rest.indexOf('++');
     let cutAt: number;
-    if (endPlusPlus !== -1 && endDoubleUnderscore !== -1) cutAt = Math.min(endPlusPlus, endDoubleUnderscore);
+    if (endPlusPlus !== -1 && endDoubleUnderscore !== -1)
+      cutAt = Math.min(endPlusPlus, endDoubleUnderscore);
     else if (endPlusPlus !== -1) cutAt = endPlusPlus;
     else cutAt = endDoubleUnderscore;
     const seg = cutAt === -1 ? rest : rest.slice(0, cutAt);
@@ -88,14 +102,14 @@ export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: str
 
     // Split states into those with native CSS pseudos and those that only exist as forced classes
     const nativeTokens = states
-      .map((s) => (InteractionStateCssPseudoSelector as Record<string, string>)[s] || '')
+      .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = states
-      .filter((s) => !((InteractionStateCssPseudoSelector as Record<string, string>)[s]))
-      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
+      .map((s) => stateActivator[s as StateActivatorKeys] || '')
       .filter((v) => v !== '');
     const allForcedSuffixes = states
-      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .map((s) => stateActivator[s as StateActivatorKeys] || '')
       .filter((v) => v !== '');
 
     const selectors: string[] = [];
@@ -103,14 +117,17 @@ export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: str
     // Native branch: .abc:hover[...non-native classes]; never append activator (.-a) here.
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
-      const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+      const nonNativeChunk =
+        nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
       // Do not append activator (.-a) for the native branch; activator gates only the forced branch
       selectors.push(`.${className}${nativeChunk}${nonNativeChunk}`);
     }
 
     // Forced branch: .abc.-s.-h.-a (when allowed)
-    const allowForced = allForcedSuffixes.length > 0 && (forceState === true || states.includes('disabled'));
-    if (allowForced) selectors.push(`.${className}.${allForcedSuffixes.join('.')}.-a`);
+    const allowForced =
+      allForcedSuffixes.length > 0 && (forceState === true || states.includes('disabled'));
+    const activator = stateActivator.activator;
+    if (allowForced) selectors.push(`.${className}.${allForcedSuffixes.join('.')}.${activator}`);
 
     // If we couldn't build any branch, fall back to base selector
     if (selectors.length === 0) return [`.${className}`];
@@ -123,14 +140,14 @@ export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: str
     if (parentStates.length === 0) throw new Error(ERROR_REF_REQUIRE_STATE_NUMERIC);
 
     const nativeTokens = parentStates
-      .map((s) => (InteractionStateCssPseudoSelector as Record<string, string>)[s] || '')
+      .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = parentStates
-      .filter((s) => !((InteractionStateCssPseudoSelector as Record<string, string>)[s]))
-      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
+      .map((s) => stateActivator[s as StateActivatorKeys] || '')
       .filter((v) => v !== '');
     const allForcedSuffixes = parentStates
-      .map((s) => (classNameCssPseudoSelector as Record<string, string>)[s] || '')
+      .map((s) => stateActivator[s as StateActivatorKeys] || '')
       .filter((v) => v !== '');
 
     const parentSelectors: string[] = [];
@@ -138,13 +155,21 @@ export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: str
     // Native parent branch: .-a:hover[.nonNative] .abc
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
-      const nonNativeChunk = nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
-      parentSelectors.push(`.-a${nativeChunk}${nonNativeChunk} .${className}`);
+      const nonNativeChunk =
+        nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+      {
+        const activator = stateActivator.activator;
+        parentSelectors.push(`.${activator}${nativeChunk}${nonNativeChunk} .${className}`);
+      }
     }
 
     // Forced parent branch: .-a.-s.-h .abc (when allowed)
-    if (allForcedSuffixes.length > 0 && (forceState === true || parentStates.includes('disabled'))) {
-      parentSelectors.push(`.-a.${allForcedSuffixes.join('.')} .${className}`);
+    if (
+      allForcedSuffixes.length > 0 &&
+      (forceState === true || parentStates.includes('disabled'))
+    ) {
+      const activator = stateActivator.activator;
+      parentSelectors.push(`.${activator}.${allForcedSuffixes.join('.')} .${className}`);
     }
 
     if (parentSelectors.length === 0) throw new Error(ERROR_REF_REQUIRE_STATE_NUMERIC);
@@ -171,7 +196,7 @@ export function transformBorderRadiusKeyToCss(styleKey: StyleKey, className: str
     }
   }
 
-  // Assemble final CSS rule: join selectors by comma and emit border-radius with the parsed px value.
+  // Assemble the final CSS rule: join selectors by comma and emit border-radius with the parsed px value.
   const selectors = isRef ? buildRefSelectors() : buildInlineSelectors();
   const selector = selectors.join(', ');
   const rule = `${selector} { border-radius: ${px}px }`;

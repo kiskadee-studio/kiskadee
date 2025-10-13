@@ -70,7 +70,7 @@ export type InteractionState =
  * How to read this mapping:
  *  - If a state has a native CSS pseudo-selector, map to that selector (e.g., ":hover", ":focus").
  *  - If a state has no native selector, map to an empty string (""). The generator will then rely on
- *    a class-based fallback (see classNameCssPseudoSelector) to emulate or force that state.
+ *    a class-based fallback (see classNameStateClassMap) to emulate or force that state (including utility classes such as the global activator).
  *  - "rest" intentionally maps to "" (no pseudo) because it is the baseline state.
  */
 export const InteractionStateCssPseudoSelector: Record<InteractionState, string> = {
@@ -89,6 +89,12 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
 };
 
 /**
+ * Narrow type for the valid keys of InteractionStateCssPseudoSelector.
+ * Prefer using this alias instead of repeating `keyof typeof InteractionStateCssPseudoSelector`.
+ */
+export type PseudoSelectorKeys = keyof typeof InteractionStateCssPseudoSelector;
+
+/**
  * Class suffixes used to force or emulate interaction states when:
  *  1) the state has no native CSS pseudo-selector, or
  *  2) you need to visually force a state (e.g., in a preview, during tests, or for a parent-driven
@@ -105,7 +111,7 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
  *  - For custom or contextual states (pseudoDisabled, selected), use these suffixes to trigger the
  *    desired styles.
  */
-export const classNameCssPseudoSelector = {
+export const stateActivator = {
   hover: '-h', // Force "hover" appearance without real pointer hover
   pressed: '-p', // Force "pressed" appearance without a real press/click
   selected: '-s', // Mark an element as selected/active
@@ -114,8 +120,15 @@ export const classNameCssPseudoSelector = {
   // We no longer keep a separate key for pseudoDisabled here; use the "disabled" entry instead.
   disabled: '-d',
   readOnly: '-r', // Force read-only visuals
-  shadow: '-e' // Activation class for shadow/elevation
+  shadow: '-e', // Activation class for shadow/elevation
+  activator: '-a' // Global activator class used to enable forced-state variants
 };
+
+/**
+ * Narrow type for the valid keys of stateActivator.
+ * Prefer using this alias instead of repeating `keyof typeof stateActivator`.
+ */
+export type StateActivatorKeys = keyof typeof stateActivator;
 
 export type SelectedInteractionState = keyof SelectedInteractionSubMap;
 export type SelectedInteractionStateToken = `selected:${SelectedInteractionState}`;
