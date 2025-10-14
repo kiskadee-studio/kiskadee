@@ -24,22 +24,15 @@ describe('buildStyleKey', () => {
       expect(key).toBe('boxColor==selected:hover__[2,3,4,1]');
     });
 
-    it('throws when isRef=true with selected:rest', () => {
-      let caught: unknown;
-      try {
-        buildStyleKey({
-          propertyName: 'boxColor',
-          value: '[1,1,1,1]',
-          controlState: true,
-          interactionState: 'rest',
-          isRef: true
-        });
-      } catch (err) {
-        caught = err;
-      }
-      expect(caught).toBeInstanceOf(Error);
-      const msg = (caught as Error).message;
-      expect(msg).toMatch(/when isRef=true you must supply a non-'rest' interaction state/);
+    it('allows isRef=true with selected:rest (parent-selected rest) and generates ==selected:rest', () => {
+      const key = buildStyleKey({
+        propertyName: 'boxColor',
+        value: '[1,1,1,1]',
+        controlState: true,
+        interactionState: 'rest',
+        isRef: true
+      });
+      expect(key).toBe('boxColor==selected:rest__[1,1,1,1]');
     });
 
     it('throws when controlState=true with disabled', () => {

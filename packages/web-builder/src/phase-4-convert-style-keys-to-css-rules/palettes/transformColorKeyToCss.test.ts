@@ -142,6 +142,18 @@ describe('transformColorKeyToCss', () => {
         });
       });
 
+      describe('==selected:rest', () => {
+        it('forceState=true (forced class for non-native selected)', () => {
+          const force = true as const;
+          const result = transformColorKeyToCss(
+            'textColor==selected:rest__[0,0,0,1]',
+            className,
+            force
+          );
+          expect(result).toEqual('.-a.-s .abc { color: #000 }');
+        });
+      });
+
       describe('==selected:hover', () => {
         it('forceState=false', () => {
           const force = false as const;

@@ -48,8 +48,8 @@ export const schema: Schema = {
                   focus: palette.p1.primary[500],
                   selected: {
                     rest: palette.p1.primary[100]!,
-                    hover: [210, 98.33, 62, 1],
-                    pressed: [210, 98.33, 35, 1]
+                    hover: palette.p1.primary[80],
+                    pressed: palette.p1.primary[200]
                   }
                 }
               }
@@ -98,12 +98,10 @@ export const schema: Schema = {
               textColor: {
                 primary: {
                   rest: [0, 0, 100, 1],
-                  disabled: { ref: palette.p1.neutral[600]! }
-                  // selected: {
-                  //   ref: {
-                  //     rest: palette.p1.neutral[700]
-                  //   }
-                  // }
+                  disabled: { ref: palette.p1.neutral[600]! },
+                  selected: {
+                    rest: { ref: palette.p1.neutral[700]! }
+                  }
                 }
               }
             }

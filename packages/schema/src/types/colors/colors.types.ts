@@ -146,7 +146,7 @@ export type SelectedInteractionStateToken = `selected:${SelectedInteractionState
 // - Does NOT include nested selected/disabled/readOnly to avoid combinatorial explosion;
 //   disabled/readOnly remain top-level with global precedence.
 export type SelectedInteractionSubMap = {
-  rest: Color; // on/rest
+  rest: ColorValue; // on/rest now supports { ref: Color } as well
   hover?: ColorValue; // on/hover
   pressed?: ColorValue; // on/pressed
   focus?: ColorValue; // on/focus

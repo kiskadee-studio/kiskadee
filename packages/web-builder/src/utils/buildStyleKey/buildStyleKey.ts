@@ -168,8 +168,9 @@ export function buildStyleKey({
 
   // 3) Reference branch (only for non-size keys)
   //    Format: property==state__value
-  //    Requires: isRef===true and effectiveState !== undefined and not a 'rest' variant
-  const isRestVariant = effectiveState === 'rest' || effectiveState === 'selected:rest';
+  //    Requires: isRef===true and effectiveState !== undefined and not a base 'rest'
+  //    Note: selected:rest is allowed (ref under selected scope)
+  const isRestVariant = effectiveState === 'rest';
   if (isRef === true && effectiveState !== undefined && !isRestVariant) {
     return `${propertyName}${SEPARATORS.REF_STATE}${effectiveState}${SEPARATORS.VALUE}${valueString}`;
   }
