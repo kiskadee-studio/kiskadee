@@ -1,3 +1,5 @@
+import type { PaletteName } from '../../schema';
+
 /** Represents a hue value in degrees ranging from 0 to 360. */
 type Hue = number;
 
@@ -229,3 +231,88 @@ type ColorEntry = InteractionStateColorMap | SemanticColorMap;
  * interaction-state colors or intent-based color maps.
  */
 export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
+
+// -------------------------------------------------------------------------------------------------
+// Color Scale System for Theme-Level Color Palettes
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Light tones: 0-100 with increments of 10.
+ * These provide fine-grained control over light shades, important for subtle UI elements.
+ * With 11 tones covering a 10% lightness range, each step represents approximately 1% increment.
+ */
+type LightTones = 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100;
+
+/**
+ * Dark tones: 100-1000 with increments of 100.
+ * These cover medium to dark shades with broader steps.
+ */
+type DarkTones = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 1000;
+
+/**
+ * Complete the color tone scale from 0 (lightest/white) to 1000 (darkest/black).
+ * Combines light and dark tone ranges. Note that 100 appears in both ranges but TypeScript deduplicates it.
+ */
+export type ColorTone = LightTones | DarkTones;
+
+/**
+ * Semantic color categories for the Kiskadee design system.
+ *
+ * - `primary`: Main brand color, used for prominent elements and actions
+ * - `secondary`: Supporting color that complements primary
+ * - `green-like`: Colors associated with positive actions, growth, confirmation (not limited to "success")
+ * - `yellow-like`: Colors for attention, highlights, caution (not limited to "warning")
+ * - `red-like`: Colors for urgency, importance, alerts (not limited to "danger")
+ * - `neutral`: Grayscale colors for text, borders, backgrounds
+ *
+ * The "-like" suffix indicates artistic freedom: the actual hue can vary
+ * (e.g., green-like could be teal, mint, emerald) while maintaining the
+ * communicative intent.
+ */
+export type SemanticColorCategory =
+  | 'primary'
+  | 'secondary'
+  | 'green-like'
+  | 'yellow-like'
+  | 'red-like'
+  | 'neutral';
+
+/**
+ * A complete color scale mapping tone values (0-1000) to color definitions.
+ *
+ * Scale interpretation:
+ * - 0: Pure white (or lightest variant)
+ * - 5-100: Light tones (increments of 10, with 5 as exception for ultra-light)
+ * - 100-1000: Medium to dark tones (increments of 100)
+ * - 1000: Pure black (or darkest variant)
+ *
+ * Example:
+ * ```typescript
+ * const primaryScale: ColorScale = {
+ *   0: [256, 0, 100, 1],      // white
+ *   5: [256, 10, 98, 1],      // ultra-light
+ *   10: [256, 15, 95, 1],
+ *   20: [256, 20, 90, 1],
+ *   // ...
+ *   500: [256, 50, 50, 1],    // mid-tone
+ *   // ...
+ *   1000: [256, 50, 5, 1]     // near-black
+ * };
+ * ```
+ */
+export type ColorScale = Partial<Record<ColorTone, Color>>;
+
+/**
+ * Complete color palette for a design system theme.
+ * Maps each semantic category to its full tonal scale.
+ */
+export type ColorPalette = Record<SemanticColorCategory, ColorScale>;
+
+/**
+ * Root colors definition in the Schema.
+ *
+ * Supports multiple palette variants (white label segments) using the same
+ * naming convention as component palettes (e.g., p1, p2, p3).
+ * Each variant contains a complete set of semantic categories with their tonal scales.
+ */
+export type SchemaPalette = Record<PaletteName, ColorPalette>;

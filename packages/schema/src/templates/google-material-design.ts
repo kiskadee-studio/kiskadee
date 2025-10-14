@@ -40,14 +40,14 @@ export const schema: Schema = {
             p1: {
               boxColor: {
                 primary: {
-                  rest: [256.43, 34.43, 47.84, 1],
+                  rest: palette.p1.primary[500]!,
                   // hover: [256, 34, 48, 1], // official
-                  hover: [256, 34, 65, 1],
-                  pressed: [256, 34, 35, 1],
-                  disabled: [256.43, 34.43, 47.84, 0.5],
-                  focus: [339.61, 82.19, 51.57, 1],
+                  hover: palette.p1.primary[400],
+                  pressed: palette.p1.primary[600],
+                  disabled: palette.p1.neutral[100],
+                  focus: palette.p1.primary[500],
                   selected: {
-                    rest: [210, 98.33, 47.06, 1],
+                    rest: palette.p1.primary[100]!,
                     hover: [210, 98.33, 62, 1],
                     pressed: [210, 98.33, 35, 1]
                   }
@@ -60,10 +60,10 @@ export const schema: Schema = {
             // (rest > hover/focus > pressed), emulating MD3 "animated corners". This enables Kiskadee to
             // generate stateful CSS for rounded corners.
             borderRadius: {
-              rest: 20,
-              hover: 14,
-              pressed: 8,
-              focus: 14
+              rest: 20
+              // hover: 14,
+              // pressed: 8,
+              // focus: 14
               // selected: {
               //   rest: 0,
               //   hover: 12,
@@ -97,7 +97,13 @@ export const schema: Schema = {
             p1: {
               textColor: {
                 primary: {
-                  rest: [0, 0, 100, 1]
+                  rest: [0, 0, 100, 1],
+                  disabled: { ref: palette.p1.neutral[600]! }
+                  // selected: {
+                  //   ref: {
+                  //     rest: palette.p1.neutral[700]
+                  //   }
+                  // }
                 }
               }
             }

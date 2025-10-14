@@ -1,5 +1,10 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
-import type { ColorSchema, InteractionState, SemanticColor } from './types/colors/colors.types';
+import type {
+  ColorSchema,
+  InteractionState,
+  SchemaPalette,
+  SemanticColor
+} from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ElementEffects } from './types/effects';
 import type { ScaleSchema } from './types/scales/scales.types';
@@ -79,13 +84,18 @@ export interface ClassNameMap {
 
 type Components = Partial<Record<ComponentName, { elements: Elements }>>;
 
-export type Schema = {
+export type SchemaMetadata = {
   name: string;
   version: [number, number, number];
   author: string;
   breakpoints: Breakpoints;
+};
+
+export type Schema = SchemaMetadata & {
   components: Components;
 };
+
+export type Palette = SchemaPalette;
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNamesByInteractionStateJSON = Partial<Record<string, string[]>>;
