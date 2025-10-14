@@ -46,6 +46,7 @@ function Button(props: ButtonProps) {
     scale = 's:md:1',
     disabled,
     shadow = false,
+    tabIndex,
     ...restProps
   } = props;
   const {
@@ -125,6 +126,8 @@ function Button(props: ButtonProps) {
       aria-disabled={ariaDisabled}
       aria-pressed={ariaPressed}
       classNames={computed}
+      // Safari (macOS and iOS) requires tabIndex to support focus
+      tabIndex={tabIndex ?? 0}
     />
   );
 }
