@@ -3,6 +3,8 @@
   cursor: pointer;
   user-select: none;
   text-wrap: nowrap;
+  // Prevent the button from being stretched by a flex container (align-items: stretch).
+  align-self: flex-start;
 
   /* Respect disabled/aria-disabled states for cursor affordance (non-visual) */
   &[disabled], &[aria-disabled="true"] {
