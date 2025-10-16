@@ -57,7 +57,7 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
 
     const result = convertElementBorderRadiusToStyleKeys(schema);
     expect(result).toEqual({
-      rest: ['borderRadius++s:sm:1__20', 'borderRadius++s:md:1__18']
+      rest: ['borderRadius__20', 'borderRadius__18']
     });
   });
 
@@ -86,7 +86,7 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
     const result = convertElementBorderRadiusToStyleKeys(schema);
 
     expect(result).toEqual({
-      'selected:hover': ['borderRadius--selected:hover++s:lg:1__4']
+      'selected:hover': ['borderRadius--selected:hover__4']
     });
   });
 });

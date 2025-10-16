@@ -2,7 +2,7 @@ import { Link, Route, Routes } from 'react-router';
 import './App.css';
 
 import { useKiskadee } from './contexts/KiskadeeContext.tsx';
-import ButtonPage from './pages/Button';
+import ButtonPage from './pages/Button/Button.tsx';
 import TabsPage from './pages/Tabs';
 import TextPage from './pages/Text';
 

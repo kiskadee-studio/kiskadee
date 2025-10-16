@@ -23,7 +23,7 @@ describe('convertElementScalesToStyleKeys', () => {
     const scale: ScaleSchema = { textSize: { 's:md:1': 14 } };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
-      's:md:1': ['textSize++s:md:1__14']
+      's:md:1': ['textSize__14']
     });
   });
 
@@ -33,7 +33,7 @@ describe('convertElementScalesToStyleKeys', () => {
     };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
-      's:md:1': ['textSize__16', 'textSize++s:md:1::bp:lg:2__10']
+      's:md:1': ['textSize__16', 'textSize__10']
     });
   });
 
@@ -49,13 +49,8 @@ describe('convertElementScalesToStyleKeys', () => {
 
     const expectedResult: StyleKeyByElement['scales'] = {
       's:all': ['marginTop__20'],
-      's:sm:1': ['textSize__14', 'textSize++s:sm:1::bp:lg:1__12'],
-      's:md:1': [
-        'textSize__16',
-        'textSize++s:md:1::bp:lg:1__14',
-        'paddingBottom++s:md:1::bp:sm:1__10',
-        'paddingBottom++s:md:1::bp:lg:2__8'
-      ]
+      's:sm:1': ['textSize__14', 'textSize__12'],
+      's:md:1': ['textSize__16', 'textSize__14', 'paddingBottom__10', 'paddingBottom__8']
     };
 
     const result = convertElementScalesToStyleKeys(scale);

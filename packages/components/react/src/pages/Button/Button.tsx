@@ -1,4 +1,5 @@
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
+import s from './Button.module.scss';
 
 export default function ButtonPage() {
   return (
@@ -17,13 +18,29 @@ export default function ButtonPage() {
           icon={<span aria-hidden>🔔</span>}
           onClick={() => alert('Somente ícone')}
         />
-        <Button label="Rest" />
-        <Button label="Hover" status="hover" />
-        <Button label="Focus" status="focus" />
-        <Button label="Pressed" status="pressed" />
-        <Button label="Selected" controlState={true} />
-        <Button label="Disabled" status="disabled" />
-        <Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Primary</h3>
+          <div className={s['example-states']}>
+            <Button label="Rest" />
+            <Button label="Hover" status="hover" />
+            <Button label="Focus" status="focus" />
+            <Button label="Pressed" status="pressed" />
+            <Button label="Selected" controlState={true} />
+            <Button label="Disabled" status="disabled" />
+            {/*<Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />*/}
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
+          <h3>Size: small</h3>
+          <div className={s['example-states']}>
+            <Button label="Small 2" scale="s:sm:2" />
+            <Button label="Small" scale="s:sm:1" />
+            <Button label="Medium" scale="s:md:1" />
+            <Button label="Large" scale="s:lg:1" />
+            <Button label="Large 2" scale="s:lg:2" />
+            <Button label="Large 3" scale="s:lg:3" />
+          </div>
+        </div>
         <div>
           <h3>Selected</h3>
           <Button label="Rest" controlState={true} />

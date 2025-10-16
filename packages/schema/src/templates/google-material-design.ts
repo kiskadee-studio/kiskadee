@@ -15,26 +15,40 @@ export const schema: Schema = {
           },
           scales: {
             paddingTop: {
-              's:sm:1': 10,
-              's:md:1': 12,
-              's:lg:1': 14
+              's:sm:1': 8,
+              's:md:1': 10,
+              's:lg:1': 16,
+              's:lg:2': 32,
+              's:lg:3': 48
             },
             paddingBottom: {
-              's:sm:1': 10,
-              's:md:1': 12,
-              's:lg:1': 14
+              's:sm:1': 8,
+              's:md:1': 10,
+              's:lg:1': 16,
+              's:lg:2': 32,
+              's:lg:3': 48
             },
             paddingLeft: {
-              's:sm:1': 16,
-              's:md:1': 18,
-              's:lg:1': 20
+              's:sm:1': 12,
+              's:md:1': 16,
+              's:lg:1': 24,
+              's:lg:2': 48,
+              's:lg:3': 64
             },
             paddingRight: {
-              's:sm:1': 16,
-              's:md:1': 18,
-              's:lg:1': 20
+              's:sm:1': 12,
+              's:md:1': 16,
+              's:lg:1': 24,
+              's:lg:2': 48,
+              's:lg:3': 64
             },
-            borderRadius: 20
+            borderRadius: {
+              's:sm:1': 18,
+              's:md:1': 20,
+              's:lg:1': 28,
+              's:lg:2': 48,
+              's:lg:3': 68
+            }
           },
           palettes: {
             p1: {
@@ -60,16 +74,16 @@ export const schema: Schema = {
             // (rest > hover/focus > pressed), emulating MD3 "animated corners". This enables Kiskadee to
             // generate stateful CSS for rounded corners.
             borderRadius: {
-              rest: 20
+              rest: 20,
               // hover: 14,
-              // pressed: 8,
+              // pressed: 16,
               // focus: 14
-              // selected: {
-              //   rest: 0,
-              //   hover: 12,
-              //   pressed: 0,
-              //   focus: 24
-              // }
+              selected: {
+                rest: 16,
+                hover: 14,
+                pressed: 12,
+                focus: 14
+              }
             },
             shadow: {
               // MD3-like elevation: subtle at rest, stronger on hover/pressed, focused similar to hover.
@@ -107,8 +121,21 @@ export const schema: Schema = {
             }
           },
           scales: {
-            textSize: 14,
-            textHeight: 20
+            textSize: {
+              's:sm:1': 14,
+              's:md:1': 14,
+              's:lg:1': 16,
+              's:lg:2': 24,
+              's:lg:3': 32
+            },
+            textHeight: {
+              // TODO: Bug, tá gerando duplicado, pq a style key tem tamanho
+              's:sm:1': 20,
+              's:md:1': 20,
+              's:lg:1': 24,
+              's:lg:2': 32,
+              's:lg:3': 40
+            }
           }
         }
       }

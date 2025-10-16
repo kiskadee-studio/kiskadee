@@ -62,15 +62,24 @@ function Button(props: ButtonProps) {
     const el2 = collectStr(e2);
     const el3 = collectStr(e3);
 
-    // Base strings with optional consumer overrides (no arrays, no trims)
-    const sAll = e1?.s?.['s:all'] ?? '';
-    const sScale = e1?.s?.[scale];
+    // Include scales for e1 (root) and e2 (label)
+    const sAllE1 = e1?.s?.['s:all'] ?? '';
+    const sScaleE1 = e1?.s?.[scale] ?? '';
+    const sAllE2 = e2?.s?.['s:all'] ?? '';
+    const sScaleE2 = e2?.s?.[scale] ?? '';
+
     const e1Base =
       (el1 ? `${el1}` : '') +
-      (sAll ? ` ${sAll}` : '') +
+      (sAllE1 ? ` ${sAllE1}` : '') +
       (classNames.e1 ? ` ${classNames.e1}` : '') +
-      (sScale ? ` ${sScale}` : '');
-    const e2Base = (el2 || '') + (classNames.e2 ? (el2 ? ' ' : '') + classNames.e2 : '');
+      (sScaleE1 ? ` ${sScaleE1}` : '');
+
+    const e2Base =
+      (el2 ? `${el2}` : '') +
+      (sAllE2 ? ` ${sAllE2}` : '') +
+      (classNames.e2 ? ` ${classNames.e2}` : '') +
+      (sScaleE2 ? ` ${sScaleE2}` : '');
+
     const e3Base = (el3 || '') + (classNames.e3 ? (el3 ? ' ' : '') + classNames.e3 : '');
 
     // Forced activation classes (status + selected) built via direct concatenation

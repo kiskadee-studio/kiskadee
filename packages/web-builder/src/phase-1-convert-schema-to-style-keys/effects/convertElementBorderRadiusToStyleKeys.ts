@@ -74,13 +74,12 @@ export function convertElementBorderRadiusToStyleKeys(
             continue;
           }
 
-          // For specific size tokens, use buildStyleKey to encode state + size consistently.
+          // For specific size tokens, DO NOT encode size in the style key; size is applied via class mapping later.
           const styleKey = buildStyleKey({
             propertyName: 'borderRadius',
             value: px,
             interactionState: interactionState,
-            controlState: controlState || undefined,
-            size: token as ElementSizeValue // ElementSizeValue; tokens here exclude 's:all'
+            controlState: controlState || undefined
           });
           deepUpdate(out, [stateLabel], (arr: string[] = []) => [...arr, styleKey]);
         }

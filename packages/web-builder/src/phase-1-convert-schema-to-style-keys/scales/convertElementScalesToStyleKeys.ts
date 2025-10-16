@@ -31,8 +31,8 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
 
         if (typeof sizeValue === 'number') {
           // Case 2: Size-specific number without breakpoint
-          // Include the size token in the style key
-          const styleKey = buildStyleKey({ propertyName, size, value: sizeValue });
+          // Do NOT include the size token in the style key (size controls are applied later)
+          const styleKey = buildStyleKey({ propertyName, value: sizeValue });
           deepUpdate(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
         }
 
@@ -48,8 +48,8 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
             if (breakpoint === 'bp:all') {
               styleKey = buildStyleKey({ propertyName, value });
             } else {
-              // Otherwise, include both size and breakpoint in the key
-              styleKey = buildStyleKey({ propertyName, size, value, breakpoint });
+              // Do NOT include size in the key; only breakpoint varies here
+              styleKey = buildStyleKey({ propertyName, value, breakpoint });
             }
 
             deepUpdate(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
