@@ -4,12 +4,6 @@ import { BrowserRouter } from 'react-router';
 import './index.css';
 import './global.scss';
 import type { ComponentClassNameMapJSON } from '@kiskadee/schema';
-// TODO: increase therms
-// TODO: increase dynamic imports
-import classNamesMaterialCore from '../../../web-builder/build/material-design/classNamesMap.json';
-// Import core JSON maps for the three templates (without palettes)
-import classNamesTemplate1Core from '../../../web-builder/build/template-1/classNamesMap.json';
-import classNamesTemplate2Core from '../../../web-builder/build/template-2/classNamesMap.json';
 import App from './App.tsx';
 import { KiskadeeContext } from './contexts/KiskadeeContext.tsx';
 
@@ -22,38 +16,35 @@ if (typeof document !== 'undefined') {
   document.documentElement.classList.add('no-transitions');
 }
 
-// Compute CSS URLs for the three templates without injecting them automatically
-const cssUrlTemplate1 = new URL(
-  '../../../web-builder/build/template-1/kiskadee.css',
-  import.meta.url
-).toString();
-const cssUrlTemplate2 = new URL(
-  '../../../web-builder/build/template-2/kiskadee.css',
-  import.meta.url
-).toString();
-const cssUrlMaterial = new URL(
-  '../../../web-builder/build/material-design/kiskadee.css',
-  import.meta.url
-).toString();
+// Auto-discover available templates from web-builder/build using Vite glob imports
+const coreMaps = import.meta.glob('../../../web-builder/build/*/classNamesMap.json', {
+  eager: true
+}) as Record<string, { default: ComponentClassNameMapJSON } | ComponentClassNameMapJSON>;
 
-type TemplateKey = 'template-1' | 'template-2' | 'material-design';
+function extractTemplateKeyFromPath(p: string): string {
+  const m = p.match(/build\/(.*?)\//);
+  return m ? m[1] : p;
+}
 
-const templates: Record<TemplateKey, { core: ComponentClassNameMapJSON; cssUrl: string }> = {
-  'template-1': {
-    core: classNamesTemplate1Core as ComponentClassNameMapJSON,
-    cssUrl: cssUrlTemplate1
-  },
-  'template-2': {
-    core: classNamesTemplate2Core as ComponentClassNameMapJSON,
-    cssUrl: cssUrlTemplate2
-  },
-  'material-design': {
-    core: classNamesMaterialCore as ComponentClassNameMapJSON,
-    cssUrl: cssUrlMaterial
+const templates = (() => {
+  const out: Record<string, { core: ComponentClassNameMapJSON; cssUrl: string }> = {};
+
+  for (const p in coreMaps) {
+    const key = extractTemplateKeyFromPath(p);
+    const mod = coreMaps[p] as any;
+    const core = mod?.default ?? mod;
+    if (!out[key]) out[key] = { core, cssUrl: '' } as any;
+    else out[key].core = core;
   }
-};
+
+  return out;
+})();
+
+type TemplateKey = keyof typeof templates | string;
 
 function Root() {
+  const templateKeys = useMemo(() => Object.keys(templates), []);
+
   const [palette, setPalette] = useState<string>(() => {
     const saved =
       typeof localStorage !== 'undefined' ? localStorage.getItem('kiskadee.palette') : null;
@@ -65,7 +56,8 @@ function Root() {
         ? (localStorage.getItem('kiskadee.template') as TemplateKey | null)
         : null;
     if (saved && saved in templates) return saved as TemplateKey;
-    return 'material-design';
+    if ('material-design' in templates) return 'material-design';
+    return (Object.keys(templates)[0] as TemplateKey) || '';
   });
 
   // Load/swap CSS for the selected template
@@ -89,7 +81,11 @@ function Root() {
       };
       link.addEventListener('load', onLoad, { once: true });
     }
-    link.href = templates[template].cssUrl;
+    const href = new URL(
+      `../../../web-builder/build/${template}/kiskadee.css`,
+      import.meta.url
+    ).toString();
+    link.href = href;
   }, [template]);
 
   // Load/swap CSS for the selected palette (per template)
@@ -185,7 +181,9 @@ function Root() {
 
   // TODO: remove any
   const classesMap = useMemo(() => {
-    const core = templates[template].core;
+    const current = templates[template as string];
+    const fallbackKey = templateKeys[0];
+    const core = current?.core || (fallbackKey ? templates[fallbackKey].core : ({} as any));
     if (!paletteMap) return core;
 
     // Merge: copy core and overlay palettes from paletteMap
@@ -203,7 +201,7 @@ function Root() {
       }
     }
     return merged;
-  }, [template, paletteMap]);
+  }, [template, paletteMap, templateKeys[0]]);
 
   return (
     <StrictMode>
@@ -216,9 +214,11 @@ function Root() {
             onChange={(e) => setTemplate(e.target.value as TemplateKey)}
             style={{ marginLeft: 8 }}
           >
-            <option value="template-1">template-1</option>
-            <option value="template-2">template-2</option>
-            <option value="material-design">material design</option>
+            {templateKeys.map((k) => (
+              <option key={k} value={k}>
+                {k}
+              </option>
+            ))}
           </select>
         </label>
       </div>

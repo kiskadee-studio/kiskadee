@@ -219,4 +219,4 @@ export function generateColorScaleWithLog(
   return scale;
 }
 
-generateColorScaleWithLog('#000', true);
+generateColorScaleWithLog('#0091FF', false);

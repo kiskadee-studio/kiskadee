@@ -1,5 +1,5 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/schema';
-import { schema } from '@kiskadee/schema/src/templates/google-material-design';
+import { schema } from '@kiskadee/schema/src/templates/apple-ios-26';
 // import { schema } from '@kiskadee/schema/src/templates/template-2';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
@@ -41,4 +41,13 @@ const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSpli
 console.log('phrase 5', { classNamesMapSplit });
 
 // Phase 6 - Persist build artifacts (CSS and class names map split)
-await persistBuildArtifacts(cssGenerated, classNamesMapSplit, schema.name);
+function slugifyName(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+const major = Array.isArray(schema.version) ? schema.version[0] : (schema.version as any);
+const outDirSlug = `${slugifyName(schema.name)}-${major}`;
+await persistBuildArtifacts(cssGenerated, classNamesMapSplit, outDirSlug);
