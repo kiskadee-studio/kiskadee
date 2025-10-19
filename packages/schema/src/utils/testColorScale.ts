@@ -1,8 +1,8 @@
-import { generateColorScaleWithLog, generateColorScale } from './generateColorScale';
-import type { ColorScale } from '../types/colors/colors.types';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
 import { writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { ColorScale } from '../types/colors/colors.types';
+import { generateColorScale, generateColorScaleWithLog } from './generateColorScale';
 
 // Simple CLI for generating and logging a color scale
 // Usage examples:
@@ -64,7 +64,7 @@ for (let tone = 0; tone <= 100; tone += 10) {
 }
 // 100-500
 const anchor = scale[500];
-if (anchor) {
+if (anchor?.[2]) {
   toneLines.push(
     `  // Range 100-500: distribute (90% - ${anchor[2]}%) = ${90 - anchor[2]}% across 4 steps`
   );
@@ -72,9 +72,10 @@ if (anchor) {
 for (const tone of [200, 300, 400, 500] as const) {
   const color = scale[tone];
   if (color) {
-    const comment = tone === 500
-      ? ` // ${color[2]}% lightness - ${hex.toUpperCase()} - ANCHOR (unchanged)`
-      : ` // ${color[2]}% lightness`;
+    const comment =
+      tone === 500
+        ? ` // ${color[2]}% lightness - ${hex.toUpperCase()} - ANCHOR (unchanged)`
+        : ` // ${color[2]}% lightness`;
     toneLines.push(`  ${tone}: [${color.join(', ')}],${comment}`);
   }
 }
@@ -87,7 +88,8 @@ if (anchor) {
 for (const tone of [600, 700, 800, 900, 1000] as const) {
   const color = scale[tone];
   if (color) {
-    const comment = tone === 1000 ? ' // 0% lightness (black/darkest)' : ` // ${color[2]}% lightness`;
+    const comment =
+      tone === 1000 ? ' // 0% lightness (black/darkest)' : ` // ${color[2]}% lightness`;
     toneLines.push(`  ${tone}: [${color.join(', ')}],${comment}`);
   }
 }
