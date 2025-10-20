@@ -59,6 +59,8 @@ export function transformColorKeyToCss(
   // Support both non-ref ("--" or "__") and ref ("==") separators
   const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
   const colorProperty = CssColorProperty[propertyName];
+  // Optimization: use shorthand "background" instead of "background-color"
+  const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
 
   const isRef = styleKey.includes('==');
 
@@ -86,7 +88,7 @@ export function transformColorKeyToCss(
 
   if (!isRef) {
     if (filteredStates.length === 0) {
-      return `.${className} { ${colorProperty}: ${hex} }`;
+      return `.${className} { ${optimizedProperty}: ${hex} }`;
     }
 
     // Split states by availability of native pseudo
@@ -122,11 +124,11 @@ export function transformColorKeyToCss(
 
     if (selectors.length === 0) {
       // No way to express the states; fallback to base
-      return `.${className} { ${colorProperty}: ${hex} }`;
+      return `.${className} { ${optimizedProperty}: ${hex} }`;
     }
 
     const selector = selectors.join(', ');
-    return `${selector} { ${colorProperty}: ${hex} }`;
+    return `${selector} { ${optimizedProperty}: ${hex} }`;
   }
 
   // Ref (parent state gating child .className)
@@ -173,5 +175,5 @@ export function transformColorKeyToCss(
   }
 
   const selector = parentSelectors.join(', ');
-  return `${selector} { ${colorProperty}: ${hex} }`;
+  return `${selector} { ${optimizedProperty}: ${hex} }`;
 }

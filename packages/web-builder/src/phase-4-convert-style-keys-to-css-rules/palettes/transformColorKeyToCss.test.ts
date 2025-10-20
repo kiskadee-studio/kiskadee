@@ -36,7 +36,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc:hover { background-color: #4040bf80 }');
+          expect(result).toEqual('.abc:hover { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -46,7 +46,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // expects both :hover and forced class (.-h) gated by activator (.-a) applied to the same element (i.e. .abc.-h.-a)
-          expect(result).toEqual('.abc:hover, .abc.-h.-a { background-color: #4040bf80 }');
+          expect(result).toEqual('.abc:hover, .abc.-h.-a { background: #4040bf80 }');
         });
       });
 
@@ -58,7 +58,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc:hover.-s { background-color: #4040bf80 }');
+          expect(result).toEqual('.abc:hover.-s { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -68,7 +68,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // native selector must NOT include activator (-a); forced selector remains gated by activator (-a)
-          expect(result).toEqual('.abc:hover.-s, .abc.-s.-h.-a { background-color: #4040bf80 }');
+          expect(result).toEqual('.abc:hover.-s, .abc.-s.-h.-a { background: #4040bf80 }');
         });
       });
 
@@ -80,7 +80,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc.-d.-a { background-color: #4040bf80 }');
+          expect(result).toEqual('.abc.-d.-a { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -89,7 +89,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc.-d.-a { background-color: #4040bf80 }');
+          expect(result).toEqual('.abc.-d.-a { background: #4040bf80 }');
         });
       });
     });
@@ -115,7 +115,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-a:hover .abc { background-color: #4040bf80 }');
+          expect(result).toEqual('.-a:hover .abc { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -125,7 +125,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // expects both parent :hover and forced parent class (.-h) to be combined as selectors
-          expect(result).toEqual('.-a:hover .abc, .-a.-h .abc { background-color: #4040bf80 }');
+          expect(result).toEqual('.-a:hover .abc, .-a.-h .abc { background: #4040bf80 }');
         });
       });
 
@@ -162,7 +162,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-a:hover.-s .abc { background-color: #4040bf80 }');
+          expect(result).toEqual('.-a:hover.-s .abc { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -173,7 +173,7 @@ describe('transformColorKeyToCss', () => {
           );
           // parent gets activator always; selected forced class (.-s) and hover native/forced variations
           expect(result).toEqual(
-            '.-a:hover.-s .abc, .-a.-s.-h \.abc { background-color: #4040bf80 }'.replace(
+            '.-a:hover.-s .abc, .-a.-s.-h .abc { background: #4040bf80 }'.replace(
               ' \\.',
               ' .'
             )
@@ -189,7 +189,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-a.-d \.abc { color: #0000004d }'.replace(' \\.', ' .'));
+          expect(result).toEqual('.-a.-d .abc { color: #0000004d }'.replace(' \\.', ' .'));
         });
         it('forceState=true', () => {
           const force = true as const;
