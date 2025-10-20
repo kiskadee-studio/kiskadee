@@ -17,3 +17,6 @@ build
 
 # Tests
 coverage
+
+# Temporary
+color-tones.ts
