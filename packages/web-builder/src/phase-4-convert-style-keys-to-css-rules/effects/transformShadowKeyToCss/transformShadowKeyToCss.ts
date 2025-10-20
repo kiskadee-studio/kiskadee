@@ -68,7 +68,9 @@ export function transformShadowKeyToCss(
     throw new Error(INVALID_SHADOW_COLOR_VALUE);
   }
 
-  const decl = `{ box-shadow: ${x}px ${y}px ${blur}px ${hexColor} }`;
+  // Optimize zero lengths: CSS allows omitting the unit for 0 values
+  const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);
+  const decl = `{ box-shadow: ${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${hexColor} }`;
 
   // Build selectors
   const selectors: string[] = [];

@@ -31,6 +31,13 @@ describe('transformShadowKeyToCss', () => {
 
       expect(result).toEqual('.abc.-e:active { box-shadow: 3px 3px 3px #000 }');
     });
+
+    it('should abbreviate zero pixel values to 0', () => {
+      const styleKey = 'shadow__[0,4,5,[0,0,0,1]]';
+      const result = transformShadowKeyToCss(styleKey, className);
+
+      expect(result).toEqual('.abc.-e { box-shadow: 0 4px 5px #000 }');
+    });
   });
 
   describe('Error handling', () => {
