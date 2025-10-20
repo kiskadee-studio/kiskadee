@@ -1,21 +1,6 @@
 import { breakpoints } from '../breakpoints';
 import type { Palette, Schema } from '../schema';
 
-// TODO: remover efeitos da estrutura padrão
-// TODO: de onde vem o h? ios 26
-// TODO: remover "px" do css das sombras
-// TODO: substituir background-color por background
-// TODO: documentar botão md3
-// TODO: documentar botão k md3
-// TODO: documentar apple
-// TODO: documentar k apple
-// TODO: documentar microsoft
-// TODO: documentar k microsoft
-// TODO: grupo de botões
-// TODO: icones dos botões
-// TODO: botões sociais
-// TODO: botão com loader
-
 export const palette: Palette = {
   p1: {
     primary: {
