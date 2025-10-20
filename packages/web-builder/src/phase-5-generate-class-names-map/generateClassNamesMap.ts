@@ -4,18 +4,23 @@ import type {
   ElementAllSizeValue,
   ElementSizeValue,
   InteractionState,
-  SemanticColor,
-  StyleKeysByInteractionState
+  SemanticColor
 } from '@kiskadee/schema';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 
-// Shortened keys for optimization:
-// d = decorations (incl. effects without size), s = scales (incl. effects with size), p = palettes (colors)
-export type ClassNamesByInteractionState = Partial<Record<string, string[]>>;
+// Shortened keys for optimization (Phase 5 artifact schema):
+// d = decorations (always-on, flattened string)
+// e = effects by interaction state (arrays of classes, opt-in at component level)
+// s = scales (size variants only, flattened strings per size)
+// p = palettes (colors, flattened string aggregated per palette)
+export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
 export type ClassNameByElement = {
-  // Flattened decorations + non-size effects
+  // Flattened decorations only (always-on). Effects no longer merge here.
   d?: string;
-  // Scales aggregated per size as flattened strings
+  // Unified effects base classes string (space-separated). No per-state nesting.
+  // Components may append this string unconditionally; activation is controlled by state classes/pseudos in CSS.
+  e?: string;
+  // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Flattened palettes aggregated into a single space-separated string of class names
   p?: string;
@@ -35,43 +40,16 @@ function mapArray(
   return keys.map((k) => shortenMap[k] ?? k);
 }
 
-function mapInteractionState(
-  obj: StyleKeysByInteractionState | undefined,
-  shortenMap: ShortenCssClassNames
-): ClassNamesByInteractionState | undefined {
-  if (!obj) return undefined;
-  const out: ClassNamesByInteractionState = {};
-  for (const st of Object.keys(obj)) {
-    out[st] = mapArray(obj[st as InteractionState], shortenMap);
-  }
-  return out;
-}
-
-function extractSizeFromKey(styleKey: string): string | undefined {
-  const head = styleKey.split('__')[0] ?? '';
-  const plusIdx = head.indexOf('++');
-  if (plusIdx === -1) return undefined;
-  const after = head.slice(plusIdx + 2);
-  // cut at first of '::', '--', '==', '__' if present
-  const cuts = [
-    after.indexOf('::'),
-    after.indexOf('--'),
-    after.indexOf('=='),
-    after.indexOf('__')
-  ].filter((i) => i !== -1) as number[];
-  const cut = cuts.length > 0 ? Math.min(...cuts) : -1;
-  const seg = cut === -1 ? after : after.slice(0, cut);
-  return seg || undefined;
-}
-
 /**
  * Produces two JSON-friendly maps of class names from the aggregated StyleKeys:
- * - core: decorations + effects (non-size) in `d`, and scales/effects (size-bound) in `s`.
+ * - core: decorations in `d` (always-on), effects in `e` per interaction state (opt-in),
+ *         scales in `s` (size-only variants), no palettes included.
  * - palettes: one object per palette name, each containing only the flattened `p` string per element.
  *
- * Notes:
+ * Policy notes:
+ * - Effects are never merged into `d` or `s` — they must be explicitly added by components from `e`.
+ * - This aligns with Phase 4 where effect CSS is only emitted when gated (class activator/pseudo).
  * - Keys are shortened via ShortenCssClassNames map.
- * - Effects with responsive size tokens ("++s:*") are grouped into `s` per size; otherwise they go into `d`.
  */
 export function generateClassNamesMapSplit(
   styleKeys: ComponentStyleKeyMap,
@@ -87,35 +65,33 @@ export function generateClassNamesMapSplit(
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
 
-      // Core (no palettes) — aggregate decorations + effects (no size) into d, and
-      // scales + effects (with size) into s.
+      // Core (no palettes) — aggregate:
+      // - decorations into `d` (always-on),
+      // - effects into `e` per interaction state (opt-in),
+      // - scales (size variants only) into `s`.
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
+      // Collect all effects (across interaction states) into a single unified set
+      const eSet = new Set<string>();
 
       // decorations → d
       mapArray(el.decorations, shortenMap)?.forEach((c) => {
         dSet.add(c);
       });
 
-      // effects → d (no size) or s[size] (with size)
+      // effects → e (flatten all states into a single set); never merge effects into d/s
       if (el.effects) {
         for (const st of Object.keys(el.effects)) {
           const arr = (el.effects as any)[st] as string[] | undefined;
-          if (!arr) continue;
+          if (!arr || arr.length === 0) continue;
           for (const key of arr) {
-            const size = extractSizeFromKey(key);
             const cls = shortenMap[key] ?? key;
-            if (size) {
-              if (!sMap.has(size)) sMap.set(size, new Set());
-              sMap.get(size)!.add(cls);
-            } else {
-              dSet.add(cls);
-            }
+            eSet.add(cls);
           }
         }
       }
 
-      // scales → s[size]
+      // scales → s[size] (size-only variants)
       if (el.scales) {
         for (const [size, arr] of Object.entries(el.scales)) {
           const mapped = mapArray(arr, shortenMap);
@@ -130,6 +106,7 @@ export function generateClassNamesMapSplit(
 
       core[componentName][elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
+        e: eSet.size ? Array.from(eSet).join(' ') : undefined,
         s:
           sMap.size > 0
             ? Object.fromEntries(

@@ -18,6 +18,11 @@ export type SplitCssBundles = {
   palettes: Record<string, string>;
 };
 
+// Policy switch: whether to emit passive (non-gated) effects rules.
+// Default false — effects must be gated by class activator (.-a, .-h, .-f, .-p, .-s, .-d, .-r)
+// or a native pseudo (:hover, :focus, :active, etc.). Passive effects are ignored to avoid dead CSS.
+const EMIT_PASSIVE_EFFECTS = false;
+
 export async function generateCssSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
@@ -27,14 +32,19 @@ export async function generateCssSplit(
   const effectsRules: Set<string> = new Set(); // collect effects separately
   const paletteRules: Record<string, Set<string>> = {};
 
-  // Helper: detect if a CSS rule uses complex selectors (pseudo-classes or forced state classes)
+  // Helper: detect if a CSS rule is "gated" by interaction/state.
+  // We consider a selector complex (i.e., gated) when:
+  // - It uses native interaction pseudos like :hover, :focus, :focus-visible, :focus-within, :active,
+  //   :disabled, :read-only. These represent runtime UI states and must live outside the core bundle.
+  // - It uses our forced state classes (.-a, .-h, .-f, .-p, .-s, .-d, .-r), which act as explicit activators
+  //   to simulate states or opt-in effects via class toggling. Examples:
+  //   .btn.-h:hover, .card.-a, .chip.-s.-a .icon, etc.
+  // If neither applies, the selector is "simple" (passive): no activation, always-on if emitted.
   const isComplexSelector = (rule: string): boolean => {
-    // Check for native pseudo-classes (:hover, :focus, :focus-visible, :focus-within, :active, :disabled, :read-only)
+    // Native pseudos
     if (/:(hover|focus|focus-visible|focus-within|active|disabled|read-only)\b/.test(rule))
       return true;
-
-    // Check for forced state class patterns (.-a, .-h, .-f, .-p, .-s, .-d, .-r)
-    // These appear as chained classes: .someClass.-h.-a, .-a.-h .someClass, etc.
+    // Forced state classes (activation gate via class names)
     return /\.-[a-z]\b/.test(rule);
   };
 
@@ -44,7 +54,7 @@ export async function generateCssSplit(
     for (const elementName in elements) {
       const el = elements[elementName];
 
-      // decorations: string[]
+      // decorations: string[] — always-on, static styles (no state). Safe to emit into core.
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
           const cn = shortenMap[key] ?? key;
@@ -53,7 +63,7 @@ export async function generateCssSplit(
         }
       }
 
-      // scales: Record<string, string[]>
+      // scales: Record<string, string[]> — static size variants (no interaction). Also go to core.
       if (el.scales) {
         for (const scaleKey in el.scales) {
           const arr: string[] = el.scales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
@@ -66,7 +76,9 @@ export async function generateCssSplit(
       }
 
       // effects: by interaction state -> string[]
-      // Route effects based on selector complexity: simple selectors go to core, complex to effects
+      // Policy: effects are opt-in (activatable). We only emit rules that are gated by native
+      // pseudos or forced state classes. Simple (passive) effects are ignored by default to avoid
+      // shipping dead CSS; they should live under `decorations` instead if always-on.
       if (el.effects) {
         for (const st in el.effects) {
           const arr: string[] = el.effects[st as InteractionState] ?? [];
@@ -74,11 +86,17 @@ export async function generateCssSplit(
             const cn = shortenMap[key] ?? key;
             const rule = generateCssRuleFromStyleKey(key, cn, forceState);
             if (rule && rule.trim() !== '') {
-              // Route based on selector complexity
               if (isComplexSelector(rule)) {
-                effectsRules.add(rule); // → effects.css
+                // Gated by class activator or native pseudo → goes to effects bundle
+                effectsRules.add(rule);
+              } else if (EMIT_PASSIVE_EFFECTS) {
+                // Debug/override: still emit passive effects, but keep them in effects bundle
+                // to avoid polluting core with stateful semantics.
+                effectsRules.add(rule);
               } else {
-                coreRules.add(rule); // → kiskadee.css
+                // Passive effect (no gate): do not emit. This enforces the contract that
+                // effects are opt-in. Consider moving this style key to `decorations` if it is
+                // truly always-on.
               }
             }
           }

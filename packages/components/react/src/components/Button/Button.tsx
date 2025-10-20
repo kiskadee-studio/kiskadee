@@ -68,11 +68,16 @@ function Button(props: ButtonProps) {
     const sAllE2 = e2?.s?.['s:all'] ?? '';
     const sScaleE2 = e2?.s?.[scale] ?? '';
 
+    // Effects base classes (from Phase 5 `e`) — unified string.
+    // We append them unconditionally; activation is governed by forced state classes or native pseudos in CSS.
+    const e1Effects = e1?.e ?? '';
+
     const e1Base =
       (el1 ? `${el1}` : '') +
       (sAllE1 ? ` ${sAllE1}` : '') +
       (classNames.e1 ? ` ${classNames.e1}` : '') +
-      (sScaleE1 ? ` ${sScaleE1}` : '');
+      (sScaleE1 ? ` ${sScaleE1}` : '') +
+      (e1Effects ? ` ${e1Effects}` : '');
 
     const e2Base =
       (el2 ? `${el2}` : '') +

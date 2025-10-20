@@ -2,6 +2,9 @@ import { breakpoints } from '../breakpoints';
 import type { Palette, Schema } from '../schema';
 
 // TODO: remover efeitos da estrutura padrão
+// TODO: de onde vem o h? ios 26
+// TODO: remover "px" do css das sombras
+// TODO: substituir background-color por background
 // TODO: documentar botão md3
 // TODO: documentar botão k md3
 // TODO: documentar apple
