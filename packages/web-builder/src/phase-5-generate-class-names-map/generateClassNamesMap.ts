@@ -20,6 +20,8 @@ export type ClassNameByElement = {
   // Unified effects base classes string (space-separated). No per-state nesting.
   // Components may append this string unconditionally; activation is controlled by state classes/pseudos in CSS.
   e?: string;
+  // Control-state specific (selected) — flattened string of utility classes
+  c?: string;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Flattened palettes aggregated into a single space-separated string of class names
@@ -73,20 +75,24 @@ export function generateClassNamesMapSplit(
       const sMap = new Map<string, Set<string>>();
       // Collect all effects (across interaction states) into a single unified set
       const eSet = new Set<string>();
+      // Control-state: selected — collect separately and do not mix into e/p
+      const cSelectedSet = new Set<string>();
 
       // decorations → d
       mapArray(el.decorations, shortenMap)?.forEach((c) => {
         dSet.add(c);
       });
 
-      // effects → e (flatten all states into a single set); never merge effects into d/s
+      // effects → e (flatten non-selected states into a single set); never merge effects into d/s
       if (el.effects) {
         for (const st of Object.keys(el.effects)) {
           const arr = (el.effects as any)[st] as string[] | undefined;
           if (!arr || arr.length === 0) continue;
+          const isSelectedState = st === 'selected' || st.startsWith('selected:');
           for (const key of arr) {
             const cls = shortenMap[key] ?? key;
-            eSet.add(cls);
+            if (isSelectedState) cSelectedSet.add(cls);
+            else eSet.add(cls);
           }
         }
       }
@@ -104,19 +110,6 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      core[componentName][elementName] = {
-        d: dSet.size ? Array.from(dSet).join(' ') : undefined,
-        e: eSet.size ? Array.from(eSet).join(' ') : undefined,
-        s:
-          sMap.size > 0
-            ? Object.fromEntries(
-                Array.from(sMap.entries()).map(([k, set]) => [
-                  k,
-                  set.size ? Array.from(set).join(' ') : undefined
-                ])
-              )
-            : undefined
-      };
 
       // Palettes split per palette name; flatten so that per-palette JSON has only `p` (no paletteName level)
       if (el.palettes) {
@@ -131,20 +124,42 @@ export function generateClassNamesMapSplit(
             palettes[paletteName][componentName][elementName] = {};
           }
           const elemRecord = palettes[paletteName][componentName][elementName];
-          // Flatten only this palette into a single string
-          const set = new Set<string>();
+          // Flatten only this palette into a single string, excluding selected-related states
+          const pSet = new Set<string>();
           for (const sem of Object.keys(bySemantic)) {
             const byState = bySemantic[sem as SemanticColor];
             for (const st of Object.keys(byState ?? {})) {
               const mapped = mapArray(byState?.[st as InteractionState], shortenMap);
+              const isSelectedState = st === 'selected' || st.startsWith('selected:');
               mapped?.forEach((c) => {
-                set.add(c);
+                if (isSelectedState) {
+                  // Union selected palette classes into control set (core)
+                  cSelectedSet.add(c);
+                } else {
+                  pSet.add(c);
+                }
               });
             }
           }
-          elemRecord.p = set.size > 0 ? Array.from(set).join(' ') : undefined;
+          elemRecord.p = pSet.size > 0 ? Array.from(pSet).join(' ') : undefined;
         }
       }
+
+      // After processing palettes, finalize the core element record so `c` includes palette-derived selected classes
+      core[componentName][elementName] = {
+        d: dSet.size ? Array.from(dSet).join(' ') : undefined,
+        e: eSet.size ? Array.from(eSet).join(' ') : undefined,
+        c: cSelectedSet.size ? Array.from(cSelectedSet).join(' ') : undefined,
+        s:
+          sMap.size > 0
+            ? Object.fromEntries(
+                Array.from(sMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined
+      };
     }
   }
 

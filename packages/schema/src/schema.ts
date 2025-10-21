@@ -99,13 +99,15 @@ export type Palette = SchemaPalette;
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects, s = scales, p = palettes (colors)
+  // d = decorations, e = effects, s = scales, p = palettes (colors), c = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: unified string of effect base classes (space-separated). These classes are opt-in and require
   // activation via state activators (.-a, .-h, .-f, .-p, .-s, .-d, .-r) or native pseudos to take effect.
   // No interaction-state nesting here; components may append all base effect classes unconditionally.
   e?: string;
+  // c: control-state specific (selected) — flattened string of utility classes
+  c?: string;
   // s: values are pre-joined into a single space-separated string (no arrays) per size key
   s?: Partial<Record<string, string>>;
   // p: Flattened palettes aggregated into a single space-separated string of class names.
