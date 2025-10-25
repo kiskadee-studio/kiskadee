@@ -57,22 +57,7 @@ export const schema: Schema = {
           palettes: {
             p1: {
               textColor: { rest: [0, 0, 0, 0.5] },
-              borderColor: { rest: [0, 0, 0, 0.5] },
-              boxColor: {
-                primary: {
-                  rest: [10, 35, 100, 0],
-                  hover: [10, 35, 100, 0]
-                },
-                danger: {
-                  rest: [10, 35, 100, 0],
-                  hover: [10, 35, 100, 0]
-                }
-                // instagram: {
-                //   rest: [10, 35, 100, 0],
-                //   hover: [10, 35, 100, 0],
-                //   active: [10, 35, 100, 0]
-                // }
-              }
+              borderColor: { rest: [0, 0, 0, 0.5] }
             },
             p2: {
               boxColor: { rest: [0, 0, 0, 0.5] }
@@ -106,12 +91,7 @@ export const schema: Schema = {
           },
           palettes: {
             p1: {
-              textColor: {
-                primary: {
-                  rest: [0, 0, 0, 0.5],
-                  hover: { ref: [0, 0, 0, 0.5] }
-                }
-              }
+              textColor: {}
             }
           }
         }

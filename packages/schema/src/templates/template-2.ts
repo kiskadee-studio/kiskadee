@@ -12,15 +12,7 @@ export const schema: Schema = {
         e1: {
           palettes: {
             p1: {
-              boxColor: {
-                primary: {
-                  rest: [210, 98.33, 47.06, 1],
-                  selected: {
-                    rest: [210, 98.33, 47.06, 1],
-                    hover: [256.43, 34.43, 47.84, 0.5]
-                  }
-                }
-              }
+              boxColor: {}
             }
           }
         }

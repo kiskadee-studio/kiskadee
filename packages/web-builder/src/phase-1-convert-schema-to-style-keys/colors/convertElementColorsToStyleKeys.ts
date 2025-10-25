@@ -1,13 +1,31 @@
 import type {
+  Color,
   ColorProperty,
+  ColorValue,
   ElementColors,
+  EmphasisVariant,
   InteractionState,
+  InteractionStateColorMap,
   PaletteName,
   SelectedInteractionStateToken,
+  SelectedInteractionSubMap,
   SemanticColor,
   StyleKeyByElement
 } from '@kiskadee/schema';
 import { buildStyleKey, deepUpdate } from '../../utils';
+
+// Local type guards to avoid any
+function isRefValue(val: Color | ColorValue): val is { ref: Color } {
+  return typeof val === 'object' && val !== null && 'ref' in (val as Record<string, unknown>);
+}
+
+function isSelectedSubMap(val: unknown): val is SelectedInteractionSubMap {
+  return !!val && typeof val === 'object' && 'rest' in (val as Record<string, unknown>);
+}
+
+function isInteractionStateColorMap(val: unknown): val is InteractionStateColorMap {
+  return !!val && typeof val === 'object' && 'rest' in (val as Record<string, unknown>);
+}
 
 /**
  * Converts an element's color palettes schema into nested style keys.
@@ -55,42 +73,46 @@ export function convertElementColorsToStyleKeys(
       const colorEntry = colorSchema[colorProperty];
       if (colorEntry === undefined) continue;
 
-      // If the entry has a "rest" key, it is a direct InteractionStateColorMap
-      // (no semantic colors). Otherwise, treat it as a semantic color map.
-      const isInteractionState = 'rest' in colorEntry;
-      const semanticColorMap = isInteractionState ? { neutral: colorEntry } : colorEntry;
+      // New schema requires emphasis tracks (soft/solid) under each semantic color.
+      // Reject legacy direct InteractionStateColorMap at the property root.
+      if (isInteractionStateColorMap(colorEntry)) {
+        throw new Error(
+          'Invalid color schema: direct interaction-state maps are no longer supported. Use soft/solid tracks under each semantic color.'
+        );
+      }
+      type SemanticEntry = Record<EmphasisVariant, InteractionStateColorMap> | unknown;
+      const semanticColorMap: Partial<Record<SemanticColor, SemanticEntry>> =
+        colorEntry as Partial<Record<SemanticColor, SemanticEntry>>;
 
-      for (const s in semanticColorMap) {
-        const semanticColor = s as SemanticColor;
-        const interactionStateMap = semanticColorMap[semanticColor];
-
-        // Each interaction state (rest, hover, focus, ...) maps to either a direct color value
-        // or a reference object with a "ref" key.
-        for (const i in interactionStateMap) {
-          const interactionState = i as InteractionState;
-          const rawValue = (interactionStateMap as any)[interactionState];
+      // Helper that processes a plain interaction-state map (rest/hover/pressed/focus/selected)
+      const processInteractionStateMap = (
+        semanticColor: SemanticColor,
+        interactionStateMap: InteractionStateColorMap
+      ) => {
+        const keys: (keyof InteractionStateColorMap)[] = [
+          'rest',
+          'hover',
+          'pressed',
+          'focus',
+          'selected',
+          'disabled',
+          'readOnly'
+        ];
+        for (const interactionState of keys) {
+          const rawValue = interactionStateMap[interactionState as keyof InteractionStateColorMap];
+          if (rawValue === undefined) continue;
 
           // Handle the enriched "selected" submap shape: { rest, hover?, pressed?, focus? }.
-          if (
-            interactionState === 'selected' &&
-            rawValue &&
-            typeof rawValue === 'object' &&
-            'rest' in rawValue
-          ) {
-            const sub = rawValue as {
-              rest: unknown;
-              hover?: unknown;
-              pressed?: unknown;
-              focus?: unknown;
-            };
+          if (interactionState === 'selected' && isSelectedSubMap(rawValue)) {
+            const sub = rawValue as SelectedInteractionSubMap;
 
             // Helper to push a key under a given state label
             const push = (
               stateLabel: InteractionState | SelectedInteractionStateToken,
-              val: unknown
+              val: ColorValue | Color
             ) => {
-              const isRef = typeof val === 'object' && val !== null && 'ref' in (val as any);
-              const color = JSON.stringify(isRef ? (val as any).ref : val);
+              const isRef = isRefValue(val);
+              const color = JSON.stringify(isRef ? val.ref : (val as Color));
 
               // For the selected scope, we pass controlState=true and the base interaction (rest/hover/pressed/focus)
               if (stateLabel.startsWith('selected:')) {
@@ -104,7 +126,7 @@ export function convertElementColorsToStyleKeys(
                 });
                 deepUpdate(
                   styleKeys,
-                  [paletteName, semanticColor, stateLabel as any],
+                  [paletteName, semanticColor, stateLabel],
                   (arr: string[] = []) => [...arr, styleKey]
                 );
               } else {
@@ -116,7 +138,7 @@ export function convertElementColorsToStyleKeys(
                 });
                 deepUpdate(
                   styleKeys,
-                  [paletteName, semanticColor, stateLabel as any],
+                  [paletteName, semanticColor, stateLabel],
                   (arr: string[] = []) => [...arr, styleKey]
                 );
               }
@@ -136,9 +158,9 @@ export function convertElementColorsToStyleKeys(
 
           // A reference has the shape { ref: <color> }. We pass isRef accordingly and serialize
           // the "inner" color when a ref is present.
-          const isRef =
-            typeof rawValue === 'object' && rawValue !== null && 'ref' in (rawValue as any);
-          const color = JSON.stringify(isRef ? (rawValue as any).ref : rawValue);
+          const val = rawValue as ColorValue | Color;
+          const isRef = isRefValue(val);
+          const color = JSON.stringify(isRef ? val.ref : (val as Color));
 
           // Build the style key including the interaction state and whether this is a ref.
           // Examples:
@@ -157,6 +179,32 @@ export function convertElementColorsToStyleKeys(
             styleKeys,
             [paletteName, semanticColor, interactionState],
             (arr: string[] = []) => [...arr, styleKey]
+          );
+        }
+      };
+
+      for (const s in semanticColorMap) {
+        const semanticColor = s as SemanticColor;
+        const entry = semanticColorMap[semanticColor];
+
+        // Support tone tracks (soft/solid) as an intermediate level under the semantic color.
+        const hasSoftOrSolid =
+          entry && typeof entry === 'object' && ('soft' in entry || 'solid' in entry);
+        if (hasSoftOrSolid) {
+          const tracks = ['soft', 'solid'] as const;
+          for (const t of tracks) {
+            const trackEntry = (entry as Record<'soft' | 'solid', unknown>)[t];
+            if (isInteractionStateColorMap(trackEntry)) {
+              processInteractionStateMap(semanticColor, trackEntry);
+            }
+          }
+          continue;
+        }
+
+        // Fallback: legacy shape (direct interaction-state map under a semantic color) is no longer supported
+        if (isInteractionStateColorMap(entry)) {
+          throw new Error(
+            `Invalid color schema: semantic color "${semanticColor}" must define soft/solid tracks.`
           );
         }
       }

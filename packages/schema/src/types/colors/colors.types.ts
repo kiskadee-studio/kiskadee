@@ -118,7 +118,7 @@ export const stateActivator = {
   pressed: '-p', // Force "pressed" appearance without a real press/click
   selected: '-s', // Mark an element as selected/active
   focus: '-f', // Force focus styles without moving focus
-  // Disabled uses the same visual class suffix as the former pseudoDisabled ("-d").
+  // Disabled use the same visual class suffix as the former pseudoDisabled ("-d").
   // We no longer keep a separate key for pseudoDisabled here; use the "disabled" entry instead.
   disabled: '-d',
   readOnly: '-r', // Force read-only visuals
@@ -173,58 +173,67 @@ export type InteractionStateColorMap = {
   readOnly?: ColorValue;
 };
 
-// TODO: add a new layer of semantic colors
 /**
- * Semantic color tokens that convey the purpose of each color:
+ * Semantic color tokens that convey the purpose of each color.
  *
- *  - "primary" represents the main color used for prominent elements.
- *  - "secondary" serves as a supporting color that complements the primary.
- *  - "tertiary" is used for additional emphasis or subtle accents.
- *  - "danger" indicates error states or destructive actions.
- *  - "warning" highlights cautionary statuses or alerts.
- *  - "success" conveys positive actions or states.
- *  - "info" is used to give feedback or highlight neutral actions, often using lighter tones.
- *  - "neutral" is intended for elements with less emphasis, such as less prominent text, borders,
- *    dividers, or backgrounds.
+ * The "-like" suffix indicates artistic freedom: the actual hue can vary
+ * (e.g., green-like could be teal, mint, emerald) while maintaining the
+ * communicative intent.
  */
 export type SemanticColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'danger'
-  | 'warning'
-  | 'success'
-  | 'info'
-  | 'neutral';
+  | 'primary' // Main color for prominent elements
+  | 'secondary' // Supporting color that complements primary
+  | 'redLike' // Danger, negative, error
+  | 'yellowLike' // Warning, attention, caution
+  | 'greenLike' // Success, positive, affirmative
+  // | 'cyanLike' // Info
+  // | 'purpleLike' // New, alternative
+  | 'neutral'; // Low-emphasis elements (text, borders, dividers, backgrounds);
 
 /**
  * Defines a (partial) mapping from each semantic color token to its color definitions across
  * interaction states.
  */
-export type SemanticColorMap = {
-  [K in SemanticColor]?: InteractionStateColorMap;
-};
+export type EmphasisVariant = 'soft' | 'solid';
 
-/** Enumerates corresponding CSS properties for each design system color property. */
+// /**
+//  * Entry for a semantic color in Schema palettes: either a direct interaction-state map,
+//  * or a map of emphasis variants (soft/solid), each with its own interaction-state map.
+//  */
+// export type SemanticColorEntry =
+//   | InteractionStateColorMap
+//   | Record<EmphasisVariant, InteractionStateColorMap>;
+
+// In component ColorSchema usage, all semantic categories use emphasis variants (soft/solid).
+// Primary and secondary are no longer special; every category follows the same structure.
+export type SemanticColorMap = Partial<
+  Record<SemanticColor, Partial<Record<EmphasisVariant, InteractionStateColorMap>>>
+>;
+
+/** Lists corresponding CSS properties for each design system color property. */
 export enum CssColorProperty {
   textColor = 'color',
   boxColor = 'background-color',
-  borderColor = 'border-color',
+  borderColor = 'border-color'
   // TODO: test it
-  iconColor = 'color'
+  // iconColor = 'color'
 }
 
 /** The set of color-related properties available */
 export type ColorProperty = keyof typeof CssColorProperty;
 
-/** List of all color properties for iteration or validation. */
-export const colorPropertyList: ColorProperty[] = ['textColor', 'boxColor', 'borderColor'];
+// /** List of all color properties for iteration or validation. */
+// export const colorPropertyList: ColorProperty[] = ['textColor', 'boxColor', 'borderColor'];
+
+type Prohibit<K extends PropertyKey> = { [P in K]?: never };
 
 /**
  * Union type representing either a simple interaction-state color map or an intent-based color map
  * for more complex semantic usage.
  */
-type ColorEntry = InteractionStateColorMap | SemanticColorMap;
+type ColorEntry =
+  | (InteractionStateColorMap & Prohibit<keyof SemanticColorMap>)
+  | (SemanticColorMap & Prohibit<keyof InteractionStateColorMap>);
 
 /**
  * Represents the color schema for components, mapping each ColorProperty to either direct
@@ -237,76 +246,121 @@ export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
 // -------------------------------------------------------------------------------------------------
 
 /**
- * Light tones: 0-100 with increments of 10.
- * These provide fine-grained control over light shades, important for subtle UI elements.
- * With 11 tones covering a 10% lightness range, each step represents approximately 1% increment.
+ * A complete color scale mapping tone values (0–100) to color definitions.
+ * Keys are restricted to the normalized track tone sets:
+ * - LightTrackTones: 0–30 (soft)
+ * - DarkTrackTones: 40–100 (solid)
  */
-type LightTones = 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100;
+export type ColorScale = Partial<Record<LightTrackTones | DarkTrackTones, SolidColor>>;
 
 /**
- * Dark tones: 100-1000 with increments of 100.
- * These cover medium to dark shades with broader steps.
+ * Restricted tone ranges per track to avoid misuse:
+ * - light: 0–30 (backgrounds/tints/subtle)
+ * - dark: 40–100 (actions/solids/strong borders)
+ *
+ * Tone meaning and mental model:
+ * - Tone numbers represent percent darkness (0 = lightest/near white, 100 = darkest/near black).
+ * - A useful analogy is opacity/ink coverage: low tone values feel like low opacity/subtle coverage,
+ *   therefore low darkness. For example, tones 3/5/10 work well for subtle backgrounds, borders, and tints.
+ * - To communicate with HSLA, use the quick approximation: L ≈ 100 − tone.
+ *   Examples: tone 5 → L≈95%; tone 30 → L≈70%; tone 100 → L≈0%.
+ *
+ * Note:
+ * - “lightness/brightness” in HSL/HSV increases toward lighter, whereas our tone increases toward darker.
+ *   That’s why the inline comments use “% darkness”.
  */
-type DarkTones = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 1000;
+export type LightTrackTones =
+  | 0 // 0% darkness
+  | 1 // 1% darkness
+  | 2 // 2% darkness
+  | 3 // 3% darkness
+  | 4 // 4% darkness
+  | 5 // 5% darkness
+  | 6 // 6% darkness
+  | 7 // 7% darkness
+  | 8 // 8% darkness
+  | 9 // 9% darkness
+  | 10 // 10% darkness
+  | 11 // 11% darkness
+  | 12 // 12% darkness
+  | 13 // 13% darkness
+  | 14 // 14% darkness
+  | 15 // 15% darkness
+  | 16 // 16% darkness
+  | 17 // 17% darkness
+  | 18 // 18% darkness
+  | 19 // 19% darkness
+  | 20 // 20% darkness
+  | 21 // 21% darkness
+  | 22 // 22% darkness
+  | 23 // 23% darkness
+  | 24 // 24% darkness
+  | 25 // 25% darkness
+  | 26 // 26% darkness
+  | 27 // 27% darkness
+  | 28 // 28% darkness
+  | 29 // 29% darkness
+  | 30; // 30% darkness
+
+export type DarkTrackTones =
+  | 40 // 40% darkness
+  | 45 // 45% darkness
+  | 50 // 50% darkness
+  | 55 // 55% darkness
+  | 60 // 60% darkness
+  | 65 // 65% darkness
+  | 70 // 70% darkness
+  | 75 // 75% darkness
+  | 80 // 80% darkness
+  | 85 // 85% darkness
+  | 90 // 90% darkness
+  | 95 // 95% darkness
+  | 100; // 100% darkness
+
+export type ColorScaleLight = Partial<Record<LightTrackTones, Color>>;
+export type ColorScaleDark = Partial<Record<DarkTrackTones, Color>>;
 
 /**
- * Complete the color tone scale from 0 (lightest/white) to 1000 (darkest/black).
- * Combines light and dark tone ranges. Note that 100 appears in both ranges but TypeScript deduplicates it.
+ * A variant map holding a tonal ColorScale for each tone track (light/dark).
+ * Note: This refers to tonal tracks, not theme mode.
  */
-export type ColorTone = LightTones | DarkTones;
+export type VariantColorScale = {
+  light: ColorScaleLight;
+  dark: ColorScaleDark;
+};
+
+// ------------------------------
+// Theme Mode vs Tone Tracks
+// ------------------------------
+/**
+ * Theme modes (context): not to be confused with tone tracks.
+ * You may support an optional third mode such as deeper dark ("darker").
+ */
+export type ThemeMode = 'light' | 'dark' | 'darker';
 
 /**
- * Semantic color categories for the Kiskadee design system.
- *
- * - `primary`: Main brand color, used for prominent elements and actions
- * - `secondary`: Supporting color that complements primary
- * - `green-like`: Colors associated with positive actions, growth, confirmation (not limited to "success")
- * - `yellow-like`: Colors for attention, highlights, caution (not limited to "warning")
- * - `red-like`: Colors for urgency, importance, alerts (not limited to "danger")
- * - `neutral`: Grayscale colors for text, borders, backgrounds
- *
- * The "-like" suffix indicates artistic freedom: the actual hue can vary
- * (e.g., green-like could be teal, mint, emerald) while maintaining the
- * communicative intent.
+ * Tone tracks available inside each theme mode.
+ * - soft uses 0–30 tones (subtle/surfaces)
+ * - solid uses 40–100 tones (solids/strong)
  */
-export type SemanticColorCategory =
-  | 'primary'
-  | 'secondary'
-  | 'green-like'
-  | 'yellow-like'
-  | 'red-like'
-  | 'neutral';
+// ToneTracks uses `soft` and `solid` (UI emphasis terms). This refers to tonal tracks, not theme modes.
+export type ToneTracks = {
+  // Soft track: light tonal range (0–30) for subtle/surface backgrounds
+  soft: ColorScaleLight;
+  // Solid track: mid-to-dark tonal range (40–100) for solids, borders, and strong content
+  solid: ColorScaleDark;
+};
 
-/**
- * A complete color scale mapping tone values (0-1000) to color definitions.
- *
- * Scale interpretation:
- * - 0: Pure white (or lightest variant)
- * - 5-100: Light tones (increments of 10, with 5 as exception for ultra-light)
- * - 100-1000: Medium to dark tones (increments of 100)
- * - 1000: Pure black (or darkest variant)
- *
- * Example:
- * ```typescript
- * const primaryScale: ColorScale = {
- *   0: [256, 0, 100, 1],      // white
- *   5: [256, 10, 98, 1],      // ultra-light
- *   10: [256, 15, 95, 1],
- *   20: [256, 20, 90, 1],
- *   // ...
- *   500: [256, 50, 50, 1],    // mid-tone
- *   // ...
- *   1000: [256, 50, 5, 1]     // near-black
- * };
- * ```
- */
-export type ColorScale = Partial<Record<ColorTone, Color>>;
+// /**
+//  * For categories that support theme modes: each mode contains both tone tracks.
+//  */
+// export type ModeVariantColorScale = Record<ThemeMode, ToneTracks>;
 
 /**
  * Complete color palette for a design system theme.
  * Maps each semantic category to its full tonal scale.
  */
-export type ColorPalette = Record<SemanticColorCategory, ColorScale>;
+export type ColorPalette = Record<SemanticColor, ToneTracks>;
 
 /**
  * Root colors definition in the Schema.

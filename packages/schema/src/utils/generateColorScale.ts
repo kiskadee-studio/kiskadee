@@ -1,7 +1,13 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ColorScale, HSLA } from '../types/colors/colors.types';
+import type {
+  ColorScale,
+  ColorScaleDark,
+  ColorScaleLight,
+  HSLA,
+  ToneTracks
+} from '../types/colors/colors.types';
 
 /**
  * Converts a hexadecimal color to HSLA format.
@@ -73,64 +79,116 @@ function hexToHSLA(hex: string, verbose = false): HSLA {
 }
 
 /**
- * Generates a complete Kiskadee color scale (0-1000) from a hex color.
- * The input color is used as the anchor at tone 500.
+ * Generates a complete Kiskadee color scale (0-100) from a hex color.
+ * The input color is used as the anchor at tone 50.
  *
  * Scale rules:
- * - Tone 0-100: 100% to 90% lightness (1% decrements, 11 tones total)
- * - Tone 100-500: proportional distribution from 90% to anchor lightness
- * - Tone 500-1000: proportional distribution from anchor to 0% lightness
+ * - Tone 0-10: 100% to 90% lightness (1% decrements, 11 tones total)
+ * - Tone 10-50: proportional distribution from 90% to anchor lightness
+ * - Tone 50-100: proportional distribution from anchor to 0% lightness
  *
  * @param hexColor - Hexadecimal color string (e.g., "#6750A4")
- * @param prioritizeLightnessScale - When true, set tone 500 to L=50 regardless of input; when false, keep the input lightness at 500.
- * @returns ColorScale object with tones 0, 10, 20...1000
+ * @param prioritizeLightnessScale - When true, set tone 50 to L=50 regardless of input; when false, keep the input lightness at 50.
+ * @returns ColorScale object with tones 0, 1, 2...100
  *
  * @example
  * const scale = generateColorScale("#6750A4", true);
- * // Returns a ColorScale with tone 500 centered at 50 when the second argument is true.
+ * // Returns a ColorScale with tone 50 centered at 50 when the second argument is true.
  */
-export function generateColorScale(hexColor: string, prioritizeLightnessScale = false): ColorScale {
+export function generateColorScale(hexColor: string, prioritizeLightnessScale = false): ToneTracks {
   const [hue, saturation, originalAnchorLightness, alpha] = hexToHSLA(hexColor);
-  const anchorLightness = prioritizeLightnessScale ? 50 : originalAnchorLightness; // when prioritizing lightness scale, center at 50
+  const anchorLightness = prioritizeLightnessScale ? 50 : originalAnchorLightness; // when prioritizing the lightness scale, center at 50
 
   const scale: ColorScale = {};
 
-  // Range 0-100: 100% to 90% lightness (1% decrements)
-  for (let tone = 0; tone <= 100; tone += 10) {
-    const lightness = 100 - tone / 10;
+  // Range 0-10: 100% to 90% lightness (1% decrements)
+  for (let tone = 0; tone <= 10; tone += 1) {
+    const lightness = 100 - tone;
     scale[tone as keyof ColorScale] = [hue, saturation, lightness, alpha];
   }
 
-  // Range 100-500: distribute from 90% to anchor lightness
+  // Range 10-50: distribute from 90% to anchor lightness
   const rangeBeforeAnchor = 90 - anchorLightness;
-  const stepsBeforeAnchor = 4; // 200, 300, 400, 500
+  const stepsBeforeAnchor = 4; // 20, 30, 40, 50
   const stepSizeBeforeAnchor = rangeBeforeAnchor / stepsBeforeAnchor;
 
-  scale[200] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor), alpha];
-  scale[300] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor * 2), alpha];
-  scale[400] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor * 3), alpha];
-  scale[500] = [hue, saturation, anchorLightness, alpha]; // Anchor (either original or centered at 50)
+  scale[20] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor), alpha];
+  scale[30] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor * 2), alpha];
+  scale[40] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor * 3), alpha];
+  scale[50] = [hue, saturation, anchorLightness, alpha]; // Anchor (either original or centered at 50)
 
-  // Range 500-1000: distribute from anchor to 0% lightness
+  // Range 50-100: distribute from anchor to 0% lightness
   const rangeAfterAnchor = anchorLightness;
-  const stepsAfterAnchor = 5; // 600, 700, 800, 900, 1000
+  const stepsAfterAnchor = 5; // 60, 70, 80, 90, 100
   const stepSizeAfterAnchor = rangeAfterAnchor / stepsAfterAnchor;
 
-  scale[600] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor), alpha];
-  scale[700] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 2), alpha];
-  scale[800] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 3), alpha];
-  scale[900] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 4), alpha];
-  scale[1000] = [hue, saturation, 0, alpha];
+  scale[60] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor), alpha];
+  scale[70] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 2), alpha];
+  scale[80] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 3), alpha];
+  scale[90] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 4), alpha];
+  scale[100] = [hue, saturation, 0, alpha];
 
-  return scale;
+  // Insert mid-steps for solid track at 5% increments by interpolating between existing 10% steps
+  const midBetween = (a?: HSLA, b?: HSLA): number | undefined =>
+    a && b ? Math.round((a[2] + b[2]) / 2) : undefined;
+
+  const l45 = midBetween(scale[40], scale[50]);
+  if (l45 !== undefined) scale[45 as keyof ColorScale] = [hue, saturation, l45, alpha];
+  const l55 = midBetween(scale[50], scale[60]);
+  if (l55 !== undefined) scale[55 as keyof ColorScale] = [hue, saturation, l55, alpha];
+  const l65 = midBetween(scale[60], scale[70]);
+  if (l65 !== undefined) scale[65 as keyof ColorScale] = [hue, saturation, l65, alpha];
+  const l75 = midBetween(scale[70], scale[80]);
+  if (l75 !== undefined) scale[75 as keyof ColorScale] = [hue, saturation, l75, alpha];
+  const l85 = midBetween(scale[80], scale[90]);
+  if (l85 !== undefined) scale[85 as keyof ColorScale] = [hue, saturation, l85, alpha];
+  const l95 = midBetween(scale[90], scale[100]);
+  if (l95 !== undefined) scale[95 as keyof ColorScale] = [hue, saturation, l95, alpha];
+
+  // Split into tone tracks
+  const soft: ColorScaleLight = {};
+  const solid: ColorScaleDark = {};
+
+  // Soft: 0-30 (now every 1%)
+  const l10 = scale[10]?.[2];
+  const l20 = scale[20]?.[2];
+  const l30 = scale[30]?.[2];
+
+  for (let t = 0; t <= 30; t += 1) {
+    let c: HSLA | undefined;
+    if (t <= 10) {
+      c = scale[t as keyof ColorScale] as HSLA | undefined;
+    } else if (t > 10 && t < 20 && l10 !== undefined && l20 !== undefined) {
+      const p = (t - 10) / 10; // 0..1 between 10 and 20
+      const L = Math.round(l10 + (l20 - l10) * p);
+      c = [hue, saturation, L, alpha];
+    } else if (t === 20) {
+      c = scale[20] as HSLA | undefined;
+    } else if (t > 20 && t < 30 && l20 !== undefined && l30 !== undefined) {
+      const p = (t - 20) / 10; // 0..1 between 20 and 30
+      const L = Math.round(l20 + (l30 - l20) * p);
+      c = [hue, saturation, L, alpha];
+    } else if (t === 30) {
+      c = scale[30] as HSLA | undefined;
+    }
+    if (c) soft[t as keyof ColorScaleLight] = c;
+  }
+
+  // Solid: 40-100 (now every 5%)
+  for (const tone of [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] as const) {
+    const c = scale[tone];
+    if (c) solid[tone] = c;
+  }
+
+  return { soft, solid };
 }
 
 /**
  * Generates a complete Kiskadee color scale and logs it in a format that's easy to copy.
  *
  * @param hexColor - Hexadecimal color string (e.g., "#6750A4")
- * @param prioritizeLightnessScale - When true, ignore the original lightness and center tone 500 at 50.
- *                                   When false (default), keep the input color's original lightness at 500.
+ * @param prioritizeLightnessScale - When true, ignore the original lightness and center tone 50 at 50.
+ *                                   When false (default), keep the input color's original lightness at 50.
  *
  * @example
  * generateColorScaleWithLog("#6750A4", true);
@@ -139,74 +197,60 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
 export function generateColorScaleWithLog(
   hexColor: string,
   prioritizeLightnessScale = false
-): ColorScale {
-  const scale = generateColorScale(hexColor, prioritizeLightnessScale);
+): ToneTracks {
+  const tracks = generateColorScale(hexColor, prioritizeLightnessScale);
 
-  // Build tone lines once so we can reuse for console and file output
-  const toneLines: string[] = [];
+  // Build pretty lines for soft and solid
+  const softLines: string[] = [];
+  const solidLines: string[] = [];
 
-  // Add comment for range 0-100
-  toneLines.push('  // Range 0-100: 100% to 90% lightness with 1% decrements (11 tones total)');
-
-  for (let tone = 0; tone <= 100; tone += 10) {
-    const color = scale[tone as keyof ColorScale];
+  // Soft header
+  softLines.push('  soft: {');
+  softLines.push('    // Soft track: 0–30 every 1% darkness');
+  for (
+    let tone = 0 as keyof ColorScaleLight;
+    (tone as number) <= 30;
+    tone = ((tone as number) + 1) as keyof ColorScaleLight
+  ) {
+    const color = tracks.soft[tone];
     if (color) {
-      const comment =
-        tone === 0
-          ? ' // 100% lightness (white/lightest)'
-          : tone === 100
-            ? ' // 90% lightness (end of 10% range from top)'
-            : ` // ${color[2]}% lightness`;
-      toneLines.push(`  ${tone}: [${color.join(', ')}],${comment}`);
+      const t = tone as number;
+      const comment = t === 0 ? ' // 0% darkness (white/lightest)' : ` // ${t}% darkness`;
+      softLines.push(`    ${t}: [${color.join(', ')}],${comment}`);
     }
   }
+  softLines.push('  },');
 
-  // Add comment for range 100-500
-  const anchor = scale[500];
-  if (anchor?.[2]) {
-    toneLines.push(
-      `  // Range 100-500: distribute (90% - ${anchor[2]}%) = ${90 - anchor[2]}% across 4 steps`
+  // Solid header
+  const anchor = tracks.solid[50];
+  solidLines.push('  solid: {');
+  if (anchor?.[2] !== undefined) {
+    solidLines.push(
+      `    // Solid track: 40–100 every 5% darkness (40,45,…,95,100); 50 is the anchor`
     );
   }
-
-  for (const tone of [200, 300, 400, 500]) {
-    const color = scale[tone as keyof ColorScale];
-    if (color) {
-      const comment =
-        tone === 500
-          ? ` // ${color[2]}% lightness - ${hexColor.toUpperCase()} - ANCHOR (unchanged)`
-          : ` // ${color[2]}% lightness`;
-      toneLines.push(`  ${tone}: [${color.join(', ')}],${comment}`);
-    }
+  for (const tone of [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] as const) {
+    const color = tracks.solid[tone];
+    if (!color) continue;
+    const comment =
+      tone === 50
+        ? ` // ${tone}% darkness - ${hexColor.toUpperCase()} - ANCHOR (unchanged)`
+        : tone === 100
+          ? ' // 100% darkness (black/darkest)'
+          : ` // ${tone}% darkness`;
+    solidLines.push(`    ${tone}: [${color.join(', ')}],${comment}`);
   }
+  solidLines.push('  }');
 
-  // Add comment for range 500-1000
-  if (anchor) {
-    toneLines.push(
-      `  // Range 500-1000: distribute (${anchor[2]}% - 0%) = ${anchor[2]}% across 5 steps`
-    );
-  }
+  const prettyBodyOnly = ['{', ...softLines, ...solidLines, '}'].join('\n');
 
-  for (const tone of [600, 700, 800, 900, 1000]) {
-    const color = scale[tone as keyof ColorScale];
-    if (color) {
-      const comment =
-        tone === 1000 ? ' // 0% lightness (black/darkest)' : ` // ${color[2]}% lightness`;
-      toneLines.push(`  ${tone}: [${color.join(', ')}],${comment}`);
-    }
-  }
-
-  // Prepare object body only (no category key)
-  const prettyBodyOnly = ['{', ...toneLines, '}'].join('\n');
-
-  // Console output: clear, copy-paste friendly
-  console.log('\n' + '='.repeat(80));
+  // Console output
+  console.log(`\n${'='.repeat(80)}`);
   console.log(`Color Scale (${hexColor})`);
   console.log('='.repeat(80));
-  console.log('\n// Copy the structure below and paste inside your palette object:\n');
+  console.log('\n// Copy the structure below and paste inside your palette object (ToneTracks):\n');
   console.log(prettyBodyOnly);
-
-  console.log('\n' + '='.repeat(80) + '\n');
+  console.log(`\n${'='.repeat(80)}\n`);
 
   // Write the file "color-tones.ts" next to this script (overwrite on each run)
   const __filename = fileURLToPath(import.meta.url);
@@ -216,7 +260,7 @@ export function generateColorScaleWithLog(
   writeFileSync(outFilePath, fileContent, 'utf8');
   console.log(`[generateColorScaleWithLog] Wrote TS to: ${outFilePath}`);
 
-  return scale;
+  return tracks;
 }
 
-generateColorScaleWithLog('#0091FF', false);
+generateColorScaleWithLog('#6750A4', true);

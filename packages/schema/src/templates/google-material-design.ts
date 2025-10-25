@@ -4,86 +4,132 @@ import type { Palette, Schema } from '../schema';
 export const palette: Palette = {
   p1: {
     primary: {
-      // Range 0-100: 100% to 90% lightness with 1% decrements (11 tones total)
-      0: [256, 34, 100, 1], // 100% lightness (white/lightest)
-      10: [256, 34, 99, 1], // 99% lightness
-      20: [256, 34, 98, 1], // 98% lightness
-      30: [256, 34, 97, 1], // 97% lightness
-      40: [256, 34, 96, 1], // 96% lightness
-      50: [256, 34, 95, 1], // 95% lightness
-      60: [256, 34, 94, 1], // 94% lightness
-      70: [256, 34, 93, 1], // 93% lightness
-      80: [256, 34, 92, 1], // 92% lightness
-      90: [256, 34, 91, 1], // 91% lightness
-      100: [256, 34, 90, 1], // 90% lightness (end of 10% range from top)
-      // Range 100-500: distribute (90% - 48%) = 42% across 4 steps ≈ 10.5% per step
-      200: [256, 34, 79, 1], // 79% lightness (90 - 10.5)
-      300: [256, 34, 69, 1], // 69% lightness (79 - 10.5)
-      400: [256, 34, 58, 1], // 58% lightness (69 - 10.5)
-      500: [256, 34, 48, 1], // 48% lightness - #6750A4 - ANCHOR (unchanged)
-      // Range 500-1000: distribute (48% - 0%) = 48% across 5 steps ≈ 9.6% per step
-      600: [256, 34, 38, 1], // 38% lightness (48 - 9.6)
-      700: [256, 34, 29, 1], // 29% lightness (38 - 9.6)
-      800: [256, 34, 19, 1], // 19% lightness (29 - 9.6)
-      900: [256, 34, 10, 1], // 10% lightness (19 - 9.6)
-      1000: [256, 34, 0, 1] // 0% lightness (black/darkest)
+      soft: {
+        // Soft track: 0–30 every 1% darkness
+        0: [256, 34, 100, 1], // 0% darkness (white/lightest)
+        1: [256, 34, 99, 1], // 1% darkness
+        2: [256, 34, 98, 1], // 2% darkness
+        3: [256, 34, 97, 1], // 3% darkness
+        4: [256, 34, 96, 1], // 4% darkness
+        5: [256, 34, 95, 1], // 5% darkness
+        6: [256, 34, 94, 1], // 6% darkness
+        7: [256, 34, 93, 1], // 7% darkness
+        8: [256, 34, 92, 1], // 8% darkness
+        9: [256, 34, 91, 1], // 9% darkness
+        10: [256, 34, 90, 1], // 10% darkness
+        11: [256, 34, 89, 1], // 11% darkness
+        12: [256, 34, 88, 1], // 12% darkness
+        13: [256, 34, 87, 1], // 13% darkness
+        14: [256, 34, 86, 1], // 14% darkness
+        15: [256, 34, 85, 1], // 15% darkness
+        16: [256, 34, 84, 1], // 16% darkness
+        17: [256, 34, 83, 1], // 17% darkness
+        18: [256, 34, 82, 1], // 18% darkness
+        19: [256, 34, 81, 1], // 19% darkness
+        20: [256, 34, 80, 1], // 20% darkness
+        21: [256, 34, 79, 1], // 21% darkness
+        22: [256, 34, 78, 1], // 22% darkness
+        23: [256, 34, 77, 1], // 23% darkness
+        24: [256, 34, 76, 1], // 24% darkness
+        25: [256, 34, 75, 1], // 25% darkness
+        26: [256, 34, 74, 1], // 26% darkness
+        27: [256, 34, 73, 1], // 27% darkness
+        28: [256, 34, 72, 1], // 28% darkness
+        29: [256, 34, 71, 1], // 29% darkness
+        30: [256, 34, 70, 1] // 30% darkness
+      },
+      solid: {
+        // Solid track: 40–100 every 5% darkness (40,45,…,95,100); 50 is the anchor
+        40: [256, 34, 60, 1], // 40% darkness
+        45: [256, 34, 55, 1], // 45% darkness
+        50: [256, 34, 50, 1], // 50% darkness - #6750A4 - ANCHOR (unchanged)
+        55: [256, 34, 45, 1], // 55% darkness
+        60: [256, 34, 40, 1], // 60% darkness
+        65: [256, 34, 35, 1], // 65% darkness
+        70: [256, 34, 30, 1], // 70% darkness
+        75: [256, 34, 25, 1], // 75% darkness
+        80: [256, 34, 20, 1], // 80% darkness
+        85: [256, 34, 15, 1], // 85% darkness
+        90: [256, 34, 10, 1], // 90% darkness
+        95: [256, 34, 5, 1], // 95% darkness
+        100: [256, 34, 0, 1] // 100% darkness (black/darkest)
+      }
     },
     secondary: {
-      0: [180, 0, 100, 1],
-      10: [180, 20, 92, 1],
-      50: [180, 40, 75, 1],
-      100: [180, 50, 60, 1],
-      500: [180, 60, 40, 1],
-      1000: [180, 60, 5, 1]
+      soft: {
+        0: [180, 0, 100, 1],
+        1: [180, 20, 92, 1],
+        5: [180, 40, 75, 1],
+        10: [180, 50, 60, 1]
+      },
+      solid: {
+        50: [180, 60, 40, 1],
+        100: [180, 60, 5, 1]
+      }
     },
-    'green-like': {
-      0: [140, 0, 100, 1],
-      10: [140, 30, 90, 1],
-      50: [140, 50, 70, 1],
-      100: [140, 60, 55, 1],
-      500: [140, 70, 40, 1], // Green mid-tone for "buy", "confirm"
-      1000: [140, 70, 5, 1]
+    greenLike: {
+      soft: {
+        0: [140, 0, 100, 1],
+        1: [140, 30, 90, 1],
+        5: [140, 50, 70, 1],
+        10: [140, 60, 55, 1]
+      },
+      solid: {
+        50: [140, 70, 40, 1], // Green mid-tone for "buy", "confirm"
+        100: [140, 70, 5, 1]
+      }
     },
-    'yellow-like': {
-      0: [45, 0, 100, 1],
-      10: [45, 40, 90, 1],
-      50: [45, 80, 75, 1],
-      100: [45, 90, 60, 1],
-      500: [45, 95, 50, 1], // Yellow/amber for "attention"
-      1000: [45, 95, 10, 1]
+    yellowLike: {
+      soft: {
+        0: [45, 0, 100, 1],
+        1: [45, 40, 90, 1],
+        5: [45, 80, 75, 1],
+        10: [45, 90, 60, 1]
+      },
+      solid: {
+        50: [45, 95, 50, 1], // Yellow/amber for "attention"
+        100: [45, 95, 10, 1]
+      }
     },
-    'red-like': {
-      0: [0, 0, 100, 1],
-      10: [0, 40, 90, 1],
-      50: [0, 70, 75, 1],
-      100: [0, 80, 60, 1],
-      500: [0, 85, 50, 1], // Red mid-tone for "urgent", "notification"
-      1000: [0, 85, 10, 1]
+    redLike: {
+      soft: {
+        0: [0, 0, 100, 1],
+        1: [0, 40, 90, 1],
+        5: [0, 70, 75, 1],
+        10: [0, 80, 60, 1]
+      },
+      solid: {
+        50: [0, 85, 50, 1], // Red mid-tone for "urgent", "notification"
+        100: [0, 85, 10, 1]
+      }
     },
     neutral: {
-      // Range 0-100: 100% to 90% lightness with 1% decrements (11 tones total)
-      0: [0, 0, 100, 1], // 100% lightness (white/lightest)
-      10: [0, 0, 99, 1], // 99% lightness
-      20: [0, 0, 98, 1], // 98% lightness
-      30: [0, 0, 97, 1], // 97% lightness
-      40: [0, 0, 96, 1], // 96% lightness
-      50: [0, 0, 95, 1], // 95% lightness
-      60: [0, 0, 94, 1], // 94% lightness
-      70: [0, 0, 93, 1], // 93% lightness
-      80: [0, 0, 92, 1], // 92% lightness
-      90: [0, 0, 91, 1], // 91% lightness
-      100: [0, 0, 90, 1], // 90% lightness (end of 10% range from top)
-      // Range 100-500: distribute (90% - 50%) = 40% across 4 steps
-      200: [0, 0, 80, 1], // 80% lightness
-      300: [0, 0, 70, 1], // 70% lightness
-      400: [0, 0, 60, 1], // 60% lightness
-      500: [0, 0, 50, 1], // 50% lightness - #000 - ANCHOR (unchanged)
-      // Range 500-1000: distribute (50% - 0%) = 50% across 5 steps
-      600: [0, 0, 40, 1], // 40% lightness
-      700: [0, 0, 30, 1], // 30% lightness
-      800: [0, 0, 20, 1], // 20% lightness
-      900: [0, 0, 10, 1], // 10% lightness
-      1000: [0, 0, 0, 1] // 0% lightness (black/darkest)
+      soft: {
+        // Range 0-10: 100% to 90% lightness with 1% decrements (11 tones total)
+        0: [0, 0, 100, 1], // 100% lightness (white/lightest)
+        1: [0, 0, 99, 1], // 99% lightness
+        2: [0, 0, 98, 1], // 98% lightness
+        3: [0, 0, 97, 1], // 97% lightness
+        4: [0, 0, 96, 1], // 96% lightness
+        5: [0, 0, 95, 1], // 95% lightness
+        6: [0, 0, 94, 1], // 94% lightness
+        7: [0, 0, 93, 1], // 93% lightness
+        8: [0, 0, 92, 1], // 92% lightness
+        9: [0, 0, 91, 1], // 91% lightness
+        10: [0, 0, 90, 1], // 90% lightness (end of 10% range from top)
+        // Range 10-30
+        20: [0, 0, 80, 1], // 80% lightness
+        30: [0, 0, 70, 1] // 70% lightness
+      },
+      solid: {
+        40: [0, 0, 60, 1], // 60% lightness
+        50: [0, 0, 50, 1], // 50% lightness - #000 - ANCHOR (unchanged)
+        60: [0, 0, 40, 1], // 40% lightness
+        70: [0, 0, 30, 1], // 30% lightness
+        80: [0, 0, 20, 1], // 20% lightness
+        90: [0, 0, 10, 1], // 10% lightness
+        100: [0, 0, 0, 1] // 0% lightness (black/darkest)
+      }
     }
   }
 };
@@ -141,16 +187,31 @@ export const schema: Schema = {
             p1: {
               boxColor: {
                 primary: {
-                  rest: palette.p1.primary[500]!,
-                  // hover: [256, 34, 48, 1], // official
-                  hover: palette.p1.primary[400],
-                  pressed: palette.p1.primary[600],
-                  disabled: palette.p1.neutral[100],
-                  focus: palette.p1.primary[500],
-                  selected: {
-                    rest: palette.p1.primary[100]!,
-                    hover: palette.p1.primary[80],
-                    pressed: palette.p1.primary[200]
+                  soft: {
+                    rest: palette.p1.primary.solid[50]!,
+                    // hover: [256, 34, 48, 1], // official
+                    hover: palette.p1.primary.solid[40],
+                    pressed: palette.p1.primary.solid[60],
+                    disabled: palette.p1.neutral.soft[10],
+                    focus: palette.p1.primary.solid[50],
+                    selected: {
+                      rest: palette.p1.primary.soft[10]!,
+                      hover: palette.p1.primary.soft[8],
+                      pressed: palette.p1.primary.soft[20]
+                    }
+                  },
+                  solid: {
+                    rest: palette.p1.primary.solid[50]!,
+                    // hover: [256, 34, 48, 1], // official
+                    hover: palette.p1.primary.solid[40],
+                    pressed: palette.p1.primary.solid[60],
+                    disabled: palette.p1.neutral.soft[10],
+                    focus: palette.p1.primary.solid[50],
+                    selected: {
+                      rest: palette.p1.primary.soft[10]!,
+                      hover: palette.p1.primary.soft[8],
+                      pressed: palette.p1.primary.soft[20]
+                    }
                   }
                 }
               }
@@ -198,10 +259,19 @@ export const schema: Schema = {
             p1: {
               textColor: {
                 primary: {
-                  rest: [0, 0, 100, 1],
-                  disabled: { ref: palette.p1.neutral[600]! },
-                  selected: {
-                    rest: { ref: palette.p1.neutral[700]! }
+                  soft: {
+                    rest: [0, 0, 100, 1],
+                    disabled: { ref: palette.p1.neutral.solid[60]! },
+                    selected: {
+                      rest: { ref: palette.p1.neutral.solid[70]! }
+                    }
+                  },
+                  solid: {
+                    rest: [0, 0, 100, 1],
+                    disabled: { ref: palette.p1.neutral.solid[60]! },
+                    selected: {
+                      rest: { ref: palette.p1.neutral.solid[70]! }
+                    }
                   }
                 }
               }
@@ -234,7 +304,12 @@ export const schema: Schema = {
             p1: {
               boxColor: {
                 neutral: {
-                  rest: [207, 90, 54, 1]
+                  soft: {
+                    rest: [207, 90, 54, 1]
+                  },
+                  solid: {
+                    rest: [207, 90, 54, 1]
+                  }
                 }
               }
             }
@@ -251,28 +326,52 @@ export const schema: Schema = {
             p1: {
               boxColor: {
                 primary: {
-                  // TODO: rest is mandatory, but in this case it's not needed
-                  rest: [207, 90, 54, 1],
-                  selected: { rest: [207, 90, 54, 1] }
-                  // hover: [207, 90, 64, 1]
+                  soft: {
+                    // TODO: rest is mandatory, but in this case it's not needed
+                    rest: [207, 90, 54, 1],
+                    selected: { rest: [207, 90, 54, 1] }
+                    // hover: [207, 90, 64, 1]
+                  },
+                  solid: {
+                    rest: [207, 90, 54, 1],
+                    selected: { rest: [207, 90, 54, 1] }
+                  }
                 },
                 neutral: {
-                  rest: [0, 0, 75, 1]
-                  // hover: [0, 0, 95, 1]
+                  soft: {
+                    rest: [0, 0, 75, 1]
+                    // hover: [0, 0, 95, 1]
+                  },
+                  solid: {
+                    rest: [0, 0, 75, 1]
+                    // hover: [0, 0, 95, 1]
+                  }
                 }
               }
             },
             p2: {
               boxColor: {
                 primary: {
-                  // TODO: rest is mandatory, but in this case it's not needed
-                  rest: [207, 90, 54, 1],
-                  selected: { rest: [207, 90, 54, 1] }
-                  // hover: [207, 90, 64, 1]
+                  soft: {
+                    // TODO: rest is mandatory, but in this case it's not needed
+                    rest: [207, 90, 54, 1],
+                    selected: { rest: [207, 90, 54, 1] }
+                    // hover: [207, 90, 64, 1]
+                  },
+                  solid: {
+                    rest: [207, 90, 54, 1],
+                    selected: { rest: [207, 90, 54, 1] }
+                  }
                 },
                 neutral: {
-                  rest: [0, 0, 75, 1]
-                  // hover: [0, 0, 95, 1]
+                  soft: {
+                    rest: [0, 0, 75, 1]
+                    // hover: [0, 0, 95, 1]
+                  },
+                  solid: {
+                    rest: [0, 0, 75, 1]
+                    // hover: [0, 0, 95, 1]
+                  }
                 }
               }
             }
