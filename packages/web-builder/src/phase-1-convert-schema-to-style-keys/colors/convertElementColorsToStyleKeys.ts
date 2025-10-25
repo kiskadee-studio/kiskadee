@@ -73,7 +73,7 @@ export function convertElementColorsToStyleKeys(
       const colorEntry = colorSchema[colorProperty];
       if (colorEntry === undefined) continue;
 
-      // New schema requires emphasis tracks (soft/solid) under each semantic color.
+      // The new schema requires emphasis tracks (soft/solid) under each semantic color.
       // Reject legacy direct InteractionStateColorMap at the property root.
       if (isInteractionStateColorMap(colorEntry)) {
         throw new Error(
@@ -81,8 +81,9 @@ export function convertElementColorsToStyleKeys(
         );
       }
       type SemanticEntry = Record<EmphasisVariant, InteractionStateColorMap> | unknown;
-      const semanticColorMap: Partial<Record<SemanticColor, SemanticEntry>> =
-        colorEntry as Partial<Record<SemanticColor, SemanticEntry>>;
+      const semanticColorMap: Partial<Record<SemanticColor, SemanticEntry>> = colorEntry as Partial<
+        Record<SemanticColor, SemanticEntry>
+      >;
 
       // Helper that processes a plain interaction-state map (rest/hover/pressed/focus/selected)
       const processInteractionStateMap = (
