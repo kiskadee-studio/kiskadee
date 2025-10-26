@@ -317,8 +317,8 @@ export type DarkTrackTones =
   | 95 // 95% darkness
   | 100; // 100% darkness
 
-export type ColorScaleLight = Partial<Record<LightTrackTones, Color>>;
-export type ColorScaleDark = Partial<Record<DarkTrackTones, Color>>;
+export type ColorScaleLight = Partial<Record<LightTrackTones, SolidColor>>;
+export type ColorScaleDark = Partial<Record<DarkTrackTones, SolidColor>>;
 
 /**
  * A variant map holding a tonal ColorScale for each tone track (light/dark).

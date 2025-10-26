@@ -1,5 +1,6 @@
 import { breakpoints } from '../breakpoints';
 import type { Palette, Schema } from '../schema';
+import { withAlpha } from '../utils/withAlpha';
 
 export const palette: Palette = {
   p1: {
@@ -211,24 +212,24 @@ export const schema: Schema = {
             p1: {
               boxColor: {
                 primary: {
-                  soft: {
-                    rest: palette.p1.primary.solid[50]!,
-                    // hover: [256, 34, 48, 1], // official
-                    hover: palette.p1.primary.solid[40],
-                    pressed: palette.p1.primary.solid[60],
-                    disabled: palette.p1.primary.soft[2],
-                    focus: palette.p1.primary.solid[50],
-                    selected: {
-                      rest: palette.p1.primary.soft[10]!,
-                      hover: palette.p1.primary.soft[8],
-                      pressed: palette.p1.primary.soft[20]
-                    }
-                  },
+                  // soft: {
+                  //   // rest: palette.p1.primary.solid[50]!,
+                  //   // // hover: [256, 34, 48, 1], // official
+                  //   // hover: palette.p1.primary.solid[40],
+                  //   // pressed: palette.p1.primary.solid[60],
+                  //   // disabled: withAlpha(palette.p1.primary.solid[50]!, 20),
+                  //   // focus: palette.p1.primary.solid[50],
+                  //   // selected: {
+                  //   //   rest: palette.p1.primary.soft[10]!,
+                  //   //   hover: palette.p1.primary.soft[8],
+                  //   //   pressed: palette.p1.primary.soft[20]
+                  //   // }
+                  // },
                   solid: {
                     rest: palette.p1.primary.solid[50]!,
-                    hover: palette.p1.primary.solid[40],
-                    pressed: palette.p1.primary.solid[60],
-                    disabled: palette.p1.primary.soft[2],
+                    hover: withAlpha(palette.p1.primary.solid[50]!, 80),
+                    pressed: withAlpha(palette.p1.primary.solid[60]!, 80),
+                    disabled: withAlpha(palette.p1.primary.solid[50]!, 20),
                     focus: palette.p1.primary.solid[50],
                     selected: {
                       rest: palette.p1.primary.soft[10]!,
@@ -264,11 +265,11 @@ export const schema: Schema = {
               blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
               // HSLA: [h, s, l, a] → converted to hex with alpha by the builder
               color: {
-                rest: [0, 0, 0, 0.28],
-                hover: [0, 0, 0, 0.35],
-                pressed: [0, 0, 0, 0.32],
-                focus: [0, 0, 0, 0.35],
-                disabled: [0, 0, 0, 0.0]
+                rest: withAlpha([0, 0, 0, 1], 28),
+                hover: withAlpha([0, 0, 0, 1], 35),
+                pressed: withAlpha([0, 0, 0, 1], 32),
+                focus: withAlpha([0, 0, 0, 1], 35),
+                disabled: withAlpha([0, 0, 0, 1], 0)
               }
             }
           }
@@ -282,16 +283,16 @@ export const schema: Schema = {
             p1: {
               textColor: {
                 primary: {
-                  soft: {
-                    rest: [0, 0, 100, 1],
-                    disabled: { ref: palette.p1.neutral.solid[60]! },
-                    selected: {
-                      rest: { ref: palette.p1.neutral.solid[70]! }
-                    }
-                  },
+                  // soft: {
+                  //   // rest: [0, 0, 100, 1],
+                  //   // disabled: { ref: palette.p1.neutral.solid[60]! },
+                  //   // selected: {
+                  //   //   rest: { ref: palette.p1.neutral.solid[70]! }
+                  //   // }
+                  // },
                   solid: {
                     rest: [0, 0, 100, 1],
-                    disabled: { ref: palette.p1.neutral.solid[60]! },
+                    disabled: { ref: withAlpha(palette.p1.neutral.soft[0]!, 20) },
                     selected: {
                       rest: { ref: palette.p1.neutral.solid[70]! }
                     }
