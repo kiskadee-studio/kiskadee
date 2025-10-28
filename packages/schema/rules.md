@@ -21,6 +21,20 @@
   be inefficient for users of the red-themed store to download blue-themed store colors they'll
   never use.
 
+### 1.1 Emphasis Variants (Soft and Solid Tones)
+- Kiskadee supports emphasis variants within semantic colors to provide visual hierarchy and
+  flexibility. Each semantic color (primary, secondary, neutral, etc.) can define two emphasis
+  tracks: **soft** (subtle, light backgrounds and tints) and **solid** (prominent, high-contrast
+  fills for actions and strong visual elements).
+- This dual-track system allows components to communicate different levels of visual prominence
+  while maintaining semantic consistency. For example, a primary button can use solid emphasis for
+  the main call-to-action, while soft emphasis works for secondary actions or backgrounds that need
+  to be noticeable but not dominant.
+- Components without emphasis requirements can use a **single color** (unique tone) directly under
+  the semantic color, without defining soft/solid tracks. This flexibility supports simpler
+  components (such as icons or dividers) that need only one color per semantic meaning, avoiding
+  unnecessary complexity in the schema.
+
 ## 2. Interaction States
 - The interaction state of an element (hover, focus, active, etc.) does not change its size, only
   its colors.
@@ -102,5 +116,3 @@
 The default size for elements and consequently components is medium, as is the font size, which is
 16px. The default interaction state is rest, and all other interaction states inherit the style from
 the rest state. The default semantic color is "neutral". The default text alignment is left.
-
-Existem efeitos globais como Ripple e Focus assim como efeitos a nível de elementos como Shadow, porém há a change de sombras não serem de fato usadas dentro de um elemento container, exemplo, um componente card, isto é, a sombra fica no card e os elementos internos ficam sem sombra. Se isso for caso de uso frequente, talvez seja melhor configurar a sombra a nível de componente e não nível de elemento.

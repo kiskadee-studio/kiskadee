@@ -212,19 +212,18 @@ export const schema: Schema = {
             p1: {
               boxColor: {
                 primary: {
-                  // soft: {
-                  //   // rest: palette.p1.primary.solid[50]!,
-                  //   // // hover: [256, 34, 48, 1], // official
-                  //   // hover: palette.p1.primary.solid[40],
-                  //   // pressed: palette.p1.primary.solid[60],
-                  //   // disabled: withAlpha(palette.p1.primary.solid[50]!, 20),
-                  //   // focus: palette.p1.primary.solid[50],
-                  //   // selected: {
-                  //   //   rest: palette.p1.primary.soft[10]!,
-                  //   //   hover: palette.p1.primary.soft[8],
-                  //   //   pressed: palette.p1.primary.soft[20]
-                  //   // }
-                  // },
+                  soft: {
+                    rest: palette.p1.primary.soft[5]!,
+                    hover: palette.p1.primary.soft[8],
+                    pressed: palette.p1.primary.soft[12],
+                    disabled: withAlpha(palette.p1.primary.soft[5]!, 20),
+                    focus: palette.p1.primary.soft[5],
+                    selected: {
+                      rest: palette.p1.primary.soft[10]!,
+                      hover: palette.p1.primary.soft[8],
+                      pressed: palette.p1.primary.soft[20]
+                    }
+                  },
                   solid: {
                     rest: palette.p1.primary.solid[50]!,
                     hover: withAlpha(palette.p1.primary.solid[50]!, 80),
@@ -283,13 +282,13 @@ export const schema: Schema = {
             p1: {
               textColor: {
                 primary: {
-                  // soft: {
-                  //   // rest: [0, 0, 100, 1],
-                  //   // disabled: { ref: palette.p1.neutral.solid[60]! },
-                  //   // selected: {
-                  //   //   rest: { ref: palette.p1.neutral.solid[70]! }
-                  //   // }
-                  // },
+                  soft: {
+                    rest: palette.p1.primary.solid[50]!,
+                    disabled: { ref: withAlpha(palette.p1.neutral.soft[0]!, 20) },
+                    selected: {
+                      rest: { ref: palette.p1.neutral.solid[70]! }
+                    }
+                  },
                   solid: {
                     rest: [0, 0, 100, 1],
                     disabled: { ref: withAlpha(palette.p1.neutral.soft[0]!, 20) },

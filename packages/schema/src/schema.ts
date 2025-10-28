@@ -97,22 +97,29 @@ export type Schema = SchemaMetadata & {
 
 export type Palette = SchemaPalette;
 
+// Color classes structure: segregates single-color, soft, and solid variants
+export type ColorClasses = {
+  u?: string; // unique/single color (no tone variants)
+  f?: string; // soft (light tone track)
+  d?: string; // solid (dark tone track)
+};
+
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects, s = scales, p = palettes (colors), c = control states
+  // d = decorations, e = effects, s = scales, c = colors (with u/f/d sub-fields), cs = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: unified string of effect base classes (space-separated). These classes are opt-in and require
   // activation via state activators (.-a, .-h, .-f, .-p, .-s, .-d, .-r) or native pseudos to take effect.
   // No interaction-state nesting here; components may append all base effect classes unconditionally.
   e?: string;
-  // c: control-state specific (selected) — flattened string of utility classes
-  c?: string;
   // s: values are pre-joined into a single space-separated string (no arrays) per size key
   s?: Partial<Record<string, string>>;
-  // p: Flattened palettes aggregated into a single space-separated string of class names.
-  // This string already includes all relevant classes from all palettes/semantics/interaction states.
-  p?: string;
+  // c: Color classes organized by tone. Contains u (unique/single), f (soft), d (solid).
+  // Each class appears in exactly one sub-field to avoid duplication.
+  c?: ColorClasses;
+  // cs: control-state specific (selected) — flattened string of utility classes
+  cs?: string;
 };
 
 export type ComponentClassNameMapJSON = Partial<

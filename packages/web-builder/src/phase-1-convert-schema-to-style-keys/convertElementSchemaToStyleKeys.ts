@@ -2,10 +2,14 @@ import type {
   ComponentName,
   ComponentStyleKeyMap,
   Schema,
+  StyleKey,
   StyleKeyByElement
 } from '@kiskadee/schema';
 import { deepUpdate } from '../utils';
-import { convertElementColorsToStyleKeys } from './colors/convertElementColorsToStyleKeys';
+import {
+  convertElementColorsToStyleKeys,
+  type ToneMetadata
+} from './colors/convertElementColorsToStyleKeys';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys';
@@ -15,13 +19,17 @@ import { convertElementScalesToStyleKeys } from './scales/convertElementScalesTo
  * Processes a Schema object by iterating over each component's elements.
  * For each style object, it processes the decoration, scales, and colors
  * (if defined) using their respective methods, and accumulates results
- * into styleKeysByComponent. Finally, the accumulated styleUsageMap
- * is logged to the console.
+ * into styleKeysByComponent. Also collects tone metadata from color processing.
  *
  * @param schema - The Schema object to process.
+ * @returns An object containing styleKeys and toneMetadata Map.
  */
-export function convertElementSchemaToStyleKeys(schema: Schema): ComponentStyleKeyMap {
+export function convertElementSchemaToStyleKeys(schema: Schema): {
+  styleKeys: ComponentStyleKeyMap;
+  toneMetadata: Map<StyleKey, ToneMetadata>;
+} {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
+  const toneMetadata = new Map<StyleKey, ToneMetadata>();
 
   // Iterate over each component in the schema.
   for (const c in schema.components) {
@@ -42,7 +50,13 @@ export function convertElementSchemaToStyleKeys(schema: Schema): ComponentStyleK
           el.scales = convertElementScalesToStyleKeys(element.scales);
         }
         if (element.palettes) {
-          el.palettes = convertElementColorsToStyleKeys(element.palettes);
+          const { styleKeys: paletteKeys, toneMetadata: paletteToneMetadata } =
+            convertElementColorsToStyleKeys(element.palettes);
+          el.palettes = paletteKeys;
+          // Merge tone metadata from this element into the global map
+          for (const [key, meta] of paletteToneMetadata) {
+            toneMetadata.set(key, meta);
+          }
         }
         // Effects: merge multiple effect maps (shadow, borderRadius, ...)
         // Each converter returns a map of InteractionState -> StyleKey[].
@@ -73,5 +87,5 @@ export function convertElementSchemaToStyleKeys(schema: Schema): ComponentStyleK
     }
   }
 
-  return styleKeysByComponent;
+  return { styleKeys: styleKeysByComponent, toneMetadata };
 }

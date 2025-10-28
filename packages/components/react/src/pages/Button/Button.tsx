@@ -7,29 +7,42 @@ export default function ButtonPage() {
       <h2>Button</h2>
       <p>Exemplo simples do componente Button:</p>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-        <Button label="Button" onClick={() => alert('Button clicado!')} />
-        <Button
-          label="Com ícone"
-          icon={<span aria-hidden>⭐</span>}
-          onClick={() => alert('Com ícone')}
-        />
-        <Button
-          aria-label="Icon only"
-          icon={<span aria-hidden>🔔</span>}
-          onClick={() => alert('Somente ícone')}
-        />
+        {/*<Button label="Button" onClick={() => alert('Button clicado!')} />*/}
+        {/*<Button*/}
+        {/*  label="Com ícone"*/}
+        {/*  icon={<span aria-hidden>⭐</span>}*/}
+        {/*  onClick={() => alert('Com ícone')}*/}
+        {/*/>*/}
+        {/*<Button*/}
+        {/*  aria-label="Icon only"*/}
+        {/*  icon={<span aria-hidden>🔔</span>}*/}
+        {/*  onClick={() => alert('Somente ícone')}*/}
+        {/*/>*/}
         <div className={s['interaction-state']}>
-          <h3>Interaction States - Primary</h3>
+          <h3>Interaction States - Primary (Solid)</h3>
           <div className={s['example-states']}>
-            <Button label="Rest" />
-            <Button label="Hover" status="hover" />
-            <Button label="Focus" status="focus" />
-            <Button label="Pressed" status="pressed" />
-            <Button label="Selected" controlState={true} />
-            <Button label="Disabled" status="disabled" />
+            <Button label="Rest" tone="solid" />
+            <Button label="Hover" tone="solid" status="hover" />
+            <Button label="Focus" tone="solid" status="focus" />
+            <Button label="Pressed" tone="solid" status="pressed" />
+            <Button label="Selected" tone="solid" controlState={true} />
+            <Button label="Disabled" tone="solid" status="disabled" />
             {/*<Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />*/}
           </div>
         </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Primary (Soft)</h3>
+          <div className={s['example-states']}>
+            <Button label="Rest" tone="soft" />
+            <Button label="Hover" tone="soft" status="hover" />
+            <Button label="Focus" tone="soft" status="focus" />
+            <Button label="Pressed" tone="soft" status="pressed" />
+            <Button label="Selected" tone="soft" controlState={true} />
+            <Button label="Disabled" tone="soft" status="disabled" />
+            {/*<Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />*/}
+          </div>
+        </div>
+
         <div className={s['interaction-state']}>
           <h3>Size: small</h3>
           <div className={s['example-states']}>

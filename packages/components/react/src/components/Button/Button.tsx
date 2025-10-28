@@ -4,6 +4,7 @@ import {
   type ClassNameByElementJSON,
   stateActivator as cn,
   type ElementSizeValue,
+  type EmphasisVariant,
   type StateActivatorKeys
 } from '@kiskadee/schema';
 import { memo, useMemo } from 'react';
@@ -25,15 +26,36 @@ export type ButtonProps = HeadlessButtonProps & {
   scale?: ElementSizeValue;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
+  /**
+   * Emphasis variant (tone) for the button colors.
+   * When provided, selects only classes for the specified tone (soft or solid).
+   * If not provided or if tone metadata is not available, uses all palette classes.
+   */
+  tone?: EmphasisVariant;
 };
 
-// Build a single space-separated class string from flattened d/p only (sizes handled in e1)
-function collectStr(el: ClassNameByElementJSON | undefined): string {
+// Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
+// Selects color classes based on tone: soft (f), solid (d), or unique (u)
+function collectStr(el: ClassNameByElementJSON | undefined, tone?: EmphasisVariant): string {
   if (!el) return '';
   let out = '';
   if (el.d) out = el.d;
-  const p = el.p;
-  if (p) out = out ? `${out} ${p}` : p;
+
+  // Select color classes based on tone
+  let colorClasses = '';
+  if (tone === 'soft' && el.c?.f) {
+    colorClasses = el.c.f;
+  } else if (tone === 'solid' && el.c?.d) {
+    colorClasses = el.c.d;
+  } else if (el.c?.u) {
+    // Fallback: unique/single color (no tone)
+    colorClasses = el.c.u;
+  } else if (!tone && el.c) {
+    // No tone specified: default to solid, fallback to soft, then unique
+    colorClasses = el.c.d ?? el.c.f ?? el.c.u ?? '';
+  }
+
+  if (colorClasses) out = out ? `${out} ${colorClasses}` : colorClasses;
   return out;
 }
 
@@ -46,6 +68,7 @@ function Button(props: ButtonProps) {
     scale = 's:md:1',
     disabled,
     shadow = false,
+    tone,
     tabIndex,
     ...restProps
   } = props;
@@ -58,9 +81,9 @@ function Button(props: ButtonProps) {
   // If no `scale` prop is passed, we default to the median 's:md:1' so the button never renders without a scale.
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    const el1 = collectStr(e1);
-    const el2 = collectStr(e2);
-    const el3 = collectStr(e3);
+    const el1 = collectStr(e1, tone);
+    const el2 = collectStr(e2, tone);
+    const el3 = collectStr(e3, tone);
 
     // Include scales for e1 (root) and e2 (label)
     const sAllE1 = e1?.s?.['s:all'] ?? '';
@@ -71,7 +94,7 @@ function Button(props: ButtonProps) {
     // Effects base classes (from Phase 5 `e`) — unified string.
     // We append them unconditionally; activation is governed by forced state classes or native pseudos in CSS.
     const e1Effects = e1?.e ?? '';
-    const selected = controlState ? e1?.c ?? '' : '';
+    const selected = controlState ? (e1?.cs ?? '') : '';
 
     const e1Base =
       (el1 ? `${el1}` : '') +
@@ -114,6 +137,7 @@ function Button(props: ButtonProps) {
     controlState,
     scale,
     shadow,
+    tone,
     classNames.e1,
     classNames.e2,
     classNames.e3

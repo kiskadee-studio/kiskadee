@@ -194,9 +194,9 @@ function Root() {
       for (const el in compEl) {
         (merged as any)[comp][el] = (merged as any)[comp][el] || {};
         const elObj = compEl[el];
-        // Since `p` is now a flattened string, just assign it directly
-        if (elObj && typeof elObj.p === 'string') {
-          (merged as any)[comp][el].p = elObj.p;
+        // Merge color classes object (c) from palette JSON
+        if (elObj && elObj.c) {
+          (merged as any)[comp][el].c = elObj.c;
         }
       }
     }

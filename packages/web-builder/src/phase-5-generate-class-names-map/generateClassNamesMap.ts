@@ -4,15 +4,25 @@ import type {
   ElementAllSizeValue,
   ElementSizeValue,
   InteractionState,
-  SemanticColor
+  SemanticColor,
+  StyleKey
 } from '@kiskadee/schema';
+import type { ToneMetadata } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
+
+// Color classes structure matching schema.ts
+type ColorClasses = {
+  u?: string; // unique/single color (no tone variants)
+  f?: string; // soft (light tone track)
+  d?: string; // solid (dark tone track)
+};
 
 // Shortened keys for optimization (Phase 5 artifact schema):
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
-// p = palettes (colors, flattened string aggregated per palette)
+// c = color classes (organized by tone: u/f/d)
+// cs = control states (selected)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
 export type ClassNameByElement = {
   // Flattened decorations only (always-on). Effects no longer merge here.
@@ -20,12 +30,12 @@ export type ClassNameByElement = {
   // Unified effects base classes string (space-separated). No per-state nesting.
   // Components may append this string unconditionally; activation is controlled by state classes/pseudos in CSS.
   e?: string;
-  // Control-state specific (selected) — flattened string of utility classes
-  c?: string;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Flattened palettes aggregated into a single space-separated string of class names
-  p?: string;
+  // Color classes organized by tone (u/f/d)
+  c?: ColorClasses;
+  // Control-state specific (selected) — flattened string of utility classes
+  cs?: string;
 };
 export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
 
@@ -52,10 +62,12 @@ function mapArray(
  * - Effects are never merged into `d` or `s` — they must be explicitly added by components from `e`.
  * - This aligns with Phase 4 where effect CSS is only emitted when gated (class activator/pseudo).
  * - Keys are shortened via ShortenCssClassNames map.
+ * - toneMetadata is used to build the `t` field mapping tones to their class names.
  */
 export function generateClassNamesMapSplit(
   styleKeys: ComponentStyleKeyMap,
-  shortenMap: ShortenCssClassNames
+  shortenMap: ShortenCssClassNames,
+  toneMetadata: Map<StyleKey, ToneMetadata>
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
@@ -110,8 +122,7 @@ export function generateClassNamesMapSplit(
         }
       }
 
-
-      // Palettes split per palette name; flatten so that per-palette JSON has only `p` (no paletteName level)
+      // Palettes split per palette name; segregate by tone (unique/soft/solid)
       if (el.palettes) {
         for (const paletteName of Object.keys(el.palettes)) {
           if (!palettes[paletteName]) palettes[paletteName] = {};
@@ -124,32 +135,64 @@ export function generateClassNamesMapSplit(
             palettes[paletteName][componentName][elementName] = {};
           }
           const elemRecord = palettes[paletteName][componentName][elementName];
-          // Flatten only this palette into a single string, excluding selected-related states
-          const pSet = new Set<string>();
+
+          // Segregate classes by tone (or unique if no tone)
+          const uniqueSet = new Set<string>(); // Color unique (no tone)
+          const softSet = new Set<string>(); // Soft tone
+          const solidSet = new Set<string>(); // Solid tone
+
           for (const sem of Object.keys(bySemantic)) {
             const byState = bySemantic[sem as SemanticColor];
             for (const st of Object.keys(byState ?? {})) {
-              const mapped = mapArray(byState?.[st as InteractionState], shortenMap);
+              const styleKeys = byState?.[st as InteractionState];
               const isSelectedState = st === 'selected' || st.startsWith('selected:');
-              mapped?.forEach((c) => {
+
+              styleKeys?.forEach((styleKey) => {
+                const shortenedClass = shortenMap[styleKey] ?? styleKey;
+                const meta = toneMetadata.get(styleKey);
+
                 if (isSelectedState) {
                   // Union selected palette classes into control set (core)
-                  cSelectedSet.add(c);
+                  cSelectedSet.add(shortenedClass);
                 } else {
-                  pSet.add(c);
+                  // Distribute by tone or unique
+                  if (meta?.tone === 'soft') {
+                    softSet.add(shortenedClass);
+                  } else if (meta?.tone === 'solid') {
+                    solidSet.add(shortenedClass);
+                  } else {
+                    // No tone = unique/single color
+                    uniqueSet.add(shortenedClass);
+                  }
                 }
               });
             }
           }
-          elemRecord.p = pSet.size > 0 ? Array.from(pSet).join(' ') : undefined;
+
+          // Build ColorClasses object
+          const colorClasses: ColorClasses = {};
+          if (uniqueSet.size > 0) {
+            colorClasses.u = Array.from(uniqueSet).join(' ');
+          }
+          if (softSet.size > 0) {
+            colorClasses.f = Array.from(softSet).join(' ');
+          }
+          if (solidSet.size > 0) {
+            colorClasses.d = Array.from(solidSet).join(' ');
+          }
+
+          // Add to element record only if we have color classes
+          if (Object.keys(colorClasses).length > 0) {
+            elemRecord.c = colorClasses;
+          }
         }
       }
 
-      // After processing palettes, finalize the core element record so `c` includes palette-derived selected classes
+      // After processing palettes, finalize the core element record so `cs` includes palette-derived selected classes
       core[componentName][elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
         e: eSet.size ? Array.from(eSet).join(' ') : undefined,
-        c: cSelectedSet.size ? Array.from(cSelectedSet).join(' ') : undefined,
+        cs: cSelectedSet.size ? Array.from(cSelectedSet).join(' ') : undefined,
         s:
           sMap.size > 0
             ? Object.fromEntries(

@@ -18,7 +18,7 @@ import {
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 
 // Phase 1 - Convert Element Schema to Style Keys
-const styleKeys: ComponentStyleKeyMap = convertElementSchemaToStyleKeys(schema);
+const { styleKeys, toneMetadata } = convertElementSchemaToStyleKeys(schema);
 console.log('phase 1', { styleKeys: JSON.stringify(styleKeys, null, 2) });
 
 // // Phase 2 - Map style key usage for optimization purposes
@@ -36,7 +36,8 @@ console.log('phase 4', { cssGenerated });
 // Phase 5 - Generate class names map split (core + per-palette)
 const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSplit(
   styleKeys,
-  shortenCssClassNameMap
+  shortenCssClassNameMap,
+  toneMetadata
 );
 console.log('phrase 5', { classNamesMapSplit });
 
