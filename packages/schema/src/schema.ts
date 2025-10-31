@@ -2,7 +2,8 @@ import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './break
 import type {
   ColorSchema,
   InteractionState,
-  SchemaPalette,
+  SchemaSegments,
+  Segment,
   SemanticColor
 } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
@@ -12,10 +13,10 @@ import type { ScaleSchema } from './types/scales/scales.types';
 // Names of all supported components
 export type ComponentName = 'button' | 'tabs';
 
-// Unique identifier for each color palette variation within a theme
-export type PaletteName = string;
+// Unique identifier for each segment (brand/product identity) within a design system
+export type SegmentName = string;
 
-export type ElementColors = Record<PaletteName, ColorSchema>;
+export type ElementColors = Record<SegmentName, ColorSchema>;
 
 export type ElementStyle = Partial<{
   decorations: DecorationSchema;
@@ -48,7 +49,7 @@ export interface StyleKeyByElement {
   decorations: StyleKey[];
   effects: StyleKeysByInteractionState;
   scales: Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>;
-  palettes: Record<PaletteName, InteractionStateBySemanticColor>;
+  palettes: Record<SegmentName, InteractionStateBySemanticColor>;
 }
 
 export type ComponentStyleKeyMap = Partial<{
@@ -94,8 +95,6 @@ export type SchemaMetadata = {
 export type Schema = SchemaMetadata & {
   components: Components;
 };
-
-export type Palette = SchemaPalette;
 
 // Color classes structure: segregates single-color, soft, and solid variants
 export type ColorClasses = {

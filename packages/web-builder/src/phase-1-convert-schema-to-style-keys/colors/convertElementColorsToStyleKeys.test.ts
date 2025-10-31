@@ -116,6 +116,7 @@ describe('convertElementColorsToStyleKeys', () => {
       /no longer supported|must define soft\/solid/i
     );
   });
+
   it('handles selected submap: emits selected/rest and selected:hover keys', (): void => {
     const elementColors: ElementColors = {
       p1: {

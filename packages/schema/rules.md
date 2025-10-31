@@ -1,27 +1,59 @@
-## 1. Color Themes and Variations
-- Kiskadee does not work with design systems with light or dark mode, but rather a single theme with
-  support for different color palettes, which can be used to handle variations of a white label
-  product or variations of light or dark mode, or both.
-- Component variants employ color variations within a unified palette to convey distinct meanings.
-  Consider a button that maintains its core structure - dimensions and visual style - but adapts its
-  color to communicate purpose: red for dangerous actions requiring caution, green for confirmatory
-  actions. These color variations create component variants without constituting a separate theme or
-  design system.
-- The color variant "danger" is called "error" by the Microsoft Fluent 2 design system, but this
-  makes sense in the context of that design system, as the "red" color is only used in error
-  messages and error inputs. However, the "danger" color variant can be used in buttons and other
-  elements, and that is why it is called "danger" in the Kiskadee design system.
-- For optimization purposes, a visual identity's colors are exported to a separate file, aligning
-  with Kiskadee's emphasis on maximum web performance. When generating the style schema, colors must
-  be imported from the desired palette or theme variant. For instance, consider a white-label
-  e-commerce platform where one brand uses blue and another uses red, while sharing the same visual
-  identity structure. With Kiskadee, you only need one visual identity with two defined palettes -
-  one for each store. The colors from each palette are extracted separately for optimal performance.
-  Since users of one store are typically unaware of the shared codebase with another store, it would
-  be inefficient for users of the red-themed store to download blue-themed store colors they'll
-  never use.
+## 1. Color Segments, Themes, and Variations
 
-### 1.1 Emphasis Variants (Soft and Solid Tones)
+### 1.1. Segments (Brand/Product Identity)
+- Kiskadee organizes colors through **segments**, where each segment represents a distinct brand or
+  product identity (e.g., Google, YouTube, WhatsApp in a multi-brand platform).
+- Each segment defines its own **primary color** (brand identity color) which varies by segment,
+  while maintaining universal **semantic colors** (greenLike, yellowLike, redLike, neutral) that
+  remain consistent across all segments to ensure predictable component behavior and enable theme
+  automation.
+- For example, in a white-label e-commerce platform, one brand might use blue as its primary color
+  while another uses red, but both would use the same green color for "purchase" buttons (greenLike)
+  to maintain universal semantic meaning.
+
+### 1.2. Theme Modes (Light/Dark)
+- Within each segment, Kiskadee supports multiple **theme modes**: light, dark, and optionally
+  darker. Each theme mode can define independent color scales and tone tracks optimized for that
+  specific context.
+- Theme modes allow the same segment (brand) to adapt to different display contexts while
+  maintaining brand identity. For instance, Google segment might have both light and dark themes,
+  each with the same blue primary hue but different tone distributions.
+- Each theme must include all required semantic colors (primary, secondary, greenLike, yellowLike,
+  redLike, neutral) to ensure consistency and enable automatic theme generation.
+
+### 1.3. Universal Semantic Colors
+- **primary**: Brand identity color (varies by segment - blue for Google, red for YouTube, green for
+  WhatsApp)
+- **secondary**: Supporting brand color (optional, varies by segment)
+- **greenLike**: Universal semantic for success, purchase, confirmation, profit (always green-ish,
+  ~140° hue, consistent across segments)
+- **yellowLike**: Universal semantic for attention, warning, caution (always yellow-ish, ~45° hue,
+  consistent across segments)
+- **redLike**: Universal semantic for danger, error, urgent, notification (always red-ish, ~0° hue,
+  consistent across segments)
+- **neutral**: Universal semantic for text, backgrounds, borders, dividers (always grayscale,
+  consistent across segments)
+
+The "-like" suffix indicates artistic freedom: the actual hue can vary slightly while maintaining
+communicative intent. This consistency enables theme automation - a "buy" button always uses
+greenLike regardless of segment, ensuring it's always green even when the segment's primary color is
+red or blue.
+
+### 1.4. Performance Optimization
+- For optimal web performance, each segment's theme colors are exported to separate files. When
+  generating the style schema, colors are imported from the desired segment and theme.
+- Build output structure: `google-light.css`, `google-dark.css`, `youtube-light.css`, etc.
+- Users of one segment only download colors for that segment and active theme, avoiding unnecessary
+  bundle size from other segments they'll never use.
+
+### 1.5. Component Color Variants
+- Component variants employ color variations within their theme's palette to convey distinct
+  meanings. A button maintains its core structure but adapts its color to communicate purpose: red
+  (redLike) for dangerous actions, green (greenLike) for confirmatory actions, brand color (primary)
+  for main actions.
+- These color variations create component variants without constituting a separate design system.
+
+### 1.6. Emphasis Variants (Soft and Solid Tone Tracks)
 - Kiskadee supports emphasis variants within semantic colors to provide visual hierarchy and
   flexibility. Each semantic color (primary, secondary, neutral, etc.) can define two emphasis
   tracks: **soft** (subtle, light backgrounds and tints) and **solid** (prominent, high-contrast

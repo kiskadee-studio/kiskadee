@@ -1,4 +1,4 @@
-import type { PaletteName } from '../../schema';
+import type { SegmentName } from '../../schema';
 
 /** Represents a hue value in degrees ranging from 0 to 360. */
 type Hue = number;
@@ -146,7 +146,7 @@ export type SelectedInteractionStateToken = `selected:${SelectedInteractionState
 // - Does NOT include nested selected/disabled/readOnly to avoid combinatorial explosion;
 //   disabled/readOnly remain top-level with global precedence.
 export type SelectedInteractionSubMap = {
-  rest: ColorValue; // on/rest now supports { ref: Color } as well
+  rest?: ColorValue; // on/rest now supports { ref: Color } as well
   hover?: ColorValue; // on/hover
   pressed?: ColorValue; // on/pressed
   focus?: ColorValue; // on/focus
@@ -359,14 +359,52 @@ export type ToneTracks = {
 /**
  * Complete color palette for a design system theme.
  * Maps each semantic category to its full tonal scale.
+ *
+ * All semantic colors are required to ensure consistency across segments
+ * and enable theme automation (copying structure while changing brand colors).
  */
 export type ColorPalette = Record<SemanticColor, ToneTracks>;
 
 /**
+ * Theme color palette for a specific theme mode (light, dark, darker).
+ * Each theme defines its own independent color scales and tone tracks.
+ */
+export type ThemeColorPalette = ColorPalette;
+
+/**
+ * Segment definition containing themes.
+ * A segment represents a brand/product identity (e.g., Google, YouTube, WhatsApp).
+ * Each segment must define at least one theme mode.
+ */
+export type Segment = {
+  name: string;
+  themes: Partial<Record<ThemeMode, ThemeColorPalette>>;
+};
+
+/**
  * Root colors definition in the Schema.
  *
- * Supports multiple palette variants (white label segments) using the same
- * naming convention as component palettes (e.g., p1, p2, p3).
- * Each variant contains a complete set of semantic categories with their tonal scales.
+ * Supports multiple segment variants (white label brands/products).
+ * Each segment contains:
+ * - Brand identity colors (primary color varies by segment)
+ * - Universal semantic colors (greenLike, yellowLike, redLike, neutral - consistent across segments)
+ * - Multiple theme modes (light, dark, darker)
+ *
+ * Example structure:
+ * segments: {
+ *   google: {
+ *     name: 'Google',
+ *     themes: {
+ *       light: { primary: {...}, greenLike: {...}, ... },
+ *       dark: { primary: {...}, greenLike: {...}, ... }
+ *     }
+ *   },
+ *   youtube: {
+ *     name: 'YouTube',
+ *     themes: {
+ *       light: { primary: {...}, greenLike: {...}, ... }
+ *     }
+ *   }
+ * }
  */
-export type SchemaPalette = Record<PaletteName, ColorPalette>;
+export type SchemaSegments = Record<SegmentName, Segment>;
