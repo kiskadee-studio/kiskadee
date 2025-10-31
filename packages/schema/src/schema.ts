@@ -1,11 +1,5 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
-import type {
-  ColorSchema,
-  InteractionState,
-  SchemaSegments,
-  Segment,
-  SemanticColor
-} from './types/colors/colors.types';
+import type { ElementPalettes, InteractionState, SemanticColor } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ElementEffects } from './types/effects';
 import type { ScaleSchema } from './types/scales/scales.types';
@@ -16,14 +10,12 @@ export type ComponentName = 'button' | 'tabs';
 // Unique identifier for each segment (brand/product identity) within a design system
 export type SegmentName = string;
 
-export type ElementColors = Record<SegmentName, ColorSchema>;
-
 export type ElementStyle = Partial<{
   decorations: DecorationSchema;
   scales: ScaleSchema;
-  // This layer (Record) allows the Style structure to support multiple color variations within a
-  // white-label theme
-  palettes: ElementColors;
+  // Palettes follow the same structure as SchemaSegments: segmentName → themes → ColorSchema
+  // This ensures consistency and enables proper white-label theming with light/dark mode support
+  palettes: ElementPalettes;
   effects: ElementEffects;
 }>;
 
@@ -49,7 +41,8 @@ export interface StyleKeyByElement {
   decorations: StyleKey[];
   effects: StyleKeysByInteractionState;
   scales: Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>;
-  palettes: Record<SegmentName, InteractionStateBySemanticColor>;
+  // Palettes now include theme mode in the structure: segment → theme → semantic color → interaction states
+  palettes: Partial<Record<SegmentName, Partial<Record<string, InteractionStateBySemanticColor>>>>;
 }
 
 export type ComponentStyleKeyMap = Partial<{
@@ -64,22 +57,6 @@ export interface ClassNameMap {
     [elementName: string]: Partial<Record<InteractionState, string[]>>;
   };
 }
-
-// export interface ClassNameMap {
-//   [componenteName: string]: {
-//     [elementName: string]: Partial<Record<InteractionState, string[]>>;
-//   };
-// }
-//
-// // Input
-// const classNameMap: ClassNameMap = {
-//   button: {
-//     e1: {
-//       rest: ['bg-primary-500', 'text-white'],
-//       hover: ['bg-primary-600']
-//     }
-//   }
-// };
 
 // -------------------------------------------------------------------------------------------------
 
@@ -118,6 +95,7 @@ export type ClassNameByElementJSON = {
   // Each class appears in exactly one sub-field to avoid duplication.
   c?: ColorClasses;
   // cs: control-state specific (selected) — flattened string of utility classes
+  // TODO: replace is with a single letter
   cs?: string;
 };
 

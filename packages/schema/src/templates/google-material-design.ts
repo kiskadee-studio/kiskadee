@@ -207,33 +207,35 @@ export const schema: Schema = {
             }
           },
           palettes: {
-            p1: {
-              boxColor: {
-                primary: {
-                  soft: {
-                    rest: materialLight!.primary.solid[50]!,
-                    // hover: [256, 34, 48, 1], // official
-                    hover: materialLight!.primary.solid[40],
-                    pressed: materialLight!.primary.solid[60],
-                    disabled: materialLight!.neutral.soft[10],
-                    focus: materialLight!.primary.solid[50],
-                    selected: {
-                      rest: materialLight!.primary.soft[10]!,
-                      hover: materialLight!.primary.soft[8],
-                      pressed: materialLight!.primary.soft[20]
-                    }
-                  },
-                  solid: {
-                    rest: materialLight!.primary.solid[50]!,
-                    // hover: [256, 34, 48, 1], // official
-                    hover: materialLight!.primary.solid[40],
-                    pressed: materialLight!.primary.solid[60],
-                    disabled: materialLight!.neutral.soft[10],
-                    focus: materialLight!.primary.solid[50],
-                    selected: {
-                      rest: materialLight!.primary.soft[10]!,
-                      hover: materialLight!.primary.soft[8],
-                      pressed: materialLight!.primary.soft[20]
+            material: {
+              light: {
+                boxColor: {
+                  primary: {
+                    soft: {
+                      rest: materialLight!.primary.solid[50]!,
+                      // hover: [256, 34, 48, 1], // official
+                      hover: materialLight!.primary.solid[40],
+                      pressed: materialLight!.primary.solid[60],
+                      disabled: materialLight!.neutral.soft[10],
+                      focus: materialLight!.primary.solid[50],
+                      selected: {
+                        rest: materialLight!.primary.soft[10]!,
+                        hover: materialLight!.primary.soft[8],
+                        pressed: materialLight!.primary.soft[20]
+                      }
+                    },
+                    solid: {
+                      rest: materialLight!.primary.solid[50]!,
+                      // hover: [256, 34, 48, 1], // official
+                      hover: materialLight!.primary.solid[40],
+                      pressed: materialLight!.primary.solid[60],
+                      disabled: materialLight!.neutral.soft[10],
+                      focus: materialLight!.primary.solid[50],
+                      selected: {
+                        rest: materialLight!.primary.soft[10]!,
+                        hover: materialLight!.primary.soft[8],
+                        pressed: materialLight!.primary.soft[20]
+                      }
                     }
                   }
                 }
@@ -279,21 +281,31 @@ export const schema: Schema = {
             textWeight: 'medium'
           },
           palettes: {
-            p1: {
-              textColor: {
-                primary: {
-                  soft: {
-                    rest: [0, 0, 100, 1],
-                    disabled: { ref: materialLight!.neutral.solid[60]! },
-                    selected: {
-                      rest: { ref: materialLight!.neutral.solid[70]! }
-                    }
-                  },
-                  solid: {
-                    rest: [0, 0, 100, 1],
-                    disabled: { ref: materialLight!.neutral.solid[60]! },
-                    selected: {
-                      rest: { ref: materialLight!.neutral.solid[70]! }
+            material: {
+              light: {
+                textColor: {
+                  primary: {
+                    soft: {
+                      rest: [0, 0, 100, 1],
+                      disabled: {
+                        ref: materialLight!.neutral.solid[60]!
+                      },
+                      selected: {
+                        rest: {
+                          ref: materialLight!.neutral.solid[70]!
+                        }
+                      }
+                    },
+                    solid: {
+                      rest: [0, 0, 100, 1],
+                      disabled: {
+                        ref: materialLight!.neutral.solid[60]!
+                      },
+                      selected: {
+                        rest: {
+                          ref: materialLight!.neutral.solid[70]!
+                        }
+                      }
                     }
                   }
                 }
@@ -315,88 +327,6 @@ export const schema: Schema = {
               's:lg:1': 24,
               's:lg:2': 32,
               's:lg:3': 40
-            }
-          }
-        }
-      }
-    },
-    tabs: {
-      elements: {
-        e1: {
-          palettes: {
-            p1: {
-              boxColor: {
-                neutral: {
-                  soft: {
-                    rest: [207, 90, 54, 1]
-                  },
-                  solid: {
-                    rest: [207, 90, 54, 1]
-                  }
-                }
-              }
-            }
-          },
-          scales: {
-            borderRadius: 8
-          }
-        },
-        e3: {
-          decorations: {
-            borderStyle: 'none'
-          },
-          palettes: {
-            p1: {
-              boxColor: {
-                primary: {
-                  soft: {
-                    // TODO: rest is mandatory, but in this case it's not needed
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                    // hover: [207, 90, 64, 1]
-                  },
-                  solid: {
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                  }
-                },
-                neutral: {
-                  soft: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  },
-                  solid: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  }
-                }
-              }
-            },
-            p2: {
-              boxColor: {
-                primary: {
-                  soft: {
-                    // TODO: rest is mandatory, but in this case it's not needed
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                    // hover: [207, 90, 64, 1]
-                  },
-                  solid: {
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                  }
-                },
-                neutral: {
-                  soft: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  },
-                  solid: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  }
-                }
-              }
             }
           }
         }

@@ -408,3 +408,23 @@ export type Segment = {
  * }
  */
 export type SchemaSegments = Record<SegmentName, Segment>;
+
+/**
+ * Element palettes for components following the same structure as SchemaSegments.
+ * Maps segment names to theme modes to ColorSchema definitions.
+ *
+ * This structure ensures consistency between segment definitions and their usage in components.
+ *
+ * Example structure:
+ * palettes: {
+ *   ios: {
+ *     light: {
+ *       boxColor: { primary: { soft: { rest: [...], hover: [...] } } }
+ *     },
+ *     dark: {
+ *       boxColor: { primary: { soft: { rest: [...], hover: [...] } } }
+ *     }
+ *   }
+ * }
+ */
+export type ElementPalettes = Partial<Record<SegmentName, Partial<Record<ThemeMode, ColorSchema>>>>;

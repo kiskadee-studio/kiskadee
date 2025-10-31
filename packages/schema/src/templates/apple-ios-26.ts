@@ -232,31 +232,33 @@ export const schema: Schema = {
             }
           },
           palettes: {
-            p1: {
-              boxColor: {
-                primary: {
-                  soft: {
-                    rest: iosLight?.primary.soft[5]!,
-                    hover: iosLight?.primary.soft[8],
-                    pressed: iosLight?.primary.soft[12],
-                    disabled: withAlpha(iosLight?.primary.soft[5]!, 20),
-                    focus: iosLight?.primary.soft[5],
-                    selected: {
-                      rest: iosLight?.primary.soft[10],
+            ios: {
+              light: {
+                boxColor: {
+                  primary: {
+                    soft: {
+                      rest: iosLight?.primary.soft[5]!,
                       hover: iosLight?.primary.soft[8],
-                      pressed: iosLight?.primary.soft[20]
-                    }
-                  },
-                  solid: {
-                    rest: segments.ios.themes.light!.primary.solid[50]!,
-                    hover: withAlpha(segments.ios.themes.light!.primary.solid[50]!, 80),
-                    pressed: withAlpha(segments.ios.themes.light!.primary.solid[60]!, 80),
-                    disabled: withAlpha(segments.ios.themes.light!.primary.solid[50]!, 20),
-                    focus: segments.ios.themes.light!.primary.solid[50],
-                    selected: {
-                      rest: segments.ios.themes.light!.primary.soft[10]!,
-                      hover: segments.ios.themes.light!.primary.soft[8],
-                      pressed: segments.ios.themes.light!.primary.soft[20]
+                      pressed: iosLight?.primary.soft[12],
+                      disabled: withAlpha(iosLight?.primary.soft[5]!, 20),
+                      focus: iosLight?.primary.soft[5],
+                      selected: {
+                        rest: iosLight?.primary.soft[10],
+                        hover: iosLight?.primary.soft[8],
+                        pressed: iosLight?.primary.soft[20]
+                      }
+                    },
+                    solid: {
+                      rest: segments.ios.themes.light!.primary.solid[50]!,
+                      hover: withAlpha(segments.ios.themes.light!.primary.solid[50]!, 80),
+                      pressed: withAlpha(segments.ios.themes.light!.primary.solid[60]!, 80),
+                      disabled: withAlpha(segments.ios.themes.light!.primary.solid[50]!, 20),
+                      focus: segments.ios.themes.light!.primary.solid[50],
+                      selected: {
+                        rest: segments.ios.themes.light!.primary.soft[10]!,
+                        hover: segments.ios.themes.light!.primary.soft[8],
+                        pressed: segments.ios.themes.light!.primary.soft[20]
+                      }
                     }
                   }
                 }
@@ -302,21 +304,31 @@ export const schema: Schema = {
             textWeight: 'medium'
           },
           palettes: {
-            p1: {
-              textColor: {
-                primary: {
-                  soft: {
-                    rest: segments.ios.themes.light!.primary.solid[50]!,
-                    disabled: { ref: withAlpha(segments.ios.themes.light!.neutral.soft[0]!, 20) },
-                    selected: {
-                      rest: { ref: segments.ios.themes.light!.neutral.solid[70]! }
-                    }
-                  },
-                  solid: {
-                    rest: [0, 0, 100, 1],
-                    disabled: { ref: withAlpha(segments.ios.themes.light!.neutral.soft[0]!, 20) },
-                    selected: {
-                      rest: { ref: segments.ios.themes.light!.neutral.solid[70]! }
+            ios: {
+              light: {
+                textColor: {
+                  primary: {
+                    soft: {
+                      rest: segments.ios.themes.light!.primary.solid[50]!,
+                      disabled: {
+                        ref: withAlpha(segments.ios.themes.light!.neutral.soft[0]!, 20)
+                      },
+                      selected: {
+                        rest: {
+                          ref: segments.ios.themes.light!.neutral.solid[70]!
+                        }
+                      }
+                    },
+                    solid: {
+                      rest: [0, 0, 100, 1],
+                      disabled: {
+                        ref: withAlpha(segments.ios.themes.light!.neutral.soft[0]!, 20)
+                      },
+                      selected: {
+                        rest: {
+                          ref: segments.ios.themes.light!.neutral.solid[70]!
+                        }
+                      }
                     }
                   }
                 }
@@ -337,88 +349,6 @@ export const schema: Schema = {
               // 's:lg:1': 24,
               // 's:lg:2': 32,
               // 's:lg:3': 40
-            }
-          }
-        }
-      }
-    },
-    tabs: {
-      elements: {
-        e1: {
-          palettes: {
-            p1: {
-              boxColor: {
-                neutral: {
-                  soft: {
-                    rest: [207, 90, 54, 1]
-                  },
-                  solid: {
-                    rest: [207, 90, 54, 1]
-                  }
-                }
-              }
-            }
-          },
-          scales: {
-            borderRadius: 8
-          }
-        },
-        e3: {
-          decorations: {
-            borderStyle: 'none'
-          },
-          palettes: {
-            p1: {
-              boxColor: {
-                primary: {
-                  soft: {
-                    // TODO: rest is mandatory, but in this case it's not needed
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                    // hover: [207, 90, 64, 1]
-                  },
-                  solid: {
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                  }
-                },
-                neutral: {
-                  soft: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  },
-                  solid: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  }
-                }
-              }
-            },
-            p2: {
-              boxColor: {
-                primary: {
-                  soft: {
-                    // TODO: rest is mandatory, but in this case it's not needed
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                    // hover: [207, 90, 64, 1]
-                  },
-                  solid: {
-                    rest: [207, 90, 54, 1],
-                    selected: { rest: [207, 90, 54, 1] }
-                  }
-                },
-                neutral: {
-                  soft: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  },
-                  solid: {
-                    rest: [0, 0, 75, 1]
-                    // hover: [0, 0, 95, 1]
-                  }
-                }
-              }
             }
           }
         }
