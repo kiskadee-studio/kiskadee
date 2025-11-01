@@ -1,43 +1,51 @@
 import type { HSLA } from '../types/colors/colors.types';
 
 /**
- * Aplica visibilidade (opacidade) a uma cor HSLA.
+ * Applies visibility (opacity) to an HSLA color.
  *
- * Este helper foi projetado para uso amigável por designers:
- * usa escala 0-100 (porcentagem) ao invés do padrão HSLA 0-1.
- * A conversão para o formato HSLA interno é feita automaticamente.
+ * This helper was designed for designer-friendly usage:
+ * uses 0-100 scale (percentage) instead of the standard HSLA 0-1.
+ * The conversion to the internal HSLA format is done automatically.
  *
- * @param color - Cor no formato HSLA [hue, saturation, lightness, alpha]
- * @param visibility - Porcentagem de visibilidade de 0 (invisível) a 100 (totalmente visível)
- * @returns Nova cor HSLA com alpha modificado
+ * @param color - Color in HSLA format [hue, saturation, lightness, alpha]. Returns undefined if undefined.
+ * @param visibility - Visibility percentage from 0 (invisible) to 100 (fully visible)
+ * @returns New HSLA color with modified alpha, or empty string if color is undefined
  *
  * @example
- * ```typescript
- * // Apple: "disabled usa primary 500 com 20% de opacidade"
+ * ```TypeScript
+ * // Apple: "disabled uses primary 500 with 20% opacity"
  * const disabled = withAlpha(palette.p1.primary.solid[50]!, 20);
- * // Resultado: [206, 100, 50, 0.2]
+ * // Result: [206, 100, 50, 0.2]
  *
- * // Sombra com 28% de visibilidade
+ * // Shadow with 28% visibility
  * const shadow = withAlpha([0, 0, 0, 1], 28);
- * // Resultado: [0, 0, 0, 0.28]
+ * // Result: [0, 0, 0, 0.28]
  *
- * // Cor totalmente visível
- * // Cor totalmente visível
+ * // Fully visible color
  * const opaque = withAlpha(color, 100);
- * // Resultado: [..., 1]
+ * // Result: [..., 1]
  *
- * // Cor invisível
+ * // Invisible color
  * const transparent = withAlpha(color, 0);
- * // Resultado: [..., 0]
+ * // Result: [..., 0]
+ *
+ * // Undefined color
+ * const empty = withAlpha(undefined, 50);
+ * // Result: undefined
  * ```
  */
-export function withAlpha(color: HSLA, visibility: number): HSLA {
+export function withAlpha(color: HSLA | undefined, visibility: number): HSLA | undefined {
+  // Return undefined if the color is undefined
+  if (color === undefined) {
+    return undefined;
+  }
+
   const [h, s, l] = color;
 
-  // Clamp entre 0-100 para garantir valores válidos
+  // Clamp between 0-100 to ensure valid values
   const clampedVisibility = Math.max(0, Math.min(100, visibility));
 
-  // Converte porcentagem (0-100) para alpha HSLA (0-1)
+  // Convert percentage (0-100) to HSLA alpha (0-1)
   const alpha = clampedVisibility / 100;
 
   return [h, s, l, alpha];
