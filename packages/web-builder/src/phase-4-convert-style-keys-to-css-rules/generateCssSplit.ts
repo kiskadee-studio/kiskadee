@@ -103,20 +103,30 @@ export async function generateCssSplit(
         }
       }
 
-      // palettes: paletteName -> semantic -> interactionState -> string[] (color keys only)
+      // palettes: segmentName -> themeName -> semantic -> interactionState -> string[] (color keys only)
       if (el.palettes) {
-        for (const paletteName in el.palettes) {
-          const bySemantic = el.palettes[paletteName];
-          if (!paletteRules[paletteName]) paletteRules[paletteName] = new Set();
-          for (const sem in bySemantic) {
-            const byState = bySemantic[sem as SemanticColor];
-            for (const st in byState) {
-              const arr: string[] = byState[st as InteractionState] ?? [];
-              for (const key of arr) {
-                const cn = shortenMap[key] ?? key;
-                // Only color keys are expected here; call color transformer directly and pass the forceState flag
-                const rule = transformColorKeyToCss(key, cn, forceState);
-                if (rule && rule.trim() !== '') paletteRules[paletteName].add(rule);
+        for (const segmentName in el.palettes) {
+          const themes = el.palettes[segmentName];
+          if (!themes) continue;
+
+          for (const themeName in themes) {
+            const bySemantic = themes[themeName];
+            if (!bySemantic) continue;
+
+            // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
+            const bundleKey = `${segmentName}.${themeName}`;
+            if (!paletteRules[bundleKey]) paletteRules[bundleKey] = new Set();
+
+            for (const sem in bySemantic) {
+              const byState = bySemantic[sem as SemanticColor];
+              for (const st in byState) {
+                const arr: string[] = byState[st as InteractionState] ?? [];
+                for (const key of arr) {
+                  const cn = shortenMap[key] ?? key;
+                  // Only color keys are expected here; call color transformer directly and pass the forceState flag
+                  const rule = transformColorKeyToCss(key, cn, forceState);
+                  if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
+                }
               }
             }
           }

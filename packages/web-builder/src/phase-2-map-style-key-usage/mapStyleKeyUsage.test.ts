@@ -61,18 +61,20 @@ describe('mapStyleKeyUsage', () => {
       PaletteComponent: {
         Root: {
           palettes: {
-            primary: {
-              default: {
-                normal: ['pA', 'pB', 'pA'],
-                disabled: ['pC']
+            ios: {
+              light: {
+                primary: {
+                  rest: ['pA', 'pB', 'pA'],
+                  disabled: ['pC']
+                },
+                secondary: {
+                  hover: ['pB']
+                }
               },
-              hover: {
-                normal: ['pB']
-              }
-            },
-            secondary: {
-              default: {
-                normal: ['pD']
+              dark: {
+                primary: {
+                  rest: ['pD']
+                }
               }
             }
           }

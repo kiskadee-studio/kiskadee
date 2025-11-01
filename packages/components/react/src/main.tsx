@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import './index.css';
 import './global.scss';
-import type { ComponentClassNameMapJSON } from '@kiskadee/schema';
+import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/schema';
 import App from './App.tsx';
 import { KiskadeeContext } from './contexts/KiskadeeContext.tsx';
 
@@ -21,20 +21,61 @@ const coreMaps = import.meta.glob('../../../web-builder/build/*/classNamesMap.js
   eager: true
 }) as Record<string, { default: ComponentClassNameMapJSON } | ComponentClassNameMapJSON>;
 
+// Auto-discover segment.theme palette maps
+const paletteMaps = import.meta.glob('../../../web-builder/build/*/classNamesMap.*.json', {
+  eager: false // lazy load
+}) as Record<string, () => Promise<{ default: ComponentClassNameMapJSON }>>;
+
 function extractTemplateKeyFromPath(p: string): string {
   const m = p.match(/build\/(.*?)\//);
   return m ? m[1] : p;
 }
 
-const templates = (() => {
-  const out: Record<string, { core: ComponentClassNameMapJSON; cssUrl: string }> = {};
+// Extract segment.theme from classNamesMap.segment.theme.json
+function extractSegmentThemeFromPath(p: string): { segment: string; theme: string } | null {
+  const m = p.match(/classNamesMap\.([^.]+)\.([^.]+)\.json$/);
+  if (!m) return null;
+  return { segment: m[1], theme: m[2] };
+}
 
+const templates = (() => {
+  const out: Record<
+    string,
+    {
+      core: ComponentClassNameMapJSON;
+      availableSegments: Set<string>;
+      availableThemes: Map<string, Set<string>>; // segment -> themes
+    }
+  > = {};
+
+  // Process core maps
   for (const p in coreMaps) {
     const key = extractTemplateKeyFromPath(p);
     const mod = coreMaps[p] as any;
     const core = mod?.default ?? mod;
-    if (!out[key]) out[key] = { core, cssUrl: '' } as any;
-    else out[key].core = core;
+    if (!out[key]) {
+      out[key] = {
+        core,
+        availableSegments: new Set(),
+        availableThemes: new Map()
+      };
+    } else {
+      out[key].core = core;
+    }
+  }
+
+  // Process palette maps to discover segments and themes
+  for (const p in paletteMaps) {
+    const templateKey = extractTemplateKeyFromPath(p);
+    const segmentTheme = extractSegmentThemeFromPath(p);
+    if (!segmentTheme || !out[templateKey]) continue;
+
+    out[templateKey].availableSegments.add(segmentTheme.segment);
+
+    if (!out[templateKey].availableThemes.has(segmentTheme.segment)) {
+      out[templateKey].availableThemes.set(segmentTheme.segment, new Set());
+    }
+    out[templateKey].availableThemes.get(segmentTheme.segment)!.add(segmentTheme.theme);
   }
 
   return out;
@@ -45,24 +86,92 @@ type TemplateKey = keyof typeof templates | string;
 function Root() {
   const templateKeys = useMemo(() => Object.keys(templates), []);
 
-  const [palette, setPalette] = useState<string>(() => {
-    const saved =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('kiskadee.palette') : null;
-    return saved || 'p1';
-  });
+  // State: template (design system)
   const [template, setTemplate] = useState<TemplateKey>(() => {
     const saved =
       typeof localStorage !== 'undefined'
         ? (localStorage.getItem('kiskadee.template') as TemplateKey | null)
         : null;
     if (saved && saved in templates) return saved as TemplateKey;
-    if ('material-design' in templates) return 'material-design';
-    return (Object.keys(templates)[0] as TemplateKey) || '';
+    return (Object.keys(templates)[0] as TemplateKey) || 'ios-26';
   });
 
-  // Load/swap CSS for the selected template
+  // State: segment (brand/product)
+  const [segment, setSegment] = useState<string>(() => {
+    const saved =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('kiskadee.segment') : null;
+    const current = templates[template];
+    if (saved && current?.availableSegments.has(saved)) return saved;
+    // Default: first available segment
+    return Array.from(current?.availableSegments || [])[0] || 'ios';
+  });
+
+  // State: theme (light/dark/darker)
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    const saved =
+      typeof localStorage !== 'undefined'
+        ? (localStorage.getItem('kiskadee.theme') as ThemeMode | null)
+        : null;
+    const current = templates[template];
+    const themesForSegment = current?.availableThemes.get(segment);
+    if (saved && themesForSegment?.has(saved)) return saved;
+    // Default: 'light' if available, otherwise first theme
+    if (themesForSegment?.has('light')) return 'light';
+    return (Array.from(themesForSegment || [])[0] as ThemeMode) || 'light';
+  });
+
+  // When template changes, validate segment and theme
   useEffect(() => {
-    // TODO: increase id name
+    const current = templates[template];
+    if (!current) return;
+
+    // Validate segment
+    if (!current.availableSegments.has(segment)) {
+      const firstSegment = Array.from(current.availableSegments)[0];
+      if (firstSegment) setSegment(firstSegment);
+    }
+
+    // Validate theme
+    const themesForSegment = current.availableThemes.get(segment);
+    if (!themesForSegment?.has(theme)) {
+      const firstTheme = Array.from(themesForSegment || [])[0];
+      if (firstTheme) setTheme(firstTheme as ThemeMode);
+    }
+  }, [template, segment, theme]);
+
+  // When segment changes, validate theme
+  useEffect(() => {
+    const current = templates[template];
+    const themesForSegment = current?.availableThemes.get(segment);
+    if (!themesForSegment?.has(theme)) {
+      const firstTheme = themesForSegment?.has('light')
+        ? 'light'
+        : Array.from(themesForSegment || [])[0];
+      if (firstTheme) setTheme(firstTheme as ThemeMode);
+    }
+  }, [segment, template, theme]);
+
+  // Persist to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('kiskadee.template', template);
+    } catch {}
+  }, [template]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('kiskadee.segment', segment);
+    } catch {}
+  }, [segment]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('kiskadee.theme', theme);
+    } catch {}
+  }, [theme]);
+
+  // Load/swap CSS for the selected template (core)
+  useEffect(() => {
     const id = 'kiskadee-css';
     let link = document.getElementById(id) as HTMLLinkElement | null;
     if (!link) {
@@ -88,9 +197,8 @@ function Root() {
     link.href = href;
   }, [template]);
 
-  // Load/swap CSS for the selected palette (per template)
+  // Load/swap CSS for the selected segment.theme
   useEffect(() => {
-    // TODO: increase id name
     const id = 'kiskadee-palette-css';
     let link = document.getElementById(id) as HTMLLinkElement | null;
     if (!link) {
@@ -109,12 +217,13 @@ function Root() {
       };
       link.addEventListener('load', onLoad, { once: true });
     }
+    // New format: segment.theme.css (ex: ios.light.css)
     const href = new URL(
-      `../../../web-builder/build/${template}/${palette}.css`,
+      `../../../web-builder/build/${template}/${segment}.${theme}.css`,
       import.meta.url
     ).toString();
     link.href = href;
-  }, [template, palette]);
+  }, [template, segment, theme]);
 
   // Load Effects CSS last (per template)
   useEffect(() => {
@@ -143,43 +252,33 @@ function Root() {
     link.href = href;
   }, [template]);
 
-  // Persist the selected template to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('kiskadee.template', template);
-    } catch {}
-  }, [template]);
-
-  // Persist the selected palette to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('kiskadee.palette', palette);
-    } catch {}
-  }, [palette]);
-
-  // Merge core map with the selected palette map loaded dynamically
+  // Merge core map with the selected segment.theme palette map loaded dynamically
   const [paletteMap, setPaletteMap] = useState<ComponentClassNameMapJSON | null>(null);
 
   useEffect(() => {
     let aborted = false;
+    // New format: classNamesMap.segment.theme.json (ex: classNamesMap.ios.light.json)
     const url = new URL(
-      `../../../web-builder/build/${template}/classNamesMap.${palette}.json`,
+      `../../../web-builder/build/${template}/classNamesMap.${segment}.${theme}.json`,
       import.meta.url
     ).toString();
+
     fetch(url)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`Failed to load ${url}`))))
       .then((json) => {
         if (!aborted) setPaletteMap(json as ComponentClassNameMapJSON);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.warn(`Failed to load palette map for ${segment}.${theme}:`, err);
         if (!aborted) setPaletteMap(null);
       });
+
     return () => {
       aborted = true;
     };
-  }, [template, palette]);
+  }, [template, segment, theme]);
 
-  // TODO: remove any
+  // Merge core map with palette map
   const classesMap = useMemo(() => {
     const current = templates[template as string];
     const fallbackKey = templateKeys[0];
@@ -201,14 +300,25 @@ function Root() {
       }
     }
     return merged;
-  }, [template, paletteMap, templateKeys[0]]);
+  }, [template, paletteMap, templateKeys]);
+
+  // Compute available options for current template
+  const currentTemplate = templates[template];
+  const availableSegments = useMemo(
+    () => Array.from(currentTemplate?.availableSegments || []),
+    [template]
+  );
+  const availableThemes = useMemo(
+    () => Array.from(currentTemplate?.availableThemes.get(segment) || []),
+    [template, segment]
+  );
 
   return (
     <StrictMode>
-      {/* Template selector */}
-      <div style={{ padding: 12 }}>
+      <div style={{ padding: 12, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+        {/* 1. Template selector (Design System) */}
         <label>
-          Template:
+          Design System:
           <select
             value={template}
             onChange={(e) => setTemplate(e.target.value as TemplateKey)}
@@ -221,13 +331,50 @@ function Root() {
             ))}
           </select>
         </label>
+
+        {/* 2. Segment selector (Brand/Product) */}
+        <label>
+          Segment:
+          <select
+            value={segment}
+            onChange={(e) => setSegment(e.target.value)}
+            style={{ marginLeft: 8 }}
+            disabled={availableSegments.length <= 1}
+          >
+            {availableSegments.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* 3. Theme Mode selector (Light/Dark) */}
+        <label>
+          Theme:
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value as ThemeMode)}
+            style={{ marginLeft: 8 }}
+            disabled={availableThemes.length <= 1}
+          >
+            {availableThemes.map((t) => (
+              <option key={t} value={t}>
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
+
       <BrowserRouter>
         <KiskadeeContext.Provider
           value={{
             classesMap,
-            palette,
-            setPalette
+            segment,
+            theme,
+            setSegment,
+            setTheme
           }}
         >
           <App />

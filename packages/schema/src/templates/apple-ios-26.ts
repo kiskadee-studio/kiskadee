@@ -262,6 +262,17 @@ export const schema: Schema = {
                     }
                   }
                 }
+              },
+              dark: {
+                boxColor: {
+                  primary: {
+                    solid: {
+                      rest: segments.ios.themes.light!.primary.solid[70]!,
+                      hover: segments.ios.themes.light!.primary.solid[80],
+                      pressed: segments.ios.themes.light!.primary.solid[90]
+                    }
+                  }
+                }
               }
             }
           },
@@ -329,6 +340,15 @@ export const schema: Schema = {
                           ref: segments.ios.themes.light!.neutral.solid[70]!
                         }
                       }
+                    }
+                  }
+                }
+              },
+              dark: {
+                textColor: {
+                  primary: {
+                    solid: {
+                      rest: segments.ios.themes.light!.primary.soft[0]!
                     }
                   }
                 }

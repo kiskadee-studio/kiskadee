@@ -8,42 +8,40 @@ import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 
 export default function Tabs(props: HeadlessTabsProps) {
   const { classNames: userClassNames } = props;
-  const { classesMap, palette } = useKiskadee();
-
-  console.log({ classesMap, palette });
+  const { classesMap } = useKiskadee();
 
   const computed = useMemo<NonNullable<HeadlessTabsProps['classNames']>>(() => {
-    const pal = palette;
     const { e1: tabsE1, e2: listE2, e3: tabE3, e4: panelE4 } = classesMap?.tabs ?? {};
 
     const rootParts: string[] = [];
-    if (tabsE1?.decorations) rootParts.push(...tabsE1.decorations);
-    if (tabsE1?.scales?.['s:all']) rootParts.push(...tabsE1.scales['s:all']);
-    if (tabsE1?.palettes?.[pal]?.neutral?.rest)
-      rootParts.push(...tabsE1.palettes[pal].neutral.rest);
+    if (tabsE1?.d) rootParts.push(tabsE1.d);
+    if (tabsE1?.s?.['s:all']) rootParts.push(tabsE1.s['s:all']);
+    if (tabsE1?.c?.f) rootParts.push(tabsE1.c.f);
+    if (tabsE1?.c?.d) rootParts.push(tabsE1.c.d);
+    if (tabsE1?.c?.u) rootParts.push(tabsE1.c.u);
 
     const listParts: string[] = [];
-    if (listE2?.decorations) listParts.push(...listE2.decorations);
-    if (listE2?.palettes?.[pal]?.primary?.rest)
-      listParts.push(...listE2.palettes[pal].primary.rest);
+    if (listE2?.d) listParts.push(listE2.d);
+    if (listE2?.c?.f) listParts.push(listE2.c.f);
+    if (listE2?.c?.d) listParts.push(listE2.c.d);
+    if (listE2?.c?.u) listParts.push(listE2.c.u);
 
     const tabRestParts: string[] = [];
     const tabSelectedParts: string[] = [];
-    if (tabE3?.decorations) {
-      tabRestParts.push(...tabE3.decorations);
-      tabSelectedParts.push(...tabE3.decorations);
+    if (tabE3?.d) {
+      tabRestParts.push(tabE3.d);
+      tabSelectedParts.push(tabE3.d);
     }
-    const tabPrimary = tabE3?.palettes?.[pal];
-    if (tabPrimary?.neutral?.rest) tabRestParts.push(...tabPrimary.neutral.rest);
-    if (tabPrimary?.neutral?.hover) tabRestParts.push(...tabPrimary.neutral.hover);
-    if (tabPrimary?.primary?.selected) tabSelectedParts.push(...tabPrimary.primary.selected);
-    if (tabPrimary?.primary?.hover) tabSelectedParts.push(...tabPrimary.primary.hover);
-    else if (tabPrimary?.neutral?.rest) tabSelectedParts.push(...tabPrimary.neutral.rest);
+    if (tabE3?.c?.f) tabRestParts.push(tabE3.c.f);
+    if (tabE3?.c?.d) tabRestParts.push(tabE3.c.d);
+    if (tabE3?.c?.u) tabRestParts.push(tabE3.c.u);
+    if (tabE3?.cs) tabSelectedParts.push(tabE3.cs);
 
     const panelParts: string[] = [];
-    if (panelE4?.decorations) panelParts.push(...panelE4.decorations);
-    if (panelE4?.palettes?.[pal]?.primary?.rest)
-      panelParts.push(...panelE4.palettes[pal].primary.rest);
+    if (panelE4?.d) panelParts.push(panelE4.d);
+    if (panelE4?.c?.f) panelParts.push(panelE4.c.f);
+    if (panelE4?.c?.d) panelParts.push(panelE4.c.d);
+    if (panelE4?.c?.u) panelParts.push(panelE4.c.u);
 
     const u = userClassNames ?? {};
     type CN = NonNullable<HeadlessTabsProps['classNames']>;
@@ -57,7 +55,7 @@ export default function Tabs(props: HeadlessTabsProps) {
       e3a: join(tabSelectedParts, 'e3a'),
       e4: join(panelParts, 'e4')
     };
-  }, [classesMap, palette, userClassNames]);
+  }, [classesMap, userClassNames]);
 
   return <HeadlessTabs {...props} classNames={computed} />;
 }

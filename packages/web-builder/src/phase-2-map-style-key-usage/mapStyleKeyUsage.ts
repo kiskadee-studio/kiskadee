@@ -28,13 +28,16 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
         keys?.forEach(increment);
       }
 
-      // 4) palettes (by palette / semantic color / interaction state)
-      for (const semanticColors of Object.values(element.palettes ?? {})) {
-        if (!semanticColors) continue;
-        for (const interactionStates of Object.values(semanticColors)) {
-          if (!interactionStates) continue;
-          for (const keys of Object.values(interactionStates)) {
-            keys?.forEach(increment);
+      // 4) palettes (by segment / theme / semantic color / interaction state)
+      for (const themes of Object.values(element.palettes ?? {})) {
+        if (!themes) continue;
+        for (const semanticColors of Object.values(themes)) {
+          if (!semanticColors) continue;
+          for (const interactionStates of Object.values(semanticColors)) {
+            if (!interactionStates) continue;
+            for (const keys of Object.values(interactionStates)) {
+              keys?.forEach(increment);
+            }
           }
         }
       }

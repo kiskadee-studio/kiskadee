@@ -1,17 +1,21 @@
-import type { ComponentClassNameMapJSON } from '@kiskadee/schema';
+import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/schema';
 import { createContext, useContext } from 'react';
 
 export type KiskadeeContextValue = {
   classesMap: ComponentClassNameMapJSON;
-  palette: string;
-  setPalette: (value: string) => void;
+  segment: string;
+  theme: ThemeMode;
+  setSegment: (value: string) => void;
+  setTheme: (value: ThemeMode) => void;
 };
 
-// Default context value: empty classes map, palette 'p1', and noop setter.
+// Default context value
 export const KiskadeeContext = createContext<KiskadeeContextValue>({
   classesMap: {},
-  palette: 'p1',
-  setPalette: () => {}
+  segment: 'ios',
+  theme: 'light',
+  setSegment: () => {},
+  setTheme: () => {}
 });
 
 export function useKiskadee() {

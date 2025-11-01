@@ -122,68 +122,77 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      // Palettes split per palette name; segregate by tone (unique/soft/solid)
+      // Palettes split per segment.theme; segregate by tone (unique/soft/solid)
       if (el.palettes) {
-        for (const paletteName of Object.keys(el.palettes)) {
-          if (!palettes[paletteName]) palettes[paletteName] = {};
-          if (!palettes[paletteName][componentName]) {
-            palettes[paletteName][componentName] = {};
-          }
-          const bySemantic = el.palettes[paletteName];
-          // ensure element record exists (avoid assignment inside expression per Biome rule)
-          if (!palettes[paletteName][componentName][elementName]) {
-            palettes[paletteName][componentName][elementName] = {};
-          }
-          const elemRecord = palettes[paletteName][componentName][elementName];
+        for (const segmentName of Object.keys(el.palettes)) {
+          const segmentThemes = el.palettes[segmentName];
+          if (!segmentThemes) continue;
 
-          // Segregate classes by tone (or unique if no tone)
-          const uniqueSet = new Set<string>(); // Color unique (no tone)
-          const softSet = new Set<string>(); // Soft tone
-          const solidSet = new Set<string>(); // Solid tone
+          for (const themeName of Object.keys(segmentThemes)) {
+            const bySemantic = segmentThemes[themeName];
+            if (!bySemantic) continue;
 
-          for (const sem of Object.keys(bySemantic)) {
-            const byState = bySemantic[sem as SemanticColor];
-            for (const st of Object.keys(byState ?? {})) {
-              const styleKeys = byState?.[st as InteractionState];
-              const isSelectedState = st === 'selected' || st.startsWith('selected:');
-
-              styleKeys?.forEach((styleKey) => {
-                const shortenedClass = shortenMap[styleKey] ?? styleKey;
-                const meta = toneMetadata.get(styleKey);
-
-                if (isSelectedState) {
-                  // Union selected palette classes into control set (core)
-                  cSelectedSet.add(shortenedClass);
-                } else {
-                  // Distribute by tone or unique
-                  if (meta?.tone === 'soft') {
-                    softSet.add(shortenedClass);
-                  } else if (meta?.tone === 'solid') {
-                    solidSet.add(shortenedClass);
-                  } else {
-                    // No tone = unique/single color
-                    uniqueSet.add(shortenedClass);
-                  }
-                }
-              });
+            // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
+            const bundleKey = `${segmentName}.${themeName}`;
+            if (!palettes[bundleKey]) palettes[bundleKey] = {};
+            if (!palettes[bundleKey][componentName]) {
+              palettes[bundleKey][componentName] = {};
             }
-          }
+            // ensure element record exists (avoid assignment inside expression per Biome rule)
+            if (!palettes[bundleKey][componentName][elementName]) {
+              palettes[bundleKey][componentName][elementName] = {};
+            }
+            const elemRecord = palettes[bundleKey][componentName][elementName];
 
-          // Build ColorClasses object
-          const colorClasses: ColorClasses = {};
-          if (uniqueSet.size > 0) {
-            colorClasses.u = Array.from(uniqueSet).join(' ');
-          }
-          if (softSet.size > 0) {
-            colorClasses.f = Array.from(softSet).join(' ');
-          }
-          if (solidSet.size > 0) {
-            colorClasses.d = Array.from(solidSet).join(' ');
-          }
+            // Segregate classes by tone (or unique if no tone)
+            const uniqueSet = new Set<string>(); // Color unique (no tone)
+            const softSet = new Set<string>(); // Soft tone
+            const solidSet = new Set<string>(); // Solid tone
 
-          // Add to element record only if we have color classes
-          if (Object.keys(colorClasses).length > 0) {
-            elemRecord.c = colorClasses;
+            for (const sem of Object.keys(bySemantic)) {
+              const byState = bySemantic[sem as SemanticColor];
+              for (const st of Object.keys(byState ?? {})) {
+                const styleKeys = byState?.[st as InteractionState];
+                const isSelectedState = st === 'selected' || st.startsWith('selected:');
+
+                styleKeys?.forEach((styleKey) => {
+                  const shortenedClass = shortenMap[styleKey] ?? styleKey;
+                  const meta = toneMetadata.get(styleKey);
+
+                  if (isSelectedState) {
+                    // Union selected palette classes into control set (core)
+                    cSelectedSet.add(shortenedClass);
+                  } else {
+                    // Distribute by tone or unique
+                    if (meta?.tone === 'soft') {
+                      softSet.add(shortenedClass);
+                    } else if (meta?.tone === 'solid') {
+                      solidSet.add(shortenedClass);
+                    } else {
+                      // No tone = unique/single color
+                      uniqueSet.add(shortenedClass);
+                    }
+                  }
+                });
+              }
+            }
+
+            // Build ColorClasses object
+            const colorClasses: ColorClasses = {};
+            if (uniqueSet.size > 0) {
+              colorClasses.u = Array.from(uniqueSet).join(' ');
+            }
+            if (softSet.size > 0) {
+              colorClasses.f = Array.from(softSet).join(' ');
+            }
+            if (solidSet.size > 0) {
+              colorClasses.d = Array.from(solidSet).join(' ');
+            }
+
+            // Add to the element record only if we have color classes
+            if (Object.keys(colorClasses).length > 0) {
+              elemRecord.c = colorClasses;
+            }
           }
         }
       }
