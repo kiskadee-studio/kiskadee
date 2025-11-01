@@ -1,4 +1,4 @@
-import type { ElementPalettes } from '@kiskadee/schema';
+import type { Color, ElementPalettes } from '@kiskadee/schema';
 import { describe, expect, it } from 'vitest';
 import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKeys';
 
@@ -167,5 +167,31 @@ describe('convertElementColorsToStyleKeys', () => {
         }
       }
     });
+  });
+});
+
+describe('convertElementColorsToStyleKeys – invalid inputs', () => {
+  it('throws when rest is provided as a reference object (rest > ref)', (): void => {
+    // Although TypeScript typing forbids rest to be a reference (ColorValue),
+    // we cast to any to simulate a runtime-invalid schema and assert current behavior.
+    const elementPalettes = {
+      ios: {
+        light: {
+          boxColor: {
+            primary: {
+              solid: {
+                rest: { ref: [10, 20, 30, 0.5] } as unknown as Color
+              }
+            }
+          }
+        }
+      }
+    };
+
+    // Current behavior: convertElementColorsToStyleKeys will detect a ref at "rest" and
+    // call buildStyleKey with isRef=true and interactionState='rest', which throws.
+    expect(() => convertElementColorsToStyleKeys(elementPalettes)).toThrowError(
+      /isRef=true.*non-'rest' interaction state/i
+    );
   });
 });

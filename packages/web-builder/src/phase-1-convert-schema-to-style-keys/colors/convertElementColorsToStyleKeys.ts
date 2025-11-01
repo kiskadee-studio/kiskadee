@@ -16,22 +16,38 @@ import type {
 } from '@kiskadee/schema';
 import { buildStyleKey, deepUpdate } from '../../utils';
 
-// Metadata to track which tone (soft/solid) generated each style key
+// Metadata to track, which tone (soft/solid) generated each style key
 export type ToneMetadata = {
-  tone?: EmphasisVariant; // undefined = color without tone (single color)
+  tone?: EmphasisVariant; // undefined = color without a tone (single color)
 };
 
 // Local type guards to avoid any
-function isRefValue(val: Color | ColorValue): val is { ref: Color } {
-  return typeof val === 'object' && val !== null && 'ref' in (val as Record<string, unknown>);
+function isPlainObject(v: unknown): v is Record<string, unknown> {
+  return !!v && typeof v === 'object' && !Array.isArray(v);
+}
+
+function isRefValue(val: Color | ColorValue): val is { ref?: Color | undefined } {
+  return isPlainObject(val) && 'ref' in val;
 }
 
 function isSelectedSubMap(val: unknown): val is SelectedInteractionSubMap {
-  return !!val && typeof val === 'object' && 'rest' in (val as Record<string, unknown>);
+  // Detect by presence of any known selected-submap keys; rest is now optional
+  if (!isPlainObject(val)) return false;
+  return 'rest' in val || 'hover' in val || 'pressed' in val || 'focus' in val;
 }
 
 function isInteractionStateColorMap(val: unknown): val is InteractionStateColorMap {
-  return !!val && typeof val === 'object' && 'rest' in (val as Record<string, unknown>);
+  // Detect by presence of any known keys; rest is now optional
+  if (!isPlainObject(val)) return false;
+  return (
+    'rest' in val ||
+    'hover' in val ||
+    'pressed' in val ||
+    'focus' in val ||
+    'selected' in val ||
+    'disabled' in val ||
+    'readOnly' in val
+  );
 }
 
 /**
@@ -73,7 +89,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
   const styleKeys: StyleKeyByElement['palettes'] = {};
   const toneMetadata = new Map<StyleKey, ToneMetadata>();
 
-  // Iterate over segments (e.g., ios, youtube, appletv)
+  // Iterate over segments (for example, ios, youtube, appletv)
   for (const segmentName in palettes) {
     const segment = palettes[segmentName as SegmentName];
     if (!segment) continue;
@@ -126,10 +142,13 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
               // Helper to push a key under a given state label
               const push = (
                 stateLabel: InteractionState | SelectedInteractionStateToken,
-                val: ColorValue | Color
+                val: ColorValue | Color | undefined
               ) => {
+                if (val === undefined) return; // skip undefined values entirely
                 const isRef = isRefValue(val);
-                const color = JSON.stringify(isRef ? val.ref : (val as Color));
+                const inner = isRef ? (val as { ref?: Color | undefined }).ref : (val as Color);
+                if (inner === undefined) return; // { ref: undefined } -> skip
+                const color = JSON.stringify(inner);
 
                 // For the selected scope, we pass controlState=true and the base interaction (rest/hover/pressed/focus)
                 if (stateLabel.startsWith('selected:')) {
@@ -170,7 +189,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
               };
 
               // selected/rest
-              push('selected:rest', sub.rest!);
+              push('selected:rest', sub.rest);
               // selected/hover
               if (sub.hover !== undefined) push('selected:hover', sub.hover);
               // selected/pressed
@@ -183,9 +202,12 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
 
             // A reference has the shape { ref: <color> }. We pass isRef accordingly and serialize
             // the "inner" color when a ref is present.
-            const val = rawValue as ColorValue | Color;
+            const val = rawValue as ColorValue | Color | undefined;
+            if (val === undefined) continue;
             const isRef = isRefValue(val);
-            const color = JSON.stringify(isRef ? val.ref : (val as Color));
+            const inner = isRef ? (val as { ref?: Color | undefined }).ref : (val as Color);
+            if (inner === undefined) continue; // skip { ref: undefined }
+            const color = JSON.stringify(inner);
 
             // Build the style key including the interaction state and whether this is a ref.
             // Examples:

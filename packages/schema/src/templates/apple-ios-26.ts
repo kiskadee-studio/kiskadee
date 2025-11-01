@@ -237,10 +237,10 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: iosLight?.primary.soft[5]!,
+                      rest: iosLight?.primary.soft[5],
                       hover: iosLight?.primary.soft[8],
                       pressed: iosLight?.primary.soft[12],
-                      disabled: withAlpha(iosLight?.primary.soft[5]!, 20),
+                      disabled: withAlpha(iosLight?.primary.soft[5], 20),
                       focus: iosLight?.primary.soft[5],
                       selected: {
                         rest: iosLight?.primary.soft[10],
@@ -249,15 +249,16 @@ export const schema: Schema = {
                       }
                     },
                     solid: {
-                      rest: segments.ios.themes.light!.primary.solid[50]!,
-                      hover: withAlpha(segments.ios.themes.light!.primary.solid[50]!, 80),
-                      pressed: withAlpha(segments.ios.themes.light!.primary.solid[60]!, 80),
-                      disabled: withAlpha(segments.ios.themes.light!.primary.solid[50]!, 20),
-                      focus: segments.ios.themes.light!.primary.solid[50],
+                      rest: iosLight?.primary.solid[50],
+                      hover: withAlpha(iosLight?.primary.solid[50], 80),
+                      pressed: withAlpha(iosLight?.primary.solid[60], 80),
+                      disabled: withAlpha(iosLight?.primary.solid[50], 20),
+                      focus: iosLight?.primary.solid[50],
                       selected: {
-                        rest: segments.ios.themes.light!.primary.soft[10]!,
-                        hover: segments.ios.themes.light!.primary.soft[8],
-                        pressed: segments.ios.themes.light!.primary.soft[20]
+                        rest: iosLight?.primary.soft[10],
+                        hover: iosLight?.primary.soft[8],
+                        pressed: iosLight?.primary.soft[20]
+                        // color(ios, 'l', 'primary', 100, 20)
                       }
                     }
                   }
@@ -267,9 +268,9 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     solid: {
-                      rest: segments.ios.themes.light!.primary.solid[70]!,
-                      hover: segments.ios.themes.light!.primary.solid[80],
-                      pressed: segments.ios.themes.light!.primary.solid[90]
+                      rest: iosLight?.primary.solid[70],
+                      hover: iosLight?.primary.solid[80],
+                      pressed: iosLight?.primary.solid[90]
                     }
                   }
                 }
@@ -320,24 +321,24 @@ export const schema: Schema = {
                 textColor: {
                   primary: {
                     soft: {
-                      rest: segments.ios.themes.light!.primary.solid[50]!,
+                      rest: iosLight?.primary.solid[50],
                       disabled: {
-                        ref: withAlpha(segments.ios.themes.light!.neutral.soft[0]!, 20)
+                        ref: withAlpha(iosLight?.neutral.soft[0], 20)
                       },
                       selected: {
                         rest: {
-                          ref: segments.ios.themes.light!.neutral.solid[70]!
+                          ref: iosLight?.neutral.solid[70]
                         }
                       }
                     },
                     solid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: withAlpha(segments.ios.themes.light!.neutral.soft[0]!, 20)
+                        ref: withAlpha(iosLight?.neutral.soft[0], 20)
                       },
                       selected: {
                         rest: {
-                          ref: segments.ios.themes.light!.neutral.solid[70]!
+                          ref: iosLight?.neutral.solid[70]
                         }
                       }
                     }
@@ -348,7 +349,7 @@ export const schema: Schema = {
                 textColor: {
                   primary: {
                     solid: {
-                      rest: segments.ios.themes.light!.primary.soft[0]!
+                      rest: iosLight?.primary.soft[0]
                     }
                   }
                 }

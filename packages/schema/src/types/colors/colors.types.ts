@@ -41,7 +41,7 @@ export type Color = SolidColor | Gradient;
  *  - a direct Color definition (applied in the element’s own state)
  *  - a ParentColor reference (applied only when the parent’s interaction state is inherited)
  */
-export type ColorValue = Color | { ref: Color };
+export type ColorValue = Color | { ref?: Color | undefined };
 
 /**
  * Interaction states.
@@ -146,7 +146,7 @@ export type SelectedInteractionStateToken = `selected:${SelectedInteractionState
 // - Does NOT include nested selected/disabled/readOnly to avoid combinatorial explosion;
 //   disabled/readOnly remain top-level with global precedence.
 export type SelectedInteractionSubMap = {
-  rest?: ColorValue; // on/rest now supports { ref: Color } as well
+  rest?: ColorValue; // on/rest baseline when selected is active (now optional)
   hover?: ColorValue; // on/hover
   pressed?: ColorValue; // on/pressed
   focus?: ColorValue; // on/focus
@@ -160,7 +160,7 @@ export type SelectedInteractionSubMap = {
  */
 export type InteractionStateColorMap = {
   // Off scope (not selected)
-  rest: Color;
+  rest?: Color;
   hover?: ColorValue;
   pressed?: ColorValue;
   focus?: ColorValue;
