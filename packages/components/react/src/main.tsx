@@ -31,7 +31,10 @@ const paletteMaps = import.meta.glob('../../../web-builder/build/*/classNamesMap
 // They may live in packages/build (phase 7) or web-builder/build depending on the builder version.
 const manifestMods = {
   ...(import.meta.glob('../../../build/*/manifest.json', { eager: true }) as Record<string, any>),
-  ...(import.meta.glob('../../../web-builder/build/*/manifest.json', { eager: true }) as Record<string, any>)
+  ...(import.meta.glob('../../../web-builder/build/*/manifest.json', { eager: true }) as Record<
+    string,
+    any
+  >)
 } as Record<string, any>;
 
 function extractTemplateKeyFromPath(p: string): string {

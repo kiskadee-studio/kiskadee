@@ -1,44 +1,56 @@
 import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import type { Schema } from '@kiskadee/schema/src/schema';
+import type { SchemaSegments, ThemeMode } from '@kiskadee/schema/src/types/colors/colors.types';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
 }
 
-function firstSegmentLabel(segmentsObj: any): string | null {
+function firstSegmentLabel(segmentsObj: SchemaSegments): string | null {
   const keys = segmentsObj ? Object.keys(segmentsObj) : [];
   if (!keys.length) return null;
-  const first = segmentsObj[keys[0]];
-  return first?.name || keys[0] || null;
+  const first = segmentsObj[keys[0] as keyof typeof segmentsObj];
+  return (first && 'name' in first ? first.name : undefined) || keys[0] || null;
 }
 
-function computeDisplayName(schema: any, segmentsObj: any): string {
-  const author = schema?.author || '';
-  const segName = firstSegmentLabel(segmentsObj) || schema?.name || '';
-  const major = majorVersionFromTuple(schema?.version || []);
+function computeDisplayName(schema: Schema, segmentsObj: SchemaSegments): string {
+  const author = schema.author || '';
+  const segName = firstSegmentLabel(segmentsObj) || schema.name || '';
+  const major = majorVersionFromTuple(schema.version || []);
   const left = [segName, major && String(major)].filter(Boolean).join(' ').trim();
   return [left, author && `by ${author}`].filter(Boolean).join(' ').trim();
 }
 
-function discoverSegmentsThemes(segmentsObj: any): {
+function discoverSegmentsThemes(segmentsObj: SchemaSegments): {
   segments: string[];
   themes: Record<string, string[]>;
 } {
   const segments: string[] = [];
   const themes: Record<string, string[]> = {};
-  if (!segmentsObj) return { segments, themes };
   for (const segKey of Object.keys(segmentsObj)) {
     segments.push(segKey);
-    const seg = segmentsObj[segKey];
-    const themeNames = seg?.themes ? Object.keys(seg.themes) : [];
-    themes[segKey] = themeNames;
+    const seg = segmentsObj[segKey as keyof typeof segmentsObj];
+    const themeNames = seg?.themes ? (Object.keys(seg.themes) as string[]) : [];
+    // Filter to only valid ThemeMode strings if present
+    themes[segKey] = themeNames as ThemeMode[] as string[];
   }
   return { segments, themes };
 }
 
+export type Manifest = {
+  key: string;
+  displayName: string;
+  author: string | null;
+  schemaName: string | null;
+  version: [number, number, number] | null;
+  segments: string[];
+  themes: Record<string, string[]>;
+};
+
 export async function publishMetadata(params: {
-  schema: any;
-  segments: any;
+  schema: Schema;
+  segments: SchemaSegments;
   outDirSlug: string;
   templatePath: string;
   baseBuildDir: string;
@@ -48,12 +60,12 @@ export async function publishMetadata(params: {
   // Build manifest content
   const displayName = computeDisplayName(schema, segments);
   const { segments: segKeys, themes } = discoverSegmentsThemes(segments);
-  const manifest = {
+  const manifest: Manifest = {
     key: outDirSlug,
     displayName,
-    author: schema?.author ?? null,
-    schemaName: schema?.name ?? null,
-    version: schema?.version ?? null,
+    author: schema.author ?? null,
+    schemaName: schema.name ?? null,
+    version: schema.version ?? null,
     segments: segKeys,
     themes
   };
