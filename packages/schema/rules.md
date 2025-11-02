@@ -83,6 +83,21 @@ red or blue.
 - For aria-disabled to work properly, use it together with status "disabled"; this ensures the 
   expected visual result.
 
+### 2.2 Mandatory hover, focus, and pressed
+- Kiskadee components MUST support the core interaction states: hover, focus, and pressed (active) in addition to rest — even when the upstream design system (DS) being adapted does not explicitly define them (common in mobile-first DSs like iOS and Material).
+- Rationale (cross‑platform): Kiskadee is cross‑platform. A mobile‑oriented DS adapted via Kiskadee can be used on the web and desktop where hover and richer focus/pressed feedback are expected. Therefore, these states are mandatory for consistency and usability across platforms.
+- Visual identity preservation: When adding these states to a DS that doesn’t define them, Kiskadee selects color tones that best match the DS’s visual identity so that the new states feel native rather than an afterthought.
+  - Guidance for color selection:
+    - Start from the component’s rest tone and choose nearby tones within the same semantic track (soft/solid) to express the state.
+    - Prefer subtle luminance and/or chroma shifts over hue shifts to preserve brand hue.
+    - Maintain accessible contrast in each state. If the original palette can’t reach contrast, see Section 11 for variant strategy.
+- Defaults and inheritance:
+  - Rest is the source of truth; hover/focus/pressed inherit from rest unless explicitly overridden.
+  - Size and layout never change due to interaction state (see 2.); only color and visual effects may change.
+- Focus behavior details: Input elements use :focus; interactive controls (e.g., buttons) use :focus-visible for keyboard and similar navigation (see Section 7). Visuals for focus are mandatory; implementation may use outlines, glows, or designated focus effects.
+- Pressed vs active: “Pressed” refers to the visual state while the control is being activated. Map to :active (web) and the equivalent on other platforms.
+- Hover triggers: Hover visual is only applied on platforms/devices that support hover. It must not affect touch-only environments.
+
 ## 3. Dimensions and Units
 - The only unit of measurement and thus the standard for properties related to dimensions is the
   pixel.
@@ -148,3 +163,38 @@ red or blue.
 The default size for elements and consequently components is medium, as is the font size, which is
 16px. The default interaction state is rest, and all other interaction states inherit the style from
 the rest state. The default semantic color is "neutral". The default text alignment is left.
+
+## 11. Design System Adaptation Levels
+- Purpose: Provide a clear separation between what is an upstream/original design system configuration and what is a Kiskadee-optimized variant that introduces broader semantics or additional interaction behaviors.
+
+### 11.1 Naming and positioning
+- Use explicit naming to communicate provenance:
+  - Example (original fidelity): "Material Design 3 by Google" — faithful adaptation of the official DS within Kiskadee’s schema.
+  - Example (Kiskadee variant): "Material Design 3 by Kiskadee" — includes broader semantic coverage, additional interaction effects, and other pragmatic adjustments to work cross‑platform.
+- The goal is transparency: users can choose the original‑fidelity option or the enhanced Kiskadee variant.
+
+### 11.2 When to create a Kiskadee variant
+- The upstream DS has limited color variation or lacks explicit interaction states and this materially harms usability or accessibility on the web/desktop.
+- Additional semantics are needed (e.g., more granular neutral scale or richer green/yellow/red tracks) to support component variants and accessibility.
+- Extra visual effects are beneficial (e.g., hover/pressed/focus expansions, subtle elevation or focus effects) that stay true to the DS’s spirit but are not formally defined.
+
+### 11.3 Principles for adapting visuals
+- Preserve identity: Prefer changes in tone (luminance/chroma) over hue shifts; keep brand hue stable.
+- Accessibility: Ensure adequate contrast for text/icons in all states (rest, hover, focus, pressed, disabled). If the original palette cannot achieve this, Kiskadee variant may expand tones.
+- Consistency: Maintain semantic mapping (primary, secondary, greenLike, yellowLike, redLike, neutral) and use the soft/solid emphasis tracks when present.
+- Non‑dimensional: Interaction states must not change size/layout; only color and effects may vary.
+
+### 11.4 Required interaction support
+- Regardless of the upstream DS, both the original‑fidelity and the Kiskadee variant MUST support hover, focus, and pressed states in addition to rest. See Section 2.2 for details.
+- Hover must be conditional to devices that support it (no visual changes on touch‑only interactions).
+
+### 11.5 Documentation and metadata
+- Each adapted DS must document:
+  - Which tones are used for rest/hover/focus/pressed for key components and how they were derived.
+  - Any semantic expansions or added tracks compared to the upstream DS.
+  - Any added effects (e.g., focus ring, ripple) and their triggers.
+- Build outputs should keep segments/themes separated for performance (see Section 1.4).
+
+### 11.6 Versioning and compatibility
+- Track upstream DS version and Kiskadee variant version independently so consumers can pin either.
+- Changes that alter palettes, semantics, or interaction visuals require a minor (visual) or major (breaking) bump depending on impact.
