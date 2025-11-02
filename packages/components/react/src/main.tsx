@@ -16,7 +16,8 @@ if (typeof document !== 'undefined') {
   document.documentElement.classList.add('no-transitions');
 }
 
-// Auto-discover available templates from web-builder/build using Vite glob imports
+// Auto-discover available templates using Vite glob imports
+// Note: classNames maps and CSS are emitted to web-builder/build
 const coreMaps = import.meta.glob('../../../web-builder/build/*/classNamesMap.json', {
   eager: true
 }) as Record<string, { default: ComponentClassNameMapJSON } | ComponentClassNameMapJSON>;
@@ -26,9 +27,24 @@ const paletteMaps = import.meta.glob('../../../web-builder/build/*/classNamesMap
   eager: false // lazy load
 }) as Record<string, () => Promise<{ default: ComponentClassNameMapJSON }>>;
 
+// Auto-discover manifests for display labels and metadata
+// They may live in packages/build (phase 7) or web-builder/build depending on the builder version.
+const manifestMods = {
+  ...(import.meta.glob('../../../build/*/manifest.json', { eager: true }) as Record<string, any>),
+  ...(import.meta.glob('../../../web-builder/build/*/manifest.json', { eager: true }) as Record<string, any>)
+} as Record<string, any>;
+
 function extractTemplateKeyFromPath(p: string): string {
   const m = p.match(/build\/(.*?)\//);
   return m ? m[1] : p;
+}
+
+// Build a map: templateKey -> manifest content
+const templateMeta: Record<string, any> = {};
+for (const p in manifestMods) {
+  const key = extractTemplateKeyFromPath(p);
+  const mod = manifestMods[p];
+  templateMeta[key] = mod?.default ?? mod;
 }
 
 // Extract segment.theme from classNamesMap.segment.theme.json
@@ -93,7 +109,7 @@ function Root() {
         ? (localStorage.getItem('kiskadee.template') as TemplateKey | null)
         : null;
     if (saved && saved in templates) return saved as TemplateKey;
-    return (Object.keys(templates)[0] as TemplateKey) || 'ios-26';
+    return (Object.keys(templates)[0] as TemplateKey) || 'ios-26-apple';
   });
 
   // State: segment (brand/product)
@@ -326,7 +342,7 @@ function Root() {
           >
             {templateKeys.map((k) => (
               <option key={k} value={k}>
-                {k}
+                {templateMeta[k]?.displayName || k}
               </option>
             ))}
           </select>

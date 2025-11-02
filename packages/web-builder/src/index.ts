@@ -1,6 +1,13 @@
-import type { ComponentStyleKeyMap } from '@kiskadee/schema';
-import { schema } from '@kiskadee/schema/src/templates/apple-ios-26';
-// import { schema } from '@kiskadee/schema/src/templates/template-2';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  schema as appleSchema,
+  segments as appleSegments
+} from '@kiskadee/schema/src/templates/ios-26-apple';
+import {
+  schema as kiskadeeSchema,
+  segments as kiskadeeSegments
+} from '@kiskadee/schema/src/templates/ios-26-kiskadee';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -16,32 +23,8 @@ import {
   generateClassNamesMapSplit
 } from './phase-5-generate-class-names-map/generateClassNamesMap';
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
+import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
 
-// Phase 1 - Convert Element Schema to Style Keys
-const { styleKeys, toneMetadata } = convertElementSchemaToStyleKeys(schema);
-console.log('phase 1', { styleKeys: JSON.stringify(styleKeys, null, 2) });
-
-// // Phase 2 - Map style key usage for optimization purposes
-const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys);
-console.log('phase  2', { styleKeyUsage });
-
-// Phase 3 - Shorten CSS class names for optimization purposes
-const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage);
-console.log('phase 3', { shortenCssClassNameMap });
-
-// Phase 4 - Convert Style Keys to CSS rules, split core vs. palette bundles
-const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, true);
-console.log('phase 4', { cssGenerated });
-
-// Phase 5 - Generate class names map split (core + per-palette)
-const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSplit(
-  styleKeys,
-  shortenCssClassNameMap,
-  toneMetadata
-);
-console.log('phrase 5', { classNamesMapSplit });
-
-// Phase 6 - Persist build artifacts (CSS and class names map split)
 function slugifyName(name: string): string {
   return name
     .trim()
@@ -49,6 +32,68 @@ function slugifyName(name: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
-const major = Array.isArray(schema.version) ? schema.version[0] : (schema.version as any);
-const outDirSlug = `${slugifyName(schema.name)}-${major}`;
-await persistBuildArtifacts(cssGenerated, classNamesMapSplit, outDirSlug);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const templates = [
+  {
+    schema: appleSchema,
+    segments: appleSegments,
+    templatePath: resolve(__dirname, '..', '..', 'schema', 'src', 'templates', 'ios-26-apple.ts')
+  },
+  {
+    schema: kiskadeeSchema,
+    segments: kiskadeeSegments,
+    templatePath: resolve(__dirname, '..', '..', 'schema', 'src', 'templates', 'ios-26-kiskadee.ts')
+  }
+];
+
+const baseBuildDir = resolve(__dirname, '..', '..', 'build');
+
+(async () => {
+  for (const t of templates) {
+    const { schema, segments } = t as any;
+    const templatePath = (t as any).templatePath as string;
+
+    // Phase 1 - Convert Element Schema to Style Keys
+    const { styleKeys, toneMetadata } = convertElementSchemaToStyleKeys(schema);
+    console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
+
+    // Phase 2 - Map style key usage
+    const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys);
+    console.log('phase  2', { name: schema.name, styleKeyUsage });
+
+    // Phase 3 - Shorten class names
+    const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage);
+    console.log('phase 3', { name: schema.name, shortenCssClassNameMap });
+
+    // Phase 4 - Generate CSS split
+    const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, true);
+    console.log('phase 4', { name: schema.name, cssGenerated });
+
+    // Phase 5 - Generate class names map split
+    const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSplit(
+      styleKeys,
+      shortenCssClassNameMap,
+      toneMetadata
+    );
+    console.log('phrase 5', { name: schema.name, classNamesMapSplit });
+
+    // Compute out dir
+    const major = Array.isArray(schema.version) ? schema.version[0] : (schema.version as any);
+    const outDirSlug = `${slugifyName(schema.name)}-${major}-${slugifyName(schema.author || '')}`;
+
+    // Phase 6 - Persist CSS & maps
+    await persistBuildArtifacts(cssGenerated, classNamesMapSplit, outDirSlug);
+
+    // Phase 7 - Publish manifest + raw schema/segments
+    await publishMetadata({
+      schema,
+      segments,
+      outDirSlug,
+      templatePath,
+      baseBuildDir
+    });
+  }
+})();

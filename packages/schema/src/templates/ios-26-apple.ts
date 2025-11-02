@@ -3,6 +3,9 @@ import type { Schema } from '../schema';
 import type { SchemaSegments } from '../types/colors/colors.types';
 import { withAlpha } from '../utils/withAlpha';
 
+// DS Doc iOS 26: https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9/symbols
+// DS Doc iOS 18: https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766
+
 /**
  * Segments definition for the iOS 26 design system.
  * Each segment represents a brand/product identity with support for multiple theme modes.
@@ -183,7 +186,7 @@ export const segments: SchemaSegments = {
 const iosLight = segments.ios.themes.light;
 
 export const schema: Schema = {
-  name: 'ios',
+  name: 'iOS',
   version: [26, 0, 0],
   author: 'Apple',
   breakpoints,
@@ -251,7 +254,7 @@ export const schema: Schema = {
                     solid: {
                       rest: iosLight?.primary.solid[50],
                       hover: withAlpha(iosLight?.primary.solid[50], 80),
-                      pressed: withAlpha(iosLight?.primary.solid[60], 80),
+                      pressed: iosLight?.primary.solid[60],
                       disabled: withAlpha(iosLight?.primary.solid[50], 20),
                       focus: iosLight?.primary.solid[50],
                       selected: {
