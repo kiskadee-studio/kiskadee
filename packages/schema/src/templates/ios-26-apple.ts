@@ -2,6 +2,7 @@ import { breakpoints } from '../breakpoints';
 import type { Schema } from '../schema';
 import type { SchemaSegments } from '../types/colors/colors.types';
 import { withAlpha } from '../utils/withAlpha';
+import { color } from '../utils/color';
 
 // DS Doc iOS 26: https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9/symbols
 // DS Doc iOS 18: https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766
@@ -184,6 +185,7 @@ export const segments: SchemaSegments = {
 };
 
 const iosLight = segments.ios.themes.light;
+const ios = segments.ios;
 
 export const schema: Schema = {
   name: 'iOS',
@@ -240,27 +242,27 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: iosLight?.primary.soft[5],
-                      hover: iosLight?.primary.soft[8],
-                      pressed: iosLight?.primary.soft[12],
-                      disabled: withAlpha(iosLight?.primary.soft[5], 20),
-                      focus: iosLight?.primary.soft[5],
+                      rest: color(ios, 'l', 'primary', 5),
+                      hover: color(ios, 'l', 'primary', 8),
+                      pressed: color(ios, 'l', 'primary', 12),
+                      disabled: color(ios, 'l', 'primary', 5, 20),
+                      focus: color(ios, 'l', 'primary', 5),
                       selected: {
-                        rest: iosLight?.primary.soft[10],
-                        hover: iosLight?.primary.soft[8],
-                        pressed: iosLight?.primary.soft[20]
+                        rest: color(ios, 'l', 'primary', 10),
+                        hover: color(ios, 'l', 'primary', 8),
+                        pressed: color(ios, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: iosLight?.primary.solid[50],
-                      hover: withAlpha(iosLight?.primary.solid[50], 80),
-                      pressed: iosLight?.primary.solid[60],
-                      disabled: withAlpha(iosLight?.primary.solid[50], 20),
-                      focus: iosLight?.primary.solid[50],
+                      rest: color(ios, 'l', 'primary', 50),
+                      hover: color(ios, 'l', 'primary', 50, 80),
+                      pressed: color(ios, 'l', 'primary', 60),
+                      disabled: color(ios, 'l', 'primary', 50, 20),
+                      focus: color(ios, 'l', 'primary', 50),
                       selected: {
-                        rest: iosLight?.primary.soft[10],
-                        hover: iosLight?.primary.soft[8],
-                        pressed: iosLight?.primary.soft[20]
+                        rest: color(ios, 'l', 'primary', 10),
+                        hover: color(ios, 'l', 'primary', 8),
+                        pressed: color(ios, 'l', 'primary', 20)
                         // color(ios, 'l', 'primary', 100, 20)
                       }
                     }
@@ -324,24 +326,24 @@ export const schema: Schema = {
                 textColor: {
                   primary: {
                     soft: {
-                      rest: iosLight?.primary.solid[50],
+                      rest: color(ios, 'l', 'primary', 50),
                       disabled: {
-                        ref: withAlpha(iosLight?.neutral.soft[0], 20)
+                        ref: color(ios, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: iosLight?.neutral.solid[70]
+                          ref: color(ios, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: withAlpha(iosLight?.neutral.soft[0], 20)
+                        ref: color(ios, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: iosLight?.neutral.solid[70]
+                          ref: color(ios, 'l', 'neutral', 70)
                         }
                       }
                     }

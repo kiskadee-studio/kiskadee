@@ -1,6 +1,7 @@
 import { breakpoints } from '../breakpoints';
 import type { Schema } from '../schema';
 import type { SchemaSegments } from '../types/colors/colors.types';
+import { color } from '../utils/color';
 import { withAlpha } from '../utils/withAlpha';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
@@ -183,6 +184,7 @@ export const segments: SchemaSegments = {
 };
 
 const iosLight = segments.ios.themes.light;
+const ios = segments.ios;
 
 export const schema: Schema = {
   name: 'iOS',
@@ -193,6 +195,7 @@ export const schema: Schema = {
     button: {
       elements: {
         e1: {
+          name: 'button',
           decorations: {
             borderStyle: 'none'
           },
@@ -239,28 +242,27 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: iosLight?.primary.soft[5],
-                      hover: iosLight?.primary.soft[8],
-                      pressed: iosLight?.primary.soft[12],
-                      disabled: withAlpha(iosLight?.primary.soft[5], 20),
-                      focus: iosLight?.primary.soft[5],
+                      rest: color(ios, 'l', 'primary', 5),
+                      hover: color(ios, 'l', 'primary', 8),
+                      pressed: color(ios, 'l', 'primary', 12),
+                      disabled: color(ios, 'l', 'primary', 5, 20),
+                      focus: color(ios, 'l', 'primary', 5),
                       selected: {
-                        rest: iosLight?.primary.soft[10],
-                        hover: iosLight?.primary.soft[8],
-                        pressed: iosLight?.primary.soft[20]
+                        rest: color(ios, 'l', 'primary', 10),
+                        hover: color(ios, 'l', 'primary', 8),
+                        pressed: color(ios, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: iosLight?.primary.solid[50],
-                      hover: withAlpha(iosLight?.primary.solid[50], 80),
-                      pressed: iosLight?.primary.solid[60],
-                      disabled: withAlpha(iosLight?.primary.solid[50], 20),
-                      focus: iosLight?.primary.solid[50],
+                      rest: color(ios, 'l', 'primary', 50),
+                      hover: color(ios, 'l', 'primary', 50, 80),
+                      pressed: color(ios, 'l', 'primary', 60),
+                      disabled: color(ios, 'l', 'primary', 50, 20),
+                      focus: color(ios, 'l', 'primary', 50),
                       selected: {
-                        rest: iosLight?.primary.soft[10],
-                        hover: iosLight?.primary.soft[8],
-                        pressed: iosLight?.primary.soft[20]
-                        // color(ios, 'l', 'primary', 100, 20)
+                        rest: color(ios, 'l', 'primary', 10),
+                        hover: color(ios, 'l', 'primary', 8),
+                        pressed: color(ios, 'l', 'primary', 20)
                       }
                     }
                   }
@@ -313,6 +315,7 @@ export const schema: Schema = {
           }
         },
         e2: {
+          name: 'button-text',
           decorations: {
             textFont: ['Roboto', 'sans-serif'],
             textWeight: 'medium'
@@ -323,24 +326,24 @@ export const schema: Schema = {
                 textColor: {
                   primary: {
                     soft: {
-                      rest: iosLight?.primary.solid[50],
+                      rest: color(ios, 'l', 'primary', 50),
                       disabled: {
-                        ref: withAlpha(iosLight?.neutral.soft[0], 20)
+                        ref: color(ios, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: iosLight?.neutral.solid[70]
+                          ref: color(ios, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: withAlpha(iosLight?.neutral.soft[0], 20)
+                        ref: color(ios, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: iosLight?.neutral.solid[70]
+                          ref: color(ios, 'l', 'neutral', 70)
                         }
                       }
                     }

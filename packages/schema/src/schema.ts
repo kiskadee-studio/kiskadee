@@ -11,6 +11,7 @@ export type ComponentName = 'button' | 'tabs';
 export type SegmentName = string;
 
 export type ElementStyle = Partial<{
+  name?: string; // for example "element-element-element-element"
   decorations: DecorationSchema;
   scales: ScaleSchema;
   // Palettes follow the same structure as SchemaSegments: segmentName → themes → ColorSchema

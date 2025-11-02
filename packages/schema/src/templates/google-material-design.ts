@@ -1,6 +1,7 @@
 import { breakpoints } from '../breakpoints';
 import type { Schema } from '../schema';
 import type { SchemaSegments } from '../types/colors/colors.types';
+import { color } from '../utils/color';
 
 /**
  * Segments definition for the Material Design 3 design system.
@@ -155,7 +156,7 @@ export const segments: SchemaSegments = {
   }
 };
 
-const materialLight = segments.material.themes.light;
+const material = segments.material;
 
 export const schema: Schema = {
   name: 'material-design',
@@ -212,29 +213,29 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: materialLight!.primary.solid[50]!,
+                      rest: color(material, 'l', 'primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: materialLight!.primary.solid[40],
-                      pressed: materialLight!.primary.solid[60],
-                      disabled: materialLight!.neutral.soft[10],
-                      focus: materialLight!.primary.solid[50],
+                      hover: color(material, 'l', 'primary', 40),
+                      pressed: color(material, 'l', 'primary', 60),
+                      disabled: color(material, 'l', 'neutral', 10),
+                      focus: color(material, 'l', 'primary', 50),
                       selected: {
-                        rest: materialLight!.primary.soft[10]!,
-                        hover: materialLight!.primary.soft[8],
-                        pressed: materialLight!.primary.soft[20]
+                        rest: color(material, 'l', 'primary', 10),
+                        hover: color(material, 'l', 'primary', 8),
+                        pressed: color(material, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: materialLight!.primary.solid[50]!,
+                      rest: color(material, 'l', 'primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: materialLight!.primary.solid[40],
-                      pressed: materialLight!.primary.solid[60],
-                      disabled: materialLight!.neutral.soft[10],
-                      focus: materialLight!.primary.solid[50],
+                      hover: color(material, 'l', 'primary', 40),
+                      pressed: color(material, 'l', 'primary', 60),
+                      disabled: color(material, 'l', 'neutral', 10),
+                      focus: color(material, 'l', 'primary', 50),
                       selected: {
-                        rest: materialLight!.primary.soft[10]!,
-                        hover: materialLight!.primary.soft[8],
-                        pressed: materialLight!.primary.soft[20]
+                        rest: color(material, 'l', 'primary', 10),
+                        hover: color(material, 'l', 'primary', 8),
+                        pressed: color(material, 'l', 'primary', 20)
                       }
                     }
                   }
@@ -288,22 +289,22 @@ export const schema: Schema = {
                     soft: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: materialLight!.neutral.solid[60]!
+                        ref: color(material, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: materialLight!.neutral.solid[70]!
+                          ref: color(material, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: materialLight!.neutral.solid[60]!
+                        ref: color(material, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: materialLight!.neutral.solid[70]!
+                          ref: color(material, 'l', 'neutral', 70)
                         }
                       }
                     }
