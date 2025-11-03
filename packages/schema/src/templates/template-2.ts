@@ -11,9 +11,7 @@ export const schema: Schema = {
       elements: {
         e1: {
           palettes: {
-            p1: {
-              boxColor: {}
-            }
+            p1: {}
           }
         }
       }

@@ -244,13 +244,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadius==hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:hover .abc { border-radius: 12px }');
+          expect(out).toEqual('.-i:hover .abc { border-radius: 12px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadius==hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:hover .abc, .-a.-h .abc { border-radius: 12px }');
+          expect(out).toEqual('.-i:hover .abc, .-a.-h \.abc { border-radius: 12px }'.replace(' \\.',' .'));
         });
       });
 
@@ -259,13 +259,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadius==focus__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:focus-visible .abc { border-radius: 6px }');
+          expect(out).toEqual('.-i:focus-visible .abc { border-radius: 6px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadius==focus__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:focus-visible .abc, .-a.-f .abc { border-radius: 6px }');
+          expect(out).toEqual('.-i:focus-visible .abc, .-a.-f .abc { border-radius: 6px }');
         });
       });
 
@@ -274,14 +274,14 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadius==selected:hover__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:hover.-s .abc { border-radius: 8px }');
+          expect(out).toEqual('.-i:hover.-s .abc { border-radius: 8px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadius==selected:hover__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '.-a:hover.-s .abc, .-a.-s.-h \.abc { border-radius: 8px }'.replace(' \\.', ' .')
+            '.-i:hover.-s .abc, .-a.-s.-h \.abc { border-radius: 8px }'.replace(' \\.', ' .')
           );
         });
       });
@@ -306,13 +306,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadius==hover++s:md:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:hover \.abc { border-radius: 14px }'.replace(' \\.', ' .'));
+          expect(out).toEqual('.-i:hover \.abc { border-radius: 14px }'.replace(' \\.', ' .'));
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadius==hover++s:md:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a:hover .abc, .-a.-h .abc { border-radius: 14px }');
+          expect(out).toEqual('.-i:hover .abc, .-a.-h .abc { border-radius: 14px }');
         });
       });
 
@@ -322,7 +322,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==hover++s:md:1::bp:lg:2__16';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .-a:hover .abc { border-radius: 16px } }'
+            '@media (min-width: 1312px) { .-i:hover .abc { border-radius: 16px } }'
           );
         });
         it('forceState=true', () => {
@@ -330,7 +330,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==hover++s:md:1::bp:lg:2__16';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .-a:hover .abc, .-a.-h \.abc { border-radius: 16px } }'.replace(
+            '@media (min-width: 1312px) { .-i:hover .abc, .-a.-h \\.abc { border-radius: 16px } }'.replace(
               ' \\.',
               ' .'
             )
@@ -344,7 +344,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==focus++s:lg:1::bp:md:2__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus-visible .abc { border-radius: 10px } }'
+            '@media (min-width: 768px) { .-i:focus-visible .abc { border-radius: 10px } }'
           );
         });
         it('forceState=true', () => {
@@ -352,7 +352,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==focus++s:lg:1::bp:md:2__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus-visible .abc, .-a.-f .abc { border-radius: 10px } }'
+            '@media (min-width: 768px) { .-i:focus-visible \.abc, .-a.-f \.abc { border-radius: 10px } }'.replace(' \\.', ' .')
           );
         });
       });
@@ -363,7 +363,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==selected:focus++s:sm:1::bp:md:2__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus-visible.-s .abc { border-radius: 8px } }'
+            '@media (min-width: 768px) { .-i:focus-visible.-s .abc { border-radius: 8px } }'
           );
         });
         it('forceState=true', () => {
@@ -371,7 +371,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadius==selected:focus++s:sm:1::bp:md:2__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-a:focus-visible.-s .abc, .-a.-s.-f .abc { border-radius: 8px } }'
+            '@media (min-width: 768px) { .-i:focus-visible.-s .abc, .-a.-s.-f .abc { border-radius: 8px } }'
           );
         });
       });

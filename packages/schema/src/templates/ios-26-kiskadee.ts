@@ -243,10 +243,10 @@ export const schema: Schema = {
                   primary: {
                     soft: {
                       rest: color(ios, 'l', 'primary', 5),
-                      hover: color(ios, 'l', 'primary', 8),
-                      pressed: color(ios, 'l', 'primary', 12),
-                      disabled: color(ios, 'l', 'primary', 5, 20),
+                      hover: color(ios, 'l', 'primary', 3),
                       focus: color(ios, 'l', 'primary', 5),
+                      pressed: color(ios, 'l', 'primary', 8),
+                      disabled: color(ios, 'l', 'primary', 5, 20),
                       selected: {
                         rest: color(ios, 'l', 'primary', 10),
                         hover: color(ios, 'l', 'primary', 8),
@@ -327,6 +327,8 @@ export const schema: Schema = {
                   primary: {
                     soft: {
                       rest: color(ios, 'l', 'primary', 50),
+                      hover: { ref: color(ios, 'l', 'primary', 50, 80) },
+                      pressed: { ref: color(ios, 'l', 'primary', 50) },
                       disabled: {
                         ref: color(ios, 'l', 'neutral', 0, 20)
                       },
@@ -337,7 +339,7 @@ export const schema: Schema = {
                       }
                     },
                     solid: {
-                      rest: [0, 0, 100, 1],
+                      rest: color(ios, 'l', 'neutral', 0),
                       disabled: {
                         ref: color(ios, 'l', 'neutral', 0, 20)
                       },

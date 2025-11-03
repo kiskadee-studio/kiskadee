@@ -158,8 +158,9 @@ export function transformBorderRadiusKeyToCss(
       const nonNativeChunk =
         nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
       {
-        const activator = stateActivator.activator;
-        parentSelectors.push(`.${activator}${nativeChunk}${nonNativeChunk} .${className}`);
+        // Use interactive anchor from schema (do not mix with -a).
+        const interactive = stateActivator.interactive;
+        parentSelectors.push(`.${interactive}${nativeChunk}${nonNativeChunk} .${className}`);
       }
     }
 

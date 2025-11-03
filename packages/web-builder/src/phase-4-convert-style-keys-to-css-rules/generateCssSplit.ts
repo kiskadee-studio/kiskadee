@@ -139,18 +139,38 @@ export async function generateCssSplit(
   const coreRaw = Array.from(coreRules).sort().join('\n');
   const coreOut = await postcss([combineMq()]).process(coreRaw, { from: undefined });
 
-  // Custom order for effects: ensure native pseudo rules (e.g., :hover, :focus, :active)
-  // appear AFTER forced-only class rules (e.g., .-s.-a) to win ties in specificity by cascade.
-  const weight = (rule: string): number => {
-    // Look for native interaction pseudos anywhere in the rule (works with @media wrappers too)
-    const hasNative = /:(hover|focus|active)\b/.test(rule);
-    return hasNative ? 2 : 0; // higher weight → later in sort
+  // CSS emission order rules (critical for overlapping native states like :hover vs :active)
+  //
+  // Rationale:
+  // - Browsers keep :hover active while :active is also true during mouse press.
+  // - Our selectors for parent-ref colors (.-i:hover .child and .-i:active .child) often have
+  //   identical specificity. When both match, the one that appears LAST in the file wins.
+  // - Design intent: pressed (:active) should take precedence over hover when both are active.
+  //
+  // Strategy:
+  // - Always emit forced-only class rules (no native pseudos) first.
+  // - Then emit native pseudo rules ordered by ascending precedence: focus < hover < active.
+  //   This guarantees :active rules are printed last and therefore win ties in specificity.
+  // - If multiple pseudos appear in the same selector, take the highest-precedence one.
+  //
+  // Note: This ordering is applied identically to both effects and palette bundles.
+  const precedenceOf = (rule: string): number => {
+    // 0 = forced-only/no native; 1 = focus; 2 = hover; 3 = active (printed last)
+    // We match within @media wrappers as well.
+    const isActive = /:(active)\b/.test(rule);
+    if (isActive) return 3;
+    const isHover = /:(hover)\b/.test(rule);
+    if (isHover) return 2;
+    const isFocus = /:(focus|focus-visible|focus-within)\b/.test(rule);
+    if (isFocus) return 1;
+    return 0;
   };
+
   const effectsRaw = Array.from(effectsRules)
     .sort((a, b) => {
-      const wa = weight(a);
-      const wb = weight(b);
-      if (wa !== wb) return wa - wb; // ascending: non-native first, native last
+      const wa = precedenceOf(a);
+      const wb = precedenceOf(b);
+      if (wa !== wb) return wa - wb; // ascending precedence; higher wins later in file
       return a.localeCompare(b);
     })
     .join('\n');
@@ -160,9 +180,9 @@ export async function generateCssSplit(
   for (const p in paletteRules) {
     const raw = Array.from(paletteRules[p])
       .sort((a, b) => {
-        const wa = weight(a);
-        const wb = weight(b);
-        if (wa !== wb) return wa - wb; // non-native first, native last
+        const wa = precedenceOf(a);
+        const wb = precedenceOf(b);
+        if (wa !== wb) return wa - wb; // forced/no-native first; then focus < hover < active
         return a.localeCompare(b);
       })
       .join('\n');

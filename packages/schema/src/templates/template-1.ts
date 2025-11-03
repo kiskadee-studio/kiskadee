@@ -55,13 +55,8 @@ export const schema: Schema = {
             textHeight: 24
           },
           palettes: {
-            p1: {
-              textColor: { rest: [0, 0, 0, 0.5] },
-              borderColor: { rest: [0, 0, 0, 0.5] }
-            },
-            p2: {
-              boxColor: { rest: [0, 0, 0, 0.5] }
-            }
+            p1: {},
+            p2: {}
           },
           effects: {
             shadow: {
@@ -90,9 +85,7 @@ export const schema: Schema = {
             textSize: 16
           },
           palettes: {
-            p1: {
-              textColor: {}
-            }
+            p1: {}
           }
         }
       }

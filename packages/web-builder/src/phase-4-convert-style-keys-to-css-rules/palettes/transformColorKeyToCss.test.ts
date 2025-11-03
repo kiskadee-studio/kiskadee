@@ -115,7 +115,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-a:hover .abc { background: #4040bf80 }');
+          expect(result).toEqual('.-i:hover .abc { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -125,7 +125,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // expects both parent :hover and forced parent class (.-h) to be combined as selectors
-          expect(result).toEqual('.-a:hover .abc, .-a.-h .abc { background: #4040bf80 }');
+          expect(result).toEqual('.-i:hover .abc, .-a.-h .abc { background: #4040bf80 }');
         });
       });
 
@@ -133,12 +133,12 @@ describe('transformColorKeyToCss', () => {
         it('forceState=false', () => {
           const force = false as const;
           const result = transformColorKeyToCss('textColor==focus__[0,0,0,0.3]', className, force);
-          expect(result).toEqual('.-a:focus-visible .abc { color: #0000004d }');
+          expect(result).toEqual('.-i:focus-visible .abc { color: #0000004d }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const result = transformColorKeyToCss('textColor==focus__[0,0,0,0.3]', className, force);
-          expect(result).toEqual('.-a:focus-visible .abc, .-a.-f .abc { color: #0000004d }');
+          expect(result).toEqual('.-i:focus-visible .abc, .-a.-f .abc { color: #0000004d }');
         });
       });
 
@@ -162,7 +162,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-a:hover.-s .abc { background: #4040bf80 }');
+          expect(result).toEqual('.-i:hover.-s .abc { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -171,9 +171,9 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          // parent gets activator always; selected forced class (.-s) and hover native/forced variations
+          // parent gets interactive anchor -i for native, activator -a only for forced branch
           expect(result).toEqual(
-            '.-a:hover.-s .abc, .-a.-s.-h .abc { background: #4040bf80 }'.replace(
+            '.-i:hover.-s .abc, .-a.-s.-h .abc { background: #4040bf80 }'.replace(
               ' \\.',
               ' .'
             )

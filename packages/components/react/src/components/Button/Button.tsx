@@ -125,7 +125,7 @@ function Button(props: ButtonProps) {
     const shadowFlag = shadow ? ` ${cn.shadow}` : '';
 
     return {
-      e1: `${e1Base}${shadowFlag}${activation} btn kd-transition`,
+      e1: `${e1Base} ${cn.interactive}${shadowFlag}${activation} btn kd-transition`,
       e2: e2Base,
       e3: e3Base
     };

@@ -123,7 +123,8 @@ export const stateActivator = {
   disabled: '-d',
   readOnly: '-r', // Force read-only visuals
   shadow: '-e', // Activation class for shadow/elevation
-  activator: '-a' // Global activator class used to enable forced-state variants
+  activator: '-a', // Global activator class used to enable forced-state variants
+  interactive: '-i' // Interactive anchor for native parent-state selectors (e.g., .-i:hover .child)
 };
 
 /**
