@@ -28,54 +28,32 @@ export const segments: SchemaSegments = {
       light: {
         primary: {
           soft: {
-            // Soft track: 0–30 every 1% darkness
-            0: [206, 100, 100, 1], // 0% darkness (white/lightest)
-            1: [206, 100, 99, 1], // 1% darkness
-            2: [206, 100, 98, 1], // 2% darkness
-            3: [206, 100, 97, 1], // 3% darkness
-            4: [206, 100, 96, 1], // 4% darkness
-            5: [206, 100, 95, 1], // 5% darkness
-            6: [206, 100, 94, 1], // 6% darkness
-            7: [206, 100, 93, 1], // 7% darkness
-            8: [206, 100, 92, 1], // 8% darkness
-            9: [206, 100, 91, 1], // 9% darkness
-            10: [206, 100, 90, 1], // 10% darkness
-            11: [206, 100, 89, 1], // 11% darkness
-            12: [206, 100, 88, 1], // 12% darkness
-            13: [206, 100, 87, 1], // 13% darkness
-            14: [206, 100, 86, 1], // 14% darkness
-            15: [206, 100, 85, 1], // 15% darkness
-            16: [206, 100, 84, 1], // 16% darkness
-            17: [206, 100, 83, 1], // 17% darkness
-            18: [206, 100, 82, 1], // 18% darkness
-            19: [206, 100, 81, 1], // 19% darkness
-            20: [206, 100, 80, 1], // 20% darkness
-            21: [206, 100, 79, 1], // 21% darkness
-            22: [206, 100, 78, 1], // 22% darkness
-            23: [206, 100, 77, 1], // 23% darkness
-            24: [206, 100, 76, 1], // 24% darkness
-            25: [206, 100, 75, 1], // 25% darkness
-            26: [206, 100, 74, 1], // 26% darkness
-            27: [206, 100, 73, 1], // 27% darkness
-            28: [206, 100, 72, 1], // 28% darkness
-            29: [206, 100, 71, 1], // 29% darkness
-            30: [206, 100, 70, 1] // 30% darkness
+            // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
+            0: [54, 100, 100, 1], // 0% darkness (white/lightest)
+            1: [54, 100, 99, 1], // 1% darkness
+            2: [54, 100, 98, 1], // 2% darkness
+            3: [54, 100, 97, 1], // 3% darkness
+            4: [54, 100, 96, 1], // 4% darkness
+            5: [54, 100, 95, 1], // 5% darkness
+            6: [54, 100, 94, 1], // 6% darkness
+            7: [54, 100, 93, 1], // 7% darkness
+            8: [54, 100, 92, 1], // 8% darkness
+            9: [54, 100, 91, 1], // 9% darkness
+            10: [54, 100, 90, 1], // 10% darkness
+            15: [54, 100, 85, 1], // 15% darkness
+            20: [54, 100, 80, 1], // 20% darkness
+            25: [54, 100, 75, 1], // 25% darkness
+            30: [54, 100, 70, 1] // 30% darkness
           },
           solid: {
-            // Solid track: 40–100 every 5% darkness (40,45,…,95,100); 50 is the anchor
-            40: [206, 100, 60, 1], // 40% darkness
-            45: [206, 100, 55, 1], // 45% darkness
-            50: [206, 100, 50, 1], // 50% darkness - #0091FF - ANCHOR (unchanged)
-            55: [206, 100, 45, 1], // 55% darkness
-            60: [206, 100, 40, 1], // 60% darkness
-            65: [206, 100, 35, 1], // 65% darkness
-            70: [206, 100, 30, 1], // 70% darkness
-            75: [206, 100, 25, 1], // 75% darkness
-            80: [206, 100, 20, 1], // 80% darkness
-            85: [206, 100, 15, 1], // 85% darkness
-            90: [206, 100, 10, 1], // 90% darkness
-            95: [206, 100, 5, 1], // 95% darkness
-            100: [206, 100, 0, 1] // 100% darkness (black/darkest)
+            // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
+            40: [54, 100, 60, 1], // 40% darkness
+            50: [54, 100, 50, 1], // 50% darkness - #FFF59B - ANCHOR (unchanged)
+            60: [54, 100, 40, 1], // 60% darkness
+            70: [54, 100, 30, 1], // 70% darkness
+            80: [54, 100, 20, 1], // 80% darkness
+            90: [54, 100, 10, 1], // 90% darkness
+            100: [54, 100, 0, 1] // 100% darkness (black/darkest)
           }
         },
         secondary: {
@@ -128,7 +106,7 @@ export const segments: SchemaSegments = {
         },
         neutral: {
           soft: {
-            // Soft track: 0–30 every 1% darkness
+            // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
             0: [0, 0, 100, 1], // 0% darkness (white/lightest)
             1: [0, 0, 99, 1], // 1% darkness
             2: [0, 0, 98, 1], // 2% darkness
@@ -140,41 +118,19 @@ export const segments: SchemaSegments = {
             8: [0, 0, 92, 1], // 8% darkness
             9: [0, 0, 91, 1], // 9% darkness
             10: [0, 0, 90, 1], // 10% darkness
-            11: [0, 0, 90, 1], // 11% darkness
-            12: [0, 0, 91, 1], // 12% darkness
-            13: [0, 0, 91, 1], // 13% darkness
-            14: [0, 0, 91, 1], // 14% darkness
-            15: [0, 0, 92, 1], // 15% darkness
-            16: [0, 0, 92, 1], // 16% darkness
-            17: [0, 0, 92, 1], // 17% darkness
-            18: [0, 0, 92, 1], // 18% darkness
-            19: [0, 0, 93, 1], // 19% darkness
-            20: [0, 0, 93, 1], // 20% darkness
-            21: [0, 0, 93, 1], // 21% darkness
-            22: [0, 0, 93, 1], // 22% darkness
-            23: [0, 0, 94, 1], // 23% darkness
-            24: [0, 0, 94, 1], // 24% darkness
-            25: [0, 0, 94, 1], // 25% darkness
-            26: [0, 0, 94, 1], // 26% darkness
-            27: [0, 0, 94, 1], // 27% darkness
-            28: [0, 0, 95, 1], // 28% darkness
-            29: [0, 0, 95, 1], // 29% darkness
-            30: [0, 0, 95, 1] // 30% darkness
+            15: [0, 0, 85, 1], // 15% darkness
+            20: [0, 0, 80, 1], // 20% darkness
+            25: [0, 0, 75, 1], // 25% darkness
+            30: [0, 0, 70, 1] // 30% darkness
           },
           solid: {
-            // Solid track: 40–100 every 5% darkness (40,45,…,95,100); 50 is the anchor
-            40: [0, 0, 98, 1], // 40% darkness
-            45: [0, 0, 99, 1], // 45% darkness
-            50: [0, 0, 100, 1], // 50% darkness - #FFF - ANCHOR (unchanged)
-            55: [0, 0, 90, 1], // 55% darkness
-            60: [0, 0, 80, 1], // 60% darkness
-            65: [0, 0, 70, 1], // 65% darkness
-            70: [0, 0, 60, 1], // 70% darkness
-            75: [0, 0, 50, 1], // 75% darkness
-            80: [0, 0, 40, 1], // 80% darkness
-            85: [0, 0, 30, 1], // 85% darkness
-            90: [0, 0, 20, 1], // 90% darkness
-            95: [0, 0, 10, 1], // 95% darkness
+            // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
+            40: [0, 0, 60, 1], // 40% darkness
+            50: [0, 0, 50, 1], // 50% darkness - #000 - ANCHOR (unchanged)
+            60: [0, 0, 40, 1], // 60% darkness
+            70: [0, 0, 30, 1], // 70% darkness
+            80: [0, 0, 20, 1], // 80% darkness
+            90: [0, 0, 10, 1], // 90% darkness
             100: [0, 0, 0, 1] // 100% darkness (black/darkest)
           }
         }

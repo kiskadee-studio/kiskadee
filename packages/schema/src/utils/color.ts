@@ -1,17 +1,40 @@
+import type {
+  DarkTrackTones,
+  HSLA,
+  LightTrackTones,
+  Segment,
+  SemanticColor
+} from '../types/colors/colors.types';
 import { withAlpha } from './withAlpha';
-import type { HSLA } from '../types/colors/colors.types';
 
 export type ModeKeyShort = 'l' | 'd';
-export type RoleKey = 'primary' | 'secondary' | 'greenLike' | 'yellowLike' | 'redLike' | 'neutral';
 
 const modeFromShort = (m: ModeKeyShort) => (m === 'l' ? 'light' : 'dark');
 
-function resolveSeriesAndKey(tone: number): { series: 'soft' | 'solid'; key: number } {
+function resolveSeriesAndKey(
+  tone: number
+): { series: 'soft'; key: LightTrackTones } | { series: 'solid'; key: DarkTrackTones } {
+  // New normalized grids (Option B):
+  // soft: 0–10 (step 1) then 15, 20, 25, 30
+  // solid: 40, 50, 60, 70, 80, 90, 100
+  const softKeys: LightTrackTones[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30] as const;
+  const solidKeys: DarkTrackTones[] = [40, 50, 60, 70, 80, 90, 100] as const;
+
   if (tone <= 30) {
     const clamped = Math.max(0, Math.min(30, Math.round(tone)));
-    return { series: 'soft', key: clamped };
+    // snap to nearest allowed soft key
+    let best = softKeys[0];
+    let bestDiff = Math.abs(clamped - best);
+    for (const k of softKeys) {
+      const diff = Math.abs(clamped - k);
+      if (diff < bestDiff) {
+        best = k;
+        bestDiff = diff;
+      }
+    }
+    return { series: 'soft', key: best };
   }
-  const solidKeys = [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
+
   const clamped = Math.max(40, Math.min(100, Math.round(tone)));
   let best = solidKeys[0];
   let bestDiff = Math.abs(clamped - best);
@@ -26,27 +49,42 @@ function resolveSeriesAndKey(tone: number): { series: 'soft' | 'solid'; key: num
 }
 
 export function color(
-  segment: any,
+  segment: Segment,
   mode: ModeKeyShort,
-  role: RoleKey,
+  role: SemanticColor,
   tone: number,
   alpha?: number
 ): HSLA {
   const m = modeFromShort(mode) as 'light' | 'dark';
   const { series, key } = resolveSeriesAndKey(tone);
 
-  const theme = segment?.themes?.[m] as any;
+  const theme = segment?.themes?.[m];
   if (!theme) {
     throw new Error(`Theme not found for provided segment in mode=${m}`);
   }
-  const bucket = theme?.[role]?.[series];
-  if (!bucket) {
-    throw new Error(`Role/series not found: role=${role} series=${series} in mode=${m}`);
+
+  // Narrow by series to keep key types aligned with buckets
+  if (series === 'soft') {
+    const bucket = theme?.[role]?.soft as Partial<Record<LightTrackTones, HSLA>> | undefined;
+    if (!bucket) {
+      throw new Error(`Role/series not found: role=${role} series=soft in mode=${m}`);
+    }
+    const hsla = bucket[key as LightTrackTones] as HSLA | undefined;
+    if (!hsla) {
+      const available = Object.keys(bucket).join(', ');
+      throw new Error(`Tone ${key} not available in ${role}.soft. Available: ${available}`);
+    }
+    return typeof alpha === 'number' ? (withAlpha(hsla, alpha) as HSLA) : hsla;
+  } else {
+    const bucket = theme?.[role]?.solid as Partial<Record<DarkTrackTones, HSLA>> | undefined;
+    if (!bucket) {
+      throw new Error(`Role/series not found: role=${role} series=solid in mode=${m}`);
+    }
+    const hsla = bucket[key as DarkTrackTones] as HSLA | undefined;
+    if (!hsla) {
+      const available = Object.keys(bucket).join(', ');
+      throw new Error(`Tone ${key} not available in ${role}.solid. Available: ${available}`);
+    }
+    return typeof alpha === 'number' ? (withAlpha(hsla, alpha) as HSLA) : hsla;
   }
-  const hsla = bucket[key] as HSLA | undefined;
-  if (!hsla) {
-    const available = Object.keys(bucket).join(', ');
-    throw new Error(`Tone ${key} not available in ${role}.${series}. Available: ${available}`);
-  }
-  return typeof alpha === 'number' ? (withAlpha(hsla, alpha) as HSLA) : hsla;
 }

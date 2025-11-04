@@ -128,54 +128,37 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
   scale[90] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 4), alpha];
   scale[100] = [hue, saturation, 0, alpha];
 
-  // Insert mid-steps for solid track at 5% increments by interpolating between existing 10% steps
-  const midBetween = (a?: HSLA, b?: HSLA): number | undefined =>
-    a && b ? Math.round((a[2] + b[2]) / 2) : undefined;
-
-  const l45 = midBetween(scale[40], scale[50]);
-  if (l45 !== undefined) scale[45 as keyof ColorScale] = [hue, saturation, l45, alpha];
-  const l55 = midBetween(scale[50], scale[60]);
-  if (l55 !== undefined) scale[55 as keyof ColorScale] = [hue, saturation, l55, alpha];
-  const l65 = midBetween(scale[60], scale[70]);
-  if (l65 !== undefined) scale[65 as keyof ColorScale] = [hue, saturation, l65, alpha];
-  const l75 = midBetween(scale[70], scale[80]);
-  if (l75 !== undefined) scale[75 as keyof ColorScale] = [hue, saturation, l75, alpha];
-  const l85 = midBetween(scale[80], scale[90]);
-  if (l85 !== undefined) scale[85 as keyof ColorScale] = [hue, saturation, l85, alpha];
-  const l95 = midBetween(scale[90], scale[100]);
-  if (l95 !== undefined) scale[95 as keyof ColorScale] = [hue, saturation, l95, alpha];
-
   // Split into tone tracks
   const soft: ColorScaleLight = {};
   const solid: ColorScaleDark = {};
 
-  // Soft: 0-30 (now every 1%)
-  const l10 = scale[10]?.[2];
-  const l20 = scale[20]?.[2];
-  const l30 = scale[30]?.[2];
-
-  for (let t = 0; t <= 30; t += 1) {
-    let c: HSLA | undefined;
-    if (t <= 10) {
-      c = scale[t as keyof ColorScale] as HSLA | undefined;
-    } else if (t > 10 && t < 20 && l10 !== undefined && l20 !== undefined) {
-      const p = (t - 10) / 10; // 0..1 between 10 and 20
-      const L = Math.round(l10 + (l20 - l10) * p);
-      c = [hue, saturation, L, alpha];
-    } else if (t === 20) {
-      c = scale[20] as HSLA | undefined;
-    } else if (t > 20 && t < 30 && l20 !== undefined && l30 !== undefined) {
-      const p = (t - 20) / 10; // 0..1 between 20 and 30
-      const L = Math.round(l20 + (l30 - l20) * p);
-      c = [hue, saturation, L, alpha];
-    } else if (t === 30) {
-      c = scale[30] as HSLA | undefined;
-    }
+  // Soft: 0–10 (step 1), then 15, 20, 25, 30
+  // Copy 0..10 directly
+  for (let t = 0; t <= 10; t += 1) {
+    const c = scale[t as keyof ColorScale] as HSLA | undefined;
     if (c) soft[t as keyof ColorScaleLight] = c;
   }
+  // Interpolate 15 between 10 and 20
+  if (scale[10] && scale[20]) {
+    const L15 = Math.round(((scale[10] as HSLA)[2] + (scale[20] as HSLA)[2]) / 2);
+    soft[15 as keyof ColorScaleLight] = [hue, saturation, L15, alpha];
+  }
+  // 20 from base scale
+  if (scale[20]) {
+    soft[20 as keyof ColorScaleLight] = scale[20] as HSLA;
+  }
+  // Interpolate 25 between 20 and 30
+  if (scale[20] && scale[30]) {
+    const L25 = Math.round(((scale[20] as HSLA)[2] + (scale[30] as HSLA)[2]) / 2);
+    soft[25 as keyof ColorScaleLight] = [hue, saturation, L25, alpha];
+  }
+  // 30 from base scale
+  if (scale[30]) {
+    soft[30 as keyof ColorScaleLight] = scale[30] as HSLA;
+  }
 
-  // Solid: 40-100 (now every 5%)
-  for (const tone of [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] as const) {
+  // Solid: 40–100 every 10%
+  for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
     const c = scale[tone];
     if (c) solid[tone] = c;
   }
@@ -206,13 +189,10 @@ export function generateColorScaleWithLog(
 
   // Soft header
   softLines.push('  soft: {');
-  softLines.push('    // Soft track: 0–30 every 1% darkness');
-  for (
-    let tone = 0 as keyof ColorScaleLight;
-    (tone as number) <= 30;
-    tone = ((tone as number) + 1) as keyof ColorScaleLight
-  ) {
-    const color = tracks.soft[tone];
+  softLines.push('    // Soft track: 0–10 (every 1%), then 15, 20, 25, 30');
+  const softKeysForLog = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30] as const;
+  for (const tone of softKeysForLog) {
+    const color = tracks.soft[tone as keyof ColorScaleLight];
     if (color) {
       const t = tone as number;
       const comment = t === 0 ? ' // 0% darkness (white/lightest)' : ` // ${t}% darkness`;
@@ -226,10 +206,10 @@ export function generateColorScaleWithLog(
   solidLines.push('  solid: {');
   if (anchor?.[2] !== undefined) {
     solidLines.push(
-      `    // Solid track: 40–100 every 5% darkness (40,45,…,95,100); 50 is the anchor`
+      `    // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor`
     );
   }
-  for (const tone of [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] as const) {
+  for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
     const color = tracks.solid[tone];
     if (!color) continue;
     const comment =
@@ -263,4 +243,4 @@ export function generateColorScaleWithLog(
   return tracks;
 }
 
-generateColorScaleWithLog('#6750A4', true);
+generateColorScaleWithLog('#fff59b', true);

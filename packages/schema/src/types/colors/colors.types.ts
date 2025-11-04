@@ -282,40 +282,18 @@ export type LightTrackTones =
   | 8 // 8% darkness
   | 9 // 9% darkness
   | 10 // 10% darkness
-  | 11 // 11% darkness
-  | 12 // 12% darkness
-  | 13 // 13% darkness
-  | 14 // 14% darkness
   | 15 // 15% darkness
-  | 16 // 16% darkness
-  | 17 // 17% darkness
-  | 18 // 18% darkness
-  | 19 // 19% darkness
   | 20 // 20% darkness
-  | 21 // 21% darkness
-  | 22 // 22% darkness
-  | 23 // 23% darkness
-  | 24 // 24% darkness
   | 25 // 25% darkness
-  | 26 // 26% darkness
-  | 27 // 27% darkness
-  | 28 // 28% darkness
-  | 29 // 29% darkness
   | 30; // 30% darkness
 
 export type DarkTrackTones =
   | 40 // 40% darkness
-  | 45 // 45% darkness
   | 50 // 50% darkness
-  | 55 // 55% darkness
   | 60 // 60% darkness
-  | 65 // 65% darkness
   | 70 // 70% darkness
-  | 75 // 75% darkness
   | 80 // 80% darkness
-  | 85 // 85% darkness
   | 90 // 90% darkness
-  | 95 // 95% darkness
   | 100; // 100% darkness
 
 export type ColorScaleLight = Partial<Record<LightTrackTones, SolidColor>>;
