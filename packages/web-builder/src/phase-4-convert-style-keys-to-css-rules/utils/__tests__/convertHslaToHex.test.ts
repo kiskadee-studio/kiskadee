@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { convertHslaToHex } from '../convertHslaToHex';
-import type { HSLA } from '@kiskadee/schema';
+import type { HSLA } from '@kiskadee/core';
 
 describe('convertHslaToHex', () => {
   describe('Successful operation', () => {

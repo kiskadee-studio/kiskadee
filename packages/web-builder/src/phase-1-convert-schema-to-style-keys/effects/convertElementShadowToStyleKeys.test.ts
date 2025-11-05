@@ -1,4 +1,4 @@
-import type { ShadowSchema } from '@kiskadee/schema';
+import type { ShadowSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { convertElementShadowToStyleKeys } from './convertElementShadowToStyleKeys';
 

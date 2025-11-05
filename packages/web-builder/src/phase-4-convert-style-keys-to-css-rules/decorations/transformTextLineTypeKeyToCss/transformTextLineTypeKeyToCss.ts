@@ -3,7 +3,7 @@ import {
   CssTextDecorationValue,
   type DecorationProperty,
   type TextLineTypeValue
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 const { textLineType }: typeof CssDecorationProperty = CssDecorationProperty;

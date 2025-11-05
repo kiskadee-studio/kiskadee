@@ -6,7 +6,7 @@ import type { ElementEffects } from '../index';
 // - A nested `selected` sub-map with its own states
 // - An optional CSS transition configuration
 // - A responsive example for `hover` using size tokens compatible with `scales`
-const buttonEffects: ElementEffects = {
+const borderRadiusEffect: ElementEffects = {
   borderRadius: {
     // Base, non-selected states
     rest: 20,
@@ -30,4 +30,4 @@ const buttonEffects: ElementEffects = {
   }
 };
 
-console.log(buttonEffects);
+console.log(borderRadiusEffect);

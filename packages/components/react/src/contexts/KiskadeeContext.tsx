@@ -1,4 +1,4 @@
-import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/schema';
+import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
 
 export type KiskadeeContextValue = {

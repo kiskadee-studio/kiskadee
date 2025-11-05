@@ -1,4 +1,4 @@
-import type { Color, ElementPalettes } from '@kiskadee/schema';
+import type { Color, ElementPalettes } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKeys';
 

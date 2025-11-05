@@ -5,7 +5,7 @@ import type {
   ElementSizeValue,
   InteractionState,
   SemanticColor
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';

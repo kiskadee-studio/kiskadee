@@ -1,4 +1,4 @@
-import type { ComponentStyleKeyMap, StyleKey } from '@kiskadee/schema';
+import type { ComponentStyleKeyMap, StyleKey } from '@kiskadee/core';
 
 export type StyleKeyUsageMap = Record<StyleKey, number>;
 

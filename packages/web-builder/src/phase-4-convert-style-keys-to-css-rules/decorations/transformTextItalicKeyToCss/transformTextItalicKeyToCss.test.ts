@@ -1,4 +1,4 @@
-import type { TextItalicKeyToken } from '@kiskadee/schema';
+import type { TextItalicKeyToken } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
 import { transformTextItalicKeyToCss } from './transformTextItalicKeyToCss';

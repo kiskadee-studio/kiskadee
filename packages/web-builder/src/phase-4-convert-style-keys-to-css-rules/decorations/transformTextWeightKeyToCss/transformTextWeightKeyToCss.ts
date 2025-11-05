@@ -1,4 +1,4 @@
-import { CssTextWeightValue, type TextWeightValue } from '@kiskadee/schema';
+import { CssTextWeightValue, type TextWeightValue } from '@kiskadee/core';
 import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
 
 /**

@@ -13,7 +13,7 @@ import type {
   StyleKey,
   StyleKeyByElement,
   ThemeMode
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils';
 
 // Metadata to track, which tone (soft/solid) generated each style key

@@ -1,6 +1,6 @@
 import type { DecorationSchema } from './decorations.types';
 
-const buttonDecoration: DecorationSchema = {
+const decoration: DecorationSchema = {
   textFont: ['Arial', 'Helvetica'],
   textItalic: false,
   textWeight: 'semiBold',
@@ -9,4 +9,4 @@ const buttonDecoration: DecorationSchema = {
   borderStyle: 'solid'
 };
 
-console.log(buttonDecoration);
+console.log(decoration);

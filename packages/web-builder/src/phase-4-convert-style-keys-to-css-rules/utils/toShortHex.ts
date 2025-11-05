@@ -1,4 +1,4 @@
-import type { Hex } from '@kiskadee/schema';
+import type { Hex } from '@kiskadee/core';
 
 /**
  * Helper function to convert a full hex color string into its shorthand version,

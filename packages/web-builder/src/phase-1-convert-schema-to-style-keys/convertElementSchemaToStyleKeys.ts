@@ -4,7 +4,7 @@ import type {
   Schema,
   StyleKey,
   StyleKeyByElement
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { deepUpdate } from '../utils';
 import {
   convertElementColorsToStyleKeys,

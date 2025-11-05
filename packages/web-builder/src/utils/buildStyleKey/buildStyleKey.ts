@@ -4,7 +4,7 @@ import type {
   InteractionState,
   SelectedInteractionStateToken,
   StyleKey
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 
 export interface BuildStyleKeyParams {
   /**

@@ -1,7 +1,7 @@
 import type { ColorSchema, SchemaSegments } from './colors.types';
 
 // Example of ColorSchema (element-level colors for a component)
-const palettes: ColorSchema = {
+const color: ColorSchema = {
   boxColor: {
     primary: {
       soft: {
@@ -75,6 +75,7 @@ export const exampleSchemaSegments: SchemaSegments = {
   // Each segment represents a brand/product identity
   example: {
     name: 'Example Brand',
+    mainColor: 'blue',
     themes: {
       light: {
         // Demonstrates ToneTracks (soft/solid) for a semantic color
@@ -149,3 +150,5 @@ export const exampleSchemaSegments: SchemaSegments = {
     }
   }
 };
+
+console.log({ color });

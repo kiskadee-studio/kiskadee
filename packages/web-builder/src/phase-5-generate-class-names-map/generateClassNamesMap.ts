@@ -6,7 +6,7 @@ import type {
   InteractionState,
   SemanticColor,
   StyleKey
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import type { ToneMetadata } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 

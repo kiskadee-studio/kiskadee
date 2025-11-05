@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mapStyleKeyUsage, type StyleKeyUsageMap } from './mapStyleKeyUsage';
-import type { ComponentStyleKeyMap } from '@kiskadee/schema';
+import type { ComponentStyleKeyMap } from '@kiskadee/core';
 
 describe('mapStyleKeyUsage', () => {
   it('returns empty object for empty input', () => {

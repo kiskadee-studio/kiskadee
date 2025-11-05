@@ -1,5 +1,5 @@
 import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage';
-import type { StyleKey } from '@kiskadee/schema';
+import type { StyleKey } from '@kiskadee/core';
 import { getToken } from '../utils';
 
 export type ShortenCssClassNames = Record<StyleKey, string>;

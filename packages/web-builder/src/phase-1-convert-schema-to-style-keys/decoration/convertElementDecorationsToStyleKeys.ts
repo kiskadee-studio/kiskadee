@@ -1,4 +1,4 @@
-import type { DecorationSchema, StyleKeyByElement } from '@kiskadee/schema';
+import type { DecorationSchema, StyleKeyByElement } from '@kiskadee/core';
 import { buildStyleKey } from '../../utils/buildStyleKey/buildStyleKey';
 
 /**

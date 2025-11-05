@@ -7,7 +7,7 @@ import type {
   SelectedInteractionState,
   SelectedInteractionStateToken,
   StyleKeysByInteractionState
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils';
 
 /**

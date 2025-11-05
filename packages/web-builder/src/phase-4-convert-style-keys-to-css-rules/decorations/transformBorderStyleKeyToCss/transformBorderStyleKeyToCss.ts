@@ -1,4 +1,4 @@
-import { type BorderStyleValue, CssBorderStyleValue } from '@kiskadee/schema';
+import { type BorderStyleValue, CssBorderStyleValue } from '@kiskadee/core';
 import { SEPARATORS } from '../../../utils';
 import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
 

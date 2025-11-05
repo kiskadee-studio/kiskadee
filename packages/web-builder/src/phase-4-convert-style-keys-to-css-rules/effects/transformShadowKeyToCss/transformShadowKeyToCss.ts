@@ -4,7 +4,7 @@ import {
   type PseudoSelectorKeys,
   type StateActivatorKeys,
   stateActivator
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import {
   INVALID_SHADOW_COLOR_VALUE,
   UNSUPPORTED_INTERACTION_STATE,

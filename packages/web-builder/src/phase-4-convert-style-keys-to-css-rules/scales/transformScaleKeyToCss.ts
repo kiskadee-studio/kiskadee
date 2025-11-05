@@ -6,7 +6,7 @@ import {
   type ScaleProperty,
   type StyleKey,
   scaleProperties
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { SEPARATORS } from '../../utils/buildStyleKey/buildStyleKey';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';

@@ -5,7 +5,7 @@ import {
   type StyleKey,
   breakpoints as schemaBreakpoints,
   stateActivator
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
   'Invalid key format. Expected numeric value in square brackets at the end.';

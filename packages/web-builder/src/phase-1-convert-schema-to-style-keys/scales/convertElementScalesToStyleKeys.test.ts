@@ -1,4 +1,4 @@
-import type { ScaleSchema, StyleKeyByElement } from '@kiskadee/schema';
+import type { ScaleSchema, StyleKeyByElement } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { convertElementScalesToStyleKeys } from './convertElementScalesToStyleKeys';
 

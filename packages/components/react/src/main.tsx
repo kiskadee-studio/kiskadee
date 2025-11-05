@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import './index.css';
 import './global.scss';
-import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/schema';
+import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import App from './App.tsx';
 import { KiskadeeContext } from './contexts/KiskadeeContext.tsx';
 

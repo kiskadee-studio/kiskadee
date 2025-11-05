@@ -3,11 +3,11 @@ import { fileURLToPath } from 'node:url';
 import {
   schema as appleSchema,
   segments as appleSegments
-} from '@kiskadee/schema/src/templates/ios-26-apple';
+} from '@kiskadee/presets/dist/ios-26-apple';
 import {
   schema as kiskadeeSchema,
   segments as kiskadeeSegments
-} from '@kiskadee/schema/src/templates/ios-26-kiskadee';
+} from '@kiskadee/presets/dist/ios-26-kiskadee';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -36,23 +36,39 @@ function slugifyName(name: string): string {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const templates = [
+const presetsToBuild = [
   {
     schema: appleSchema,
     segments: appleSegments,
-    templatePath: resolve(__dirname, '..', '..', 'schema', 'src', 'templates', 'ios-26-apple.ts')
+    templatePath: resolve(
+      __dirname,
+      '..',
+      '..',
+      'presets',
+      'src',
+      'ios-26-apple',
+      'ios-26-apple.schema.ts'
+    )
   },
   {
     schema: kiskadeeSchema,
     segments: kiskadeeSegments,
-    templatePath: resolve(__dirname, '..', '..', 'schema', 'src', 'templates', 'ios-26-kiskadee.ts')
+    templatePath: resolve(
+      __dirname,
+      '..',
+      '..',
+      'presets',
+      'src',
+      'ios-26-kiskadee',
+      'ios-26-kiskadee.schema.ts'
+    )
   }
 ];
 
 const baseBuildDir = resolve(__dirname, '..', '..', 'build');
 
 (async () => {
-  for (const t of templates) {
+  for (const t of presetsToBuild) {
     const { schema, segments } = t as any;
     const templatePath = (t as any).templatePath as string;
 

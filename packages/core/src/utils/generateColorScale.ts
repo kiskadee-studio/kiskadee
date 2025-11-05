@@ -243,4 +243,4 @@ export function generateColorScaleWithLog(
   return tracks;
 }
 
-generateColorScaleWithLog('#fff59b', true);
+generateColorScaleWithLog('#000', true);

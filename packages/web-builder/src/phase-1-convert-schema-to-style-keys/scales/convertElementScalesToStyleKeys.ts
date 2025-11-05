@@ -3,7 +3,7 @@ import type {
   ElementSizeValue,
   ScaleSchema,
   StyleKeyByElement
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { deepUpdate, buildStyleKey } from '../../utils';
 
 /**

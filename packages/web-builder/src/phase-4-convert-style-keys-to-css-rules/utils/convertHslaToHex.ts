@@ -1,4 +1,4 @@
-import type { Hex, HSLA } from '@kiskadee/schema';
+import type { Hex, HSLA } from '@kiskadee/core';
 import { toShortHex } from './toShortHex';
 
 /**

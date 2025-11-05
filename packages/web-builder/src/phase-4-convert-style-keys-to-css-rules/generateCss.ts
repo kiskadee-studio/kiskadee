@@ -1,9 +1,4 @@
-import {
-  breakpoints,
-  type ColorProperty,
-  CssColorProperty,
-  scaleProperties
-} from '@kiskadee/schema';
+import { breakpoints, type ColorProperty, CssColorProperty, scaleProperties } from '@kiskadee/core';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
@@ -20,7 +15,11 @@ import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKe
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
 
-export function generateCssRuleFromStyleKey(styleKey: string, className: string, forceState?: boolean): string {
+export function generateCssRuleFromStyleKey(
+  styleKey: string,
+  className: string,
+  forceState?: boolean
+): string {
   let generatedCss: string | undefined;
 
   // Appearances ---------------------------------------------------------------------------------

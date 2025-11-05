@@ -2,13 +2,12 @@ import {
   type ColorProperty,
   CssColorProperty,
   type HSLA,
-  type InteractionState,
   InteractionStateCssPseudoSelector,
   type PseudoSelectorKeys,
   type StateActivatorKeys,
   type StyleKey,
   stateActivator
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
 export const ERROR_INVALID_KEY_FORMAT =

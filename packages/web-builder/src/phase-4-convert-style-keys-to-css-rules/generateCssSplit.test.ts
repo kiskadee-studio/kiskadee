@@ -1,4 +1,4 @@
-import type { ComponentStyleKeyMap } from '@kiskadee/schema';
+import type { ComponentStyleKeyMap } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 import { generateCssSplit } from './generateCssSplit';

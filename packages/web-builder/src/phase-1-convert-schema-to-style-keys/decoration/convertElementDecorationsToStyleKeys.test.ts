@@ -1,4 +1,4 @@
-import type { DecorationSchema } from '@kiskadee/schema';
+import type { DecorationSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { convertElementDecorationsToStyleKeys } from './convertElementDecorationsToStyleKeys';
 

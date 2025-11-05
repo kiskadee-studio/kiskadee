@@ -12,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@kiskadee/schema": "workspace:^"
+    "@kiskadee/core": "workspace:^",
+    "@kiskadee/presets": "workspace:^"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^3.2.4",

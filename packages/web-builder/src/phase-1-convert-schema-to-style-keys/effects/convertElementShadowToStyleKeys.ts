@@ -3,7 +3,7 @@ import type {
   ShadowSchema,
   SolidColor,
   StyleKeysByInteractionState
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils';
 
 /**

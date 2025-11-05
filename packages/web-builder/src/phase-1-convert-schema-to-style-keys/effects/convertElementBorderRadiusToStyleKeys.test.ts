@@ -1,4 +1,4 @@
-import type { BorderRadiusEffectSchema } from '@kiskadee/schema';
+import type { BorderRadiusEffectSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { convertElementBorderRadiusToStyleKeys } from './convertElementBorderRadiusToStyleKeys';
 

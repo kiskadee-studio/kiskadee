@@ -1,12 +1,12 @@
-import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
-import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import {
   type ClassNameByElementJSON,
   stateActivator as cn,
   type ElementSizeValue,
   type EmphasisVariant,
   type StateActivatorKeys
-} from '@kiskadee/schema';
+} from '@kiskadee/core';
+import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
+import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { memo, useMemo } from 'react';
 import { useKiskadee } from '../../contexts/KiskadeeContext.tsx';
 import './Button.scss';

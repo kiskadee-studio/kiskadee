@@ -1,4 +1,4 @@
-import { breakpoints } from '@kiskadee/schema';
+import { breakpoints } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import {
   ERROR_INVALID_CUSTOM_TOKEN,
