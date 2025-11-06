@@ -243,4 +243,9 @@ export function generateColorScaleWithLog(
   return tracks;
 }
 
-generateColorScaleWithLog('#000', true);
+// macos rest #2E7CF6
+// macos pressed #2970DE
+// ios 26 #0091FF
+// ios 18 #007AFF
+
+generateColorScaleWithLog('#0091FF', true);

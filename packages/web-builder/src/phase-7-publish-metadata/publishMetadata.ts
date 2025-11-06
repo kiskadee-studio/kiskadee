@@ -1,7 +1,6 @@
 import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import type { Schema } from '@kiskadee/schema/src/schema';
-import type { SchemaSegments, ThemeMode } from '@kiskadee/schema/src/types/colors/colors.types';
+import type { Schema, SchemaSegments, ThemeMode } from '@kiskadee/core';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
@@ -52,10 +51,10 @@ export async function publishMetadata(params: {
   schema: Schema;
   segments: SchemaSegments;
   outDirSlug: string;
-  templatePath: string;
+  schemaPath: string;
   baseBuildDir: string;
 }): Promise<void> {
-  const { schema, segments, outDirSlug, templatePath, baseBuildDir } = params;
+  const { schema, segments, outDirSlug, schemaPath, baseBuildDir } = params;
 
   // Build manifest content
   const displayName = computeDisplayName(schema, segments);
@@ -80,7 +79,7 @@ export async function publishMetadata(params: {
 
   // Optional: copy original template TS for inspection
   try {
-    await copyFile(templatePath, resolve(buildDir, 'schema.source.ts'));
+    await copyFile(schemaPath, resolve(buildDir, 'schema.source.ts'));
   } catch (e) {
     console.warn('[web-builder] Failed to copy schema.source.ts for', manifest.key, e);
   }

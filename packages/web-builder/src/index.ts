@@ -1,13 +1,7 @@
+import { readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  schema as appleSchema,
-  segments as appleSegments
-} from '@kiskadee/presets/dist/ios-26-apple';
-import {
-  schema as kiskadeeSchema,
-  segments as kiskadeeSegments
-} from '@kiskadee/presets/dist/ios-26-kiskadee';
+import type { Schema, SchemaSegments } from '@kiskadee/core';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -36,41 +30,44 @@ function slugifyName(name: string): string {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const presetsToBuild = [
-  {
-    schema: appleSchema,
-    segments: appleSegments,
-    templatePath: resolve(
-      __dirname,
-      '..',
-      '..',
-      'presets',
-      'src',
-      'ios-26-apple',
-      'ios-26-apple.schema.ts'
-    )
-  },
-  {
-    schema: kiskadeeSchema,
-    segments: kiskadeeSegments,
-    templatePath: resolve(
-      __dirname,
-      '..',
-      '..',
-      'presets',
-      'src',
-      'ios-26-kiskadee',
-      'ios-26-kiskadee.schema.ts'
-    )
+async function loadPresetsToBuild(): Promise<
+  Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }>
+> {
+  const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'dist');
+
+  const dirs = readdirSync(presetsDistDir, { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name);
+
+  const items: Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }> = [];
+
+  for (const dir of dirs) {
+    const mod = (await import(`@kiskadee/presets/dist/${dir}`)) as {
+      schema?: Schema;
+      segments?: SchemaSegments;
+    };
+
+    if (!mod?.schema || !mod?.segments) {
+      console.warn(`Ignorando preset "${dir}": não exporta schema/segments.`);
+      continue;
+    }
+
+    items.push({
+      schema: mod.schema,
+      segments: mod.segments,
+      schemaPath: resolve(__dirname, '..', '..', 'presets', 'src', dir, `${dir}.schema.ts`)
+    });
   }
-];
+
+  return items;
+}
 
 const baseBuildDir = resolve(__dirname, '..', '..', 'build');
 
 (async () => {
+  const presetsToBuild = await loadPresetsToBuild();
   for (const t of presetsToBuild) {
-    const { schema, segments } = t as any;
-    const templatePath = (t as any).templatePath as string;
+    const { schema, segments, schemaPath } = t;
 
     // Phase 1 - Convert Element Schema to Style Keys
     const { styleKeys, toneMetadata } = convertElementSchemaToStyleKeys(schema);
@@ -97,7 +94,7 @@ const baseBuildDir = resolve(__dirname, '..', '..', 'build');
     console.log('phrase 5', { name: schema.name, classNamesMapSplit });
 
     // Compute out dir
-    const major = Array.isArray(schema.version) ? schema.version[0] : (schema.version as any);
+    const major = schema.version[0];
     const outDirSlug = `${slugifyName(schema.name)}-${major}-${slugifyName(schema.author || '')}`;
 
     // Phase 6 - Persist CSS & maps
@@ -108,7 +105,7 @@ const baseBuildDir = resolve(__dirname, '..', '..', 'build');
       schema,
       segments,
       outDirSlug,
-      templatePath,
+      schemaPath: schemaPath,
       baseBuildDir
     });
   }
