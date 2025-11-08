@@ -92,9 +92,8 @@ export type ClassNameByElementJSON = {
   e?: string;
   // s: values are pre-joined into a single space-separated string (no arrays) per size key
   s?: Partial<Record<string, string>>;
-  // c: Color classes organized by tone. Contains u (unique/single), f (soft), d (solid).
-  // Each class appears in exactly one sub-field to avoid duplication.
-  c?: ColorClasses;
+  // c: Map of semantic key -> ColorClasses (semantic-aware colors). No legacy flat format.
+  c?: Record<string, ColorClasses>;
   // cs: control-state specific (selected) — flattened string of utility classes
   // TODO: replace is with a single letter
   cs?: string;
