@@ -21,17 +21,27 @@ export default function ButtonPage() {
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Solid)</h3>
           <div className={s['example-states']}>
-            <Button label="Rest" tone="solid" />
-            <Button label="Hover" tone="solid" status="hover" />
-            <Button label="Focus" tone="solid" status="focus" />
-            <Button label="Pressed" tone="solid" status="pressed" />
-            <Button label="Selected" tone="solid" controlState={true} />
-            <Button label="Disabled" tone="solid" status="disabled" />
-            {/*<Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />*/}
+            <Button label="Rest" tone="solid" semantic="primary" />
+            <Button label="Hover" tone="solid" semantic="primary" status="hover" />
+            <Button label="Focus" tone="solid" semantic="primary" status="focus" />
+            <Button label="Pressed" tone="solid" semantic="primary" status="pressed" />
+            <Button label="Selected" tone="solid" semantic="primary" controlState={true} />
+            <Button label="Disabled" tone="solid" semantic="primary" status="disabled" />
           </div>
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Soft)</h3>
+          <div className={s['example-states']}>
+            <Button label="Rest" tone="soft" semantic="primary" />
+            <Button label="Hover" tone="soft" semantic="primary" status="hover" />
+            <Button label="Focus" tone="soft" semantic="primary" status="focus" />
+            <Button label="Pressed" tone="soft" semantic="primary" status="pressed" />
+            <Button label="Selected" tone="soft" semantic="primary" controlState={true} />
+            <Button label="Disabled" tone="soft" semantic="primary" status="disabled" />
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Neutral (Soft)</h3>
           <div className={s['example-states']}>
             <Button label="Rest" tone="soft" />
             <Button label="Hover" tone="soft" status="hover" />
@@ -39,7 +49,6 @@ export default function ButtonPage() {
             <Button label="Pressed" tone="soft" status="pressed" />
             <Button label="Selected" tone="soft" controlState={true} />
             <Button label="Disabled" tone="soft" status="disabled" />
-            {/*<Button label="Aria Disabled (visual only)" status="disabled" aria-disabled />*/}
           </div>
         </div>
 

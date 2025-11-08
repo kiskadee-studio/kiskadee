@@ -3,18 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Official presets (tokens + schemas) for Kiskadee.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "src"
   ],
   "author": "Rodrigo J C Mello",
   "license": "MIT",
   "private": true,
-  "scripts": {
-    "clean": "rm -rf dist",
-    "build": "npm run clean && tsc"
-  },
   "dependencies": {
     "@kiskadee/core": "workspace:^"
   },

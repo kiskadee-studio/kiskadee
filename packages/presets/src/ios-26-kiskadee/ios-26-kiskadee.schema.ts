@@ -47,9 +47,9 @@ export const schema: Schema = {
                       pressed: color(ios, 'l', 'primary', 8),
                       disabled: color(ios, 'l', 'primary', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'primary', 10),
-                        hover: color(ios, 'l', 'primary', 8),
-                        pressed: color(ios, 'l', 'primary', 20)
+                        rest: color(ios, 'l', 'primary', 50),
+                        hover: color(ios, 'l', 'primary', 50, 80),
+                        pressed: color(ios, 'l', 'primary', 60)
                       }
                     },
                     solid: {
@@ -57,11 +57,20 @@ export const schema: Schema = {
                       hover: color(ios, 'l', 'primary', 50, 80),
                       pressed: color(ios, 'l', 'primary', 60),
                       disabled: color(ios, 'l', 'primary', 50, 20),
-                      focus: color(ios, 'l', 'primary', 50),
+                      focus: color(ios, 'l', 'primary', 50)
+                    }
+                  },
+                  neutral: {
+                    soft: {
+                      rest: color(ios, 'l', 'neutral', 5),
+                      hover: color(ios, 'l', 'neutral', 3),
+                      focus: color(ios, 'l', 'neutral', 5),
+                      pressed: color(ios, 'l', 'neutral', 8),
+                      disabled: color(ios, 'l', 'neutral', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'primary', 10),
-                        hover: color(ios, 'l', 'primary', 8),
-                        pressed: color(ios, 'l', 'primary', 20)
+                        rest: color(ios, 'l', 'neutral', 50),
+                        hover: color(ios, 'l', 'neutral', 50, 80),
+                        pressed: color(ios, 'l', 'neutral', 60)
                       }
                     }
                   }
@@ -112,10 +121,20 @@ export const schema: Schema = {
                       rest: color(ios, 'l', 'neutral', 0),
                       disabled: {
                         ref: color(ios, 'l', 'neutral', 0, 20)
+                      }
+                    }
+                  },
+                  neutral: {
+                    soft: {
+                      rest: color(ios, 'l', 'neutral', 50),
+                      hover: { ref: color(ios, 'l', 'neutral', 50, 80) },
+                      pressed: { ref: color(ios, 'l', 'neutral', 50) },
+                      disabled: {
+                        ref: color(ios, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'neutral', 70)
+                          ref: color(ios, 'l', 'neutral', 0)
                         }
                       }
                     }

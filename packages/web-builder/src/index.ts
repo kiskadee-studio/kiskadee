@@ -33,7 +33,7 @@ const __dirname = dirname(__filename);
 async function loadPresetsToBuild(): Promise<
   Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }>
 > {
-  const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'dist');
+  const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'src');
 
   const dirs = readdirSync(presetsDistDir, { withFileTypes: true })
     .filter((e) => e.isDirectory())
@@ -42,7 +42,7 @@ async function loadPresetsToBuild(): Promise<
   const items: Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }> = [];
 
   for (const dir of dirs) {
-    const mod = (await import(`@kiskadee/presets/dist/${dir}`)) as {
+    const mod = (await import(`@kiskadee/presets/src/${dir}`)) as {
       schema?: Schema;
       segments?: SchemaSegments;
     };

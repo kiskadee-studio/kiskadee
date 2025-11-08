@@ -32,30 +32,35 @@ export type ButtonProps = HeadlessButtonProps & {
    * If not provided or if tone metadata is not available, uses all palette classes.
    */
   tone?: EmphasisVariant;
+  /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
+  semantic?: string;
 };
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
 // Selects color classes based on tone: soft (f), solid (d), or unique (u)
-function collectStr(el: ClassNameByElementJSON | undefined, tone?: EmphasisVariant): string {
+// Assumes semantic-aware map in `c`; no legacy flat format for performance.
+function collectStr(
+  el: ClassNameByElementJSON | undefined,
+  tone: EmphasisVariant | undefined,
+  semantic: string | undefined
+): string {
   if (!el) return '';
   let out = '';
   if (el.d) out = el.d;
 
-  // Select color classes based on tone
-  let colorClasses = '';
-  if (tone === 'soft' && el.c?.f) {
-    colorClasses = el.c.f;
-  } else if (tone === 'solid' && el.c?.d) {
-    colorClasses = el.c.d;
-  } else if (el.c?.u) {
-    // Fallback: unique/single color (no tone)
-    colorClasses = el.c.u;
-  } else if (!tone && el.c) {
-    // No tone specified: default to solid, fallback to soft, then unique
-    colorClasses = el.c.d ?? el.c.f ?? el.c.u ?? '';
+  const c = el.c as Record<string, import('@kiskadee/core').ColorClasses> | undefined;
+  const bySem = c ? c[semantic ?? 'neutral'] : undefined;
+
+  if (bySem) {
+    let color = '';
+    if (tone === 'soft' && bySem.f) color = bySem.f;
+    else if (tone === 'solid' && bySem.d) color = bySem.d;
+    else if (!tone) color = bySem.d ?? bySem.f ?? bySem.u ?? '';
+    else if (!color && bySem.u) color = bySem.u; // last resort within the same semantic
+
+    if (color) out = out ? `${out} ${color}` : color;
   }
 
-  if (colorClasses) out = out ? `${out} ${colorClasses}` : colorClasses;
   return out;
 }
 
@@ -69,6 +74,7 @@ function Button(props: ButtonProps) {
     disabled,
     shadow = false,
     tone,
+    semantic = 'neutral',
     tabIndex,
     ...restProps
   } = props;
@@ -81,9 +87,9 @@ function Button(props: ButtonProps) {
   // If no `scale` prop is passed, we default to the median 's:md:1' so the button never renders without a scale.
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    const el1 = collectStr(e1, tone);
-    const el2 = collectStr(e2, tone);
-    const el3 = collectStr(e3, tone);
+    const el1 = collectStr(e1, tone, semantic);
+    const el2 = collectStr(e2, tone, semantic);
+    const el3 = collectStr(e3, tone, semantic);
 
     // Include scales for e1 (root) and e2 (label)
     const sAllE1 = e1?.s?.['s:all'] ?? '';
@@ -138,6 +144,7 @@ function Button(props: ButtonProps) {
     scale,
     shadow,
     tone,
+    semantic,
     classNames.e1,
     classNames.e2,
     classNames.e3

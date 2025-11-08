@@ -144,13 +144,17 @@ export function generateClassNamesMapSplit(
             }
             const elemRecord = palettes[bundleKey][componentName][elementName];
 
-            // Segregate classes by tone (or unique if no tone)
-            const uniqueSet = new Set<string>(); // Color unique (no tone)
-            const softSet = new Set<string>(); // Soft tone
-            const solidSet = new Set<string>(); // Solid tone
+            // Build color classes per semantic: c[semantic] = { u, f, d }
+            const colorBySemantic: Record<string, ColorClasses> = {};
 
             for (const sem of Object.keys(bySemantic)) {
               const byState = bySemantic[sem as SemanticColor];
+
+              // Segregate classes by tone (or unique if no tone) per semantic
+              const uniqueSet = new Set<string>();
+              const softSet = new Set<string>();
+              const solidSet = new Set<string>();
+
               for (const st of Object.keys(byState ?? {})) {
                 const styleKeys = byState?.[st as InteractionState];
                 const isSelectedState = st === 'selected' || st.startsWith('selected:');
@@ -175,23 +179,20 @@ export function generateClassNamesMapSplit(
                   }
                 });
               }
-            }
 
-            // Build ColorClasses object
-            const colorClasses: ColorClasses = {};
-            if (uniqueSet.size > 0) {
-              colorClasses.u = Array.from(uniqueSet).join(' ');
-            }
-            if (softSet.size > 0) {
-              colorClasses.f = Array.from(softSet).join(' ');
-            }
-            if (solidSet.size > 0) {
-              colorClasses.d = Array.from(solidSet).join(' ');
+              const colorClasses: ColorClasses = {};
+              if (uniqueSet.size > 0) colorClasses.u = Array.from(uniqueSet).join(' ');
+              if (softSet.size > 0) colorClasses.f = Array.from(softSet).join(' ');
+              if (solidSet.size > 0) colorClasses.d = Array.from(solidSet).join(' ');
+              if (Object.keys(colorClasses).length > 0) {
+                colorBySemantic[sem] = colorClasses;
+              }
             }
 
             // Add to the element record only if we have color classes
-            if (Object.keys(colorClasses).length > 0) {
-              elemRecord.c = colorClasses;
+            if (Object.keys(colorBySemantic).length > 0) {
+              // c is now a map of semantic -> ColorClasses
+              (elemRecord as any).c = colorBySemantic as any;
             }
           }
         }
