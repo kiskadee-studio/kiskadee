@@ -51,6 +51,28 @@ export default function ButtonPage() {
             <Button label="Disabled" tone="soft" status="disabled" />
           </div>
         </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Destructive (Solid)</h3>
+          <div className={s['example-states']}>
+            <Button label="Rest" tone="solid" semantic="redLike" />
+            <Button label="Hover" tone="solid" semantic="redLike" status="hover" />
+            <Button label="Focus" tone="solid" semantic="redLike" status="focus" />
+            <Button label="Pressed" tone="solid" semantic="redLike" status="pressed" />
+            <Button label="Selected" tone="solid" semantic="redLike" controlState={true} />
+            <Button label="Disabled" tone="solid" semantic="redLike" status="disabled" />
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Destructive (Soft)</h3>
+          <div className={s['example-states']}>
+            <Button label="Rest" tone="soft" semantic="redLike" />
+            <Button label="Hover" tone="soft" semantic="redLike" status="hover" />
+            <Button label="Focus" tone="soft" semantic="redLike" status="focus" />
+            <Button label="Pressed" tone="soft" semantic="redLike" status="pressed" />
+            <Button label="Selected" tone="soft" semantic="redLike" controlState={true} />
+            <Button label="Disabled" tone="soft" semantic="redLike" status="disabled" />
+          </div>
+        </div>
 
         <div className={s['interaction-state']}>
           <h3>Size: small</h3>

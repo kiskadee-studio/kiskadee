@@ -73,6 +73,27 @@ export const schema: Schema = {
                         pressed: color(ios, 'l', 'neutral', 60)
                       }
                     }
+                  },
+                  redLike: {
+                    soft: {
+                      rest: color(ios, 'l', 'redLike', 5),
+                      hover: color(ios, 'l', 'redLike', 3),
+                      focus: color(ios, 'l', 'redLike', 5),
+                      pressed: color(ios, 'l', 'redLike', 8),
+                      disabled: color(ios, 'l', 'redLike', 5, 20),
+                      selected: {
+                        rest: color(ios, 'l', 'redLike', 50),
+                        hover: color(ios, 'l', 'redLike', 50, 80),
+                        pressed: color(ios, 'l', 'redLike', 60)
+                      }
+                    },
+                    solid: {
+                      rest: color(ios, 'l', 'redLike', 50),
+                      hover: color(ios, 'l', 'redLike', 50, 80),
+                      pressed: color(ios, 'l', 'redLike', 60),
+                      disabled: color(ios, 'l', 'redLike', 50, 20),
+                      focus: color(ios, 'l', 'redLike', 50)
+                    }
                   }
                 }
               }
@@ -136,6 +157,28 @@ export const schema: Schema = {
                         rest: {
                           ref: color(ios, 'l', 'neutral', 0)
                         }
+                      }
+                    }
+                  },
+                  redLike: {
+                    soft: {
+                      rest: color(ios, 'l', 'redLike', 50),
+                      hover: { ref: color(ios, 'l', 'redLike', 50, 80) },
+                      pressed: { ref: color(ios, 'l', 'redLike', 50, 70) },
+                      disabled: {
+                        ref: color(ios, 'l', 'redLike', 0, 20)
+                      },
+                      selected: {
+                        rest: {
+                          ref: color(ios, 'l', 'redLike', 0)
+                        }
+                      }
+                    },
+                    solid: {
+                      rest: color(ios, 'l', 'neutral', 0),
+                      pressed: { ref: color(ios, 'l', 'neutral', 0, 70) },
+                      disabled: {
+                        ref: color(ios, 'l', 'neutral', 0, 20)
                       }
                     }
                   }

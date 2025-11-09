@@ -121,14 +121,32 @@ export const segments: SchemaSegments = {
         },
         redLike: {
           soft: {
-            0: [0, 0, 100, 1],
-            1: [0, 40, 90, 1],
-            5: [0, 70, 75, 1],
-            10: [0, 80, 60, 1]
+            // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
+            0: [359, 100, 100, 1], // 0% darkness (white/lightest)
+            1: [359, 100, 99, 1], // 1% darkness
+            2: [359, 100, 98, 1], // 2% darkness
+            3: [359, 100, 97, 1], // 3% darkness
+            4: [359, 100, 96, 1], // 4% darkness
+            5: [359, 100, 95, 1], // 5% darkness
+            6: [359, 100, 94, 1], // 6% darkness
+            7: [359, 100, 93, 1], // 7% darkness
+            8: [359, 100, 92, 1], // 8% darkness
+            9: [359, 100, 91, 1], // 9% darkness
+            10: [359, 100, 90, 1], // 10% darkness
+            15: [359, 100, 85, 1], // 15% darkness
+            20: [359, 100, 80, 1], // 20% darkness
+            25: [359, 100, 75, 1], // 25% darkness
+            30: [359, 100, 70, 1] // 30% darkness
           },
           solid: {
-            50: [0, 85, 50, 1], // Red mid-tone for "urgent", "notification"
-            100: [0, 85, 10, 1]
+            // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
+            40: [359, 100, 60, 1], // 40% darkness
+            50: [359, 100, 50, 1], // 50% darkness - #FF383C - ANCHOR (unchanged)
+            60: [359, 100, 40, 1], // 60% darkness
+            70: [359, 100, 30, 1], // 70% darkness
+            80: [359, 100, 20, 1], // 80% darkness
+            90: [359, 100, 10, 1], // 90% darkness
+            100: [359, 100, 0, 1] // 100% darkness (black/darkest)
           }
         }
       }
