@@ -157,25 +157,19 @@ export function generateClassNamesMapSplit(
 
               for (const st of Object.keys(byState ?? {})) {
                 const styleKeys = byState?.[st as InteractionState];
-                const isSelectedState = st === 'selected' || st.startsWith('selected:');
 
                 styleKeys?.forEach((styleKey) => {
                   const shortenedClass = shortenMap[styleKey] ?? styleKey;
                   const meta = toneMetadata.get(styleKey);
 
-                  if (isSelectedState) {
-                    // Union selected palette classes into control set (core)
-                    cSelectedSet.add(shortenedClass);
+                  // Do NOT move selected palette classes into core.cs. Always classify by tone/unique.
+                  if (meta?.tone === 'soft') {
+                    softSet.add(shortenedClass);
+                  } else if (meta?.tone === 'solid') {
+                    solidSet.add(shortenedClass);
                   } else {
-                    // Distribute by tone or unique
-                    if (meta?.tone === 'soft') {
-                      softSet.add(shortenedClass);
-                    } else if (meta?.tone === 'solid') {
-                      solidSet.add(shortenedClass);
-                    } else {
-                      // No tone = unique/single color
-                      uniqueSet.add(shortenedClass);
-                    }
+                    // No tone = unique/single color
+                    uniqueSet.add(shortenedClass);
                   }
                 });
               }
