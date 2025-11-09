@@ -123,6 +123,31 @@ export const schema: Schema = {
                     }
                   }
                 }
+              },
+              darker: {
+                boxColor: {
+                  redLike: {
+                    soft: {
+                      rest: color(ios, 'd', 'redLike', 50, 40),
+                      hover: color(ios, 'd', 'redLike', 3),
+                      focus: color(ios, 'd', 'redLike', 5),
+                      pressed: color(ios, 'd', 'redLike', 8),
+                      disabled: color(ios, 'd', 'redLike', 5, 20),
+                      selected: {
+                        rest: color(ios, 'd', 'redLike', 50),
+                        hover: color(ios, 'd', 'redLike', 50, 80),
+                        pressed: color(ios, 'd', 'redLike', 60)
+                      }
+                    },
+                    solid: {
+                      rest: color(ios, 'd', 'redLike', 50),
+                      hover: color(ios, 'd', 'redLike', 50, 80),
+                      pressed: color(ios, 'd', 'redLike', 60),
+                      disabled: color(ios, 'd', 'redLike', 50, 20),
+                      focus: color(ios, 'd', 'redLike', 50)
+                    }
+                  }
+                }
               }
             }
           },
