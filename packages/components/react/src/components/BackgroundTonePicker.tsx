@@ -46,6 +46,14 @@ export default function BackgroundTonePicker({
     try {
       localStorage.setItem(STORAGE_KEY, tone.key);
     } catch {}
+    // Notify listeners about background tone change
+    try {
+      window.dispatchEvent(
+        new CustomEvent('kiskadee:background-tone-changed', {
+          detail: { key: tone.key, color: tone.color }
+        })
+      );
+    } catch {}
     onChange?.(tone.key, tone.color);
   }, [selected, onChange]);
 
