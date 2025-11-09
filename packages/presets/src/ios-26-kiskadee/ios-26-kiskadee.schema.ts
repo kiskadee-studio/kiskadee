@@ -49,15 +49,16 @@ export const schema: Schema = {
                       selected: {
                         rest: color(ios, 'l', 'primary', 50),
                         hover: color(ios, 'l', 'primary', 50, 80),
+                        focus: color(ios, 'l', 'primary', 50),
                         pressed: color(ios, 'l', 'primary', 60)
                       }
                     },
                     solid: {
                       rest: color(ios, 'l', 'primary', 50),
                       hover: color(ios, 'l', 'primary', 50, 80),
+                      focus: color(ios, 'l', 'primary', 50),
                       pressed: color(ios, 'l', 'primary', 60),
-                      disabled: color(ios, 'l', 'primary', 50, 20),
-                      focus: color(ios, 'l', 'primary', 50)
+                      disabled: color(ios, 'l', 'primary', 50, 20)
                     }
                   },
                   neutral: {
@@ -68,9 +69,10 @@ export const schema: Schema = {
                       pressed: color(ios, 'l', 'neutral', 8),
                       disabled: color(ios, 'l', 'neutral', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'neutral', 50),
-                        hover: color(ios, 'l', 'neutral', 50, 80),
-                        pressed: color(ios, 'l', 'neutral', 60)
+                        rest: color(ios, 'l', 'primary', 50),
+                        hover: color(ios, 'l', 'primary', 50, 80),
+                        focus: color(ios, 'l', 'primary', 50),
+                        pressed: color(ios, 'l', 'primary', 60)
                       }
                     }
                   },
@@ -134,7 +136,7 @@ export const schema: Schema = {
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'neutral', 70)
+                          ref: color(ios, 'l', 'neutral', 0)
                         }
                       }
                     },
