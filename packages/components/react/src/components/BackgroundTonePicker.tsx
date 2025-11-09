@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import styles from './BackgroundTonePicker.module.scss';
+import { useKiskadee } from '../contexts/KiskadeeContext';
 
 const TONES = [
   { key: 'white', color: '#ffffff', aria: 'White' },
@@ -20,6 +21,7 @@ export default function BackgroundTonePicker({
   onChange?: (toneKey: string, color: string) => void;
 }) {
   const groupId = useId();
+  const { theme } = useKiskadee();
 
   const initialKey = useMemo(() => {
     try {
@@ -30,6 +32,11 @@ export default function BackgroundTonePicker({
   }, []);
 
   const [selected, setSelected] = useState<string>(initialKey);
+
+  // Sync background tone with theme changes: light → white, dark → black
+  useEffect(() => {
+    setSelected(theme === 'dark' ? 'black' : 'white');
+  }, [theme]);
 
   useEffect(() => {
     const tone = TONES.find((t) => t.key === selected) ?? TONES[0];
