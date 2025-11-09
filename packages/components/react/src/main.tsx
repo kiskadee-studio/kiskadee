@@ -313,7 +313,7 @@ function Root() {
         (merged as any)[comp][el] = (merged as any)[comp][el] || {};
         const elObj = compEl[el];
         // Merge color classes object (c) from palette JSON
-        if (elObj && elObj.c) {
+        if (elObj?.c) {
           (merged as any)[comp][el].c = elObj.c;
         }
       }
@@ -334,58 +334,6 @@ function Root() {
 
   return (
     <StrictMode>
-      <div style={{ padding: 12, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-        {/* 1. Template selector (Design System) */}
-        <label>
-          Design System:
-          <select
-            value={template}
-            onChange={(e) => setTemplate(e.target.value as TemplateKey)}
-            style={{ marginLeft: 8 }}
-          >
-            {templateKeys.map((k) => (
-              <option key={k} value={k}>
-                {templateMeta[k]?.displayName || k}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        {/* 2. Segment selector (Brand/Product) */}
-        <label>
-          Segment:
-          <select
-            value={segment}
-            onChange={(e) => setSegment(e.target.value)}
-            style={{ marginLeft: 8 }}
-            disabled={availableSegments.length <= 1}
-          >
-            {availableSegments.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        {/* 3. Theme Mode selector (Light/Dark) */}
-        <label>
-          Theme:
-          <select
-            value={theme}
-            onChange={(e) => setTheme(e.target.value as ThemeMode)}
-            style={{ marginLeft: 8 }}
-            disabled={availableThemes.length <= 1}
-          >
-            {availableThemes.map((t) => (
-              <option key={t} value={t}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
       <BrowserRouter>
         <KiskadeeContext.Provider
           value={{
@@ -393,7 +341,13 @@ function Root() {
             segment,
             theme,
             setSegment,
-            setTheme
+            setTheme,
+            template: template as string,
+            setTemplate: (t: string) => setTemplate(t as TemplateKey),
+            availableSegments,
+            availableThemes,
+            templateKeys,
+            templateMeta
           }}
         >
           <App />

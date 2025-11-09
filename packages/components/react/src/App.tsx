@@ -5,10 +5,12 @@ import BackgroundTonePicker from './components/BackgroundTonePicker';
 import ButtonPage from './pages/Button/Button.tsx';
 import TabsPage from './pages/Tabs';
 import TextPage from './pages/Text';
+import DesignSystemControls from './components/DesignSystemControls';
 
 function App() {
   return (
     <>
+      <DesignSystemControls />
       <BackgroundTonePicker />
       <h1>Componentes</h1>
       <nav style={{ display: 'flex', gap: 12 }}>
