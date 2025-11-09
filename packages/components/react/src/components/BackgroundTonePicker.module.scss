@@ -18,7 +18,7 @@
   background: rgba(255, 255, 255, 0.20);
   backdrop-filter: saturate(1.2) blur(4px);
   border-radius: 9999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 0 0 1px hsl(0deg 0% 100% / 5%);
 }
 
 .swatch {
