@@ -1,8 +1,8 @@
 import { Link, Route, Routes } from 'react-router';
 import './App.css';
 
-import BackgroundTonePicker from './components/BackgroundTonePicker';
-import DesignSystemControls from './components/DesignSystemControls';
+import BackgroundTonePicker from './components/BackgroundTonePicker/BackgroundTonePicker.tsx';
+import DesignSystemControls from './components/DesignSystemControls/DesignSystemControls.tsx';
 import ThemeModePicker from './components/ThemeModePicker/ThemeModePicker.tsx';
 import ButtonPage from './pages/Button/Button.tsx';
 import TabsPage from './pages/Tabs';

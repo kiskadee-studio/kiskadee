@@ -1,6 +1,7 @@
+'use client';
+import { useKiskadee } from '@kiskadee/react-components';
 import { useEffect, useId, useMemo, useState } from 'react';
 import styles from './BackgroundTonePicker.module.scss';
-import { useKiskadee } from '../contexts/KiskadeeContext';
 
 const TONES = [
   { key: 'white', color: '#ffffff', aria: 'White' },

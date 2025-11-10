@@ -1,5 +1,6 @@
+'use client';
 import type { ThemeMode } from '@kiskadee/core';
-import { useKiskadee } from '../contexts/KiskadeeContext';
+import { useKiskadee } from '@kiskadee/react-components';
 
 export default function DesignSystemControls() {
   const {

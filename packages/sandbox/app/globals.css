@@ -1,26 +1,12 @@
-@import "tailwindcss";
+/* Basic reset and layout helpers for the sandbox */
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+html, body { padding: 0; margin: 0; height: 100%; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; line-height: 1.4; }
+main { max-width: 900px; margin: 0 auto; }
+a { color: inherit; text-decoration: underline; }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Prevent janky animations while swapping CSS on initial load/theme switch */
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after { transition: none !important; animation: none !important; }
