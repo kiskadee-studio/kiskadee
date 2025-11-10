@@ -2,21 +2,40 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { KiskadeeContext } from '@kiskadee/react-components';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { coreMaps, paletteMaps, paletteIndex } from './(data)/templates.registry';
 import { cssPaths } from './(data)/css.registry';
+import { coreMaps, paletteIndex, paletteMaps } from './(data)/templates.registry';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Loads classNames maps (core + palette) via dynamic import (no fetch) and injects CSS served from /public/build.
 
 type TemplateKey = keyof typeof coreMaps;
 
-const DEFAULT_TEMPLATE = (Object.keys(coreMaps)[0] as TemplateKey) ?? ('ios-26-apple' as TemplateKey);
+const DEFAULT_TEMPLATE =
+  (Object.keys(coreMaps)[0] as TemplateKey) ?? ('ios-26-apple' as TemplateKey);
 const DEFAULT_SEGMENT = 'ios';
 const DEFAULT_THEME: ThemeMode = 'light';
 
-function ensureStylesheet(href: string | null | undefined, prevHrefRef: React.MutableRefObject<string | null>): Promise<void> {
+function removeStylesheet(prevHrefRef: React.MutableRefObject<string | null>) {
+  if (typeof document === 'undefined') return;
+  const prev = prevHrefRef.current;
+  if (!prev) return;
+  const el = document.querySelector(`link[rel="stylesheet"][href="${prev}"]`);
+  if (el?.parentNode) el.parentNode.removeChild(el);
+  prevHrefRef.current = null;
+}
+
+function ensureStylesheet(
+  href: string | null | undefined,
+  prevHrefRef: React.MutableRefObject<string | null>
+): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (!href || typeof document === 'undefined') return resolve();
+    if (typeof document === 'undefined') return resolve();
+
+    // If no new stylesheet is provided, remove the previous one explicitly
+    if (!href) {
+      removeStylesheet(prevHrefRef);
+      return resolve();
+    }
 
     // If the same href is already active, resolve fast
     if (prevHrefRef.current === href) {
@@ -52,9 +71,9 @@ function ensureStylesheet(href: string | null | undefined, prevHrefRef: React.Mu
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [template, setTemplate] = useState<TemplateKey>(DEFAULT_TEMPLATE);
-  const [segment, setSegment] = useState<string>(DEFAULT_SEGMENT);
-  const [theme, setTheme] = useState<ThemeMode>(DEFAULT_THEME);
+  const [template, _setTemplate] = useState<TemplateKey>(DEFAULT_TEMPLATE);
+  const [segment, _setSegment] = useState<string>(DEFAULT_SEGMENT);
+  const [theme, _setTheme] = useState<ThemeMode>(DEFAULT_THEME);
   const [classesMap, setClassesMap] = useState<ComponentClassNameMapJSON>({});
 
   // Track currently applied stylesheets to swap cleanly
@@ -63,13 +82,62 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const effectsHrefRef = useRef<string | null>(null);
 
   const templateKeys = useMemo(() => Object.keys(coreMaps) as string[], []);
-  const availableSegments = useMemo(() => paletteIndex[template]?.segments ?? [DEFAULT_SEGMENT], [template]);
+
+  // Clamp segment/theme to what's available for a template
+  const clampPair = useCallback((tpl: TemplateKey, seg: string, th: ThemeMode) => {
+    const info = paletteIndex[tpl as keyof typeof paletteIndex];
+    if (!info) return { seg: DEFAULT_SEGMENT, th: DEFAULT_THEME } as const;
+    let nextSeg = seg;
+    if (!info.segments.includes(nextSeg)) {
+      nextSeg = info.segments[0];
+    }
+    const themes = (info.themesBySegment as Record<string, ThemeMode[]>)[nextSeg] ?? [];
+    let nextTh = th;
+    if (!themes.includes(nextTh)) {
+      nextTh = (themes[0] ?? 'light') as ThemeMode;
+    }
+    return { seg: nextSeg, th: nextTh } as const;
+  }, []);
+
+  const availableSegments = useMemo(
+    () => paletteIndex[template]?.segments ?? [DEFAULT_SEGMENT],
+    [template]
+  );
   const availableThemes = useMemo(
-    () => (paletteIndex[template]?.themesBySegment?.[segment] ?? ['light', 'dark']) as ThemeMode[],
+    () => (paletteIndex[template]?.themesBySegment?.[segment] ?? ['light']) as ThemeMode[],
     [template, segment]
   );
 
-  const templateMeta = useMemo(() => ({} as Record<string, { displayName?: string }>), []);
+  const setTemplate = useCallback(
+    (v: string) => {
+      const tpl = v as TemplateKey;
+      const { seg, th } = clampPair(tpl, segment, theme);
+      _setTemplate(tpl);
+      _setSegment(seg);
+      _setTheme(th);
+    },
+    [segment, theme, clampPair]
+  );
+
+  const setSegment = useCallback(
+    (v: string) => {
+      const { th } = clampPair(template, v, theme);
+      _setSegment(v);
+      _setTheme(th);
+    },
+    [template, theme, clampPair]
+  );
+
+  const setTheme = useCallback(
+    (v: ThemeMode) => {
+      const { seg, th } = clampPair(template, segment, v);
+      _setSegment(seg);
+      _setTheme(th);
+    },
+    [template, segment, clampPair]
+  );
+
+  const templateMeta = useMemo(() => ({}) as Record<string, { displayName?: string }>, []);
 
   const ensureLoaded = useCallback(async () => {
     if (typeof document !== 'undefined') {
@@ -103,10 +171,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       for (const comp of compKeys) {
         const cComp = coreMap?.[comp] ?? {};
         const pComp = paletteMap?.[comp] ?? {};
-        const elKeys = new Set<string>([
-          ...Object.keys(cComp || {}),
-          ...Object.keys(pComp || {})
-        ]);
+        const elKeys = new Set<string>([...Object.keys(cComp || {}), ...Object.keys(pComp || {})]);
         out[comp] = {};
         for (const el of elKeys) {
           const cEl = cComp?.[el] ?? {};
@@ -167,7 +232,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setSegment,
         setTheme,
         template: String(template),
-        setTemplate: v => setTemplate(v as TemplateKey),
+        setTemplate: (v) => setTemplate(v as TemplateKey),
         availableSegments,
         availableThemes,
         templateKeys,
