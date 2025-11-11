@@ -92,56 +92,67 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }
 
     // Load core map via dynamic import registry (guard if not registered)
-    let core: any = {};
+    let core: ComponentClassNameMapJSON = {};
     const coreLoader = coreMaps[template];
     if (coreLoader) {
       const coreMod = await coreLoader();
-      core = (coreMod as any).default ?? coreMod;
+      const asDefault = coreMod as { default?: ComponentClassNameMapJSON };
+      core = asDefault.default ?? (coreMod as unknown as ComponentClassNameMapJSON);
     }
 
     // Load palette map if exists for current segment/theme
     const key = `${String(template)}|${segment}|${theme}` as keyof typeof paletteMaps;
-    let palette: any = {};
+    let palette: ComponentClassNameMapJSON = {};
     const loader = paletteMaps[key];
     if (loader) {
       const palMod = await loader();
-      palette = (palMod as any).default ?? palMod;
+      const asDefault = palMod as { default?: ComponentClassNameMapJSON };
+      palette = asDefault.default ?? (palMod as unknown as ComponentClassNameMapJSON);
     }
 
     // Deep merge: preserve core baseline (d/e/s) and overlay palette colors (c) and selected (cs)
-    const mergeMaps = (coreMap: any, paletteMap: any): ComponentClassNameMapJSON => {
-      const out: any = {};
+    const mergeMaps = (
+      coreMap: ComponentClassNameMapJSON,
+      paletteMap: ComponentClassNameMapJSON
+    ): ComponentClassNameMapJSON => {
+      const out: Record<string, Record<string, unknown>> = {};
       const compKeys = new Set<string>([
         ...Object.keys(coreMap || {}),
         ...Object.keys(paletteMap || {})
       ]);
       for (const comp of compKeys) {
-        const cComp = coreMap?.[comp] ?? {};
-        const pComp = paletteMap?.[comp] ?? {};
+        const cComp = (coreMap as unknown as Record<string, unknown>)?.[comp] as
+          | Record<string, unknown>
+          | undefined;
+        const pComp = (paletteMap as unknown as Record<string, unknown>)?.[comp] as
+          | Record<string, unknown>
+          | undefined;
         const elKeys = new Set<string>([...Object.keys(cComp || {}), ...Object.keys(pComp || {})]);
         out[comp] = {};
         for (const el of elKeys) {
-          const cEl = cComp?.[el] ?? {};
-          const pEl = pComp?.[el] ?? {};
+          const cEl = (cComp?.[el] as Record<string, unknown> | undefined) ?? {};
+          const pEl = (pComp?.[el] as Record<string, unknown> | undefined) ?? {};
           // start from core element so we don't lose d/e/s/scales
-          const mergedEl: any = { ...cEl };
+          const mergedEl: Record<string, unknown> = { ...(cEl as object) };
           // colors: merge semantics, palette takes precedence per semantic key
-          if (pEl.c) {
-            mergedEl.c = { ...(cEl.c ?? {}), ...(pEl.c ?? {}) };
+          if (pEl['c']) {
+            const cElC = (cEl['c'] as Record<string, unknown> | undefined) ?? {};
+            const pElC = (pEl['c'] as Record<string, unknown> | undefined) ?? {};
+            mergedEl['c'] = { ...cElC, ...pElC };
           }
           // selected state class from palette if provided
-          if (pEl.cs) mergedEl.cs = pEl.cs;
+          if (pEl['cs'] !== undefined) mergedEl['cs'] = pEl['cs'];
           // if core didn't have d/e/s, allow palette to define them
-          if (mergedEl.d === undefined && pEl.d !== undefined) mergedEl.d = pEl.d;
-          if (mergedEl.e === undefined && pEl.e !== undefined) mergedEl.e = pEl.e;
-          if (mergedEl.s === undefined && pEl.s !== undefined) mergedEl.s = pEl.s;
-          out[comp][el] = mergedEl;
+          if (mergedEl['d'] === undefined && pEl['d'] !== undefined) mergedEl['d'] = pEl['d'];
+          if (mergedEl['e'] === undefined && pEl['e'] !== undefined) mergedEl['e'] = pEl['e'];
+          if (mergedEl['s'] === undefined && pEl['s'] !== undefined) mergedEl['s'] = pEl['s'];
+          (out[comp] as Record<string, unknown>)[el] = mergedEl;
         }
       }
-      return out as ComponentClassNameMapJSON;
+      return out as unknown as ComponentClassNameMapJSON;
     };
 
-    const merged = mergeMaps(core ?? {}, palette ?? {});
+    const merged = mergeMaps(core, palette);
     setClassesMap(merged);
 
     // Stylesheets are managed declaratively via <Head> links derived from css.registry
