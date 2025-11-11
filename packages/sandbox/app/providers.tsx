@@ -135,17 +135,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
           // start from core element so we don't lose d/e/s/scales
           const mergedEl: Record<string, unknown> = { ...(cEl as object) };
           // colors: merge semantics, palette takes precedence per semantic key
-          if (pEl['c']) {
-            const cElC = (cEl['c'] as Record<string, unknown> | undefined) ?? {};
-            const pElC = (pEl['c'] as Record<string, unknown> | undefined) ?? {};
-            mergedEl['c'] = { ...cElC, ...pElC };
+          if (pEl.c) {
+            const cElC = (cEl.c as Record<string, unknown> | undefined) ?? {};
+            const pElC = (pEl.c as Record<string, unknown> | undefined) ?? {};
+            mergedEl.c = { ...cElC, ...pElC };
           }
           // selected state class from palette if provided
-          if (pEl['cs'] !== undefined) mergedEl['cs'] = pEl['cs'];
+          if (pEl.cs !== undefined) mergedEl.cs = pEl.cs;
           // if core didn't have d/e/s, allow palette to define them
-          if (mergedEl['d'] === undefined && pEl['d'] !== undefined) mergedEl['d'] = pEl['d'];
-          if (mergedEl['e'] === undefined && pEl['e'] !== undefined) mergedEl['e'] = pEl['e'];
-          if (mergedEl['s'] === undefined && pEl['s'] !== undefined) mergedEl['s'] = pEl['s'];
+          if (mergedEl.d === undefined && pEl.d !== undefined) mergedEl.d = pEl.d;
+          if (mergedEl.e === undefined && pEl.e !== undefined) mergedEl.e = pEl.e;
+          if (mergedEl.s === undefined && pEl.s !== undefined) mergedEl.s = pEl.s;
           (out[comp] as Record<string, unknown>)[el] = mergedEl;
         }
       }
