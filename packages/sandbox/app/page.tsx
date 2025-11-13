@@ -5,8 +5,9 @@ export default function HomePage() {
     <main style={{ padding: 24 }}>
       <h1>Sandbox</h1>
       <ul>
-        <li><Link href="/button">/button</Link></li>
-        <li><Link href="/tabs">/tabs</Link></li>
+        <li>
+          <Link href="/button">/button</Link>
+        </li>
       </ul>
     </main>
   );

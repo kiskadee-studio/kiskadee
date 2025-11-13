@@ -97,7 +97,12 @@ export default function ThemeModePicker({ position = 'inline' }: { position?: Po
                 className={styles.input}
               />
               <span className={theme === opt.key ? `${styles.dot} ${styles.selected}` : styles.dot}>
-                <img className={styles.icon} src={iconFor(opt.key)} alt="" aria-hidden="true" />
+                <img
+                  className={styles.icon}
+                  src={iconFor(opt.key) as unknown as string}
+                  alt=""
+                  aria-hidden="true"
+                />
               </span>
               <span className={styles.label}>{opt.label}</span>
             </label>
